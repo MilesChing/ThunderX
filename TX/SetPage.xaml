@@ -1,0 +1,69 @@
+﻿<Page x:Class="TX.SetPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TX"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Background="{ThemeResource TXBackgroundAcrylicBrush}">
+
+    <ScrollViewer x:Name="scrollViewer"
+                  VerticalAlignment="Top"
+                  HorizontalScrollMode="Disabled"
+                  HorizontalAlignment="Left"
+                  VerticalScrollBarVisibility="Hidden">
+        <Grid MaxWidth="700">
+            <StackPanel x:Name="stack"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Margin="28,20,28,0">
+                <Border Width="800" />
+                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}"
+                           x:Uid="SetPage_Title"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                           x:Uid="SetPage_Subtitle1"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock TextWrapping="Wrap"
+                           x:Uid="SetPage_GuideText1"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <Slider x:Name="ThreadNumSlider"
+                        Minimum="1"
+                        ValueChanged="ThreadNumSlider_ValueChanged"
+                        Maximum="218" />
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                           x:Uid="SetPage_Subtitle2"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock TextWrapping="Wrap"
+                           x:Uid="SetPage_GuideText2"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock x:Name="NowFolderTextBlock" 
+                           FontFamily="Consolas"
+                           TextWrapping="Wrap"
+                           Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                           Text="..."/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <Button x:Name="SubmitButton"
+                        Width="150"
+                        Height="40"
+                        Style="{ThemeResource TXButtonStyle}"
+                        x:Uid="SetPage_SubmitButton"
+                        Click="SubmitButton_Click" />
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                           x:Uid="SetPage_Subtitle3" />
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock TextWrapping="Wrap"
+                           x:Uid="SetPage_GuideText3"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <RatingControl HorizontalAlignment="Left"
+                               PlaceholderValue="5"
+                               Tapped="RatingControl_Tapped">
+                </RatingControl>
+                <Border Height="80"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>
