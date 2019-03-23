@@ -2,6 +2,8 @@
 
 Thunder X is a multi-threaded download tool that provides excellent interface and extremely high download speeds. Download Thunder X in Windows Store or click [here](https://www.microsoft.com/en-us/p/thunder-x/9njqw2wdtd43?activetab=pivot:overviewtab).
 
+![Thunder X](https://raw.githubusercontent.com/MilesChing/ThunderX/master/ScreenShots/TXW.png)
+
 ## Update List
 
 ### 1.7.6.0
