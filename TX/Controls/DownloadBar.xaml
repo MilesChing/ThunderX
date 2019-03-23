@@ -52,7 +52,7 @@
     <xp:Shadow x:Name="shadow"
                Z_Depth="1"
                Height="80">
-        <Grid Background="White">
+        <Grid Background="{ThemeResource TXBarBack}">
             
             <ProgressBar x:Name="Bar"
                          Background="Transparent"
@@ -86,11 +86,12 @@
 
                     <TextBlock x:Name="NameBlock"
                                Grid.Row="0"
+                               Text="123.123"
                                VerticalAlignment="Bottom"
                                FontWeight="SemiBold"
                                FontSize="18"
                                Margin="16,4,4,4"
-                               Foreground="#333333" />
+                               Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" />
 
 
                     <StackPanel Margin="16,0,0,0"
@@ -100,13 +101,14 @@
                         <TextBlock x:Name="SizeBlock"
                                FontWeight="SemiBold"
                                FontSize="10"
-                               Foreground="#666666"
+                               Foreground="#777777"
                                Text="177210 kB / 53986 kB" />
 
                         <TextBlock x:Name="MessageBlock"
                                Margin="8,0,0,0"
                                FontSize="10"
-                               Foreground="#888888"
+                                   Opacity="0.5"
+                               Foreground="#777777"
                                Text="1MB/s" />
 
                     </StackPanel>
@@ -127,7 +129,7 @@
 
             <Grid x:Name="TopGlassLabel"
                   Opacity="0"
-                  Background="{StaticResource TXControlAcrylicBrush}"
+                  Background="{ThemeResource TXControlAcrylicBrush}"
                   PointerEntered="TopGlassLabel_PointerEntered"
                   PointerExited="TopGlassLabel_PointerExited">
                 <CommandBar x:Name="cmdBar"

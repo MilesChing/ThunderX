@@ -23,6 +23,12 @@
                            x:Uid="SetPage_Title"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                           x:Uid="SetPage_Subtitle4" />
+                <Border Style="{ThemeResource TXBorder}" />
+                <ToggleSwitch x:Name="DarkModeSwitch"
+                              Toggled="DarkModeSwitch_Toggled"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
                            x:Uid="SetPage_Subtitle1"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap"
@@ -62,6 +68,7 @@
                                PlaceholderValue="5"
                                Tapped="RatingControl_Tapped">
                 </RatingControl>
+                
                 <Border Height="80"/>
             </StackPanel>
         </Grid>

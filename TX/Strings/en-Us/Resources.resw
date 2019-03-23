@@ -177,6 +177,9 @@
   <data name="SetPage_Subtitle3.Text" xml:space="preserve">
     <value>Rate Our App</value>
   </data>
+  <data name="SetPage_Subtitle4.Text" xml:space="preserve">
+    <value>Dark Mode</value>
+  </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
   </data>

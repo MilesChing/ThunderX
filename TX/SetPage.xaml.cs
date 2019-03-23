@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TX.StorageTools;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,21 +27,37 @@ namespace TX
     {
         public SetPage()
         {
+            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            ResetTitleBar();
+
             //在InitializeComponent的时候会触发一次ValueChanged
             //所以需要用prev记录好内部存储的ThreadNumber
             //不然就在ValueChanged里面被更新了
             int prev = StorageTools.Settings.ThreadNumber;
+            bool dark = Settings.DarkMode;
             this.InitializeComponent();
             //赋初值
             ThreadNumSlider.Value = prev;
+            DarkModeSwitch.IsOn = dark;
             NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
+        }
+
+        /// <summary>
+        /// 设置状态栏透明、扩展内容到状态栏
+        /// </summary>
+        private void ResetTitleBar()
+        {
+            var TB = ApplicationView.GetForCurrentView().TitleBar;
+            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
+            byte fr = (byte)(0xff - co);
+            TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
+            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
+            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
         }
 
         /// <summary>
         /// 选择文件夹按钮点击
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
@@ -54,8 +73,6 @@ namespace TX
         /// <summary>
         /// 滑块值改变
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ThreadNumSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             StorageTools.Settings.ThreadNumber = (int)ThreadNumSlider.Value;
@@ -64,24 +81,19 @@ namespace TX
         /// <summary>
         /// 投票控件点击的响应方法
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void RatingControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (((RatingControl)sender).Value < 4) return;
             var pfn = Windows.ApplicationModel.Package.Current.Id.FamilyName;
             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?PFN=" + pfn));
         }
-
+        
         /// <summary>
-        /// 滚动栏
+        /// 黑暗模式开关切换
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void scrollViewer_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            int delta = e.GetCurrentPoint(this).Properties.MouseWheelDelta;
-            scrollViewer.ChangeView(0, scrollViewer.VerticalOffset - delta/5.0, 1,false);
+            Settings.DarkMode = DarkModeSwitch.IsOn;
         }
     }
 }

@@ -50,5 +50,19 @@ namespace TX.StorageTools
             }
             set { ApplicationData.Current.LocalSettings.Values["ThreadNumber"] = value; }
         }
+
+        /// <summary>
+        /// 是否启动夜间模式
+        /// </summary>
+        public static bool DarkMode
+        {
+            get
+            {
+                try { return (bool)ApplicationData.Current.LocalSettings.Values["DarkMode"]; }
+                //如果取不到就用默认值
+                catch (NullReferenceException) { return false; }
+            }
+            set { ApplicationData.Current.LocalSettings.Values["DarkMode"] = value; }
+        }
     }
 }

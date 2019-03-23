@@ -1,4 +1,6 @@
 ﻿using System;
+using TX.StorageTools;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,8 +15,13 @@ namespace TX
     {
         public NewTaskPage()
         {
+            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            ResetTitleBar();
+
             this.InitializeComponent();
+            
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
+            
             RefreshUI();
             Clipboard_ContentChanged(this, this);//检查一下剪贴板里有没有url
         }
@@ -26,6 +33,19 @@ namespace TX
             RenameBox.Text = Strings.AppResources.GetString("Null");
             OurAdviceBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
+        }
+
+        /// <summary>
+        /// 设置状态栏透明、扩展内容到状态栏
+        /// </summary>
+        private void ResetTitleBar()
+        {
+            var TB = ApplicationView.GetForCurrentView().TitleBar;
+            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
+            byte fr = (byte)(0xff - co);
+            TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
+            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
+            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
         }
 
         /// <summary>

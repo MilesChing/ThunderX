@@ -68,17 +68,13 @@ namespace TX.Controls
                 viewShown = await ApplicationViewSwitcher.TryShowAsStandaloneAsync(newViewId);
             }
         }
-        
 
         /// <summary>
         /// 窗口已关闭
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
         private void NewAppView_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
         {
             viewClosed = true;
-            //Task.Run(() => { MainPage.Current.RefreshAdd(); });
         }
     }
 }

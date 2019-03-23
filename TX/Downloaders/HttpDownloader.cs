@@ -255,13 +255,35 @@ namespace TX.Downloaders
         {
             currentOperationCode++;
         }
+        
+        /// <summary>
+        /// 删除临时文件
+        /// </summary>
+        public void StartDisposeTemporaryFile()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    StorageFile temp = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
+                    await temp.DeleteAsync();
+                    Debug.WriteLine("临时文件删除成功");
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
+            });
+        }
 
         /// <summary>
         /// 释放下载器资源
         /// </summary>
         public void Dispose()
         {
+            Debug.WriteLine("开始释放资源");
             DisposeThreads();
+            StartDisposeTemporaryFile();
         }
 
         /// <summary>

@@ -177,6 +177,9 @@
   <data name="SetPage_Subtitle3.Text" xml:space="preserve">
     <value>评分</value>
   </data>
+  <data name="SetPage_Subtitle4.Text" xml:space="preserve">
+    <value>黑暗模式</value>
+  </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>
   </data>

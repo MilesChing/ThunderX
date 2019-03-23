@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using TX.Controls;
+using TX.StorageTools;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -33,6 +34,9 @@ namespace TX
         public static MainPage Current;
         public MainPage()
         {
+            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
+
             Current = this;//设置Current指针（以便在全局访问）
             InitializeComponent();
             ResetTitleBar();//设置标题栏颜色
@@ -60,7 +64,19 @@ namespace TX
                     });
             });
         }
-        
+
+        /// <summary>
+        /// 主窗口退出时，其他窗口跟着退出
+        /// </summary>
+        private void MainPage_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
+        {
+            //应用程序停止
+            Application.Current.Exit();
+        }
+
+        /// <summary>
+        /// 下载器控件集合元素变化，用于给新加入的控件设置绑定
+        /// </summary>
         private void DownloadBarCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (DownloadBarCollection.Count == 0 && viewbox.Opacity == 0) ShowLogo.Begin();
@@ -131,8 +147,11 @@ namespace TX
         private void ResetTitleBar()
         {
             var TB = ApplicationView.GetForCurrentView().TitleBar;
-            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, 0xee, 0xee, 0xee);
-            TB.BackgroundColor = Color.FromArgb(0xcc, 0xee, 0xee, 0xee);
+            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
+            byte fr = (byte)(0xff - co);
+            TB.BackgroundColor = Color.FromArgb(0xcc,co,co,co);
+            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
+            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
             //var t = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
             //t.ExtendViewIntoTitleBar = true;
         }
