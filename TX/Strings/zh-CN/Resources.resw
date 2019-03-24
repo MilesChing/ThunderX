@@ -159,9 +159,6 @@
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>新增</value>
   </data>
-  <data name="Null" xml:space="preserve">
-    <value>空</value>
-  </data>
   <data name="Pause" xml:space="preserve">
     <value>暂停</value>
   </data>

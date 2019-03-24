@@ -22,9 +22,9 @@ namespace TX
             ResetTitleBar();
 
             this.InitializeComponent();
-            
+
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
-            
+
             RefreshUI();
             Clipboard_ContentChanged(this, this);//检查一下剪贴板里有没有url
         }
@@ -33,7 +33,7 @@ namespace TX
         {
             UrlBox.Text = "";
             NeedRenameButton.IsChecked = false;
-            RenameBox.Text = Strings.AppResources.GetString("Null");
+            RenameBox.Text = Strings.AppResources.GetString("Unknown");
             OurAdviceBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
         }
@@ -58,12 +58,14 @@ namespace TX
         {
             try
             {
-                if (UrlBox.Text == String.Empty || !NetWork.UrlConverter.IsLegal(UrlBox.Text))
+                if (!SubmitButton.IsEnabled)
                 {
                     string url = await NetWork.UrlConverter.CheckClipBoardAsync();
-                    if (url != string.Empty) UrlBox.Text = url;
-                    CheckUrlBox();
-                    GenerateRecommendedName();
+                    if (url != string.Empty)
+                    {
+                        UrlBox.Text = url;
+                        UrlBox_TextChanged(null, null);
+                    }
                 }
             }
             catch (Exception ex)
@@ -73,66 +75,54 @@ namespace TX
         }
 
         /// <summary>
-        /// 检查UrlBox中的内容是否合法
-        /// </summary>
-        private void CheckUrlBox()
-        {
-            SubmitButton.IsEnabled = false;
-            string url = UrlBox.Text;
-            url = NetWork.UrlConverter.TranslateURLThunder(url);
-            if (url == null) return;
-            if (NetWork.UrlConverter.IsLegal(url))
-            {
-                OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
-                OurAdviceBlock.Opacity = 0.5;
-                SubmitButton.IsEnabled = true;
-            }
-        }
-
-        /// <summary>
         /// 输入内容时检测链接是否合法，合法则使submit按钮可用
         /// </summary>
         private void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            CheckUrlBox();
-            GenerateRecommendedName();
-        }
-
-        /// <summary>
-        /// 显示根据Url推荐的文件名
-        /// </summary>
-        private void GenerateRecommendedName()
-        {
-            if (!SubmitButton.IsEnabled) return;
+            SubmitButton.IsEnabled = false;
             string url = UrlBox.Text;
-            if (url == null) return;
             Task.Run(async () =>
             {
                 try
                 {
                     HttpWebRequest req = (HttpWebRequest)WebRequest.CreateHttp(url);
                     using (HttpWebResponse rep = (HttpWebResponse)req.GetResponse())
-                    {
-                        string name = NetWork.HttpNetWorkMethods.GetResponseName(rep);
-                        await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                         {
-                             OurAdviceBlock.Text = name;
-                             OurAdviceBlock.Opacity = 1;
-                         });
-                    }
+                        await GenerateRecommendedNameAsync(rep);
+                    await SubmitButton.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        () => { SubmitButton.IsEnabled = true; });
                     if (req != null) req.Abort();
                 }
-                catch(Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine(e.ToString());
+                    Debug.WriteLine(ex.ToString());
+                    await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        () =>
+                        {
+                            OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
+                            OurAdviceBlock.Opacity = 0.5;
+                            if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
+                        });
                 }
+            });
+        }
+
+        /// <summary>
+        /// 显示根据Url推荐的文件名
+        /// </summary>
+        private async Task GenerateRecommendedNameAsync(HttpWebResponse rep)
+        {
+            string name = NetWork.HttpNetWorkMethods.GetResponseName(rep);
+            await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                OurAdviceBlock.Text = name;
+                OurAdviceBlock.Opacity = 1;
             });
         }
 
         /// <summary>
         /// 点击提交按钮（将关闭窗口）
         /// </summary>
-        private async void  SubmitButton_Click(object sender, RoutedEventArgs e)
+        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             string url = UrlBox.Text;
             url = NetWork.UrlConverter.TranslateURLThunder(url);

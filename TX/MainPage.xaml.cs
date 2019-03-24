@@ -134,8 +134,6 @@ namespace TX
         /// <summary>
         /// 窗口尺寸变化处理程序
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             WidthBindTool.Width = GetWidth(gv.ActualWidth, 800, 500);
