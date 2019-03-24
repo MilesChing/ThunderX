@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
 using TX.StorageTools;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -60,9 +63,13 @@ namespace TX
                     string url = await NetWork.UrlConverter.CheckClipBoardAsync();
                     if (url != string.Empty) UrlBox.Text = url;
                     CheckUrlBox();
+                    GenerateRecommendedName();
                 }
             }
-            catch{ };
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         /// <summary>
@@ -77,6 +84,7 @@ namespace TX
             if (NetWork.UrlConverter.IsLegal(url))
             {
                 OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
+                OurAdviceBlock.Opacity = 0.5;
                 SubmitButton.IsEnabled = true;
             }
         }
@@ -87,6 +95,38 @@ namespace TX
         private void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckUrlBox();
+            GenerateRecommendedName();
+        }
+
+        /// <summary>
+        /// 显示根据Url推荐的文件名
+        /// </summary>
+        private void GenerateRecommendedName()
+        {
+            if (!SubmitButton.IsEnabled) return;
+            string url = UrlBox.Text;
+            if (url == null) return;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.CreateHttp(url);
+                    using (HttpWebResponse rep = (HttpWebResponse)req.GetResponse())
+                    {
+                        string name = NetWork.HttpNetWorkMethods.GetResponseName(rep);
+                        await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                         {
+                             OurAdviceBlock.Text = name;
+                             OurAdviceBlock.Opacity = 1;
+                         });
+                    }
+                    if (req != null) req.Abort();
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
+            });
         }
 
         /// <summary>

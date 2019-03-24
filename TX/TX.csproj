@@ -107,6 +107,7 @@
       <DependentUpon>DownloadBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StringConverters.cs" />
+    <Compile Include="Converters\ExtentionConverter.cs" />
     <Compile Include="Downloaders\HttpDownloader.cs" />
     <Compile Include="Enums\DownloadState.cs" />
     <Compile Include="Interfaces\IDownloader.cs" />
@@ -195,10 +196,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="XMLs\toast_complete.xml" />
+    <Content Include="Data\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="ThunderX.sln" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

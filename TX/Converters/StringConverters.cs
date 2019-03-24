@@ -12,7 +12,6 @@ namespace TX.Converters
         /// 得到对应字节数的合适单位表示字符串
         /// </summary>
         /// <param name="size">传入的大小</param>
-        /// <returns></returns>
         public static string GetPrintSize(long size)
         {
             long rest = 0;
@@ -35,6 +34,5 @@ namespace TX.Converters
                 return ((size / 100)).ToString() + "." + ((size % 100)).ToString() + "GB";
             }
         }
-        
     }
 }

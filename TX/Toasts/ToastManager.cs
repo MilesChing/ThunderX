@@ -35,7 +35,7 @@ namespace TX.Toasts
         /// <param name="filePath">要打开的文件目录</param>
         public static async void ShowDownloadCompleteToastAsync(string title, string text, string filePath)
         {
-            Uri uri = new Uri("ms-appx:///XMLs/toast_complete.xml");
+            Uri uri = new Uri("ms-appx:///Data/toast_complete.xml");
 
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
             var Xml = await XmlDocument.LoadFromFileAsync(file);

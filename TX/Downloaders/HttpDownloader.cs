@@ -202,14 +202,24 @@ namespace TX.Downloaders
                 else return;
             }
 
-            string path = StorageTools.Settings.DownloadFolderPath;
-            StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
-            await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
-            //播放一个通知
-            Toasts.ToastManager.ShowDownloadCompleteToastAsync("Download completed", message.FileName + ": " +
-                Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
-            //触发事件
-            DownloadComplete(message);
+            try
+            {
+                string path = StorageTools.Settings.DownloadFolderPath;
+                StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
+                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
+                //播放一个通知
+                Toasts.ToastManager.ShowDownloadCompleteToastAsync("Download completed", message.FileName + ": " +
+                    Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
+                //触发事件
+                DownloadComplete(message);
+            }
+            catch(Exception e)
+            {
+                //若用户把下载文件夹设置在奇怪的地方，这里会导致无法访问，触发异常
+                Debug.WriteLine(e.ToString());
+                ErrorHandler(e);
+            }
+            
         }
 
         /// <summary>
@@ -235,6 +245,7 @@ namespace TX.Downloaders
             {
                 //设置文件信息
                 message = await NetWork.HttpNetWorkMethods.GetMessageAsync(imessage.Url);
+
                 if (imessage.Rename != null) message.FileName = imessage.Rename;
                 //安排线程
                 message.Threads.ArrangeThreads(message.FileSize, imessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : imessage.Threads);
