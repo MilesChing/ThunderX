@@ -4,6 +4,10 @@ Thunder X is a multi-threaded download tool that provides excellent interface an
 
 ![Thunder X](https://raw.githubusercontent.com/MilesChing/ThunderX/master/ScreenShots/TXW.png)
 
+## Branches
+
+This project has two branches. `master` represents the latest stable release. `develop` is used to deploy the code to be published.
+
 ## Update List
 
 ### 1.7.6.0
