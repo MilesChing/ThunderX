@@ -12,6 +12,13 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.7.7.0
+
+- Illegal link will not cause crashes now
+- The Chinese translation of notifications has been improved
+- Software can better guess the target file's extension
+- Interface adjustments
+
 ### 1.7.6.0
 
 - Add dark mode
