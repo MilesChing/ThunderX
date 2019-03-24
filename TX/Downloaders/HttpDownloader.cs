@@ -208,7 +208,7 @@ namespace TX.Downloaders
                 StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
                 await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
                 //播放一个通知
-                Toasts.ToastManager.ShowDownloadCompleteToastAsync("Download completed", message.FileName + ": " +
+                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + ": " +
                     Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
                 //触发事件
                 DownloadComplete(message);
@@ -253,7 +253,7 @@ namespace TX.Downloaders
                 message.TempFilePath = await StorageTools.StorageManager.GetTemporaryFileAsync();
                 //触发事件指示控件加载已完成
                 MessageComplete(message);
-                Log("Downloader done");
+                Log(Strings.AppResources.GetString("DownloaderDone"));
                 state = DownloadState.Prepared;
             }
             catch (Exception e) { ErrorHandler(e); }
@@ -330,7 +330,7 @@ namespace TX.Downloaders
         /// </summary>
         public void Pause()
         {
-            Log("Pause");
+            Log(Strings.AppResources.GetString("Pause"));
             Debug.WriteLine("已暂停");
             if (state != DownloadState.Downloading) return;
             currentOperationCode++;
@@ -344,7 +344,7 @@ namespace TX.Downloaders
         /// </summary>
         public void Refresh()
         {
-            Log("Refreshing");
+            Log(Strings.AppResources.GetString("Refreshing"));
             DisposeThreads();
             state = DownloadState.Pending;
             Start();
@@ -359,7 +359,7 @@ namespace TX.Downloaders
             TemporaryStartTime = DateTime.Now;
             state = DownloadState.Downloading;
             Task.Run(async () => { await SetThreadsAsync(); });
-            Log("Downloading");
+            Log(Strings.AppResources.GetString("Downloading"));
             Debug.WriteLine("任务开始");
         }
 
@@ -373,7 +373,7 @@ namespace TX.Downloaders
             message = mes;
             MessageComplete(message);
             state = DownloadState.Prepared;
-            Log("Downloader done");
+            Log(Strings.AppResources.GetString("DownloaderDone"));
         }
 
         /// <summary>

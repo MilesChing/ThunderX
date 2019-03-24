@@ -133,8 +133,8 @@ namespace TX.Controls
                         PlayButton.IsEnabled = false;
                     });
             });
-
-            Toasts.ToastManager.ShowSimpleToast("Oops", downloader.GetDownloaderMessage().FileName + ": " + e.Message);
+            
+            Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"), e.Message);
         }
 
         /// <summary>

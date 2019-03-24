@@ -60,7 +60,7 @@
                  Visibility="Visible"
                  HorizontalAlignment="Stretch"
                  MaxWidth="450"
-                 Margin="100"
+                 Margin="80"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  RenderTransformOrigin="0.5,0.5"
@@ -95,11 +95,14 @@
             <AppBarButton x:Name="AddButton"
                           Icon="Add"
                           x:Uid="MainPage_AddButton"
-                          Click="AddButton_Click"/>
+                          Click="AddButton_Click">
+            </AppBarButton>
             <AppBarButton x:Name="SetButton"
                           Icon="Setting"
                           x:Uid="MainPage_SetButton"
-                          Click="SetButton_Click"/>
+                          Click="SetButton_Click">
+            </AppBarButton>
+                
         </CommandBar>
     </Grid>
 </Page>

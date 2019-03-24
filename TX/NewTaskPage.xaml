@@ -18,20 +18,20 @@
                         VerticalAlignment="Top"
                         Margin="28,20,28,0">
                 <Border Width="800" />
-                <TextBlock Style="{ThemeResource SubheaderTextBlockStyle}"
+                <TextBlock Style="{ThemeResource TXTitle}"
                            x:Uid="NewTaskPage_Title" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                <Border Style="{ThemeResource TXBigBorder}" />
+                <TextBlock Style="{ThemeResource TXSubTitle}"
                            x:Uid="NewTaskPage_Subtitle1" />
                 <Border Style="{ThemeResource TXBorder}" />
-                <TextBlock TextWrapping="Wrap"
+                <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText1" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBox x:Name="UrlBox"
                          TextChanged="UrlBox_TextChanged" />
-                <Border Style="{ThemeResource TXBorder}" />
+                <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock x:Uid="NewTaskPage_Subtitle2"
-                           Style="{ThemeResource SubtitleTextBlockStyle}" />
+                           Style="{ThemeResource TXSubTitle}" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <Grid>
                     <TextBlock x:Name="OurAdviceBlock"
@@ -45,17 +45,17 @@
                           x:Uid="NewTaskPage_NeedRenameButton"
                           Checked="NeedRenameButton_ValueChanged"
                           Unchecked="NeedRenameButton_ValueChanged" />
-                <Border Style="{ThemeResource TXBorder}" />
+                <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock x:Uid="NewTaskPage_Subtitle3"
-                           Style="{ThemeResource SubtitleTextBlockStyle}" />
+                           Style="{ThemeResource TXSubTitle}" />
                 <Border Style="{ThemeResource TXBorder}" />
-                <TextBlock TextWrapping="Wrap"
+                <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText2" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
                         Maximum="256" />
-                <Border Style="{ThemeResource TXBorder}" />
+                <Border Style="{ThemeResource TXBigBorder}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
@@ -69,6 +69,8 @@
                             IsEnabled="False"
                             Click="SubmitButton_Click" />
                 </Grid>
+
+                <Border Style="{ThemeResource TXBigBorder}" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

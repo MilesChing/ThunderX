@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DownloadCompleted" xml:space="preserve">
+    <value>下载完成</value>
+  </data>
+  <data name="DownloaderDone" xml:space="preserve">
+    <value>已准备好开始</value>
+  </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>正在下载</value>
+  </data>
   <data name="MainPage_AddButton.Label" xml:space="preserve">
     <value>新增</value>
   </data>
@@ -153,6 +162,12 @@
   <data name="Null" xml:space="preserve">
     <value>空</value>
   </data>
+  <data name="Pause" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="Refreshing" xml:space="preserve">
+    <value>正在重试</value>
+  </data>
   <data name="SetPageName" xml:space="preserve">
     <value>设置</value>
   </data>
@@ -182,5 +197,11 @@
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="SomethingWrong" xml:space="preserve">
+    <value>意想不到的事情发生了！</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
   </data>
 </root>
