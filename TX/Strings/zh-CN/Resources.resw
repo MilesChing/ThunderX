@@ -162,6 +162,9 @@
   <data name="Pause" xml:space="preserve">
     <value>暂停</value>
   </data>
+  <data name="Prediction" xml:space="preserve">
+    <value>预计</value>
+  </data>
   <data name="Refreshing" xml:space="preserve">
     <value>正在重试</value>
   </data>

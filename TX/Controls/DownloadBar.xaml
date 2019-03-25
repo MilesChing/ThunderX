@@ -93,7 +93,6 @@
                                Margin="16,4,4,4"
                                Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" />
 
-
                     <StackPanel Margin="16,0,0,0"
                                 Grid.Row="1"
                                 VerticalAlignment="Top"
@@ -107,12 +106,12 @@
                         <TextBlock x:Name="MessageBlock"
                                Margin="8,0,0,0"
                                FontSize="10"
-                                   Opacity="0.5"
+                               Opacity="0.5"
                                Foreground="#777777"
-                               Text="1MB/s" />
+                               Text="1MB/s"
+                               MaxLines="1"/>
 
                     </StackPanel>
-                    
                     
                 </Grid>
 

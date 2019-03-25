@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TX.Enums;
 using TX.Models;
+using TX.NetWork;
 using Windows.Storage;
 
 namespace TX.Downloaders
@@ -21,7 +22,21 @@ namespace TX.Downloaders
         {
             state = DownloadState.Pending;
             TemporaryStartTime = new DateTime();
+            speedHelper = new SpeedCalculator();
+            speedHelper.Updated += SpeedHelper_Updated;
             state = DownloadState.Pending;
+        }
+
+        /// <summary>
+        /// 速度信息已更新，传出给控件
+        /// </summary>
+        private void SpeedHelper_Updated(SpeedCalculator obj)
+        {
+            int sec = (int)(message.FileSize / obj.AverageSpeed);
+            Log(Strings.AppResources.GetString("Downloading") + " - " +
+                Converters.StringConverters.GetPrintSize((long)obj.Speed) + "/s " + 
+                Strings.AppResources.GetString("Prediction") + 
+                Converters.StringConverters.GetPrintTime(sec));
         }
 
         /// <summary>
@@ -48,6 +63,8 @@ namespace TX.Downloaders
         /// 用于告知下载器当前状态，如速度等等
         /// </summary>
         public event Action<string> Log;
+
+        private SpeedCalculator speedHelper;
 
         /// <summary>
         /// 下载器信息
@@ -294,6 +311,9 @@ namespace TX.Downloaders
         {
             Debug.WriteLine("开始释放资源");
             DisposeThreads();
+            speedHelper.IsEnabled = false;
+            speedHelper.Dispose();
+            speedHelper = null;
             StartDisposeTemporaryFile();
         }
 
@@ -334,6 +354,7 @@ namespace TX.Downloaders
             Debug.WriteLine("已暂停");
             if (state != DownloadState.Downloading) return;
             currentOperationCode++;
+            speedHelper.IsEnabled = false;
             message.DownloadTime += DateTime.Now - TemporaryStartTime;
             state = DownloadState.Pending;
         }
@@ -358,6 +379,7 @@ namespace TX.Downloaders
             if (state == DownloadState.Downloading) return;
             TemporaryStartTime = DateTime.Now;
             state = DownloadState.Downloading;
+            speedHelper.IsEnabled = true;
             Task.Run(async () => { await SetThreadsAsync(); });
             Log(Strings.AppResources.GetString("Downloading"));
             Debug.WriteLine("任务开始");
@@ -387,6 +409,7 @@ namespace TX.Downloaders
             {
                 if (state != DownloadState.Downloading || ((App)Windows.UI.Xaml.Application.Current).InBackground) return;
                 progressDelta += size;
+                speedHelper.CurrentValue += size;
                 if (progressDelta > tick)
                 {
                     OnDownloadProgressChange(message.DownloadSize, message.FileSize);

@@ -119,6 +119,7 @@
     <Compile Include="Models\InitializeMessage.cs" />
     <Compile Include="Models\ThreadMessage.cs" />
     <Compile Include="NetWork\HttpNetWorkMethods.cs" />
+    <Compile Include="NetWork\SpeedCalculator.cs" />
     <Compile Include="NetWork\UrlConverter.cs" />
     <Compile Include="NewTaskPage.xaml.cs">
       <DependentUpon>NewTaskPage.xaml</DependentUpon>

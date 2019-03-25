@@ -34,5 +34,17 @@ namespace TX.Converters
                 return ((size / 100)).ToString() + "." + ((size % 100)).ToString() + "GB";
             }
         }
+
+        public static string GetPrintTime(int sec)
+        {
+            int hour = sec / 3600, min = sec % 3600 / 60;
+            sec = sec % 60;
+            string time = "";
+            if (hour > 0)
+                time = hour + "h" + min + "m";
+            else if (min > 0) time = min + "m" + sec + "s";
+            else time = sec + "s";
+            return time;
+        }
     }
 }
