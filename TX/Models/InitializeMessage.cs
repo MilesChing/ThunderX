@@ -11,10 +11,10 @@ namespace TX.Models
     /// </summary>
     public class InitializeMessage
     {
-        public InitializeMessage(string url,string rename=null,int threads=0)
+        public InitializeMessage(string url,string fileName=null,int threads=0)
         {
             Url = url ?? throw new Exception("InitializeMessage_URL_NULL");
-            Rename = rename;
+            FileName = fileName;
             Threads = threads;
         }
         /// <summary>
@@ -25,7 +25,7 @@ namespace TX.Models
         /// <summary>
         /// 重命名为
         /// </summary>
-        public string Rename;
+        public string FileName;
 
         /// <summary>
         /// 需要使用的线程数

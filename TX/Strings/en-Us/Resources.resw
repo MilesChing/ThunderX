@@ -147,9 +147,6 @@
   <data name="NewTaskPage_SubmitButton.Content" xml:space="preserve">
     <value>Submit</value>
   </data>
-  <data name="NewTaskPage_Subtitle1.Text" xml:space="preserve">
-    <value>Url</value>
-  </data>
   <data name="NewTaskPage_Subtitle2.Text" xml:space="preserve">
     <value>Rename</value>
   </data>

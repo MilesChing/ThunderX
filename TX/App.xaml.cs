@@ -181,6 +181,7 @@ namespace TX
                 }
             }
             await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载
+            await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
         }
 

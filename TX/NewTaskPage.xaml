@@ -21,9 +21,6 @@
                 <TextBlock Style="{ThemeResource TXTitle}"
                            x:Uid="NewTaskPage_Title" />
                 <Border Style="{ThemeResource TXBigBorder}" />
-                <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="NewTaskPage_Subtitle1" />
-                <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText1" />
                 <Border Style="{ThemeResource TXBorder}" />

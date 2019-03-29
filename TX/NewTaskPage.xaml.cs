@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -16,6 +17,8 @@ namespace TX
     /// </summary>
     public sealed partial class NewTaskPage : Page
     {
+        IAnalyser analyser = null;
+
         public NewTaskPage()
         {
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
@@ -77,57 +80,37 @@ namespace TX
         /// <summary>
         /// 输入内容时检测链接是否合法，合法则使submit按钮可用
         /// </summary>
-        private void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
+        private async void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SubmitButton.IsEnabled = false;
             string url = UrlBox.Text;
-            Task.Run(async () =>
+            if (NetWork.UrlConverter.MaybeLegal(url))
             {
-                try
-                {
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.CreateHttp(url);
-                    using (HttpWebResponse rep = (HttpWebResponse)req.GetResponse())
-                        await GenerateRecommendedNameAsync(rep);
-                    await SubmitButton.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        () => { SubmitButton.IsEnabled = true; });
-                    if (req != null) req.Abort();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
-                    await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        () =>
-                        {
-                            OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
-                            OurAdviceBlock.Opacity = 0.5;
-                            if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
-                        });
-                }
-            });
-        }
+                if (analyser != null) analyser.Dispose();
+                analyser = NetWork.UrlConverter.GetAnalyser(url);
+                OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
+                OurAdviceBlock.Opacity = 0.5;
+                if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
 
-        /// <summary>
-        /// 显示根据Url推荐的文件名
-        /// </summary>
-        private async Task GenerateRecommendedNameAsync(HttpWebResponse rep)
-        {
-            string name = NetWork.HttpNetWorkMethods.GetResponseName(rep);
-            await OurAdviceBlock.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                OurAdviceBlock.Text = name;
-                OurAdviceBlock.Opacity = 1;
-            });
-        }
 
+                //更新推荐的文件名
+                if (await analyser.CheckUrlAsync())
+                {
+                    OurAdviceBlock.Text = await analyser.GetRecommendedNameAsync();
+                    OurAdviceBlock.Opacity = 1;
+                    SubmitButton.IsEnabled = true;
+                }
+            }
+        }
+        
         /// <summary>
         /// 点击提交按钮（将关闭窗口）
         /// </summary>
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            string url = UrlBox.Text;
-            url = NetWork.UrlConverter.TranslateURLThunder(url);
-            Models.InitializeMessage im = new Models.InitializeMessage(url, (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : null, (int)ThreadNumSlider.Value);
-            MainPage.Current.AddDownloadBar(im);
+            Models.InitializeMessage im = new Models.InitializeMessage(analyser.GetUrl(), (bool)(NeedRenameButton.IsChecked) ? 
+                RenameBox.Text : await analyser.GetRecommendedNameAsync(), (int)ThreadNumSlider.Value);
+            MainPage.Current.AddDownloadBar(im,await analyser.GetDownloaderAsync());
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口

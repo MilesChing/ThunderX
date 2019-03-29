@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using TX.Downloaders;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了“用户控件”项模板
 
@@ -42,7 +33,7 @@ namespace TX.Controls
             downloader = dw;
             //注册事件
             dw.MessageComplete += MessageCompleted;
-            dw.OnDownloadProgressChange += OnDownloadProgressChanged;
+            dw.OnDownloadProgressChange += DownloadProgressChanged;
             dw.DownloadComplete += DownloadCompleted;
             dw.DownloadError += DownloadError;
             dw.Log += UpdateLog;
@@ -92,7 +83,7 @@ namespace TX.Controls
         /// </summary>
         /// <param name="size">已下载进度</param>
         /// <param name="all">文件总大小</param>
-        private void OnDownloadProgressChanged(long size, long all)
+        private void DownloadProgressChanged(long size, long all)
         {
             //在多线程内激发函数
             //防止跨线程修改UI
@@ -102,7 +93,13 @@ namespace TX.Controls
                 () =>
                 {
                     Bar.Value = (int)(1.0 * size / all * 100);
-                    ProgressBlock.Text = ((int)(1.0 * size / all * 100)).ToString() + "%";
+                    if (all != 0)
+                    {
+                        int progress = (int)(1.0 * size / all * 100);
+                        if (progress <= 100 && progress >= 0)
+                            ProgressBlock.Text = progress.ToString() + "%";
+                        else ProgressBlock.Text = "?%";
+                    }
                     SizeBlock.Text = Converters.StringConverters.GetPrintSize(size) + "/" + Converters.StringConverters.GetPrintSize(all);
                 });
             });
@@ -204,6 +201,8 @@ namespace TX.Controls
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();
+            PauseButton.IsEnabled = true;
+            PlayButton.IsEnabled = false;
         }
     }
 }

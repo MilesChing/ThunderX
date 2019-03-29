@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TX.NetWork.NetWorkAnalysers;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace TX.NetWork
@@ -12,8 +13,6 @@ namespace TX.NetWork
         /// <summary>
         /// 判断给出的url是否基于http协议
         /// </summary>
-        /// <param name="url">目标链接</param>
-        /// <returns></returns>
         public static bool IsHttpUrl(string url)
         {
             string p = url.ToLower();
@@ -21,32 +20,16 @@ namespace TX.NetWork
         }
 
         /// <summary>
-        /// 判断url是否合法
+        /// 简易地检测是否合法
         /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static bool IsLegal(string url)
+        public static bool MaybeLegal(string url)
         {
             return IsHttpUrl(url);
         }
 
         /// <summary>
-        /// 根据给出的url类型返回下载器
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static IDownloader GetDownloader(string url)
-        {
-            if (IsHttpUrl(url)) return new Downloaders.HttpDownloader();
-
-            return null;
-        }
-
-        /// <summary>
         /// 转换迅雷链接（不是就返回自身）
         /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
         public static string TranslateURLThunder(string url)
         {
             if (!url.ToLower().StartsWith("thunder://")) return url;
@@ -57,6 +40,16 @@ namespace TX.NetWork
                 return t.Substring(2, t.Length - 4);
             }
             catch (Exception) { return null; }
+        }
+
+        /// <summary>
+        /// 返回用于该类型链接的分析器
+        /// </summary>
+        public static IAnalyser GetAnalyser(string url)
+        {
+            url = TranslateURLThunder(url);
+            if (IsHttpUrl(url)) return new HttpAnalyser(url);
+            else return null;
         }
 
         /// <summary>
@@ -71,7 +64,7 @@ namespace TX.NetWork
             if (con.Contains(StandardDataFormats.Text))
             {
                 str = await con.GetTextAsync();
-                if(IsLegal(str))
+                if(MaybeLegal(str))
                     return str;
             }
             return string.Empty;

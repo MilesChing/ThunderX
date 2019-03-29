@@ -109,6 +109,8 @@
     <Compile Include="Converters\StringConverters.cs" />
     <Compile Include="Converters\ExtentionConverter.cs" />
     <Compile Include="Downloaders\HttpDownloader.cs" />
+    <Compile Include="Downloaders\HttpSystemDownloader.cs" />
+    <Compile Include="Downloaders\Test.cs" />
     <Compile Include="Enums\DownloadState.cs" />
     <Compile Include="Interfaces\IDownloader.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -119,6 +121,8 @@
     <Compile Include="Models\InitializeMessage.cs" />
     <Compile Include="Models\ThreadMessage.cs" />
     <Compile Include="NetWork\HttpNetWorkMethods.cs" />
+    <Compile Include="NetWork\NetWorkAnalysers\HttpAnalyser.cs" />
+    <Compile Include="Interfaces\IAnalyser.cs" />
     <Compile Include="NetWork\SpeedCalculator.cs" />
     <Compile Include="NetWork\UrlConverter.cs" />
     <Compile Include="NewTaskPage.xaml.cs">

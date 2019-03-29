@@ -15,13 +15,15 @@ namespace TX.Downloaders
 {
     class HttpDownloader : IDownloader
     {
-        /// <summary>
-        /// 空构造函数
-        /// </summary>
+        public event Action<long, long> OnDownloadProgressChange;
+        public event Action<DownloaderMessage> DownloadComplete;
+        public event Action<Exception> DownloadError;
+        public event Action<DownloaderMessage> MessageComplete;
+        public event Action<string> Log;
+
         public HttpDownloader()
         {
             state = DownloadState.Pending;
-            TemporaryStartTime = new DateTime();
             speedHelper = new SpeedCalculator();
             speedHelper.Updated += SpeedHelper_Updated;
             state = DownloadState.Pending;
@@ -38,49 +40,10 @@ namespace TX.Downloaders
                 Strings.AppResources.GetString("Prediction") + 
                 Converters.StringConverters.GetPrintTime(sec));
         }
-
-        /// <summary>
-        /// 事件，下载进度变化，第一个参数为已下载字节数，第二个参数为总字节数
-        /// </summary>
-        public event Action<long, long> OnDownloadProgressChange;
-
-        /// <summary>
-        /// 事件，指示下载已结束
-        /// </summary>
-        public event Action<DownloaderMessage> DownloadComplete;
-
-        /// <summary>
-        /// 事件，指示下载发生错误
-        /// </summary>
-        public event Action<Exception> DownloadError;
-
-        /// <summary>
-        /// 事件，指示外部控件信息已完成填充，可以开始
-        /// </summary>
-        public event Action<DownloaderMessage> MessageComplete;
-
-        /// <summary>
-        /// 用于告知下载器当前状态，如速度等等
-        /// </summary>
-        public event Action<string> Log;
-
+        
         private SpeedCalculator speedHelper;
-
-        /// <summary>
-        /// 下载器信息
-        /// </summary>
         private DownloaderMessage message;
-
-        /// <summary>
-        /// 当前下载状态
-        /// </summary>
         private DownloadState state;
-
-        /// <summary>
-        /// 临时的开始时间，在下载进行中时有效
-        /// 指示了最近一次开始下载（继续下载）的时间记录
-        /// </summary>
-        private DateTime TemporaryStartTime;
 
         /// <summary>
         /// 根据message中的线程信息设置线程（直接开始），用于开始和继续下载
@@ -252,10 +215,7 @@ namespace TX.Downloaders
                 Log(e.ToString());
             }
         }
-
-        /// <summary>
-        /// 使用这个链接初始化下载器
-        /// </summary>
+        
         public async Task SetDownloaderAsync(Models.InitializeMessage imessage)
         {
             try
@@ -263,7 +223,7 @@ namespace TX.Downloaders
                 //设置文件信息
                 message = await NetWork.HttpNetWorkMethods.GetMessageAsync(imessage.Url);
 
-                if (imessage.Rename != null) message.FileName = imessage.Rename;
+                if (imessage.FileName != null) message.FileName = imessage.FileName;
                 //安排线程
                 message.Threads.ArrangeThreads(message.FileSize, imessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : imessage.Threads);
                 //申请临时文件
@@ -303,10 +263,7 @@ namespace TX.Downloaders
                 }
             });
         }
-
-        /// <summary>
-        /// 释放下载器资源
-        /// </summary>
+        
         public void Dispose()
         {
             Debug.WriteLine("开始释放资源");
@@ -316,38 +273,17 @@ namespace TX.Downloaders
             speedHelper = null;
             StartDisposeTemporaryFile();
         }
-
-        /// <summary>
-        /// 获取下载器信息
-        /// </summary>
+        
         public DownloaderMessage GetDownloaderMessage()
         {
             return message;
         }
 
-        /// <summary>
-        /// 获取下载状态
-        /// </summary>
         public DownloadState GetDownloadState()
         {
             return state;
         }
-
-        /// <summary>
-        /// 获取下载时间
-        /// </summary>
-        /// <param name="NowTime">查询时间</param>
-        public TimeSpan GetDownloadTime(DateTime NowTime)
-        {
-            if (state != DownloadState.Downloading)
-                return message.DownloadTime;
-            //临时开始时间为空代表当前状态不是正在下载
-            else return message.DownloadTime + (NowTime - TemporaryStartTime);
-        }
-
-        /// <summary>
-        /// 暂停
-        /// </summary>
+        
         public void Pause()
         {
             Log(Strings.AppResources.GetString("Pause"));
@@ -355,14 +291,9 @@ namespace TX.Downloaders
             if (state != DownloadState.Downloading) return;
             currentOperationCode++;
             speedHelper.IsEnabled = false;
-            message.DownloadTime += DateTime.Now - TemporaryStartTime;
             state = DownloadState.Pending;
         }
-
-        /// <summary>
-        /// 重试
-        /// 在Prepared以后都可以用
-        /// </summary>
+        
         public void Refresh()
         {
             Log(Strings.AppResources.GetString("Refreshing"));
@@ -370,14 +301,10 @@ namespace TX.Downloaders
             state = DownloadState.Pending;
             Start();
         }
-
-        /// <summary>
-        /// 开始（或继续）下载，必须保证message.Threads有效
-        /// </summary>
+        
         public void Start()
         {
             if (state == DownloadState.Downloading) return;
-            TemporaryStartTime = DateTime.Now;
             state = DownloadState.Downloading;
             speedHelper.IsEnabled = true;
             Task.Run(async () => { await SetThreadsAsync(); });
@@ -388,7 +315,6 @@ namespace TX.Downloaders
         /// <summary>
         /// 使用Message重置下载器，用于恢复任务
         /// </summary>
-        /// <param name="message"></param>
         public void SetDownloader(DownloaderMessage mes)
         {
             //触发事件指示控件加载已完成

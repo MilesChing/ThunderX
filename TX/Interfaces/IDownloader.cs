@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TX.Models;
 
-namespace TX
+namespace TX.Downloaders
 {
     public interface IDownloader:System.IDisposable
     {
@@ -49,15 +49,7 @@ namespace TX
         /// <summary>
         /// 得到当前下载状态
         /// </summary>
-        /// <returns>当前下载状态</returns>
         Enums.DownloadState GetDownloadState();
-
-        /// <summary>
-        /// 查询当前下载时间
-        /// </summary>
-        /// <param name="NowTime">查询时的日期时间</param>
-        /// <returns></returns>
-        System.TimeSpan GetDownloadTime(System.DateTime NowTime);
 
         /// <summary>
         /// 得到当前下载器信息
@@ -72,8 +64,6 @@ namespace TX
         /// <summary>
         /// 使用Message重置下载器，用于还原
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
         void SetDownloader(DownloaderMessage message);
     }
 }
