@@ -32,6 +32,10 @@ This project has two branches. `master` represents the latest stable release. `d
 - Interactive notifications are now supported
 - Adjust the interface details and logical relationships between pages
 
+## Privacy Policy
+
+Visit [PRIVACY_POLICY](https://www.microsoft.com/en-us/p/thunder-x/9njqw2wdtd43?activetab=pivot:overviewtab) to learn about our privacy policy.
+
 ## License
 
 Copyright © 2019 MilesChing
