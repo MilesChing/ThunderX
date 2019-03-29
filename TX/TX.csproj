@@ -110,7 +110,6 @@
     <Compile Include="Converters\ExtentionConverter.cs" />
     <Compile Include="Downloaders\HttpDownloader.cs" />
     <Compile Include="Downloaders\HttpSystemDownloader.cs" />
-    <Compile Include="Downloaders\Test.cs" />
     <Compile Include="Enums\DownloadState.cs" />
     <Compile Include="Interfaces\IDownloader.cs" />
     <Compile Include="MainPage.xaml.cs">
