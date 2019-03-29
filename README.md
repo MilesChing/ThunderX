@@ -12,6 +12,12 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.7.8.0
+
+- Real-time speed display
+- Fix an issue: some links could not be downloaded correctly
+- Automatic garbage removal is enabled
+
 ### 1.7.7.0
 
 - Illegal link will not cause crashes now
