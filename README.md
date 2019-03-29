@@ -34,7 +34,7 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Privacy Policy
 
-Visit [PRIVACY_POLICY](https://www.microsoft.com/en-us/p/thunder-x/9njqw2wdtd43?activetab=pivot:overviewtab) to learn about our privacy policy.
+Visit [PRIVACY_POLICY](https://github.com/MilesChing/ThunderX/blob/develop/PRIVACY_POLICY.md) to learn about our privacy policy.
 
 ## License
 
