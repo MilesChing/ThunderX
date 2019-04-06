@@ -32,11 +32,48 @@ namespace TX.Controls
         {
             downloader = dw;
             //注册事件
-            dw.MessageComplete += MessageCompleted;
-            dw.OnDownloadProgressChange += DownloadProgressChanged;
+            dw.DownloadProgressChanged += DownloadProgressChanged;
             dw.DownloadComplete += DownloadCompleted;
             dw.DownloadError += DownloadError;
             dw.Log += UpdateLog;
+            dw.StateChanged += Dw_StateChanged;
+
+            var message = dw.GetDownloaderMessage();
+            if (message == null) return;
+            NameBlock.Text = message.FileName + message.TypeName;
+            SizeBlock.Text = Converters.StringConverters.GetPrintSize(message.DownloadSize) + "/" + Converters.StringConverters.GetPrintSize(message.FileSize);
+            ProgressBlock.Text = ((int)((1.0 * message.DownloadSize) / message.FileSize * 100)).ToString() + "%";
+            Bar.Value = ((int)((1.0 * message.DownloadSize) / message.FileSize * 100));
+            PlayButton.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// 更新界面信息以适应状态变化
+        /// </summary>
+        private void Dw_StateChanged(Enums.DownloadState state)
+        {
+            if(state == Enums.DownloadState.Pause)
+            {
+                Task.Run(async () =>
+                {
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                     {
+                         PauseButton.IsEnabled = false;
+                         PlayButton.IsEnabled = true;
+                     });
+                });
+            }
+            else if(state == Enums.DownloadState.Error)
+            {
+                Task.Run(async () =>
+                {
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        PauseButton.IsEnabled = false;
+                        PlayButton.IsEnabled = false;
+                    });
+                });
+            }
         }
 
         /// <summary>
@@ -58,25 +95,6 @@ namespace TX.Controls
         /// 下载器的引用
         /// </summary>
         public IDownloader downloader;
-
-        /// <summary>
-        /// 当Downloader完成初始化时填充显示信息
-        /// </summary>
-        /// <param name="message">加载完成事件的参数，DownloaderMessage</param>
-        private void MessageCompleted(Models.DownloaderMessage message)
-        {
-            Task.Run(async () =>
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    NameBlock.Text = message.FileName + message.TypeName;
-                    SizeBlock.Text = Converters.StringConverters.GetPrintSize(message.DownloadSize) + "/" + Converters.StringConverters.GetPrintSize(message.FileSize);
-                    ProgressBlock.Text = ((int)((1.0 * message.DownloadSize) / message.FileSize * 100)).ToString() + "%";
-                    Bar.Value = ((int)((1.0 * message.DownloadSize) / message.FileSize * 100));
-                    PlayButton.IsEnabled = true;
-                });
-            });
-        }
 
         /// <summary>
         /// 下载进度变化事件处理函数
@@ -167,7 +185,7 @@ namespace TX.Controls
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (downloader.GetDownloadState() != Enums.DownloadState.Prepared
-                && downloader.GetDownloadState() != Enums.DownloadState.Pending)
+                && downloader.GetDownloadState() != Enums.DownloadState.Pause)
                 return;
             PlayButton.IsEnabled = false;
             PauseButton.IsEnabled = true;

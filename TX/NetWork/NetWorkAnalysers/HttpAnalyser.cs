@@ -14,15 +14,6 @@ namespace TX.NetWork.NetWorkAnalysers
     {
         private string url = null;
         private HttpWebResponse _hresp_ = null;
-        private async Task<HttpWebResponse> GetReponseAsync()
-        {
-            if (_hresp_ == null)
-            {
-                HttpWebRequest req = WebRequest.CreateHttp(url);
-                return _hresp_ = (HttpWebResponse) await req.GetResponseAsync();
-            }
-            else return _hresp_;
-        }
 
         public HttpAnalyser(string url)
         {
@@ -30,21 +21,18 @@ namespace TX.NetWork.NetWorkAnalysers
             Debug.WriteLine("建立Http分析器：Url=" + url);
         }
         
-        /// <summary>
-        /// 从HTTP应答的头部获取文件全名
-        /// </summary>
-        public async Task<string> GetRecommendedNameAsync()
+        public string GetRecommendedName()
         {
             //https://blog.csdn.net/ash292340644/article/details/52412674
-            string fileinfo = (await GetReponseAsync()).Headers["Content-Disposition"];
+            string fileinfo = (_hresp_).Headers["Content-Disposition"];
             string mathkey = "filename=";
             //当response头中没有Content-Disposition信息时返回从url中截取的文件名
             string name = null;
             if (fileinfo != null) name = fileinfo.Substring(fileinfo.LastIndexOf(mathkey)).Replace(mathkey, "");
-            else name = Path.GetFileNameWithoutExtension((await GetReponseAsync()).ResponseUri.OriginalString) +
-                    Path.GetExtension((await GetReponseAsync()).ResponseUri.OriginalString);
+            else name = Path.GetFileNameWithoutExtension(_hresp_.ResponseUri.OriginalString) +
+                    Path.GetExtension(_hresp_.ResponseUri.OriginalString);
 
-            string contentType = (await GetReponseAsync()).Headers["content-type"];
+            string contentType = _hresp_.Headers["content-type"];
             if (contentType.Contains(';')) contentType = contentType.Split(';')[0];
 
             if (contentType == null) return name;
@@ -56,22 +44,17 @@ namespace TX.NetWork.NetWorkAnalysers
                 else return name;
             }
         }
-
-        /// <summary>
-        /// 从HTTP应答的头部获取文件大小
-        /// </summary>
-        public async Task<long> GetResponseSizeAsync()
+        
+        public long GetStreamSize()
         {
-            return (await GetReponseAsync()).ContentLength;
+            return _hresp_.ContentLength;
         }
         
-        /// <summary>
-        /// 若无法部署线程（未使用ContentLength）按照系统下载处理
-        /// </summary>
-        public async Task<IDownloader> GetDownloaderAsync()
+        public IDownloader GetDownloader()
         {
-            var size = await GetResponseSizeAsync();
+            var size = GetStreamSize();
             Debug.WriteLine("建立Http下载器："+(size>0?"HttpDownloader":"HttpSystemDownloader"));
+            //若无法获取size则返回系统下载器处理
             if (size > 0)
                 return new HttpDownloader();
             else return new HttpSystemDownloader();
@@ -86,15 +69,11 @@ namespace TX.NetWork.NetWorkAnalysers
                 _hresp_ = null;
             }
         }
-
-        /// <summary>
-        /// 成功收到则合法
-        /// </summary>
-        public async Task<bool> CheckUrlAsync()
+        
+        public bool CheckUrl()
         {
             try
             {
-                await GetResponseSizeAsync();
                 Debug.WriteLine("Http链接合法：Url=" + url);
                 return true;
             }
@@ -108,5 +87,12 @@ namespace TX.NetWork.NetWorkAnalysers
         {
             return url;
         }
+
+        public async Task GetResponseAsync()
+        {
+            HttpWebRequest req = WebRequest.CreateHttp(url);
+            _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
+        }
+        
     }
 }

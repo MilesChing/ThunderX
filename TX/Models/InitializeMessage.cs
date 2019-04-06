@@ -11,11 +11,13 @@ namespace TX.Models
     /// </summary>
     public class InitializeMessage
     {
-        public InitializeMessage(string url,string fileName=null,int threads=0)
+        public InitializeMessage(string url, string fileName, int threads, long size, string path)
         {
             Url = url ?? throw new Exception("InitializeMessage_URL_NULL");
             FileName = fileName;
             Threads = threads;
+            Size = size;
+            FilePath = path;
         }
         /// <summary>
         /// 任务链接
@@ -31,5 +33,15 @@ namespace TX.Models
         /// 需要使用的线程数
         /// </summary>
         public int Threads;
+
+        /// <summary>
+        /// 文件大小，获取不到则可能为-1
+        /// </summary>
+        public long Size;
+
+        /// <summary>
+        /// 目标文件的地址
+        /// </summary>
+        public string FilePath;
     }
 }

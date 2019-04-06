@@ -15,18 +15,16 @@ namespace TX.Downloaders
 {
     class HttpDownloader : IDownloader
     {
-        public event Action<long, long> OnDownloadProgressChange;
+        public event Action<long, long> DownloadProgressChanged;
         public event Action<DownloaderMessage> DownloadComplete;
         public event Action<Exception> DownloadError;
-        public event Action<DownloaderMessage> MessageComplete;
         public event Action<string> Log;
+        public event Action<DownloadState> StateChanged;
 
         public HttpDownloader()
         {
-            state = DownloadState.Pending;
             speedHelper = new SpeedCalculator();
             speedHelper.Updated += SpeedHelper_Updated;
-            state = DownloadState.Pending;
         }
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace TX.Downloaders
         private void SpeedHelper_Updated(SpeedCalculator obj)
         {
             int sec = (int)(message.FileSize / obj.AverageSpeed);
-            Log(Strings.AppResources.GetString("Downloading") + " - " +
+            Log?.Invoke(Strings.AppResources.GetString("Downloading") + " - " +
                 Converters.StringConverters.GetPrintSize((long)obj.Speed) + "/s " + 
                 Strings.AppResources.GetString("Prediction") + 
                 Converters.StringConverters.GetPrintTime(sec));
@@ -43,7 +41,14 @@ namespace TX.Downloaders
         
         private SpeedCalculator speedHelper;
         private DownloaderMessage message;
-        private DownloadState state;
+
+        private DownloadState _state_;
+        private DownloadState state {
+            get { return _state_; }
+            set { _state_ = value;
+                StateChanged?.Invoke(value);
+            }
+        }
 
         /// <summary>
         /// 根据message中的线程信息设置线程（直接开始），用于开始和继续下载
@@ -191,7 +196,7 @@ namespace TX.Downloaders
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + ": " +
                     Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
                 //触发事件
-                DownloadComplete(message);
+                DownloadComplete?.Invoke(message);
             }
             catch(Exception e)
             {
@@ -211,26 +216,27 @@ namespace TX.Downloaders
                 Debug.WriteLine(e.ToString());
                 if (state == DownloadState.Error) return;
                 state = DownloadState.Error;
-                DownloadError(e);
-                Log(e.ToString());
+                DownloadError?.Invoke(e);
+                Log?.Invoke(e.ToString());
             }
         }
         
-        public async Task SetDownloaderAsync(Models.InitializeMessage imessage)
+        public void SetDownloader(Models.InitializeMessage imessage)
         {
             try
             {
+                message = new DownloaderMessage();
                 //设置文件信息
-                message = await NetWork.HttpNetWorkMethods.GetMessageAsync(imessage.Url);
-
-                if (imessage.FileName != null) message.FileName = imessage.FileName;
+                message.FileSize = imessage.Size;
+                message.URL = imessage.Url;
+                message.FileName = Path.GetFileNameWithoutExtension(imessage.FileName);
+                message.TypeName = Path.GetExtension(imessage.FileName);
                 //安排线程
                 message.Threads.ArrangeThreads(message.FileSize, imessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : imessage.Threads);
                 //申请临时文件
-                message.TempFilePath = await StorageTools.StorageManager.GetTemporaryFileAsync();
-                //触发事件指示控件加载已完成
-                MessageComplete(message);
-                Log(Strings.AppResources.GetString("DownloaderDone"));
+                message.TempFilePath = imessage.FilePath;
+                //指示控件加载已完成
+                Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
                 state = DownloadState.Prepared;
             }
             catch (Exception e) { ErrorHandler(e); }
@@ -286,19 +292,19 @@ namespace TX.Downloaders
         
         public void Pause()
         {
-            Log(Strings.AppResources.GetString("Pause"));
+            Log?.Invoke(Strings.AppResources.GetString("Pause"));
             Debug.WriteLine("已暂停");
             if (state != DownloadState.Downloading) return;
             currentOperationCode++;
             speedHelper.IsEnabled = false;
-            state = DownloadState.Pending;
+            state = DownloadState.Pause;
         }
         
         public void Refresh()
         {
-            Log(Strings.AppResources.GetString("Refreshing"));
+            Log?.Invoke(Strings.AppResources.GetString("Refreshing"));
             DisposeThreads();
-            state = DownloadState.Pending;
+            state = DownloadState.Prepared;
             Start();
         }
         
@@ -308,20 +314,16 @@ namespace TX.Downloaders
             state = DownloadState.Downloading;
             speedHelper.IsEnabled = true;
             Task.Run(async () => { await SetThreadsAsync(); });
-            Log(Strings.AppResources.GetString("Downloading"));
+            Log?.Invoke(Strings.AppResources.GetString("Downloading"));
             Debug.WriteLine("任务开始");
         }
-
-        /// <summary>
-        /// 使用Message重置下载器，用于恢复任务
-        /// </summary>
+        
         public void SetDownloader(DownloaderMessage mes)
         {
             //触发事件指示控件加载已完成
             message = mes;
-            MessageComplete(message);
             state = DownloadState.Prepared;
-            Log(Strings.AppResources.GetString("DownloaderDone"));
+            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
         }
 
         /// <summary>
@@ -338,7 +340,7 @@ namespace TX.Downloaders
                 speedHelper.CurrentValue += size;
                 if (progressDelta > tick)
                 {
-                    OnDownloadProgressChange(message.DownloadSize, message.FileSize);
+                    DownloadProgressChanged?.Invoke(message.DownloadSize, message.FileSize);
                     progressDelta -= tick;
                 }
             }

@@ -49,18 +49,28 @@ namespace TX
                         DownloadBarCollection = new ObservableCollection<Controls.DownloadBar>();//创建控件集合
                         DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
                         gv.DataContext = DownloadBarCollection;//设置绑定
-                        newTaskPageControl = new Controls.ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
-                        setPageControl = new Controls.ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
+                        newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
+                        setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
                         //恢复上次关闭时保存的控件
-                        var list = await StorageTools.StorageManager.GetMessagesAsync();
+                        var list = await StorageManager.GetMessagesAsync();
                         if (list != null)
                             foreach (Models.DownloaderMessage ms in list)
                             {
-                                IDownloader dw = await NetWork.UrlConverter.GetAnalyser(ms.URL).GetDownloaderAsync();
-                                Controls.DownloadBar db = new Controls.DownloadBar();
-                                db.SetDownloader(dw);
-                                dw.SetDownloader(ms);
-                                MainPage.Current.DownloadBarCollection.Add(db);
+                                try
+                                {
+                                    var analyser = NetWork.UrlConverter.GetAnalyser(ms.URL);
+                                    await analyser.GetResponseAsync();
+                                    IDownloader dw = analyser.GetDownloader();
+                                    DownloadBar db = new DownloadBar();
+                                    dw.SetDownloader(ms);
+                                    db.SetDownloader(dw);
+                                    DownloadBarCollection.Add(db);
+                                }
+                                catch(Exception e)
+                                {
+                                    Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                                        e.Message);
+                                }
                             }
                     });
             });
@@ -178,11 +188,11 @@ namespace TX
         /// </summary>
         public async void AddDownloadBar(Models.InitializeMessage message, IDownloader downloader)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {
                  DownloadBar db = new DownloadBar();
+                 downloader.SetDownloader(message);
                  db.SetDownloader(downloader);
-                 await downloader.SetDownloaderAsync(message);
                  DownloadBarCollection.Add(db);
              });
         }

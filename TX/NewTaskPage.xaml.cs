@@ -86,17 +86,16 @@ namespace TX
             string url = UrlBox.Text;
             if (NetWork.UrlConverter.MaybeLegal(url))
             {
-                if (analyser != null) analyser.Dispose();
                 analyser = NetWork.UrlConverter.GetAnalyser(url);
+                await analyser.GetResponseAsync();
                 OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
                 OurAdviceBlock.Opacity = 0.5;
                 if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
-
-
+                
                 //更新推荐的文件名
-                if (await analyser.CheckUrlAsync())
+                if (analyser.CheckUrl())
                 {
-                    OurAdviceBlock.Text = await analyser.GetRecommendedNameAsync();
+                    OurAdviceBlock.Text = analyser.GetRecommendedName();
                     OurAdviceBlock.Opacity = 1;
                     SubmitButton.IsEnabled = true;
                 }
@@ -108,9 +107,14 @@ namespace TX
         /// </summary>
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            Models.InitializeMessage im = new Models.InitializeMessage(analyser.GetUrl(), (bool)(NeedRenameButton.IsChecked) ? 
-                RenameBox.Text : await analyser.GetRecommendedNameAsync(), (int)ThreadNumSlider.Value);
-            MainPage.Current.AddDownloadBar(im,await analyser.GetDownloaderAsync());
+            Models.InitializeMessage im = new Models.InitializeMessage(
+                analyser.GetUrl(), 
+                (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(), 
+                (int)ThreadNumSlider.Value, 
+                analyser.GetStreamSize(),
+                await StorageManager.GetTemporaryFileAsync());
+
+            MainPage.Current.AddDownloadBar(im,analyser.GetDownloader());
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口

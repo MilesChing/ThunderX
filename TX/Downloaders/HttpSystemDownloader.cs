@@ -19,15 +19,20 @@ namespace TX.Downloaders
     /// </summary>
     class HttpSystemDownloader : IDownloader
     {
-        public event Action<long, long> OnDownloadProgressChange;
+        public event Action<long, long> DownloadProgressChanged;
         public event Action<DownloaderMessage> DownloadComplete;
         public event Action<Exception> DownloadError;
-        public event Action<DownloaderMessage> MessageComplete;
         public event Action<string> Log;
+        public event Action<DownloadState> StateChanged;
 
         private WebClient client = null;
         private DownloaderMessage message = new DownloaderMessage();
-        private DownloadState state = DownloadState.Pending;
+        private DownloadState _state_ = DownloadState.Pending;
+        private DownloadState state
+        {
+            get { return _state_; }
+            set { _state_ = value; StateChanged?.Invoke(value); }
+        }
         private DateTime TemporaryStartTime;
 
         public void Dispose()
@@ -61,15 +66,15 @@ namespace TX.Downloaders
             //表面暂停 嘻嘻嘻嘻
             message.TempFilePath = "";
             client.Dispose();
-            Log(Strings.AppResources.GetString("Pause"));
+            Log?.Invoke(Strings.AppResources.GetString("Pause"));
             client = null;
-            state = DownloadState.Pending;
+            state = DownloadState.Pause;
         }
 
         public void Refresh()
         {
             state = DownloadState.Downloading;
-            Log(Strings.AppResources.GetString("Refreshing"));
+            Log?.Invoke(Strings.AppResources.GetString("Refreshing"));
             Pause();
             Start();
         }
@@ -77,12 +82,11 @@ namespace TX.Downloaders
         public void SetDownloader(DownloaderMessage message)
         {
             this.message = message;
-            MessageComplete(message);
             state = DownloadState.Prepared;
-            Log(Strings.AppResources.GetString("DownloaderDone"));
+            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
         }
 
-        public async Task SetDownloaderAsync(InitializeMessage imessage)
+        public void SetDownloader(InitializeMessage imessage)
         {
             message.DownloadSize = 0;
             message.FileName = Path.GetFileName(imessage.FileName);
@@ -91,15 +95,14 @@ namespace TX.Downloaders
             message.TempFilePath = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path + @"\" + imessage.FileName;
             message.URL = imessage.Url;
             state = DownloadState.Prepared;
-            Log(Strings.AppResources.GetString("DownloaderDone"));
-            MessageComplete(message);
+            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
             return;
         }
 
         public void Start()
         {
             state = DownloadState.Downloading;
-            Log(Strings.AppResources.GetString("Downloading"));
+            Log?.Invoke(Strings.AppResources.GetString("Downloading"));
             //每次重新开始
             message.TempFilePath = StorageTools.StorageManager.GetTemporaryName();
 
@@ -112,14 +115,14 @@ namespace TX.Downloaders
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            OnDownloadProgressChange(e.BytesReceived, e.TotalBytesToReceive);
+            DownloadProgressChanged?.Invoke(e.BytesReceived, e.TotalBytesToReceive);
         }
 
         private async void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             try
             {
-                Log(Strings.AppResources.GetString("DownloaderDone"));
+                Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
                 string path = StorageTools.Settings.DownloadFolderPath;
                 StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
                 await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
@@ -127,13 +130,13 @@ namespace TX.Downloaders
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + ": " +
                     Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
                 //触发事件
-                DownloadComplete(message);
+                DownloadComplete?.Invoke(message);
             }
             catch (Exception ex)
             {
                 //若用户把下载文件夹设置在奇怪的地方，这里会导致无法访问，触发异常
                 Debug.WriteLine(ex.ToString());
-                DownloadError(ex);
+                DownloadError?.Invoke(ex);
             }
         }
     }

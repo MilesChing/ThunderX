@@ -143,7 +143,6 @@
                                   Width="48"
                                   Click="DeleteButton_Click" />
                     <AppBarButton x:Name="PlayButton"
-                                  Foreground="Black"
                                   Icon="Play"
                                   Width="48"
                                   IsEnabled="False"

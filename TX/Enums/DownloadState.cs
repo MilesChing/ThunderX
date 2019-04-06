@@ -31,6 +31,11 @@ namespace TX.Enums
         /// <summary>
         /// 已经准备好开始
         /// </summary>
-        Prepared
+        Prepared,
+
+        /// <summary>
+        /// 暂停
+        /// </summary>
+        Pause
     }
 }
