@@ -8,9 +8,9 @@ namespace TX.Downloaders
     public interface IDownloader:System.IDisposable
     {
         /// <summary>
-        /// 事件，下载进度变化，第一个参数为已下载字节数，第二个参数为总字节数
+        /// 事件，下载进度变化，参数为已下载字节数
         /// </summary>
-        event Action<long, long> DownloadProgressChanged;
+        event Action<long> DownloadProgressChanged;
 
         /// <summary>
         /// 事件，指示下载已结束

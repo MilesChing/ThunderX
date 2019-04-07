@@ -15,16 +15,22 @@ namespace TX.Downloaders
 {
     class HttpDownloader : IDownloader
     {
-        public event Action<long, long> DownloadProgressChanged;
+        public event Action<long> DownloadProgressChanged;
         public event Action<DownloaderMessage> DownloadComplete;
         public event Action<Exception> DownloadError;
         public event Action<string> Log;
         public event Action<DownloadState> StateChanged;
 
+        private Progress<long> downloadProgress;
+
         public HttpDownloader()
         {
             speedHelper = new SpeedCalculator();
             speedHelper.Updated += SpeedHelper_Updated;
+            downloadProgress = new Progress<long>(size =>
+            {
+                DownloadProgressChanged(size);
+            });
         }
 
         /// <summary>
@@ -147,8 +153,7 @@ namespace TX.Downloaders
                             message.DownloadSize += pieceLength;
                         }
 
-                        //下载进度变化
-                        ProgressChanged(pieceLength);
+                        ((IProgress<long>)downloadProgress).Report(message.DownloadSize);
                     }
                 }
                 catch (Exception e)
@@ -324,26 +329,6 @@ namespace TX.Downloaders
             message = mes;
             state = DownloadState.Prepared;
             Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
-        }
-
-        /// <summary>
-        /// 集中管理各个线程的更新信息，在增量达到一定程度（10kb）更新界面
-        /// </summary>
-        private long progressDelta = 0;
-        private void ProgressChanged(long size)
-        {
-            const long tick = 10240;
-            lock (this)
-            {
-                if (state != DownloadState.Downloading || ((App)Windows.UI.Xaml.Application.Current).InBackground) return;
-                progressDelta += size;
-                speedHelper.CurrentValue += size;
-                if (progressDelta > tick)
-                {
-                    DownloadProgressChanged?.Invoke(message.DownloadSize, message.FileSize);
-                    progressDelta -= tick;
-                }
-            }
         }
     }
 }

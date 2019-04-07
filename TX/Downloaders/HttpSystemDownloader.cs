@@ -19,7 +19,7 @@ namespace TX.Downloaders
     /// </summary>
     class HttpSystemDownloader : IDownloader
     {
-        public event Action<long, long> DownloadProgressChanged;
+        public event Action<long> DownloadProgressChanged;
         public event Action<DownloaderMessage> DownloadComplete;
         public event Action<Exception> DownloadError;
         public event Action<string> Log;
@@ -115,7 +115,7 @@ namespace TX.Downloaders
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            DownloadProgressChanged?.Invoke(e.BytesReceived, e.TotalBytesToReceive);
+            DownloadProgressChanged?.Invoke(e.BytesReceived);
         }
 
         private async void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)

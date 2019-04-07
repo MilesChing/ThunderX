@@ -101,7 +101,7 @@ namespace TX.Controls
         /// </summary>
         /// <param name="size">已下载进度</param>
         /// <param name="all">文件总大小</param>
-        private void DownloadProgressChanged(long size, long all)
+        private void DownloadProgressChanged(long size)
         {
             //在多线程内激发函数
             //防止跨线程修改UI
@@ -110,6 +110,7 @@ namespace TX.Controls
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
+                    long all = downloader.GetDownloaderMessage().FileSize;
                     Bar.Value = (int)(1.0 * size / all * 100);
                     if (all != 0)
                     {
