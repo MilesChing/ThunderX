@@ -43,16 +43,22 @@
                           Checked="NeedRenameButton_ValueChanged"
                           Unchecked="NeedRenameButton_ValueChanged" />
                 <Border Style="{ThemeResource TXBigBorder}" />
-                <TextBlock x:Uid="NewTaskPage_Subtitle3"
+
+                <StackPanel x:Name="ThreadLayout"
+                            Visibility="Collapsed"
+                            Orientation="Vertical">
+                    <TextBlock x:Uid="NewTaskPage_Subtitle3"
                            Style="{ThemeResource TXSubTitle}" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
+                    <Border Style="{ThemeResource TXBorder}" />
+                    <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText2" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <Slider x:Name="ThreadNumSlider"
+                    <Border Style="{ThemeResource TXBorder}" />
+                    <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
                         Maximum="256" />
-                <Border Style="{ThemeResource TXBigBorder}" />
+                    <Border Style="{ThemeResource TXBigBorder}" />
+                </StackPanel>
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />

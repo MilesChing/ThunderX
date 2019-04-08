@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
+using TX.VisualManager;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -12,19 +13,18 @@ using Windows.UI.Xaml.Controls;
 
 namespace TX
 {
-    /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
-    /// </summary>
     public sealed partial class NewTaskPage : Page
     {
-        IAnalyser analyser = null;
+        private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
+        private IAnalyser analyser = null;
 
         public NewTaskPage()
         {
-            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();
 
-            this.InitializeComponent();
+            InitializeComponent();
+            SetVisualManagers();
 
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
 
@@ -34,6 +34,7 @@ namespace TX
 
         private void RefreshUI()
         {
+            //将UI恢复到初始值（窗口的循环利用机制）
             UrlBox.Text = "";
             NeedRenameButton.IsChecked = false;
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
@@ -41,11 +42,9 @@ namespace TX
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
         }
 
-        /// <summary>
-        /// 设置状态栏透明、扩展内容到状态栏
-        /// </summary>
         private void ResetTitleBar()
         {
+            // 设置状态栏透明、扩展内容到状态栏
             var TB = ApplicationView.GetForCurrentView().TitleBar;
             byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
             byte fr = (byte)(0xff - co);
@@ -54,9 +53,12 @@ namespace TX
             TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
         }
 
-        /// <summary>
-        /// 剪贴板内容变化了，检查是否是有效字符串，当UrlBox内无效且剪贴板有效就更换UrlBox内容
-        /// </summary>
+        private void SetVisualManagers()
+        {
+            //设置相关视觉控制器，在构造方法中调用
+            ThreadLayoutVisibilityManager = new VisibilityAnimationManager(ThreadLayout);
+        }
+        
         private async void Clipboard_ContentChanged(object sender, object e)
         {
             try
@@ -76,10 +78,7 @@ namespace TX
                 Debug.WriteLine(ex.ToString());
             }
         }
-
-        /// <summary>
-        /// 输入内容时检测链接是否合法，合法则使submit按钮可用
-        /// </summary>
+        
         private async void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SubmitButton.IsEnabled = false;
@@ -99,21 +98,27 @@ namespace TX
                         OurAdviceBlock.Opacity = 0.5;
                         if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
 
-                        //更新推荐的文件名
                         if (analyser.CheckUrl())
                         {
                             OurAdviceBlock.Text = analyser.GetRecommendedName();
                             OurAdviceBlock.Opacity = 1;
                             SubmitButton.IsEnabled = true;
+                            ApplyVisualDetail(analyser.GetVisualDetail());
+                            return;
+                        }
+                        else
+                        {
+                            analyser.Dispose();
+                            analyser = null;
                         }
                     }
                 }
+                else manalyser.Dispose();
             }
-        }
 
-        /// <summary>
-        /// 点击提交按钮（将关闭窗口）
-        /// </summary>
+            ApplyVisualDetail(new NewTaskPageVisualDetail());
+        }
+        
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Models.InitializeMessage im = new Models.InitializeMessage(
@@ -129,14 +134,49 @@ namespace TX
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
         }
 
-        /// <summary>
-        /// I need to rename it的选项变化了
-        /// </summary>
         private void NeedRenameButton_ValueChanged(object sender, RoutedEventArgs e)
         {
             bool isChecked = (bool)((CheckBox)sender).IsChecked;
             OurAdviceBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
             RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        /// <summary>
+        /// 根据当前界面细节做出目标更改
+        /// </summary>
+        private void ApplyVisualDetail(NewTaskPageVisualDetail detail)
+        {
+            if (detail.NeedThreadsSlider ^ (ThreadLayoutVisibilityManager.Element.Visibility == Visibility.Visible))
+            {
+                if (detail.NeedThreadsSlider) ThreadLayoutVisibilityManager.Show();
+                else ThreadLayoutVisibilityManager.Hide();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 包含对新任务页面布局做出调整的细节
+    /// 用于对目标URL进行额外的界面调整
+    /// </summary>
+    public class NewTaskPageVisualDetail
+    {
+        public NewTaskPageVisualDetail(
+            bool needThreadsSlider = false,
+            string[] multilineTips = null)
+        {
+
+            NeedThreadsSlider = needThreadsSlider;
+            MultilineTips = multilineTips;
+        }
+
+        /// <summary>
+        /// 是否需要选择线程数的滑动栏
+        /// </summary>
+        public bool NeedThreadsSlider { get; }
+
+        /// <summary>
+        /// 展示给用户的多行文字提示，每行展示一条
+        /// </summary>
+        public string[] MultilineTips { get; }
     }
 }

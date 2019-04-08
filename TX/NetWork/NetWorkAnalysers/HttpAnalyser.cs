@@ -99,5 +99,11 @@ namespace TX.NetWork.NetWorkAnalysers
             }
         }
 
+        public NewTaskPageVisualDetail GetVisualDetail()
+        {
+            if (_hresp_ == null) return null;
+            bool needThreadNum = (GetStreamSize() > 0);
+            return new NewTaskPageVisualDetail(needThreadNum);
+        }
     }
 }

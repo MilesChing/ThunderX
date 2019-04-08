@@ -35,5 +35,10 @@ namespace TX.NetWork.NetWorkAnalysers
         /// 获取流长度，可能为-1
         /// </summary>
         long GetStreamSize();
+
+        /// <summary>
+        /// 获取URL对应的界面细节
+        /// </summary>
+        NewTaskPageVisualDetail GetVisualDetail();
     }
 }
