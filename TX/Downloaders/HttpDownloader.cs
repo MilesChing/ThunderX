@@ -53,7 +53,6 @@ namespace TX.Downloaders
         
         public override void Dispose()
         {
-            Debug.WriteLine("开始释放资源");
             DisposeThreads();
             speedHelper.IsEnabled = false;
             speedHelper.Dispose();
@@ -63,7 +62,6 @@ namespace TX.Downloaders
 
         public override void Pause()
         {
-            Debug.WriteLine("已暂停");
             if (State != DownloadState.Downloading) return;
             currentOperationCode++;
             speedHelper.IsEnabled = false;
@@ -72,6 +70,7 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
+            if (State != DownloadState.Pause && State != DownloadState.Downloading && State != DownloadState.Error) return;
             DisposeThreads();
             State = DownloadState.Prepared;
             Start();
@@ -79,11 +78,10 @@ namespace TX.Downloaders
 
         public override void Start()
         {
-            if (State == DownloadState.Downloading) return;
+            if (State != DownloadState.Prepared && State != DownloadState.Pause) return; 
             State = DownloadState.Downloading;
             speedHelper.IsEnabled = true;
             Task.Run(async () => { await SetThreadsAsync(); });
-            Debug.WriteLine("任务开始");
         }
 
         public override void SetDownloaderFromBreakpoint(DownloaderMessage mes)
@@ -98,6 +96,7 @@ namespace TX.Downloaders
         /// </summary>
         private void SpeedHelper_Updated(SpeedCalculator obj)
         {
+            if (State != DownloadState.Downloading) return;
             int sec = (int)(Message.FileSize / obj.AverageSpeed);
             string speed = (Strings.AppResources.GetString("Downloading") + " - " +
                 Converters.StringConverter.GetPrintSize((long)obj.Speed) + "/s " + 
@@ -179,17 +178,13 @@ namespace TX.Downloaders
                 //剩余字节为0时停止下载
                 try
                 {
-                    while (remain > 0)
+                    while (remain > 0 && State == DownloadState.Downloading)
                     {
                         //下载数据
                         //当remain太小时不要按照responseBytes的长度申请，避免产生多余数据
                         int pieceLength = downloadStream.Read(responseBytes, 0, (int)(Math.Min(responseBytes.Length, remain)));
-                        
-                        if (currentOperationCode != operationCode)
-                        {
-                            Debug.WriteLine("线程 " + threadIndex + " 已退出：检测到operation code变化");
-                            break;
-                        }
+
+                        if (currentOperationCode != operationCode) break;
                         
                         //写入文件
                         fileStream.Write(responseBytes, 0, pieceLength);
@@ -232,7 +227,7 @@ namespace TX.Downloaders
             //先检查是否已经判断过了，防止重复触发事件
             lock (this)
             {
-                if (State == DownloadState.Done)
+                if (State != DownloadState.Downloading)
                     return;
                 if (Message.DownloadSize >= Message.FileSize)
                     State = DownloadState.Done;
@@ -268,6 +263,7 @@ namespace TX.Downloaders
                 Debug.WriteLine(e.ToString());
                 if (State == DownloadState.Error) return;
                 State = DownloadState.Error;
+                DisposeThreads();
                 DownloadError?.Invoke(e);
             }
         }

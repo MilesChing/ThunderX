@@ -64,7 +64,7 @@ namespace TX.Controls
                         if(progress.TargetValue != null && progress.AverageSpeed >= 1)
                         {
                             long time = (long)(((long)progress.TargetValue - progress.ProgressValue) / progress.AverageSpeed);
-                            SpeedBlock.Text += Strings.AppResources.GetString("Prediction") + StringConverter.GetPrintTime(time) + "s";
+                            SpeedBlock.Text += Strings.AppResources.GetString("Prediction") + StringConverter.GetPrintTime(time);
                         }
                     });
             });
@@ -72,28 +72,38 @@ namespace TX.Controls
         
         private void DownloaderStateChanged(Enums.DownloadState state)
         {
-            if(state == Enums.DownloadState.Pause)
-            {
-                Task.Run(async () =>
-                {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                     {
-                         PauseButton.IsEnabled = false;
-                         PlayButton.IsEnabled = true;
-                     });
-                });
-            }
-            else if(state == Enums.DownloadState.Error)
-            {
                 Task.Run(async () =>
                 {
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        PauseButton.IsEnabled = false;
-                        PlayButton.IsEnabled = false;
+                        if (state == Enums.DownloadState.Pause)
+                        {
+                            PauseButton.IsEnabled = false;
+                            PlayButton.IsEnabled = true;
+                            RefreshButton.IsEnabled = true;
+                        }
+                        else if(state == Enums.DownloadState.Error)
+                        {
+                            PauseButton.IsEnabled = false;
+                            PlayButton.IsEnabled = false;
+                            RefreshButton.IsEnabled = true;
+                        }
+                        else if(state == Enums.DownloadState.Downloading)
+                        {
+                            PauseButton.IsEnabled = true;
+                            PlayButton.IsEnabled = false;
+                            RefreshButton.IsEnabled = true;
+                        }
+                        else if (state == Enums.DownloadState.Done)
+                        {
+                            Bar.Value = 100;
+                            ProgressBlock.Text = "100%";
+                            PlayButton.IsEnabled = false;
+                            PauseButton.IsEnabled = false;
+                            RefreshButton.IsEnabled = false;
+                        }
                     });
                 });
-            }
         }
         
         /// <summary>
@@ -112,15 +122,6 @@ namespace TX.Controls
         
         private void DisplayError(Exception e)
         {
-            Task.Run(async () =>
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    () => {
-                        PauseButton.IsEnabled = false;
-                        PlayButton.IsEnabled = false;
-                    });
-            });
-            
             Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"), e.Message);
         }
         
@@ -142,21 +143,11 @@ namespace TX.Controls
         
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (downloader.State != Enums.DownloadState.Prepared
-                && downloader.State != Enums.DownloadState.Pause)
-                return;
-            PlayButton.IsEnabled = false;
-            PauseButton.IsEnabled = true;
-            RefreshButton.IsEnabled = true;
             downloader.Start();
         }
         
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (downloader.State != Enums.DownloadState.Downloading)
-                return;
-            PauseButton.IsEnabled = false;
-            PlayButton.IsEnabled = true;
             downloader.Pause();
         }
         
@@ -168,8 +159,6 @@ namespace TX.Controls
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();
-            PauseButton.IsEnabled = true;
-            PlayButton.IsEnabled = false;
         }
     }
 }

@@ -48,6 +48,7 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
+            if (State != DownloadState.Pause && State != DownloadState.Downloading && State != DownloadState.Error) return;
             State = DownloadState.Downloading;
             Pause();
             Start();
@@ -74,6 +75,7 @@ namespace TX.Downloaders
 
         public override void Start()
         {
+            if (State == DownloadState.Downloading || State == DownloadState.Done || State == DownloadState.Error) return;
             State = DownloadState.Downloading;
             //每次重新开始
             

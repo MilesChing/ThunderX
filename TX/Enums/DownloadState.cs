@@ -19,11 +19,6 @@ namespace TX.Enums
         Error,
 
         /// <summary>
-        /// 等待中
-        /// </summary>
-        Pending,
-
-        /// <summary>
         /// 已完成
         /// </summary>
         Done,
