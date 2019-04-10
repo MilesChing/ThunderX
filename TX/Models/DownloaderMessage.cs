@@ -16,11 +16,10 @@ namespace TX.Models
             TempFilePath = null;
             URL = null;
             FileName = null;
-            TypeName = null;
+            Extention = null;
             DownloadSize = 0;
-            FileSize = 0;
+            FileSize = null;
             Threads = new ThreadMessage();
-            DownloadTime = new TimeSpan(0, 0, 0);
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace TX.Models
         /// <summary>
         /// 文件扩展名
         /// </summary>
-        public string TypeName;
+        public string Extention;
 
         /// <summary>
         /// 已下载的字节数
@@ -51,16 +50,11 @@ namespace TX.Models
         /// <summary>
         /// 文件大小
         /// </summary>
-        public long FileSize;
+        public long? FileSize;
 
         /// <summary>
         /// 线程信息
         /// </summary>
         public ThreadMessage Threads;
-
-        /// <summary>
-        /// 下载时间的总长
-        /// </summary>
-        public TimeSpan DownloadTime;
     }
 }

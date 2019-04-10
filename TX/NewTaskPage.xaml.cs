@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using TX.Converters;
+using TX.Models;
+using TX.NetWork;
 using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using TX.VisualManager;
@@ -17,6 +22,7 @@ namespace TX
     {
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
         private IAnalyser analyser = null;
+        private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages = new ObservableCollection<LinkAnalysisMessage>();
 
         public NewTaskPage()
         {
@@ -65,7 +71,7 @@ namespace TX
             {
                 if (!SubmitButton.IsEnabled)
                 {
-                    string url = await NetWork.UrlConverter.CheckClipBoardAsync();
+                    string url = await UrlConverter.CheckClipBoardAsync();
                     if (url != string.Empty)
                     {
                         UrlBox.Text = url;
@@ -83,9 +89,9 @@ namespace TX
         {
             SubmitButton.IsEnabled = false;
             string url = UrlBox.Text;
-            if (NetWork.UrlConverter.MaybeLegal(url))
+            if (UrlConverter.MaybeLegal(url))
             {
-                IAnalyser manalyser = NetWork.UrlConverter.GetAnalyser(url);
+                IAnalyser manalyser = UrlConverter.GetAnalyser(url);
                 await manalyser.GetResponseAsync();
                 if (url == UrlBox.Text)
                 {
@@ -125,7 +131,7 @@ namespace TX
                 analyser.GetUrl(),
                 (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
                 (int)ThreadNumSlider.Value,
-                analyser.GetStreamSize(),
+                analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
                 await StorageManager.GetTemporaryFileAsync());
 
             MainPage.Current.AddDownloadBar(im, analyser.GetDownloader());
@@ -151,6 +157,11 @@ namespace TX
                 if (detail.NeedThreadsSlider) ThreadLayoutVisibilityManager.Show();
                 else ThreadLayoutVisibilityManager.Hide();
             }
+
+            linkAnalysisMessages.Clear();
+            if(detail.LinkAnalysisMessages != null && detail.LinkAnalysisMessages.Length != 0)
+                foreach (LinkAnalysisMessage mes in detail.LinkAnalysisMessages)
+                    linkAnalysisMessages.Add(mes);
         }
     }
 
@@ -162,21 +173,20 @@ namespace TX
     {
         public NewTaskPageVisualDetail(
             bool needThreadsSlider = false,
-            string[] multilineTips = null)
+            LinkAnalysisMessage[] linkAnalysisMessages = null)
         {
-
             NeedThreadsSlider = needThreadsSlider;
-            MultilineTips = multilineTips;
+            LinkAnalysisMessages = linkAnalysisMessages;
         }
 
         /// <summary>
         /// 是否需要选择线程数的滑动栏
         /// </summary>
-        public bool NeedThreadsSlider { get; }
+        public bool NeedThreadsSlider { get; set; }
 
         /// <summary>
         /// 展示给用户的多行文字提示，每行展示一条
         /// </summary>
-        public string[] MultilineTips { get; }
+        public LinkAnalysisMessage[] LinkAnalysisMessages { get; set; }
     }
 }

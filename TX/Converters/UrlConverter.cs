@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using TX.NetWork.NetWorkAnalysers;
 using Windows.ApplicationModel.DataTransfer;
 
-namespace TX.NetWork
+namespace TX.Converters
 {
-    public class UrlConverter
+    public static class UrlConverter
     {
         /// <summary>
         /// 判断给出的url是否基于http协议

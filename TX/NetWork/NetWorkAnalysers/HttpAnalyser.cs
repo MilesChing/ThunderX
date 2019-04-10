@@ -31,8 +31,7 @@ namespace TX.NetWork.NetWorkAnalysers
                 //当response头中没有Content-Disposition信息时返回从url中截取的文件名
                 string name = null;
                 if (fileinfo != null) name = fileinfo.Substring(fileinfo.LastIndexOf(mathkey)).Replace(mathkey, "");
-                else name = Path.GetFileNameWithoutExtension(_hresp_.ResponseUri.OriginalString) +
-                        Path.GetExtension(_hresp_.ResponseUri.OriginalString);
+                else name = Path.GetFileName(_hresp_.ResponseUri.OriginalString);
 
                 string contentType = _hresp_.Headers["content-type"];
                 if (contentType.Contains(';')) contentType = contentType.Split(';')[0];
@@ -57,7 +56,7 @@ namespace TX.NetWork.NetWorkAnalysers
             return _hresp_ != null ? _hresp_.ContentLength : 0;
         }
 
-        public IDownloader GetDownloader()
+        public AbstractDownloader GetDownloader()
         {
             var size = GetStreamSize();
             Debug.WriteLine("建立Http下载器：" + (size > 0 ? "HttpDownloader" : "HttpSystemDownloader"));

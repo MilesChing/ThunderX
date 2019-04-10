@@ -33,7 +33,7 @@ namespace TX.NetWork
                 string fullName = GetResponseName(res);
 
                 message.FileName = System.IO.Path.GetFileNameWithoutExtension(fullName);
-                message.TypeName = System.IO.Path.GetExtension(fullName);
+                message.Extention = System.IO.Path.GetExtension(fullName);
                 message.FileSize = GetResponseSize(res);
 
                 if (res != null)

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using TX.Controls;
+using TX.Converters;
 using TX.Downloaders;
 using TX.StorageTools;
 using Windows.ApplicationModel.Core;
@@ -58,11 +59,11 @@ namespace TX
                             {
                                 try
                                 {
-                                    var analyser = NetWork.UrlConverter.GetAnalyser(ms.URL);
+                                    var analyser = UrlConverter.GetAnalyser(ms.URL);
                                     await analyser.GetResponseAsync();
-                                    IDownloader dw = analyser.GetDownloader();
+                                    AbstractDownloader dw = analyser.GetDownloader();
                                     DownloadBar db = new DownloadBar();
-                                    dw.SetDownloader(ms);
+                                    dw.SetDownloaderFromBreakpoint(ms);
                                     db.SetDownloader(dw);
                                     DownloadBarCollection.Add(db);
                                 }
@@ -186,7 +187,7 @@ namespace TX
         /// 添加一个DownloadBar到主界面，为了避免线程问题写在这里
         /// 这段代码包含建立下载器的细节
         /// </summary>
-        public async void AddDownloadBar(Models.InitializeMessage message, IDownloader downloader)
+        public async void AddDownloadBar(Models.InitializeMessage message, AbstractDownloader downloader)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {

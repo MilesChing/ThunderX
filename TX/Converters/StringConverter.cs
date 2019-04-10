@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TX.Converters
 {
-    public static class StringConverters
+    public static class StringConverter
     {
         /// <summary>
         /// 得到对应字节数的合适单位表示字符串
@@ -35,9 +35,13 @@ namespace TX.Converters
             }
         }
 
-        public static string GetPrintTime(int sec)
+        /// <summary>
+        /// 得到对应秒数的合适单位表示时间
+        /// </summary>
+        /// <param name="sec">输入秒数</param>
+        public static string GetPrintTime(long sec)
         {
-            int hour = sec / 3600, min = sec % 3600 / 60;
+            long hour = sec / 3600, min = sec % 3600 / 60;
             sec = sec % 60;
             string time = "";
             if (hour > 0)

@@ -11,7 +11,7 @@ namespace TX.Models
     /// </summary>
     public class InitializeMessage
     {
-        public InitializeMessage(string url, string fileName, int threads, long size, string path)
+        public InitializeMessage(string url, string fileName, int threads, long? size, string path)
         {
             Url = url ?? throw new Exception("InitializeMessage_URL_NULL");
             FileName = fileName;
@@ -37,7 +37,7 @@ namespace TX.Models
         /// <summary>
         /// 文件大小，获取不到则可能为-1
         /// </summary>
-        public long Size;
+        public long? Size;
 
         /// <summary>
         /// 目标文件的地址

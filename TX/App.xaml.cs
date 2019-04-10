@@ -174,10 +174,10 @@ namespace TX
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
             foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
             {
-                if(bar.downloader.GetDownloadState() != Enums.DownloadState.Done)
+                if(bar.downloader.State != Enums.DownloadState.Done)
                 {
                     bar.downloader.Pause();
-                    list.Add(bar.downloader.GetDownloaderMessage());
+                    list.Add(bar.downloader.Message);
                 }
             }
             await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载

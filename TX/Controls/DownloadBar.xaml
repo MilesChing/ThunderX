@@ -103,7 +103,7 @@
                                Foreground="#777777"
                                Text="177210 kB / 53986 kB" />
 
-                        <TextBlock x:Name="MessageBlock"
+                        <TextBlock x:Name="SpeedBlock"
                                Margin="8,0,0,0"
                                FontSize="10"
                                Opacity="0.5"

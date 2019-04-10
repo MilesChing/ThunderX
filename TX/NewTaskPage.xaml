@@ -4,8 +4,36 @@
       xmlns:local="using:TX"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:models="using:TX.Models"
       mc:Ignorable="d"
       Background="{ThemeResource TXBackgroundAcrylicBrush}">
+
+    <Page.Resources>
+
+        <DataTemplate x:DataType="models:LinkAnalysisMessage"
+                      x:Key="LinkAnalysisMessageListDataTemplate">
+            <Grid Background="{ThemeResource SystemAccentColorBrush}"
+                  CornerRadius="2"
+                  Padding="4">
+                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                       Text="{x:Bind Message}"/>
+            </Grid>
+            
+        </DataTemplate>
+
+        <Style TargetType="Control" x:Key="LinkAnalysisMessageListItemContainerStyle">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+        </Style>
+
+    </Page.Resources>
+    
     <ScrollViewer x:Name="scrollViewer"
                   VerticalAlignment="Top"
                   HorizontalScrollMode="Disabled"
@@ -26,6 +54,14 @@
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBox x:Name="UrlBox"
                          TextChanged="UrlBox_TextChanged" />
+                <Border Style="{ThemeResource TXBorder}" />
+
+                <ListView 
+                    IsItemClickEnabled="False"
+                    ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
+                    ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
+                    ItemsSource="{x:Bind linkAnalysisMessages}"/>
+
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock x:Uid="NewTaskPage_Subtitle2"
                            Style="{ThemeResource TXSubTitle}" />

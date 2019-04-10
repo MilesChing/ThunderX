@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TX.Enums;
 using TX.Models;
+using TX.NetWork;
 using Windows.Storage;
 
 namespace TX.Downloaders
@@ -17,120 +18,99 @@ namespace TX.Downloaders
     /// 直接封装WebClient的一个下载器，不支持断点续传
     /// 在HttpDownloader无法处理的时候所幸用系统最原始的
     /// </summary>
-    class HttpSystemDownloader : IDownloader
+    class HttpSystemDownloader : AbstractDownloader
     {
-        public event Action<long> DownloadProgressChanged;
-        public event Action<DownloaderMessage> DownloadComplete;
-        public event Action<Exception> DownloadError;
-        public event Action<string> Log;
-        public event Action<DownloadState> StateChanged;
+        public override event Action<Progress> DownloadProgressChanged;
+        public override event Action<DownloaderMessage> DownloadComplete;
+        public override event Action<Exception> DownloadError;
 
         private WebClient client = null;
-        private DownloaderMessage message = new DownloaderMessage();
-        private DownloadState _state_ = DownloadState.Pending;
-        private DownloadState state
-        {
-            get { return _state_; }
-            set { _state_ = value; StateChanged?.Invoke(value); }
-        }
-        private DateTime TemporaryStartTime;
+        private SpeedCalculator speedHelper;
 
-        public void Dispose()
+        public override void Dispose()
         {
             if(client != null) client.Dispose();
             client = null;
-            message = null;
+            Message = null;
         }
 
-        public DownloaderMessage GetDownloaderMessage()
-        {
-            return message;
-        }
-
-        public DownloadState GetDownloadState()
-        {
-            return state;
-        }
-
-        public TimeSpan GetDownloadTime(DateTime NowTime)
-        {
-            if (state != DownloadState.Downloading)
-                return message.DownloadTime;
-            //临时开始时间为空代表当前状态不是正在下载
-            else return message.DownloadTime + (NowTime - TemporaryStartTime);
-        }
-
-        public void Pause()
+        public override void Pause()
         {
             //临时文件统一删除，由于无法获得文件大小，每次下载都是一次性的
             //表面暂停 嘻嘻嘻嘻
-            message.TempFilePath = "";
+            Message.TempFilePath = "";
             client.Dispose();
-            Log?.Invoke(Strings.AppResources.GetString("Pause"));
             client = null;
-            state = DownloadState.Pause;
+            speedHelper.Dispose();
+            speedHelper = null;
+            State = DownloadState.Pause;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
-            state = DownloadState.Downloading;
-            Log?.Invoke(Strings.AppResources.GetString("Refreshing"));
+            State = DownloadState.Downloading;
             Pause();
             Start();
         }
 
-        public void SetDownloader(DownloaderMessage message)
+        public override void SetDownloaderFromBreakpoint(DownloaderMessage Message)
         {
-            this.message = message;
-            state = DownloadState.Prepared;
-            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
+            this.Message = Message;
+            State = DownloadState.Prepared;
         }
 
-        public void SetDownloader(InitializeMessage imessage)
+        public override void SetDownloader(InitializeMessage iMessage)
         {
-            message.DownloadSize = 0;
-            message.FileName = Path.GetFileName(imessage.FileName);
-            message.TypeName = Path.GetExtension(imessage.FileName);
-            message.FileSize = -1;
-            message.TempFilePath = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path + @"\" + imessage.FileName;
-            message.URL = imessage.Url;
-            state = DownloadState.Prepared;
-            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
+            Message = new DownloaderMessage();
+            Message.DownloadSize = 0;
+            Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
+            Message.Extention = Path.GetExtension(iMessage.FileName);
+            Message.FileSize = null;
+            Message.TempFilePath = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path + @"\" + iMessage.FileName;
+            Message.URL = iMessage.Url;
+            State = DownloadState.Prepared;
             return;
         }
 
-        public void Start()
+        public override void Start()
         {
-            state = DownloadState.Downloading;
-            Log?.Invoke(Strings.AppResources.GetString("Downloading"));
+            State = DownloadState.Downloading;
             //每次重新开始
-            message.TempFilePath = StorageTools.StorageManager.GetTemporaryName();
+            
+            Message.TempFilePath = ApplicationData.Current.LocalCacheFolder.Path + @"\" + StorageTools.StorageManager.GetTemporaryName() + ".tmp";
+            speedHelper = new SpeedCalculator();
+            speedHelper.IsEnabled = true;
 
             client = new WebClient();
             client.Credentials = CredentialCache.DefaultCredentials;
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
-            client.DownloadProgressChanged += Client_DownloadProgressChanged;
-            client.DownloadFileAsync(new Uri(message.URL), message.TempFilePath);
+            client.DownloadProgressChanged += (o,e) => 
+            {
+                speedHelper.CurrentValue = e.BytesReceived;
+                _prog_.Speed = speedHelper.Speed;
+                _prog_.AverageSpeed = speedHelper.AverageSpeed;
+                _prog_.TargetValue = null;
+                _prog_.ProgressValue = speedHelper.CurrentValue;
+                DownloadProgressChanged?.Invoke(_prog_);
+            };
+            client.DownloadFileAsync(new Uri(Message.URL), Message.TempFilePath);
         }
 
-        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            DownloadProgressChanged?.Invoke(e.BytesReceived);
-        }
-
+        /// <summary>
+        /// 下载完成事件的回调函数
+        /// </summary>
         private async void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             try
             {
-                Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
                 string path = StorageTools.Settings.DownloadFolderPath;
-                StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
-                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
+                StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
+                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
                 //播放一个通知
-                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + ": " +
-                    Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
+                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + ": " +
+                    Converters.StringConverter.GetPrintSize(_prog_.ProgressValue), file.Path);
                 //触发事件
-                DownloadComplete?.Invoke(message);
+                DownloadComplete?.Invoke(Message);
             }
             catch (Exception ex)
             {
@@ -139,5 +119,7 @@ namespace TX.Downloaders
                 DownloadError?.Invoke(ex);
             }
         }
+
+        private Progress _prog_ = new Progress();
     }
 }

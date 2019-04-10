@@ -29,7 +29,7 @@ namespace TX.NetWork.NetWorkAnalysers
         /// <summary>
         /// 获取一个空下载器
         /// </summary>
-        IDownloader GetDownloader();
+        AbstractDownloader GetDownloader();
 
         /// <summary>
         /// 获取流长度，可能为-1

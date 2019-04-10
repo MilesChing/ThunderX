@@ -13,24 +13,84 @@ using Windows.Storage;
 
 namespace TX.Downloaders
 {
-    class HttpDownloader : IDownloader
+    class HttpDownloader : AbstractDownloader
     {
-        public event Action<long> DownloadProgressChanged;
-        public event Action<DownloaderMessage> DownloadComplete;
-        public event Action<Exception> DownloadError;
-        public event Action<string> Log;
-        public event Action<DownloadState> StateChanged;
-
-        private Progress<long> downloadProgress;
+        public override event Action<Progress> DownloadProgressChanged;
+        public override event Action<DownloaderMessage> DownloadComplete;
+        public override event Action<Exception> DownloadError;
 
         public HttpDownloader()
         {
             speedHelper = new SpeedCalculator();
-            speedHelper.Updated += SpeedHelper_Updated;
-            downloadProgress = new Progress<long>(size =>
+            speedHelper.Updated += (h) =>
             {
-                DownloadProgressChanged(size);
-            });
+                _prog_.AverageSpeed = speedHelper.AverageSpeed;
+                _prog_.ProgressValue = speedHelper.CurrentValue;
+                _prog_.Speed = speedHelper.Speed;
+                _prog_.TargetValue = Message.FileSize;
+                DownloadProgressChanged(_prog_);
+            };
+        }
+        
+        public override void SetDownloader(InitializeMessage iMessage)
+        {
+            try
+            {
+                Message = new DownloaderMessage();
+                //设置文件信息
+                Message.FileSize = iMessage.Size;
+                Message.URL = iMessage.Url;
+                Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
+                Message.Extention = Path.GetExtension(iMessage.FileName);
+                //安排线程
+                Message.Threads.ArrangeThreads((long)Message.FileSize, iMessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : iMessage.Threads);
+                //申请临时文件
+                Message.TempFilePath = iMessage.FilePath;
+                State = DownloadState.Prepared;
+            }
+            catch (Exception e) { ErrorHandler(e); }
+        }
+        
+        public override void Dispose()
+        {
+            Debug.WriteLine("开始释放资源");
+            DisposeThreads();
+            speedHelper.IsEnabled = false;
+            speedHelper.Dispose();
+            speedHelper = null;
+            StartDisposeTemporaryFile();
+        }
+
+        public override void Pause()
+        {
+            Debug.WriteLine("已暂停");
+            if (State != DownloadState.Downloading) return;
+            currentOperationCode++;
+            speedHelper.IsEnabled = false;
+            State = DownloadState.Pause;
+        }
+
+        public override void Refresh()
+        {
+            DisposeThreads();
+            State = DownloadState.Prepared;
+            Start();
+        }
+
+        public override void Start()
+        {
+            if (State == DownloadState.Downloading) return;
+            State = DownloadState.Downloading;
+            speedHelper.IsEnabled = true;
+            Task.Run(async () => { await SetThreadsAsync(); });
+            Debug.WriteLine("任务开始");
+        }
+
+        public override void SetDownloaderFromBreakpoint(DownloaderMessage mes)
+        {
+            //触发事件指示控件加载已完成
+            Message = mes;
+            State = DownloadState.Prepared;
         }
 
         /// <summary>
@@ -38,50 +98,42 @@ namespace TX.Downloaders
         /// </summary>
         private void SpeedHelper_Updated(SpeedCalculator obj)
         {
-            int sec = (int)(message.FileSize / obj.AverageSpeed);
-            Log?.Invoke(Strings.AppResources.GetString("Downloading") + " - " +
-                Converters.StringConverters.GetPrintSize((long)obj.Speed) + "/s " + 
+            int sec = (int)(Message.FileSize / obj.AverageSpeed);
+            string speed = (Strings.AppResources.GetString("Downloading") + " - " +
+                Converters.StringConverter.GetPrintSize((long)obj.Speed) + "/s " + 
                 Strings.AppResources.GetString("Prediction") + 
-                Converters.StringConverters.GetPrintTime(sec));
+                Converters.StringConverter.GetPrintTime(sec));
+            
         }
         
         private SpeedCalculator speedHelper;
-        private DownloaderMessage message;
-
-        private DownloadState _state_;
-        private DownloadState state {
-            get { return _state_; }
-            set { _state_ = value;
-                StateChanged?.Invoke(value);
-            }
-        }
 
         /// <summary>
-        /// 根据message中的线程信息设置线程（直接开始），用于开始和继续下载
-        /// 必须设置message.Threads，必须设置message.TempFile
+        /// 根据Message中的线程信息设置线程（直接开始），用于开始和继续下载
+        /// 必须设置Message.Threads，必须设置Message.TempFile
         /// </summary>
         private async Task SetThreadsAsync()
         {
-            if (message.Threads.ThreadNum <= 0)
+            if (Message.Threads.ThreadNum <= 0)
                 throw new Exception("线程大小未计算");
 
-            //枚举每个线程，由message中的信息设置线程
+            //枚举每个线程，由Message中的信息设置线程
             try
             {
-                for (int threadIndex = 0; threadIndex < message.Threads.ThreadNum; threadIndex++)
+                for (int threadIndex = 0; threadIndex < Message.Threads.ThreadNum; threadIndex++)
                 {
-                    ThreadMessage thm = message.Threads;
+                    ThreadMessage thm = Message.Threads;
                     //线程是否已完成
                     if (thm.ThreadSize[threadIndex] == thm.ThreadTargetSize[threadIndex])
                         continue;
                     //每个线程建立单独的流，在线程结束时由线程负责释放
                     //获取网络流
-                    Stream source = await NetWork.HttpNetWorkMethods.GetResponseStreamAsync(message.URL,
+                    Stream source = await NetWork.HttpNetWorkMethods.GetResponseStreamAsync(Message.URL,
                         thm.ThreadOffset[threadIndex] + thm.ThreadSize[threadIndex],
                         thm.ThreadOffset[threadIndex] + thm.ThreadTargetSize[threadIndex]);
 
                     //获取文件流
-                    FileStream sink = new FileStream(message.TempFilePath, 
+                    FileStream sink = new FileStream(Message.TempFilePath, 
                         FileMode.Open, 
                         FileAccess.Write, 
                         FileShare.ReadWrite);
@@ -103,15 +155,11 @@ namespace TX.Downloaders
         }
 
         /// <summary>
-        /// 当前正在工作的线程组编号，当线程检测到currentOperationCode变化时将自动停止工作
-        /// 自动对1024取模
+        /// 当前正在工作的线程组编号，
+        /// 用于指示线程听从调度，
+        /// 当线程检测到currentOperationCode变化时将自动停止工作。
         /// </summary>
-        private long curopt = 0;
-        private long currentOperationCode
-        {
-            get { return curopt; }
-            set { curopt = value % 1024; }
-        }
+        private ulong currentOperationCode = 0;
 
         /// <summary>
         /// 获取下载线程（Task）
@@ -119,9 +167,9 @@ namespace TX.Downloaders
         /// <param name="downloadStream">网络数据流，线程会从流的开始读threadSize个字节</param>
         /// <param name="fileStream">文件流，线程会把targetSize个字节送入流的开始</param>
         /// <param name="targetSize">目标大小</param>
-        /// <param name="threadIndex">线程编号，用于更新message中的Threads信息</param>
+        /// <param name="threadIndex">线程编号，用于更新Message中的Threads信息</param>
         private Task GetDownloadThread(Stream downloadStream, FileStream fileStream, 
-            long targetSize, int threadIndex, long operationCode)
+            long targetSize, int threadIndex, ulong operationCode)
         {
             Task t = new Task(async () =>
             {
@@ -148,12 +196,11 @@ namespace TX.Downloaders
                         remain -= pieceLength;
 
                         lock (this)
-                        {//更新message中的各种信息，锁定在本线程
-                            message.Threads.ThreadSize[threadIndex] += pieceLength;
-                            message.DownloadSize += pieceLength;
+                        {//更新Message中的各种信息，锁定在本线程
+                            Message.Threads.ThreadSize[threadIndex] += pieceLength;
+                            Message.DownloadSize += pieceLength;
+                            speedHelper.CurrentValue += pieceLength;
                         }
-
-                        ((IProgress<long>)downloadProgress).Report(message.DownloadSize);
                     }
                 }
                 catch (Exception e)
@@ -185,23 +232,23 @@ namespace TX.Downloaders
             //先检查是否已经判断过了，防止重复触发事件
             lock (this)
             {
-                if (state == DownloadState.Done)
+                if (State == DownloadState.Done)
                     return;
-                if (message.DownloadSize >= message.FileSize)
-                    state = DownloadState.Done;
+                if (Message.DownloadSize >= Message.FileSize)
+                    State = DownloadState.Done;
                 else return;
             }
 
             try
             {
                 string path = StorageTools.Settings.DownloadFolderPath;
-                StorageFile file = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
-                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), message.FileName + message.TypeName, NameCollisionOption.GenerateUniqueName);
+                StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
+                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
                 //播放一个通知
-                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + ": " +
-                    Converters.StringConverters.GetPrintSize(message.FileSize), file.Path);
+                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
+                    Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path);
                 //触发事件
-                DownloadComplete?.Invoke(message);
+                DownloadComplete?.Invoke(Message);
             }
             catch(Exception e)
             {
@@ -219,116 +266,40 @@ namespace TX.Downloaders
         {
             lock(this){ 
                 Debug.WriteLine(e.ToString());
-                if (state == DownloadState.Error) return;
-                state = DownloadState.Error;
+                if (State == DownloadState.Error) return;
+                State = DownloadState.Error;
                 DownloadError?.Invoke(e);
-                Log?.Invoke(e.ToString());
             }
-        }
-        
-        public void SetDownloader(Models.InitializeMessage imessage)
-        {
-            try
-            {
-                message = new DownloaderMessage();
-                //设置文件信息
-                message.FileSize = imessage.Size;
-                message.URL = imessage.Url;
-                message.FileName = Path.GetFileNameWithoutExtension(imessage.FileName);
-                message.TypeName = Path.GetExtension(imessage.FileName);
-                //安排线程
-                message.Threads.ArrangeThreads(message.FileSize, imessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : imessage.Threads);
-                //申请临时文件
-                message.TempFilePath = imessage.FilePath;
-                //指示控件加载已完成
-                Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
-                state = DownloadState.Prepared;
-            }
-            catch (Exception e) { ErrorHandler(e); }
         }
 
         /// <summary>
         /// 释放线程资源
         /// </summary>
-        public void DisposeThreads()
+        private void DisposeThreads()
         {
             currentOperationCode++;
         }
-        
+
         /// <summary>
         /// 删除临时文件
         /// </summary>
-        public void StartDisposeTemporaryFile()
+        private void StartDisposeTemporaryFile()
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    StorageFile temp = await StorageFile.GetFileFromPathAsync(message.TempFilePath);
+                    StorageFile temp = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
                     await temp.DeleteAsync();
                     Debug.WriteLine("临时文件删除成功");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.WriteLine(e.ToString());
                 }
             });
         }
-        
-        public void Dispose()
-        {
-            Debug.WriteLine("开始释放资源");
-            DisposeThreads();
-            speedHelper.IsEnabled = false;
-            speedHelper.Dispose();
-            speedHelper = null;
-            StartDisposeTemporaryFile();
-        }
-        
-        public DownloaderMessage GetDownloaderMessage()
-        {
-            return message;
-        }
 
-        public DownloadState GetDownloadState()
-        {
-            return state;
-        }
-        
-        public void Pause()
-        {
-            Log?.Invoke(Strings.AppResources.GetString("Pause"));
-            Debug.WriteLine("已暂停");
-            if (state != DownloadState.Downloading) return;
-            currentOperationCode++;
-            speedHelper.IsEnabled = false;
-            state = DownloadState.Pause;
-        }
-        
-        public void Refresh()
-        {
-            Log?.Invoke(Strings.AppResources.GetString("Refreshing"));
-            DisposeThreads();
-            state = DownloadState.Prepared;
-            Start();
-        }
-        
-        public void Start()
-        {
-            if (state == DownloadState.Downloading) return;
-            state = DownloadState.Downloading;
-            speedHelper.IsEnabled = true;
-            Task.Run(async () => { await SetThreadsAsync(); });
-            Log?.Invoke(Strings.AppResources.GetString("Downloading"));
-            Debug.WriteLine("任务开始");
-        }
-        
-        public void SetDownloader(DownloaderMessage mes)
-        {
-            //触发事件指示控件加载已完成
-            message = mes;
-            state = DownloadState.Prepared;
-            Log?.Invoke(Strings.AppResources.GetString("DownloaderDone"));
-        }
+        private Progress _prog_ = new Progress();
     }
 }

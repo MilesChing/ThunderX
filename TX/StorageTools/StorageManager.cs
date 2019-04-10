@@ -68,7 +68,7 @@ namespace TX.StorageTools
                 if (file.Name == "log.mls") continue;
                 bool remove = true;
                 foreach (DownloadBar bar in MainPage.Current.DownloadBarCollection)
-                    if(bar.downloader.GetDownloaderMessage().TempFilePath == file.Path)
+                    if(bar.downloader.Message.TempFilePath == file.Path)
                     {
                         remove = false;
                         break;

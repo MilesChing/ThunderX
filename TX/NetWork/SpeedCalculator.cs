@@ -12,13 +12,9 @@ namespace TX.NetWork
     /// </summary>
     class SpeedCalculator : IDisposable
     {
-        private double interval = 250;
         private ulong time = 0;
         private Timer timer;
-        private double currentValue = 0;
-        private double lastValue = 0;
-        private double currentSpeed = 0;
-        private double averageSpeed = 0;
+        private long lastValue = 0;
         private bool isEnabled = false;
 
         /// <summary>
@@ -30,35 +26,22 @@ namespace TX.NetWork
         /// <summary>
         /// 当前值
         /// </summary>
-        public double CurrentValue
-        {
-            get { return currentValue; }
-            set { currentValue = value; }
-        }
+        public long CurrentValue { get; set; } = 0;
 
         /// <summary>
-        /// 刷新的时间间隔，以毫秒表示，默认250
+        /// 刷新的时间间隔，以毫秒表示，默认100
         /// </summary>
-        public double Interval
-        {
-            get { return interval; }
-        }
+        public double Interval { get; } = 100;
 
         /// <summary>
         /// 当前速度
         /// </summary>
-        public double Speed
-        {
-            get { return currentSpeed; }
-        }
+        public double Speed { get; private set; } = 0;
 
         /// <summary>
         /// 平均速度
         /// </summary>
-        public double AverageSpeed
-        {
-            get { return averageSpeed; }
-        }
+        public double AverageSpeed { get; private set; } = 0;
 
         /// <summary>
         /// 是否刷新速度
@@ -72,7 +55,7 @@ namespace TX.NetWork
                 {
                     if(timer == null)
                     {
-                        timer = new Timer(interval);
+                        timer = new Timer(Interval);
                         timer.AutoReset = true;
                         timer.Elapsed += Timer_Elapsed;
                     }
@@ -85,17 +68,14 @@ namespace TX.NetWork
                 }
             }
         }
-
-        /// <summary>
-        /// 时间间隔到了
-        /// </summary>
+        
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             time++;
-            currentSpeed = (currentValue - lastValue) / interval * 1000;
-            averageSpeed = (time == 0 ? 0 : ((averageSpeed * (time - 1) + currentSpeed) / time));
-            lastValue = currentValue;
-            Updated(this);
+            Speed = (CurrentValue - lastValue) / Interval * 1000;
+            AverageSpeed = (time == 0 ? 0 : ((AverageSpeed * (time - 1) + Speed) / time));
+            lastValue = CurrentValue;
+            Updated?.Invoke(this);
         }
         
         public void Dispose()
