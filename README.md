@@ -12,6 +12,12 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.7.9.0
+
+- Several bugs are fixed
+- Download stability has been improved
+- Interface adjustments at "New Task" page
+
 ### 1.7.8.0
 
 - Real-time speed display
@@ -24,13 +30,6 @@ This project has two branches. `master` represents the latest stable release. `d
 - The Chinese translation of notifications has been improved
 - Software can better guess the target file's extension
 - Interface adjustments
-
-### 1.7.6.0
-
-- Add dark mode
-- Fix several bugs
-- Interactive notifications are now supported
-- Adjust the interface details and logical relationships between pages
 
 ## Privacy Policy
 
