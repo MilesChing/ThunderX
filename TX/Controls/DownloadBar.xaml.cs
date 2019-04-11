@@ -48,22 +48,22 @@ namespace TX.Controls
         private void DownloaderDownloadProgressChanged(Models.Progress progress)
         {
             int per = (int)((progress.TargetValue == null) ? 0 
-                : (100f * progress.ProgressValue / progress.TargetValue));
+                : (100f * progress.CurrentValue / progress.TargetValue));
             Task.Run(async () =>
             {
                 //更新所有进度显示
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                     () =>
                     {
-                        ProgressBlock.Text = per + "%";
+                        ProgressBlock.Text = (progress.TargetValue == null) ? "-%" : (per + "%");
                         Bar.Value = per;
-                        SizeBlock.Text = StringConverter.GetPrintSize(progress.ProgressValue)
+                        SizeBlock.Text = StringConverter.GetPrintSize(progress.CurrentValue)
                             + " / " + (progress.TargetValue == null ? "--" :
                             StringConverter.GetPrintSize((long)progress.TargetValue));
                         SpeedBlock.Text = StringConverter.GetPrintSize((long)progress.Speed) + "/s ";
                         if(progress.TargetValue != null && progress.AverageSpeed >= 1)
                         {
-                            long time = (long)(((long)progress.TargetValue - progress.ProgressValue) / progress.AverageSpeed);
+                            long time = (long)(((long)progress.TargetValue - progress.CurrentValue) / (progress.AverageSpeed + 0.001));
                             SpeedBlock.Text += Strings.AppResources.GetString("Prediction") + StringConverter.GetPrintTime(time);
                         }
                     });

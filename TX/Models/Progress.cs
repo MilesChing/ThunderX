@@ -19,9 +19,9 @@ namespace TX.Models
         public double AverageSpeed;
 
         /// <summary>
-        /// 进度值
+        /// 当前进度值
         /// </summary>
-        public long ProgressValue;
+        public long CurrentValue;
 
         /// <summary>
         /// 目标值

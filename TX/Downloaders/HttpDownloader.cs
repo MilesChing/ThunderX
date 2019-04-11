@@ -25,7 +25,7 @@ namespace TX.Downloaders
             speedHelper.Updated += (h) =>
             {
                 _prog_.AverageSpeed = speedHelper.AverageSpeed;
-                _prog_.ProgressValue = speedHelper.CurrentValue;
+                _prog_.CurrentValue = speedHelper.CurrentValue;
                 _prog_.Speed = speedHelper.Speed;
                 _prog_.TargetValue = Message.FileSize;
                 DownloadProgressChanged(_prog_);

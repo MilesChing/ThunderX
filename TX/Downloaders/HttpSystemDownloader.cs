@@ -39,10 +39,13 @@ namespace TX.Downloaders
             //临时文件统一删除，由于无法获得文件大小，每次下载都是一次性的
             //表面暂停 嘻嘻嘻嘻
             Message.TempFilePath = "";
+            client.CancelAsync();
             client.Dispose();
             client = null;
             speedHelper.Dispose();
             speedHelper = null;
+            _prog_.AverageSpeed = _prog_.Speed = _prog_.CurrentValue = 0;
+            DownloadProgressChanged(_prog_);
             State = DownloadState.Pause;
         }
 
@@ -88,11 +91,13 @@ namespace TX.Downloaders
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
             client.DownloadProgressChanged += (o,e) => 
             {
+                if (o != client) return;
+
                 speedHelper.CurrentValue = e.BytesReceived;
                 _prog_.Speed = speedHelper.Speed;
                 _prog_.AverageSpeed = speedHelper.AverageSpeed;
                 _prog_.TargetValue = null;
-                _prog_.ProgressValue = speedHelper.CurrentValue;
+                _prog_.CurrentValue = speedHelper.CurrentValue;
                 DownloadProgressChanged?.Invoke(_prog_);
             };
             client.DownloadFileAsync(new Uri(Message.URL), Message.TempFilePath);
@@ -103,6 +108,7 @@ namespace TX.Downloaders
         /// </summary>
         private async void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
+            if (sender != client) return;
             try
             {
                 string path = StorageTools.Settings.DownloadFolderPath;
@@ -110,7 +116,7 @@ namespace TX.Downloaders
                 await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
                 //播放一个通知
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + ": " +
-                    Converters.StringConverter.GetPrintSize(_prog_.ProgressValue), file.Path);
+                    Converters.StringConverter.GetPrintSize(_prog_.CurrentValue), file.Path);
                 //触发事件
                 DownloadComplete?.Invoke(Message);
             }
