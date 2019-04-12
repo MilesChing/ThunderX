@@ -60,6 +60,7 @@
                     IsItemClickEnabled="False"
                     ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
                     ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
+                    
                     ItemsSource="{x:Bind linkAnalysisMessages}"/>
 
                 <Border Style="{ThemeResource TXBigBorder}" />

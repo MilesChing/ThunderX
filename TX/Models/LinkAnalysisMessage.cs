@@ -11,6 +11,14 @@ namespace TX.Models
     /// </summary>
     public class LinkAnalysisMessage
     {
+        public LinkAnalysisMessage(string message)
+        {
+            Message = message;
+        }
+
+        /// <summary>
+        /// 消息包括的文本
+        /// </summary>
         public string Message { get; set; } = "";
     }
 }

@@ -122,9 +122,11 @@
     <Compile Include="Models\ThreadMessage.cs" />
     <Compile Include="NetWork\HttpNetWorkMethods.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\HttpAnalyser.cs" />
-    <Compile Include="Interfaces\IAnalyser.cs" />
+    <Compile Include="NetWork\NetWorkAnalysers\AbstractAnalyser.cs" />
     <Compile Include="NetWork\SpeedCalculator.cs" />
     <Compile Include="Converters\UrlConverter.cs" />
+    <Compile Include="NetWork\URLAnalysers\AbstractURLAnalyser.cs" />
+    <Compile Include="NetWork\URLAnalysers\ThunderURLAnalyser.cs" />
     <Compile Include="NewTaskPage.xaml.cs">
       <DependentUpon>NewTaskPage.xaml</DependentUpon>
     </Compile>

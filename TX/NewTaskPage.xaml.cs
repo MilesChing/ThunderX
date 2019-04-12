@@ -21,7 +21,7 @@ namespace TX
     public sealed partial class NewTaskPage : Page
     {
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
-        private IAnalyser analyser = null;
+        private AbstractAnalyser analyser = null;
         private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages = new ObservableCollection<LinkAnalysisMessage>();
 
         public NewTaskPage()
@@ -64,7 +64,7 @@ namespace TX
             //设置相关视觉控制器，在构造方法中调用
             ThreadLayoutVisibilityManager = new VisibilityAnimationManager(ThreadLayout);
         }
-        
+
         private async void Clipboard_ContentChanged(object sender, object e)
         {
             try
@@ -84,51 +84,51 @@ namespace TX
                 Debug.WriteLine(ex.ToString());
             }
         }
-        
+
         private async void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SubmitButton.IsEnabled = false;
             string url = UrlBox.Text;
-            if (UrlConverter.MaybeLegal(url))
+            AbstractAnalyser manalyser = UrlConverter.GetAnalyser(url);
+            if (manalyser == null)
             {
-                IAnalyser manalyser = UrlConverter.GetAnalyser(url);
-                await manalyser.GetResponseAsync();
-                if (url == UrlBox.Text)
+                ApplyVisualDetail(new NewTaskPageVisualDetail());
+                return;
+            }
+            await manalyser.SetURLAsync(url);
+            if (url == UrlBox.Text)
+            {
+                //确保url不会发生变化
+                lock (this)
                 {
-                    //确保url不会发生变化
-                    lock (this)
-                    {
-                        analyser?.Dispose();
-                        analyser = manalyser;
-                        OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
-                        OurAdviceBlock.Opacity = 0.5;
-                        if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
+                    analyser?.Dispose();
+                    analyser = manalyser;
+                    OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
+                    OurAdviceBlock.Opacity = 0.5;
+                    if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
 
-                        if (analyser.CheckUrl())
-                        {
-                            OurAdviceBlock.Text = analyser.GetRecommendedName();
-                            OurAdviceBlock.Opacity = 1;
-                            SubmitButton.IsEnabled = true;
-                            ApplyVisualDetail(analyser.GetVisualDetail());
-                            return;
-                        }
-                        else
-                        {
-                            analyser.Dispose();
-                            analyser = null;
-                        }
+                    ApplyVisualDetail(analyser.GetVisualDetail());
+
+                    if (analyser.IsLegal())
+                    {
+                        OurAdviceBlock.Text = analyser.GetRecommendedName();
+                        OurAdviceBlock.Opacity = 1;
+                        SubmitButton.IsEnabled = true;
+                    }
+                    else
+                    {
+                        analyser.Dispose();
+                        analyser = null;
                     }
                 }
-                else manalyser.Dispose();
             }
-
-            ApplyVisualDetail(new NewTaskPageVisualDetail());
+            else manalyser.Dispose();
         }
-        
+
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Models.InitializeMessage im = new Models.InitializeMessage(
-                analyser.GetUrl(),
+                analyser.URL,
                 (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
                 (int)ThreadNumSlider.Value,
                 analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
@@ -158,8 +158,18 @@ namespace TX
                 else ThreadLayoutVisibilityManager.Hide();
             }
 
+            if (detail.LinkAnalysisMessages != null && linkAnalysisMessages.Count == detail.LinkAnalysisMessages.Length)
+            {
+                for (int i = 0; i < linkAnalysisMessages.Count; i++)
+                {
+                    if (detail.LinkAnalysisMessages[i].Message != linkAnalysisMessages[i].Message) break;
+                    if (i == linkAnalysisMessages.Count - 1) return;
+                }
+            }
+
             linkAnalysisMessages.Clear();
-            if(detail.LinkAnalysisMessages != null && detail.LinkAnalysisMessages.Length != 0)
+
+            if (detail.LinkAnalysisMessages != null && detail.LinkAnalysisMessages.Length != 0)
                 foreach (LinkAnalysisMessage mes in detail.LinkAnalysisMessages)
                     linkAnalysisMessages.Add(mes);
         }

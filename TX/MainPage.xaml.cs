@@ -60,7 +60,7 @@ namespace TX
                                 try
                                 {
                                     var analyser = UrlConverter.GetAnalyser(ms.URL);
-                                    await analyser.GetResponseAsync();
+                                    await analyser.SetURLAsync(ms.URL);
                                     AbstractDownloader dw = analyser.GetDownloader();
                                     DownloadBar db = new DownloadBar();
                                     dw.SetDownloaderFromBreakpoint(ms);

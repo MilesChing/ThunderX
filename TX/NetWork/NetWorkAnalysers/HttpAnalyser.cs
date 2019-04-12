@@ -7,22 +7,21 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Downloaders;
+using TX.NetWork.URLAnalysers;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
-    class HttpAnalyser : IAnalyser
+    class HttpAnalyser : AbstractAnalyser
     {
-        private string url = null;
+        private AbstractURLAnalyser[] analysers = { new ThunderURLAnalyser() };
+
+        private string legitimacyInformation = null;
+
         private HttpWebResponse _hresp_ = null;
 
-        public HttpAnalyser(string url)
+        public override string GetRecommendedName()
         {
-            this.url = url;
-            Debug.WriteLine("建立Http分析器：Url=" + url);
-        }
-
-        public string GetRecommendedName()
-        {
+            if (_hresp_ == null) return null;
             //https://blog.csdn.net/ash292340644/article/details/52412674
             try
             {
@@ -51,13 +50,14 @@ namespace TX.NetWork.NetWorkAnalysers
             }
         }
 
-        public long GetStreamSize()
+        public override long GetStreamSize()
         {
             return _hresp_ != null ? _hresp_.ContentLength : 0;
         }
 
-        public AbstractDownloader GetDownloader()
+        public override AbstractDownloader GetDownloader()
         {
+            if (_hresp_ == null) return null;
             var size = GetStreamSize();
             Debug.WriteLine("建立Http下载器：" + (size > 0 ? "HttpDownloader" : "HttpSystemDownloader"));
             //若无法获取size则返回系统下载器处理
@@ -66,43 +66,69 @@ namespace TX.NetWork.NetWorkAnalysers
             else return new HttpSystemDownloader();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Debug.WriteLine("分析器已释放");
             _hresp_?.Dispose();
             _hresp_ = null;
+            URL = null;
         }
 
-        public bool CheckUrl()
+        public override bool IsLegal()
         {
-            Debug.WriteLine("检测链接 " + url + " " + _hresp_ == null ? "非法" : "合法");
-            if (_hresp_ == null) return false;
-            else return true;
+            Debug.WriteLine("检测链接 " + URL + " " + _hresp_ == null ? "非法" : "合法");
+            return _hresp_ != null;
         }
-
-        public string GetUrl()
-        {
-            return url;
-        }
-
-        public async Task GetResponseAsync()
+        
+        private async Task GetResponseAsync()
         {
             try
             {
-                HttpWebRequest req = WebRequest.CreateHttp(url);
-                _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
+                if (_hresp_ != null) _hresp_.Dispose();
+                _hresp_ = null;
+                if (Converters.UrlConverter.MaybeLegal(URL))
+                {
+                    HttpWebRequest req = WebRequest.CreateHttp(URL);
+                    _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
+                    legitimacyInformation = "成功连接到目标服务器";
+                }
+                else legitimacyInformation = null;
             }
             catch (Exception)
             {
+                _hresp_ = null;
+                legitimacyInformation = "无法连接：请检查设备的网络连接";
                 return;
             }
         }
 
-        public NewTaskPageVisualDetail GetVisualDetail()
+        public override NewTaskPageVisualDetail GetVisualDetail()
         {
-            if (_hresp_ == null) return null;
             bool needThreadNum = (GetStreamSize() > 0);
-            return new NewTaskPageVisualDetail(needThreadNum);
+            NewTaskPageVisualDetail detail = new NewTaskPageVisualDetail(needThreadNum);
+            List<Models.LinkAnalysisMessage> messages = new List<Models.LinkAnalysisMessage>();
+
+            foreach (AbstractURLAnalyser analyser in analysers)
+                if (analyser.Message != null)
+                    messages.Add(new Models.LinkAnalysisMessage(analyser.Message));
+
+            if (legitimacyInformation != null)
+                messages.Add(new Models.LinkAnalysisMessage(legitimacyInformation));
+            
+            return new NewTaskPageVisualDetail(needThreadNum, messages.ToArray());
+        }
+
+        public override async Task SetURLAsync(string url)
+        {
+            Dispose();
+            URL = url;
+            foreach(AbstractURLAnalyser analyser in analysers)
+            {
+                analyser.OriginalURL = URL;
+                URL = analyser.TransferedURL;
+            }
+            legitimacyInformation = null;
+            await GetResponseAsync();
         }
     }
 }

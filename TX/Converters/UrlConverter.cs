@@ -45,10 +45,10 @@ namespace TX.Converters
         /// <summary>
         /// 返回用于该类型链接的分析器
         /// </summary>
-        public static IAnalyser GetAnalyser(string url)
+        public static AbstractAnalyser GetAnalyser(string url)
         {
             url = TranslateURLThunder(url);
-            if (IsHttpUrl(url)) return new HttpAnalyser(url);
+            if (IsHttpUrl(url)) return new HttpAnalyser();
             else return null;
         }
 

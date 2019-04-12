@@ -7,38 +7,43 @@ using TX.Downloaders;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
-    public interface IAnalyser : IDisposable
+    public abstract class AbstractAnalyser : IDisposable
     {
-        string GetUrl();
+        public string URL { get; protected set; }
 
         /// <summary>
-        /// 发出请求并获取回复，必须先调用这个方法
+        /// 准备URL
         /// </summary>
-        Task GetResponseAsync();
+        public abstract Task SetURLAsync(string url);
 
         /// <summary>
         /// 检查是否合法
         /// </summary>
-        bool CheckUrl();
+        public abstract bool IsLegal();
 
         /// <summary>
         /// 获得推荐的文件全名
         /// </summary>
-        string GetRecommendedName();
+        public abstract string GetRecommendedName();
 
         /// <summary>
         /// 获取一个空下载器
         /// </summary>
-        AbstractDownloader GetDownloader();
+        public abstract AbstractDownloader GetDownloader();
 
         /// <summary>
         /// 获取流长度，可能为-1
         /// </summary>
-        long GetStreamSize();
+        public abstract long GetStreamSize();
 
         /// <summary>
         /// 获取URL对应的界面细节
         /// </summary>
-        NewTaskPageVisualDetail GetVisualDetail();
+        public abstract NewTaskPageVisualDetail GetVisualDetail();
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public abstract void Dispose();
     }
 }
