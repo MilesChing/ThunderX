@@ -27,9 +27,9 @@ namespace TX.StorageTools
         {
             get
             {
-                string t = (string)Windows.Storage.ApplicationData.Current.LocalSettings.Values["DownloadFolderPath"];
-                if (t == null) return ApplicationData.Current.LocalCacheFolder.Path;
-                else return t;
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("DownloadFolderPath"))
+                    return (string)ApplicationData.Current.LocalSettings.Values["DownloadFolderPath"];
+                else return ApplicationData.Current.LocalFolder.Path;
             }
             set
             {
@@ -44,9 +44,9 @@ namespace TX.StorageTools
         {
             get
             {
-                try { return (int)ApplicationData.Current.LocalSettings.Values["ThreadNumber"]; }
-                //如果取不到就用默认值
-                catch (NullReferenceException) { return 2; }
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("ThreadNumber"))
+                    return (int)ApplicationData.Current.LocalSettings.Values["ThreadNumber"];
+                else return 1;
             }
             set { ApplicationData.Current.LocalSettings.Values["ThreadNumber"] = value; }
         }
@@ -58,9 +58,9 @@ namespace TX.StorageTools
         {
             get
             {
-                try { return (bool)ApplicationData.Current.LocalSettings.Values["DarkMode"]; }
-                //如果取不到就用默认值
-                catch (NullReferenceException) { return false; }
+                if(ApplicationData.Current.LocalSettings.Values.ContainsKey("DarkMode"))
+                    return (bool)ApplicationData.Current.LocalSettings.Values["DarkMode"];
+                else return false;
             }
             set { ApplicationData.Current.LocalSettings.Values["DarkMode"] = value; }
         }

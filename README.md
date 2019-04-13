@@ -12,6 +12,12 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.7.10.0
+
+- Fixed an issue that occurs when a task is paused
+- Several UI adjustments
+- Provides messages of URL analyses in details
+
 ### 1.7.9.0
 
 - Several bugs are fixed

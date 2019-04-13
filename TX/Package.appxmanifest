@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="22891MilesChing.370350C4C6787" Publisher="CN=E1889EC3-2063-4EAE-9DA8-1A44C430A0CE" Version="1.7.9.0" />
+  <Identity Name="22891MilesChing.370350C4C6787" Publisher="CN=E1889EC3-2063-4EAE-9DA8-1A44C430A0CE" Version="1.7.10.0" />
   <mp:PhoneIdentity PhoneProductId="5fba0098-a8ff-4b8f-a6a0-0face7507eef" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Thunder X</DisplayName>
