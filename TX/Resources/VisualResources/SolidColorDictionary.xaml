@@ -1,0 +1,26 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX.Resources.VisualResources">
+
+    <SolidColorBrush x:Key="SolidSystemAccentColorBrush" Color="{ThemeResource SystemAccentColor}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorLight3Brush"  Color="{ThemeResource SystemAccentColorLight3}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorLight2Brush"  Color="{ThemeResource SystemAccentColorLight2}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorLight1Brush"  Color="{ThemeResource SystemAccentColorLight1}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorDark3Brush"  Color="{ThemeResource SystemAccentColorDark3}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorDark2Brush"  Color="{ThemeResource SystemAccentColorDark2}"/>
+    <SolidColorBrush x:Key="SolidSystemAccentColorDark1Brush"  Color="{ThemeResource SystemAccentColorDark1}"/>
+    
+    <SolidColorBrush x:Key="SolidSystemBaseHighColorBrush"  Color="{ThemeResource SystemBaseHighColor}"/>
+    <SolidColorBrush x:Key="SolidSystemBaseLowColorBrush"  Color="{ThemeResource SystemBaseLowColor}"/>
+    <SolidColorBrush x:Key="SolidSystemBaseMediumHighColorBrush"  Color="{ThemeResource SystemBaseMediumHighColor}"/>
+    <SolidColorBrush x:Key="SolidSystemBaseMediumColorBrush"  Color="{ThemeResource SystemBaseMediumColor}"/>
+    <SolidColorBrush x:Key="SolidSystemBaseMediumLowColorBrush"  Color="{ThemeResource SystemBaseMediumLowColor}"/>
+
+    <SolidColorBrush x:Key="SolidSystemAltHighColorBrush"  Color="{ThemeResource SystemAltHighColor}"/>
+    <SolidColorBrush x:Key="SolidSystemAltLowColorBrush"  Color="{ThemeResource SystemAltLowColor}"/>
+    <SolidColorBrush x:Key="SolidSystemAltMediumColorBrush"  Color="{ThemeResource SystemAltMediumColor}"/>
+    <SolidColorBrush x:Key="SolidSystemAltMediumHighColorBrush"  Color="{ThemeResource SystemAltMediumHighColor}"/>
+    <SolidColorBrush x:Key="SolidSystemAltMediumLowColorBrush"  Color="{ThemeResource SystemAltMediumLowColor}"/>
+
+</ResourceDictionary>

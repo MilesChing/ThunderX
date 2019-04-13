@@ -12,11 +12,12 @@
 
         <DataTemplate x:DataType="models:LinkAnalysisMessage"
                       x:Key="LinkAnalysisMessageListDataTemplate">
-            <Grid Background="{ThemeResource SystemAccentColorBrush}"
+            <Grid Background="{ThemeResource SolidSystemAccentColorBrush}"
                   CornerRadius="2"
                   Padding="4">
                 <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
-                       Text="{x:Bind Message}"/>
+                       Text="{x:Bind Message}"
+                       Foreground="{ThemeResource SolidSystemAltMediumHighColorBrush}"/>
             </Grid>
             
         </DataTemplate>
@@ -60,7 +61,6 @@
                     IsItemClickEnabled="False"
                     ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
                     ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
-                    
                     ItemsSource="{x:Bind linkAnalysisMessages}"/>
 
                 <Border Style="{ThemeResource TXBigBorder}" />

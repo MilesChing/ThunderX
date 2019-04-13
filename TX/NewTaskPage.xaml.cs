@@ -22,7 +22,8 @@ namespace TX
     {
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
         private AbstractAnalyser analyser = null;
-        private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages = new ObservableCollection<LinkAnalysisMessage>();
+        private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages 
+            = new ObservableCollection<LinkAnalysisMessage>();
 
         public NewTaskPage()
         {

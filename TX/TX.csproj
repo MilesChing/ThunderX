@@ -137,20 +137,17 @@
     <Compile Include="StorageTools\JsonHelper.cs" />
     <Compile Include="StorageTools\Settings.cs" />
     <Compile Include="StorageTools\StorageManager.cs" />
-    <Compile Include="Strings\AppResources.cs" />
+    <Compile Include="Resources\Strings\AppResources.cs" />
     <Compile Include="Toasts\ToastManager.cs" />
     <Compile Include="VisualManager\PropertyAnimationManager.cs" />
     <Compile Include="VisualManager\VisibilityAnimationManager.cs" />
-    <Compile Include="Welcome.xaml.cs">
-      <DependentUpon>Welcome.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <PRIResource Include="Strings\en-Us\Resources.resw" />
-    <PRIResource Include="Strings\zh-CN\Resources.resw" />
+    <PRIResource Include="Resources\Strings\en-Us\Resources.resw" />
+    <PRIResource Include="Resources\Strings\zh-CN\Resources.resw" />
     <None Include="TX_StoreKey.pfx" />
     <None Include="TX_TemporaryKey.pfx" />
   </ItemGroup>
@@ -205,7 +202,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="Data\toast_complete.xml" />
+    <Content Include="Resources\XMLs\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
@@ -226,11 +223,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SetPage.xaml">
+    <Page Include="Resources\VisualResources\AcrylicBrushDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Welcome.xaml">
+    <Page Include="Resources\VisualResources\BorderDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\VisualResources\ButtonStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\VisualResources\SolidColorDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\VisualResources\TextBlockStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SetPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

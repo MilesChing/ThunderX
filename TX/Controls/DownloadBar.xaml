@@ -52,11 +52,11 @@
     <xp:Shadow x:Name="shadow"
                Z_Depth="1"
                Height="80">
-        <Grid Background="{ThemeResource TXBarBack}">
+        <Grid Background="{ThemeResource SolidSystemAltHighColorBrush}">
             
             <ProgressBar x:Name="Bar"
                          Background="Transparent"
-                         Foreground="{StaticResource SystemControlBackgroundAccentBrush}"
+                         Foreground="{ThemeResource SolidSystemAccentColorBrush}"
                          Minimum="0"
                          Height="4"
                          Maximum="100"
@@ -74,8 +74,8 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="LeftSmallBar"
-                      Background="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" 
-                      Opacity="0.1"/>
+                      Background="{ThemeResource SolidSystemAccentColorBrush}" 
+                      Opacity="0.2"/>
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
@@ -91,7 +91,7 @@
                                FontWeight="SemiBold"
                                FontSize="18"
                                Margin="16,4,4,4"
-                               Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" />
+                               Foreground="{ThemeResource SolidSystemAccentColorBrush}" />
 
                     <StackPanel Margin="16,0,0,0"
                                 Grid.Row="1"
@@ -100,14 +100,13 @@
                         <TextBlock x:Name="SizeBlock"
                                FontWeight="SemiBold"
                                FontSize="10"
-                               Foreground="#777777"
+                               Foreground="{ThemeResource SolidSystemBaseMediumColorBrush}"
                                Text="177210 kB / 53986 kB" />
 
                         <TextBlock x:Name="SpeedBlock"
                                Margin="8,0,0,0"
                                FontSize="10"
-                               Opacity="0.5"
-                               Foreground="#777777"
+                               Foreground="{ThemeResource SolidSystemBaseMediumLowColorBrush}"
                                Text="1MB/s"
                                MaxLines="1"/>
 

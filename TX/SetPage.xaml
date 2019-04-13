@@ -49,12 +49,10 @@
                 <TextBlock x:Name="NowFolderTextBlock" 
                            FontFamily="Consolas"
                            TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           Foreground="{ThemeResource SystemControlHighlightAccentBrush}"
+                           Foreground="{ThemeResource SolidSystemAccentColorBrush}"
                            Text="..."/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <Button x:Name="SubmitButton"
-                        Width="150"
-                        Height="40"
                         Style="{ThemeResource TXButtonStyle}"
                         x:Uid="SetPage_SubmitButton"
                         Click="SubmitButton_Click" />
@@ -67,6 +65,7 @@
                 <Border Style="{ThemeResource TXBorder}" />
                 <RatingControl HorizontalAlignment="Left"
                                PlaceholderValue="5"
+                               Foreground="{ThemeResource SolidSystemAccentColorLight1Brush}"
                                Tapped="RatingControl_Tapped">
                 </RatingControl>
                 <Border Style="{ThemeResource TXBigBorder}" />

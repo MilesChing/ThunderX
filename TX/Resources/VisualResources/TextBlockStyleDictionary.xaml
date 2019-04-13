@@ -1,0 +1,27 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX.Resources.VisualResources">
+
+    <Style x:Key="TXTitle"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource SubheaderTextBlockStyle}">
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style x:Key="TXSubTitle"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="Opacity" Value="0.9"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+
+    <Style x:Key="TXPlainText"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="FontWeight" Value="SemiLight"/>
+    </Style>
+
+</ResourceDictionary>
