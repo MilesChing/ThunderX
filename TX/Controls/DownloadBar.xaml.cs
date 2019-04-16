@@ -66,56 +66,63 @@ namespace TX.Controls
         
         private void DownloaderStateChanged(Enums.DownloadState state)
         {
-                Task.Run(async () =>
+            //在后台运行（挂起或最小化）不更新UI
+            if (((App)App.Current).InBackground) return;
+            Task.Run(async () =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    if (state == Enums.DownloadState.Pause)
                     {
-                        if (state == Enums.DownloadState.Pause)
-                        {
-                            PauseButton.IsEnabled = false;
-                            PlayButton.IsEnabled = true;
-                            RefreshButton.IsEnabled = true;
-                        }
-                        else if(state == Enums.DownloadState.Error)
-                        {
-                            PauseButton.IsEnabled = false;
-                            PlayButton.IsEnabled = false;
-                            RefreshButton.IsEnabled = true;
-                        }
-                        else if(state == Enums.DownloadState.Downloading)
-                        {
-                            PauseButton.IsEnabled = true;
-                            PlayButton.IsEnabled = false;
-                            RefreshButton.IsEnabled = true;
-                        }
-                        else if (state == Enums.DownloadState.Done)
-                        {
-                            Bar.Value = 100;
-                            ProgressBlock.Text = "100%";
-                            PlayButton.IsEnabled = false;
-                            PauseButton.IsEnabled = false;
-                            RefreshButton.IsEnabled = false;
-                        }
-                        else if(state == Enums.DownloadState.Prepared)
-                        {
-                            HideGlassLabel.Begin();
-                            
-                            Models.DownloaderMessage message = downloader.Message;
-                            NameBlock.Text = message.FileName + message.Extention;
-                            PauseButton.IsEnabled = false;
-                            PlayButton.IsEnabled = true;
-                            RefreshButton.IsEnabled = false;
-                            int per = (int)((message.FileSize == null) ? 0
-                                : (100f * message.DownloadSize / message.FileSize));
-                            ProgressBlock.Text = (message.FileSize == null) ? "-%" : (per + "%");
-                            Bar.Value = per;
-                            SizeBlock.Text = StringConverter.GetPrintSize(message.DownloadSize)
-                                + " / " + (message.FileSize == null ? "--" :
-                                StringConverter.GetPrintSize((long)message.FileSize));
-                            SpeedBlock.Text = "-/s ";
-                        }
-                    });
+                        PauseButton.IsEnabled = false;
+                        PlayButton.IsEnabled = true;
+                        DeleteButton.IsEnabled = true;
+                        RefreshButton.IsEnabled = true;
+                    }
+                    else if (state == Enums.DownloadState.Error)
+                    {
+                        PauseButton.IsEnabled = false;
+                        PlayButton.IsEnabled = false;
+                        DeleteButton.IsEnabled = true;
+                        RefreshButton.IsEnabled = true;
+                    }
+                    else if (state == Enums.DownloadState.Downloading)
+                    {
+                        PauseButton.IsEnabled = true;
+                        PlayButton.IsEnabled = false;
+                        DeleteButton.IsEnabled = true;
+                        RefreshButton.IsEnabled = true;
+                    }
+                    else if (state == Enums.DownloadState.Done)
+                    {
+                        Bar.Value = 100;
+                        ProgressBlock.Text = "100%";
+                        PlayButton.IsEnabled = false;
+                        PauseButton.IsEnabled = false;
+                        DeleteButton.IsEnabled = false;
+                        RefreshButton.IsEnabled = false;
+                    }
+                    else if (state == Enums.DownloadState.Prepared)
+                    {
+                        HideGlassLabel.Begin();
+
+                        Models.DownloaderMessage message = downloader.Message;
+                        NameBlock.Text = message.FileName + message.Extention;
+                        PauseButton.IsEnabled = false;
+                        PlayButton.IsEnabled = true;
+                        DeleteButton.IsEnabled = true;
+                        RefreshButton.IsEnabled = false;
+                        int per = (int)((message.FileSize == null) ? 0
+                            : (100f * message.DownloadSize / message.FileSize));
+                        ProgressBlock.Text = (message.FileSize == null) ? "-%" : (per + "%");
+                        Bar.Value = per;
+                        SizeBlock.Text = StringConverter.GetPrintSize(message.DownloadSize)
+                            + " / " + (message.FileSize == null ? "--" :
+                            StringConverter.GetPrintSize((long)message.FileSize));
+                        SpeedBlock.Text = "-/s ";
+                    }
                 });
+            });
         }
         
         /// <summary>

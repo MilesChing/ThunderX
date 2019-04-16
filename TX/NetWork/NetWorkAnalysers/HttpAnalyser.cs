@@ -90,14 +90,14 @@ namespace TX.NetWork.NetWorkAnalysers
                 {
                     HttpWebRequest req = WebRequest.CreateHttp(URL);
                     _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
-                    legitimacyInformation = "成功连接到目标服务器";
+                    legitimacyInformation = Strings.AppResources.GetString("SuccessfullyConnected");
                 }
                 else legitimacyInformation = null;
             }
             catch (Exception)
             {
                 _hresp_ = null;
-                legitimacyInformation = "无法连接：请检查设备的网络连接";
+                legitimacyInformation = Strings.AppResources.GetString("UnableToConnect");
                 return;
             }
         }

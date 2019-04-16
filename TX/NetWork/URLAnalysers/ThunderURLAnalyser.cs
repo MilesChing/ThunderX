@@ -19,11 +19,13 @@ namespace TX.NetWork.URLAnalysers
             try
             {
                 string t = Encoding.ASCII.GetString(System.Convert.FromBase64String(url.Substring(10, url.Length - 11)));
-                Message = "检测到Thunder链接：完成解析";
+                Message = Strings.AppResources.GetString("ThunderLinkDetected") + " - "
+                    + Strings.AppResources.GetString("ParsingCompleted");
                 return t.Substring(2, t.Length - 4);
             }
             catch (Exception) {
-                Message = "检测到Thunder链接：解析出错";
+                Message = Strings.AppResources.GetString("ThunderLinkDetected") + " - "
+                    + Strings.AppResources.GetString("ParsingFailed");
                 return url;
             }
         }

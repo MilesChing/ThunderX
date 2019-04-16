@@ -156,6 +156,12 @@
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>Start New</value>
   </data>
+  <data name="ParsingCompleted" xml:space="preserve">
+    <value>Parsing completed</value>
+  </data>
+  <data name="ParsingFailed" xml:space="preserve">
+    <value>Parsing failed</value>
+  </data>
   <data name="Pause" xml:space="preserve">
     <value>Pause</value>
   </data>
@@ -197,6 +203,9 @@
   </data>
   <data name="SomethingWrong" xml:space="preserve">
     <value>Something goes wrong</value>
+  </data>
+  <data name="ThunderLinkDetected" xml:space="preserve">
+    <value>Thunderbolt link detected</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
