@@ -78,5 +78,23 @@ namespace TX.Downloaders
         /// 一个布尔值指示外部是否需要创建临时文件并在InitialMessage内提供地址
         /// </summary>
         public abstract bool NeedTemporaryFilePath { get; }
+
+        /// <summary>
+        /// 获取该下载器的下载器类型
+        /// </summary>
+        public abstract Enums.DownloaderType Type { get; }
+
+        /// <summary>
+        /// 根据传入的DownloaderType获取对应Downloader
+        /// </summary>
+        public static AbstractDownloader GetDownloaderFromType(DownloaderType type)
+        {
+            switch (type)
+            {
+                case DownloaderType.HttpSystemDownloader: return new HttpSystemDownloader();
+                case DownloaderType.HttpDownloader: return new HttpDownloader();
+                default: return null;
+            }
+        }
     }
 }

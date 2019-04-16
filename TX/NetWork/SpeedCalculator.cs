@@ -31,7 +31,7 @@ namespace TX.NetWork
         /// <summary>
         /// 刷新的时间间隔，以毫秒表示，默认100
         /// </summary>
-        public double Interval { get; } = 100;
+        public double Interval { get; } = 300;
 
         /// <summary>
         /// 当前速度

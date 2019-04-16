@@ -40,6 +40,7 @@ namespace TX.Downloaders
             try
             {
                 Message = new DownloaderMessage();
+                Message.DownloaderType = Type;
                 //设置文件信息
                 Message.FileSize = iMessage.Size;
                 Message.URL = iMessage.Url;
@@ -102,6 +103,8 @@ namespace TX.Downloaders
             speedHelper.CurrentValue = mes.DownloadSize;
             State = DownloadState.Prepared;
         }
+
+        public override DownloaderType Type { get { return DownloaderType.HttpDownloader; } }
 
         /// <summary>
         /// 根据Message中的线程信息设置线程（直接开始），用于开始和继续下载

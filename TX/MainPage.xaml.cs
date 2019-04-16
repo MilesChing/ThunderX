@@ -56,21 +56,11 @@ namespace TX
             if (list != null)
                 foreach (Models.DownloaderMessage ms in list)
                 {
-                    try
-                    {
-                        DownloadBar db = new DownloadBar();
-                        DownloadBarCollection.Add(db);
-                        var analyser = UrlConverter.GetAnalyser(ms.URL);
-                        await analyser.SetURLAsync(ms.URL);
-                        AbstractDownloader dw = analyser.GetDownloader();
-                        db.SetDownloader(dw);
-                        dw.SetDownloaderFromBreakpoint(ms);
-                    }
-                    catch (Exception e)
-                    {
-                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
-                            e.Message);
-                    }
+                    DownloadBar db = new DownloadBar();
+                    DownloadBarCollection.Add(db);
+                    AbstractDownloader dw = AbstractDownloader.GetDownloaderFromType(ms.DownloaderType);
+                    db.SetDownloader(dw);
+                    dw.SetDownloaderFromBreakpoint(ms);
                 }
         }
 
@@ -183,14 +173,13 @@ namespace TX
         /// 添加一个DownloadBar到主界面，为了避免线程问题写在这里
         /// 这段代码包含建立下载器的细节
         /// </summary>
-        public async void AddDownloadBar(Models.InitializeMessage message, AbstractDownloader downloader)
+        public async void AddDownloadBar(AbstractDownloader downloader)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {
                  DownloadBar db = new DownloadBar();
-                 downloader.SetDownloader(message);
-                 db.SetDownloader(downloader);
                  DownloadBarCollection.Add(db);
+                 db.SetDownloader(downloader);
              });
         }
     }

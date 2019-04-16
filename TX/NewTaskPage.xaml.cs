@@ -129,6 +129,7 @@ namespace TX
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
+            SubmitButton.IsEnabled = false;
             AbstractDownloader downloader = analyser.GetDownloader();
 
             Models.InitializeMessage im = new Models.InitializeMessage(
@@ -138,7 +139,9 @@ namespace TX
                 analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
                 downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null);
 
-            MainPage.Current.AddDownloadBar(im, downloader);
+            downloader.SetDownloader(im);
+
+            MainPage.Current.AddDownloadBar(downloader);
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口

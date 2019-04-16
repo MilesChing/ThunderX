@@ -1,4 +1,6 @@
-﻿namespace TX.Models
+﻿using System;
+
+namespace TX.Models
 {
     public class DownloaderMessage
     {
@@ -50,5 +52,10 @@
         /// 线程信息
         /// </summary>
         public ThreadMessage Threads;
+
+        /// <summary>
+        /// 下载器类型
+        /// </summary>
+        public Enums.DownloaderType DownloaderType;
     }
 }

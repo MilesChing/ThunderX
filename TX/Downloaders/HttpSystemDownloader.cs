@@ -73,6 +73,7 @@ namespace TX.Downloaders
             if (State != DownloadState.Uninitialized) return;
 
             Message = new DownloaderMessage();
+            Message.DownloaderType = Type;
             Message.DownloadSize = 0;
             Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
             Message.Extention = Path.GetExtension(iMessage.FileName);
@@ -112,7 +113,10 @@ namespace TX.Downloaders
             };
             client.DownloadFileAsync(new Uri(Message.URL), Message.TempFilePath);
         }
+
         public override bool NeedTemporaryFilePath { get { return false; } }
+
+        public override DownloaderType Type { get { return DownloaderType.HttpSystemDownloader; } }
 
         /// <summary>
         /// 下载完成事件的回调函数
