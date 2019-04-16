@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using TX.Converters;
+using TX.Downloaders;
 using TX.Models;
 using TX.NetWork;
 using TX.NetWork.NetWorkAnalysers;
@@ -128,14 +129,16 @@ namespace TX
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
+            AbstractDownloader downloader = analyser.GetDownloader();
+
             Models.InitializeMessage im = new Models.InitializeMessage(
                 analyser.URL,
                 (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
                 (int)ThreadNumSlider.Value,
                 analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
-                await StorageManager.GetTemporaryFileAsync());
+                downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null);
 
-            MainPage.Current.AddDownloadBar(im, analyser.GetDownloader());
+            MainPage.Current.AddDownloadBar(im, downloader);
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
@@ -148,9 +151,6 @@ namespace TX
             RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        /// <summary>
-        /// 根据当前界面细节做出目标更改
-        /// </summary>
         private void ApplyVisualDetail(NewTaskPageVisualDetail detail)
         {
             if (detail.NeedThreadsSlider ^ (ThreadLayoutVisibilityManager.Element.Visibility == Visibility.Visible))

@@ -29,6 +29,7 @@ namespace TX.Downloaders
 
         public override void Dispose()
         {
+            if (State == DownloadState.Disposed) return;
             if(client != null) client.Dispose();
             client = null;
             Message = null;
@@ -36,6 +37,7 @@ namespace TX.Downloaders
 
         public override void Pause()
         {
+            if (State != DownloadState.Downloading) return;
             //临时文件统一删除，由于无法获得文件大小，每次下载都是一次性的
             //表面暂停 嘻嘻嘻嘻
             Message.TempFilePath = "";
@@ -51,7 +53,9 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
-            if (State != DownloadState.Pause && State != DownloadState.Downloading && State != DownloadState.Error) return;
+            if (State != DownloadState.Pause 
+                && State != DownloadState.Downloading 
+                && State != DownloadState.Error) return;
             State = DownloadState.Downloading;
             Pause();
             Start();
@@ -59,18 +63,23 @@ namespace TX.Downloaders
 
         public override void SetDownloaderFromBreakpoint(DownloaderMessage Message)
         {
+            if (State != DownloadState.Uninitialized) return;
             this.Message = Message;
             State = DownloadState.Prepared;
         }
 
         public override void SetDownloader(InitializeMessage iMessage)
         {
+            if (State != DownloadState.Uninitialized) return;
+
             Message = new DownloaderMessage();
             Message.DownloadSize = 0;
             Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
             Message.Extention = Path.GetExtension(iMessage.FileName);
             Message.FileSize = null;
-            Message.TempFilePath = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path + @"\" + iMessage.FileName;
+            Message.TempFilePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path 
+                + @"\" + StorageTools.StorageManager.GetTemporaryName() 
+                + iMessage.FileName;
             Message.URL = iMessage.Url;
             State = DownloadState.Prepared;
             return;
@@ -78,7 +87,8 @@ namespace TX.Downloaders
 
         public override void Start()
         {
-            if (State == DownloadState.Downloading || State == DownloadState.Done || State == DownloadState.Error) return;
+            if (State != DownloadState.Prepared
+                && State != DownloadState.Pause) return;
             State = DownloadState.Downloading;
             //每次重新开始
             
@@ -102,6 +112,7 @@ namespace TX.Downloaders
             };
             client.DownloadFileAsync(new Uri(Message.URL), Message.TempFilePath);
         }
+        public override bool NeedTemporaryFilePath { get { return false; } }
 
         /// <summary>
         /// 下载完成事件的回调函数
@@ -128,6 +139,6 @@ namespace TX.Downloaders
             }
         }
 
-        private Progress _prog_ = new Progress();
+        private readonly Progress _prog_ = new Progress();
     }
 }

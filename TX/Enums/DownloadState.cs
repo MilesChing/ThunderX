@@ -31,6 +31,16 @@ namespace TX.Enums
         /// <summary>
         /// 暂停
         /// </summary>
-        Pause
+        Pause,
+
+        /// <summary>
+        /// 已释放
+        /// </summary>
+        Disposed,
+
+        /// <summary>
+        /// 未初始化
+        /// </summary>
+        Uninitialized
     }
 }

@@ -31,18 +31,12 @@ namespace TX.Controls
         {
             downloader = dw;
 
-            dw.DownloadProgressChanged += DownloaderDownloadProgressChanged; ;
+            dw.DownloadProgressChanged += DownloaderDownloadProgressChanged;
             dw.DownloadComplete += DownloadCompleted;
             dw.DownloadError += DisplayError;
             dw.StateChanged += DownloaderStateChanged;
 
-            var message = dw.Message;
-            if (message == null) return;
-            NameBlock.Text = message.FileName + message.Extention;
-            SizeBlock.Text = "-- / " + (message.FileSize == null ? "--" : StringConverter.GetPrintSize((long)message.FileSize));
-            ProgressBlock.Text = "0%";
-            Bar.Value = 0;
-            PlayButton.IsEnabled = true;
+            DownloaderStateChanged(dw.State);
         }
 
         private void DownloaderDownloadProgressChanged(Models.Progress progress)
@@ -102,6 +96,24 @@ namespace TX.Controls
                             PauseButton.IsEnabled = false;
                             RefreshButton.IsEnabled = false;
                         }
+                        else if(state == Enums.DownloadState.Prepared)
+                        {
+                            HideGlassLabel.Begin();
+                            
+                            Models.DownloaderMessage message = downloader.Message;
+                            NameBlock.Text = message.FileName + message.Extention;
+                            PauseButton.IsEnabled = false;
+                            PlayButton.IsEnabled = true;
+                            RefreshButton.IsEnabled = false;
+                            int per = (int)((message.FileSize == null) ? 0
+                                : (100f * message.DownloadSize / message.FileSize));
+                            ProgressBlock.Text = (message.FileSize == null) ? "-%" : (per + "%");
+                            Bar.Value = per;
+                            SizeBlock.Text = StringConverter.GetPrintSize(message.DownloadSize)
+                                + " / " + (message.FileSize == null ? "--" :
+                                StringConverter.GetPrintSize((long)message.FileSize));
+                            SpeedBlock.Text = "-/s ";
+                        }
                     });
                 });
         }
@@ -151,11 +163,6 @@ namespace TX.Controls
             downloader.Pause();
         }
         
-        private void DoneAnimation_Completed(object sender, object e)
-        {
-            MainPage.Current.DownloadBarCollection.Remove(this);
-        }
-
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();

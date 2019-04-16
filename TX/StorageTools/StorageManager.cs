@@ -29,9 +29,8 @@ namespace TX.StorageTools
         /// </summary>
         public static async Task<string> GetTemporaryFileAsync()
         {
-            Random rd = new Random();
             StorageFolder folder = ApplicationData.Current.LocalCacheFolder;
-            return (await folder.CreateFileAsync(GetTemporaryName())).Path;
+            return (await folder.CreateFileAsync(GetTemporaryName(), CreationCollisionOption.GenerateUniqueName)).Path;
         }
 
         public static async Task SaveDownloadMessagesAsync(List<Models.DownloaderMessage> messages)

@@ -126,7 +126,6 @@
             </Grid>
 
             <Grid x:Name="TopGlassLabel"
-                  Opacity="0"
                   Background="{ThemeResource TXControlAcrylicBrush}"
                   PointerEntered="TopGlassLabel_PointerEntered"
                   PointerExited="TopGlassLabel_PointerExited">
@@ -140,6 +139,7 @@
                     <AppBarButton x:Name="DeleteButton"
                                   Icon="Delete"
                                   Width="48"
+                                  IsEnabled="False"
                                   Click="DeleteButton_Click" />
                     <AppBarButton x:Name="PlayButton"
                                   Icon="Play"

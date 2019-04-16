@@ -17,7 +17,7 @@ namespace TX.Downloaders
                 StateChanged?.Invoke(_state_);
             }
         }
-        private DownloadState _state_;
+        private DownloadState _state_ = DownloadState.Uninitialized;
 
         /// <summary>
         /// 下载任务有关的信息
@@ -73,5 +73,10 @@ namespace TX.Downloaders
         /// 释放一切资源
         /// </summary>
         public abstract void Dispose();
+
+        /// <summary>
+        /// 一个布尔值指示外部是否需要创建临时文件并在InitialMessage内提供地址
+        /// </summary>
+        public abstract bool NeedTemporaryFilePath { get; }
     }
 }

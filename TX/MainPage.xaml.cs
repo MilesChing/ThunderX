@@ -42,39 +42,36 @@ namespace TX
             Current = this;//设置Current指针（以便在全局访问）
             InitializeComponent();
             ResetTitleBar();//设置标题栏颜色
-            Task.Run(async () =>
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    async () =>
+            InitializeAsync();
+        }
+
+        private async void InitializeAsync()
+        {
+            DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
+            gv.DataContext = DownloadBarCollection;//设置绑定
+            newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
+            setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
+            //恢复上次关闭时保存的控件
+            var list = await StorageManager.GetMessagesAsync();
+            if (list != null)
+                foreach (Models.DownloaderMessage ms in list)
+                {
+                    try
                     {
-                        DownloadBarCollection = new ObservableCollection<Controls.DownloadBar>();//创建控件集合
-                        DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
-                        gv.DataContext = DownloadBarCollection;//设置绑定
-                        newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
-                        setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
-                        //恢复上次关闭时保存的控件
-                        var list = await StorageManager.GetMessagesAsync();
-                        if (list != null)
-                            foreach (Models.DownloaderMessage ms in list)
-                            {
-                                try
-                                {
-                                    var analyser = UrlConverter.GetAnalyser(ms.URL);
-                                    await analyser.SetURLAsync(ms.URL);
-                                    AbstractDownloader dw = analyser.GetDownloader();
-                                    DownloadBar db = new DownloadBar();
-                                    dw.SetDownloaderFromBreakpoint(ms);
-                                    db.SetDownloader(dw);
-                                    DownloadBarCollection.Add(db);
-                                }
-                                catch(Exception e)
-                                {
-                                    Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
-                                        e.Message);
-                                }
-                            }
-                    });
-            });
+                        DownloadBar db = new DownloadBar();
+                        DownloadBarCollection.Add(db);
+                        var analyser = UrlConverter.GetAnalyser(ms.URL);
+                        await analyser.SetURLAsync(ms.URL);
+                        AbstractDownloader dw = analyser.GetDownloader();
+                        db.SetDownloader(dw);
+                        dw.SetDownloaderFromBreakpoint(ms);
+                    }
+                    catch (Exception e)
+                    {
+                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                            e.Message);
+                    }
+                }
         }
 
         /// <summary>
@@ -104,13 +101,12 @@ namespace TX
         /// <summary>
         /// 用于显示在界面中的下载器控件集合
         /// </summary>
-        public ObservableCollection<Controls.DownloadBar> DownloadBarCollection;
+        public ObservableCollection<Controls.DownloadBar> DownloadBarCollection = new ObservableCollection<Controls.DownloadBar>();
 
         /// <summary>
         /// 将新加入GridView的控件与WidthBindTool的宽度做绑定
         /// WidthBindTool的作用是根据GridView宽度调整自身宽度，使控件总能填充GridView
         /// </summary>
-        /// <param name="db">加入的对象，只能是DownlaodBar</param>
         private void SetWidthBind(Controls.DownloadBar db)
         {
             Binding binding = new Binding();
