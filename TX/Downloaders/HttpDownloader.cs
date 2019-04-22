@@ -25,10 +25,12 @@ namespace TX.Downloaders
         {
             speedHelper.Updated += (h) =>
             {
+                if (State != DownloadState.Downloading) return;
                 _prog_.AverageSpeed = speedHelper.AverageSpeed;
                 _prog_.CurrentValue = speedHelper.CurrentValue;
                 _prog_.Speed = speedHelper.Speed;
                 _prog_.TargetValue = Message.FileSize;
+                
                 DownloadProgressChanged(_prog_);
             };
         }
@@ -76,8 +78,8 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
-            if (State != DownloadState.Pause 
-                && State != DownloadState.Downloading 
+            if (State != DownloadState.Pause
+                && State != DownloadState.Downloading
                 && State != DownloadState.Error) return;
             DisposeThreads();
             State = DownloadState.Prepared;
@@ -86,7 +88,7 @@ namespace TX.Downloaders
 
         public override void Start()
         {
-            if (State != DownloadState.Prepared 
+            if (State != DownloadState.Prepared
                 && State != DownloadState.Pause) return;
             State = DownloadState.Downloading;
             speedHelper.IsEnabled = true;
@@ -258,6 +260,7 @@ namespace TX.Downloaders
             }
         }
 
+
         /// <summary>
         /// 内部发生错误时调用的处理函数，负责状态的维护和将异常信息传递出去
         /// </summary>
@@ -267,11 +270,21 @@ namespace TX.Downloaders
             {
                 if (operationCode != CurrentOperationCode || State == DownloadState.Error) return;
             }
-            
-            State = DownloadState.Error;
-            DisposeThreads();
-            DownloadError?.Invoke(e);
+
+            if (State == DownloadState.Downloading && retryCount < MaxiMaximumRetries)
+            {//自动重试，不烦用户
+                retryCount++;
+                Debug.WriteLine("正在进行第" + retryCount + "次重试...");
+                Refresh();
+            }
+            else
+            {
+                State = DownloadState.Error;
+                DisposeThreads();
+                DownloadError?.Invoke(e);
+            }
         }
+        private uint retryCount = 0;
 
         /// <summary>
         /// 释放线程资源

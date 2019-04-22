@@ -33,12 +33,14 @@ namespace TX
             //在InitializeComponent的时候会触发一次ValueChanged
             //所以需要用prev记录好内部存储的ThreadNumber
             //不然就在ValueChanged里面被更新了
-            int prev = StorageTools.Settings.ThreadNumber;
+            int prev_th = Settings.ThreadNumber;
+            uint prev_re = Settings.MaximumRetries;
             bool dark = Settings.DarkMode;
             this.InitializeComponent();
             SetThemeChangedListener();
             //赋初值
-            ThreadNumSlider.Value = prev;
+            ThreadNumSlider.Value = prev_th;
+            MaximumRetriesSlider.Value = prev_re;
             DarkModeSwitch.IsOn = dark;
             NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
         }
@@ -56,9 +58,6 @@ namespace TX
             TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
         }
 
-        /// <summary>
-        /// 选择文件夹按钮点击
-        /// </summary>
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
@@ -71,17 +70,11 @@ namespace TX
             Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
         }
 
-        /// <summary>
-        /// 滑块值改变
-        /// </summary>
         private void ThreadNumSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             StorageTools.Settings.ThreadNumber = (int)ThreadNumSlider.Value;
         }
 
-        /// <summary>
-        /// 投票控件点击的响应方法
-        /// </summary>
         private async void RatingControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (((RatingControl)sender).Value < 4) return;
@@ -89,9 +82,6 @@ namespace TX
             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?PFN=" + pfn));
         }
         
-        /// <summary>
-        /// 黑暗模式开关切换
-        /// </summary>
         private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.DarkMode = DarkModeSwitch.IsOn;
@@ -108,6 +98,11 @@ namespace TX
                     ResetTitleBar();
                 });
             };
+        }
+
+        private void MaximumRetriesSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            Settings.MaximumRetries = (uint)e.NewValue;
         }
     }
 }

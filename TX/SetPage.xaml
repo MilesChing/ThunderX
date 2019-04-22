@@ -41,6 +41,18 @@
                         Maximum="218" />
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
+                           x:Uid="SetPage_Subtitle5"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock TextWrapping="Wrap"
+                           Style="{ThemeResource TXPlainText}"
+                           x:Uid="SetPage_GuideText5"/>
+                <Border Style="{ThemeResource TXBorder}" />
+                <Slider x:Name="MaximumRetriesSlider"
+                        Minimum="0"
+                        ValueChanged="MaximumRetriesSlider_ValueChanged"
+                        Maximum="50" />
+                <Border Style="{ThemeResource TXBigBorder}" />
+                <TextBlock Style="{ThemeResource TXSubTitle}"
                            x:Uid="SetPage_Subtitle2"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"

@@ -64,5 +64,19 @@ namespace TX.StorageTools
             }
             set { ApplicationData.Current.LocalSettings.Values["DarkMode"] = value; }
         }
+
+        /// <summary>
+        /// 发生错误时的最大重试次数
+        /// </summary>
+        public static uint MaximumRetries
+        {
+            get
+            {
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRetries"))
+                    return (uint)ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
+                else return 0;
+            }
+            set { ApplicationData.Current.LocalSettings.Values["MaximumRetries"] = value; }
+        }
     }
 }

@@ -183,6 +183,9 @@
   <data name="SetPage_GuideText3.Text" xml:space="preserve">
     <value>Showing us some love on the store helps us to continue to work on the app and make things even better !</value>
   </data>
+  <data name="SetPage_GuideText5.Text" xml:space="preserve">
+    <value>在某些错误发生时，我们可以自动为您重试，请为这个行为设置一个上限。</value>
+  </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
@@ -197,6 +200,9 @@
   </data>
   <data name="SetPage_Subtitle4.Text" xml:space="preserve">
     <value>Dark Mode</value>
+  </data>
+  <data name="SetPage_Subtitle5.Text" xml:space="preserve">
+    <value>重试次数上限</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>

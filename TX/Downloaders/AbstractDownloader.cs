@@ -96,5 +96,10 @@ namespace TX.Downloaders
                 default: return null;
             }
         }
+
+        /// <summary>
+        /// 发生错误时的最大重试次数
+        /// </summary>
+        public uint MaxiMaximumRetries = 0;
     }
 }

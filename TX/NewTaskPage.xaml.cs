@@ -141,7 +141,7 @@ namespace TX
                 downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null);
 
             downloader.SetDownloader(im);
-
+            downloader.MaxiMaximumRetries = 10;
             MainPage.Current.AddDownloadBar(downloader);
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();

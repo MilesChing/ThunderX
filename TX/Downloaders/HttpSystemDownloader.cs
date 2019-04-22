@@ -103,7 +103,6 @@ namespace TX.Downloaders
             client.DownloadProgressChanged += (o,e) => 
             {
                 if (o != client) return;
-
                 speedHelper.CurrentValue = e.BytesReceived;
                 _prog_.Speed = speedHelper.Speed;
                 _prog_.AverageSpeed = speedHelper.AverageSpeed;
