@@ -6,7 +6,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:models="using:TX.Models"
       mc:Ignorable="d"
-      Background="{ThemeResource TXBackgroundAcrylicBrush}">
+      Background="{ThemeResource TXBackgroundAcrylicBrush}"
+    xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Page.Resources>
 
@@ -33,6 +34,12 @@
             <Setter Property="MinWidth" Value="0"/>
         </Style>
 
+        <Style TargetType="TextBox" x:Key="TextBoxStyle">
+            <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"/>
+            <Setter Property="Template" Value="{ThemeResource TXTextBoxTemplate}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
     </Page.Resources>
     
     <ScrollViewer x:Name="scrollViewer"
@@ -54,6 +61,7 @@
                            x:Uid="NewTaskPage_GuideText1" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBox x:Name="UrlBox"
+                         Style="{ThemeResource TextBoxStyle}"
                          TextChanged="UrlBox_TextChanged" />
                 <Border Style="{ThemeResource TXBorder}" />
 
@@ -72,6 +80,7 @@
                                Style="{ThemeResource BaseTextBlockStyle}"
                                Foreground="{ThemeResource SystemControlForegroundAccentBrush}" />
                     <TextBox x:Name="RenameBox"
+                             Style="{ThemeResource TextBoxStyle}"
                              Visibility="Collapsed" />
                 </Grid>
                 <Border Style="{ThemeResource TXBorder}" />
@@ -96,19 +105,11 @@
                     <Border Style="{ThemeResource TXBigBorder}" />
                 </StackPanel>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="SubmitButton"
-                            Width="150"
-                            Height="40"
-                            Style="{ThemeResource TXButtonStyle}"
-                            x:Uid="NewTaskPage_SubmitButton"
-                            IsEnabled="False"
-                            Click="SubmitButton_Click" />
-                </Grid>
+                <Button x:Name="SubmitButton"
+                        Style="{ThemeResource TXButtonStyle}"
+                        x:Uid="NewTaskPage_SubmitButton"
+                        IsEnabled="False"
+                        Click="SubmitButton_Click" />
 
                 <Border Style="{ThemeResource TXBigBorder}" />
             </StackPanel>

@@ -5,6 +5,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Resources/VisualResources/SolidColorDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/VisualResources/ButtonTemplateDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="TXButtonStyle"
@@ -12,12 +13,9 @@
            TargetType="Button"
            BasedOn="{StaticResource AccentButtonStyle}">
         <Setter Property="FontWeight"  Value="Medium" />
-        <Setter Property="Width" Value="150"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Padding" Value="16,8,16,8"/>
         <Setter Property="Foreground" Value="{ThemeResource SolidSystemAltMediumHighColorBrush}" />
+        <Setter Property="Template" Value="{ThemeResource TXAnimateButtonTemplate}"/>
     </Style>
-    
-    
-
 </ResourceDictionary>

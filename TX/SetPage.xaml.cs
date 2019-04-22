@@ -36,6 +36,7 @@ namespace TX
             int prev = StorageTools.Settings.ThreadNumber;
             bool dark = Settings.DarkMode;
             this.InitializeComponent();
+            SetThemeChangedListener();
             //赋初值
             ThreadNumSlider.Value = prev;
             DarkModeSwitch.IsOn = dark;
@@ -94,6 +95,19 @@ namespace TX
         private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.DarkMode = DarkModeSwitch.IsOn;
+            ((App)App.Current).CallThemeUpdate(DarkModeSwitch.IsOn ? ElementTheme.Dark : ElementTheme.Light);
+        }
+
+        private void SetThemeChangedListener()
+        {
+            ((App)App.Current).ThemeChanged += async (theme) =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    this.RequestedTheme = theme;
+                    ResetTitleBar();
+                });
+            };
         }
     }
 }

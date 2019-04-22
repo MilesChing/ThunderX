@@ -5,11 +5,10 @@
              xmlns:local="using:TX.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:xp="using:XP"
+             xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="80"
-             d:DesignWidth="500"
-             Margin="-4">
+             d:DesignWidth="500">
 
     <UserControl.Resources>
         <Storyboard x:Name="ShowGlassLabel">
@@ -49,10 +48,14 @@
         </Storyboard>
     </UserControl.Resources>
 
-    <xp:Shadow x:Name="shadow"
-               Z_Depth="1"
-               Height="80">
-        <Grid Background="{ThemeResource SolidSystemAltHighColorBrush}">
+    <control:DropShadowPanel x:Name="shadow"
+                             HorizontalContentAlignment="Stretch"
+                             BlurRadius="4"
+                             Margin="4"
+                             Height="60"
+                             ShadowOpacity="0.4">
+        <Grid Background="{ThemeResource SolidSystemAltHighColorBrush}"
+              CornerRadius="2">
             
             <ProgressBar x:Name="Bar"
                          Background="Transparent"
@@ -161,7 +164,7 @@
 
         </Grid>
 
-    </xp:Shadow>
+    </control:DropShadowPanel>
 </UserControl>
 
     

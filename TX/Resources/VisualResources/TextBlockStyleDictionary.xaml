@@ -13,8 +13,7 @@
                    TargetType="TextBlock"
                    BasedOn="{StaticResource BodyTextBlockStyle}">
         <Setter Property="Opacity" Value="0.9"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
 
     <Style x:Key="TXPlainText"

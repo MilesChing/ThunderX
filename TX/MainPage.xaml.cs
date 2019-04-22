@@ -37,8 +37,9 @@ namespace TX
         public MainPage()
         {
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
-            ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
 
+            SetThemeChangedListener();
+            ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
             Current = this;//设置Current指针（以便在全局访问）
             InitializeComponent();
             ResetTitleBar();//设置标题栏颜色
@@ -181,6 +182,18 @@ namespace TX
                  DownloadBarCollection.Add(db);
                  db.SetDownloader(downloader);
              });
+        }
+
+        private void SetThemeChangedListener()
+        {
+            ((App)App.Current).ThemeChanged += async (theme) =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    this.RequestedTheme = theme;
+                    ResetTitleBar();
+                });
+            };
         }
     }
 }

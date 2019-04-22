@@ -6,7 +6,7 @@
     <AcrylicBrush x:Key="TXBackgroundAcrylicBrush"
                   BackgroundSource="HostBackdrop"
                   TintColor="{ThemeResource SystemAltHighColor}"
-                  TintOpacity="0.8"
+                  TintOpacity="0.9"
                   FallbackColor="{ThemeResource SystemAltHighColor}"/>
 
     <AcrylicBrush x:Key="TXControlAcrylicBrush"

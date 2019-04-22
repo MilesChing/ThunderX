@@ -29,6 +29,7 @@ namespace TX
         public NewTaskPage()
         {
             RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            SetThemeChangedListener();
             ResetTitleBar();
 
             InitializeComponent();
@@ -176,6 +177,18 @@ namespace TX
             if (detail.LinkAnalysisMessages != null && detail.LinkAnalysisMessages.Length != 0)
                 foreach (LinkAnalysisMessage mes in detail.LinkAnalysisMessages)
                     linkAnalysisMessages.Add(mes);
+        }
+
+        private void SetThemeChangedListener()
+        {
+            ((App)App.Current).ThemeChanged += async (theme) =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    this.RequestedTheme = theme;
+                    ResetTitleBar();
+                });
+            };
         }
     }
 

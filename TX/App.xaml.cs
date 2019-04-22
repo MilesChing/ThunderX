@@ -24,7 +24,18 @@ namespace TX
     /// </summary>
     sealed partial class App : Application
     {
-        private bool inBackground = true;
+        /// <summary>
+        /// 在App主题在Dark/Light间切换时（根据用户设置）调用
+        /// </summary>
+        public event Action<ElementTheme> ThemeChanged;
+
+        /// <summary>
+        /// 宣布一次主题切换，只能由设置Page调用
+        /// </summary>
+        public void CallThemeUpdate(ElementTheme newTheme)
+        {
+            ThemeChanged?.Invoke(newTheme);
+        }
 
         /// <summary>
         /// 指示应用是否处于后台
@@ -33,6 +44,7 @@ namespace TX
         {
             get { return inBackground; }
         }
+        private bool inBackground = true;
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
