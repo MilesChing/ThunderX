@@ -4,7 +4,7 @@ Thunder X is a multi-threaded download tool that provides excellent interface an
 
 This software runs on universal windows platform.
 
-![Thunder X](https://raw.githubusercontent.com/MilesChing/ThunderX/master/ScreenShots/TXW.png)
+![Thunder X](ScreenShots/TXW.png)
 
 ## Branches
 
