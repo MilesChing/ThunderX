@@ -35,7 +35,8 @@
                            Style="{ThemeResource TXPlainText}"
                            x:Uid="SetPage_GuideText1"/>
                 <Border Style="{ThemeResource TXBorder}" />
-                <Slider x:Name="ThreadNumSlider"
+                <Slider Template="{ThemeResource TXSliderTemplate}" 
+                        x:Name="ThreadNumSlider"
                         Minimum="1"
                         ValueChanged="ThreadNumSlider_ValueChanged"
                         Maximum="218" />
@@ -48,6 +49,7 @@
                            x:Uid="SetPage_GuideText5"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <Slider x:Name="MaximumRetriesSlider"
+                        Template="{ThemeResource TXSliderTemplate}" 
                         Minimum="0"
                         ValueChanged="MaximumRetriesSlider_ValueChanged"
                         Maximum="50" />

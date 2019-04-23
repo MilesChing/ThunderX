@@ -11,14 +11,13 @@
                             >
             <ResourceDictionary.MergedDictionaries>
 
+                <ResourceDictionary Source="/Resources/VisualResources/ControlTemplateDictionary.xaml" />
                 <ResourceDictionary Source="/Resources/VisualResources/AcrylicBrushDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/VisualResources/BorderDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/VisualResources/ButtonStyleDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/VisualResources/SolidColorDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/VisualResources/TextBlockStyleDictionary.xaml"/>
-                <ResourceDictionary Source="/Resources/VisualResources/ButtonTemplateDictionary.xaml"/>
-                <ResourceDictionary Source="/Resources/VisualResources/TextBoxTemplateDictionary.xaml"/>
-
+                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -13,14 +13,17 @@
 
         <DataTemplate x:DataType="models:LinkAnalysisMessage"
                       x:Key="LinkAnalysisMessageListDataTemplate">
-            <Grid Background="{ThemeResource SolidSystemAccentColorBrush}"
-                  CornerRadius="2"
-                  Padding="4">
-                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+            <control:DropShadowPanel
+                BlurRadius="4"
+                ShadowOpacity="0.4">
+                <Grid Background="{ThemeResource SolidSystemAccentColorBrush}"
+                      CornerRadius="2"
+                      Padding="4">
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
                        Text="{x:Bind Message}"
                        Foreground="{ThemeResource SolidSystemAltMediumHighColorBrush}"/>
-            </Grid>
-            
+                </Grid>
+            </control:DropShadowPanel>
         </DataTemplate>
 
         <Style TargetType="Control" x:Key="LinkAnalysisMessageListItemContainerStyle">
@@ -38,6 +41,10 @@
             <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"/>
             <Setter Property="Template" Value="{ThemeResource TXTextBoxTemplate}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
+            <Setter Property="Template" Value="{ThemeResource TXCheckBoxTemplate}"/>
         </Style>
 
     </Page.Resources>
@@ -84,7 +91,8 @@
                              Visibility="Collapsed" />
                 </Grid>
                 <Border Style="{ThemeResource TXBorder}" />
-                <CheckBox x:Name="NeedRenameButton"
+                <CheckBox Style="{ThemeResource CheckBoxStyle}" 
+                          x:Name="NeedRenameButton"
                           x:Uid="NewTaskPage_NeedRenameButton"
                           Checked="NeedRenameButton_ValueChanged"
                           Unchecked="NeedRenameButton_ValueChanged" />
@@ -101,6 +109,7 @@
                     <Border Style="{ThemeResource TXBorder}" />
                     <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
+                            Template="{ThemeResource TXSliderTemplate}"
                         Maximum="256" />
                     <Border Style="{ThemeResource TXBigBorder}" />
                 </StackPanel>

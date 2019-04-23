@@ -5,7 +5,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Resources/VisualResources/SolidColorDictionary.xaml"/>
-        <ResourceDictionary Source="/Resources/VisualResources/ButtonTemplateDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/VisualResources/ControlTemplateDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="TXButtonStyle"

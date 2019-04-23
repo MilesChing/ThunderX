@@ -184,7 +184,7 @@
     <value>Showing us some love on the store helps us to continue to work on the app and make things even better !</value>
   </data>
   <data name="SetPage_GuideText5.Text" xml:space="preserve">
-    <value>在某些错误发生时，我们可以自动为您重试，请为这个行为设置一个上限。</value>
+    <value>We will automatically retry the task for you when certain errors occur. Drag the slider to set an upper number of times.</value>
   </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>Select Folder</value>
@@ -202,7 +202,7 @@
     <value>Dark Mode</value>
   </data>
   <data name="SetPage_Subtitle5.Text" xml:space="preserve">
-    <value>重试次数上限</value>
+    <value>Maximum Number of Retries</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
@@ -210,8 +210,14 @@
   <data name="SomethingWrong" xml:space="preserve">
     <value>Something goes wrong</value>
   </data>
+  <data name="SuccessfullyConnected" xml:space="preserve">
+    <value>Successfully connected to the remote server</value>
+  </data>
   <data name="ThunderLinkDetected" xml:space="preserve">
     <value>Thunderbolt link detected</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Unable to connect: please check the network connection of the device</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
