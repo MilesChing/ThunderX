@@ -12,9 +12,18 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.8.0.0
+
+- Steadier core downloader
+- Reduced startup time
+- Automatic reconnection
+- Fix a bug: The time predictions of suspended tasks will change.
+- Fix a bug: A "file not exist" exception may be throwed after a task is removed.
+- Several UI improvements
+
 ### 1.7.10.0
 
-- Fixed an issue that occurs when a task is paused
+- Fix an issue that occurs when a task is paused
 - Several UI adjustments
 - Provides messages of URL analyses in details
 
@@ -23,12 +32,6 @@ This project has two branches. `master` represents the latest stable release. `d
 - Several bugs are fixed
 - Download stability has been improved
 - Interface adjustments at "New Task" page
-
-### 1.7.8.0
-
-- Real-time speed display
-- Fix an issue: some links could not be downloaded correctly
-- Automatic garbage removal is enabled
 
 ### 1.7.7.0
 
