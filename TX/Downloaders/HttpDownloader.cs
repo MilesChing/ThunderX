@@ -15,6 +15,9 @@ namespace TX.Downloaders
 {
     class HttpDownloader : AbstractDownloader
     {
+        //locks
+        private object threadLock = new object();
+
         private readonly Progress _prog_ = new Progress();
         private SpeedCalculator speedHelper = new SpeedCalculator();
         public override event Action<Progress> DownloadProgressChanged;
@@ -30,7 +33,7 @@ namespace TX.Downloaders
                 _prog_.CurrentValue = speedHelper.CurrentValue;
                 _prog_.Speed = speedHelper.Speed;
                 _prog_.TargetValue = Message.FileSize;
-                
+
                 DownloadProgressChanged(_prog_);
             };
         }
@@ -78,12 +81,10 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
-            if (State != DownloadState.Pause
-                && State != DownloadState.Downloading
-                && State != DownloadState.Error) return;
-            DisposeThreads();
-            State = DownloadState.Prepared;
-            Start();
+            AutoRefresh();
+            //由外部调用（如用户点击重试按钮）的重试操作
+            //将当前出错次数重置
+            retryCount = 0;
         }
 
         public override void Start()
@@ -114,6 +115,8 @@ namespace TX.Downloaders
         /// </summary>
         private async Task SetThreadsAsync()
         {
+            int startCode = CurrentOperationCode;   //记录当前操作码，保证建立的线程均属于统一操作码
+
             if (Message.Threads.ThreadNum <= 0)
                 throw new Exception("线程大小未计算");
 
@@ -122,6 +125,8 @@ namespace TX.Downloaders
             {
                 for (int threadIndex = 0; threadIndex < Message.Threads.ThreadNum; threadIndex++)
                 {
+                    if (startCode != CurrentOperationCode) return;  //已经不是这个操作码了，继续开线程没有意义
+
                     ThreadMessage thm = Message.Threads;
                     //线程是否已完成
                     if (thm.ThreadSize[threadIndex] == thm.ThreadTargetSize[threadIndex])
@@ -141,17 +146,16 @@ namespace TX.Downloaders
                     //设置文件流的头
                     sink.Position = thm.ThreadOffset[threadIndex] + thm.ThreadSize[threadIndex];
 
-                    //获取线程Task
-                    Task thread = GetDownloadThread(source, sink,
+                    //启动下载线程
+                    StartNewDownloadThread(source, sink,
                         thm.ThreadTargetSize[threadIndex] - thm.ThreadSize[threadIndex],
                         threadIndex,
-                        CurrentOperationCode);
+                        startCode);
 
-                    thread.Start();
                     Debug.WriteLine("线程 " + threadIndex + " 已开始");
                 }
             }
-            catch (Exception e) { HandleError(e, CurrentOperationCode); }
+            catch (Exception e) { HandleError(e, startCode); }
         }
 
         /// <summary>
@@ -167,80 +171,82 @@ namespace TX.Downloaders
         private int __OptCode = 0;
 
         /// <summary>
-        /// 获取下载线程（Task）
+        /// 开始下载线程
         /// </summary>
         /// <param name="downloadStream">网络数据流，线程会从流的开始读threadSize个字节</param>
         /// <param name="fileStream">文件流，线程会把targetSize个字节送入流的开始</param>
         /// <param name="targetSize">目标大小</param>
         /// <param name="threadIndex">线程编号，用于更新Message中的Threads信息</param>
         /// <param name="operationCode">操作码，用于确定线程是否处于受控状态</param>
-        private Task GetDownloadThread(Stream downloadStream, FileStream fileStream,
+        private void StartNewDownloadThread(Stream downloadStream, FileStream fileStream,
             long targetSize, int threadIndex, int operationCode)
         {
-            Task t = new Task(async () =>
+            Task.Factory.StartNew(async (arg) =>
             {
-                int code = operationCode;
-                long remain = targetSize;
+                Tuple<Stream, FileStream, long, int, int> args = (Tuple<Stream, FileStream, long, int, int>)arg;
+                Stream _downloadStream = args.Item1;
+                FileStream _fileStream = args.Item2;
+                long _targetSize = args.Item3;
+                int _operationCode = args.Item5;
+                int _threadIndex = args.Item4;
+                long remain = _targetSize;
+
                 //下载数据缓存数组
                 byte[] responseBytes = new byte[100000];
                 //剩余字节为0时停止下载
-                try
+
+                while (remain > 0 && State == DownloadState.Downloading && _operationCode == CurrentOperationCode)
                 {
-                    while (remain > 0 && State == DownloadState.Downloading && code == operationCode)
+                    int pieceLength = 0;
+                    try
                     {
                         //下载数据
-                        //当remain太小时不要按照responseBytes的长度申请，避免产生多余数据
-                        int pieceLength = downloadStream.Read(responseBytes, 0, (int)(Math.Min(responseBytes.Length, remain)));
+                        pieceLength = _downloadStream.Read(responseBytes, 0, (int)(Math.Min(responseBytes.Length, remain)));
                         //写入文件
-                        fileStream.Write(responseBytes, 0, pieceLength);
-                        remain -= pieceLength;
-
-                        lock (this)
-                        {//更新Message中的各种信息，锁定在本线程
-                            Message.Threads.ThreadSize[threadIndex] += pieceLength;
-                            Message.DownloadSize += pieceLength;
-                            speedHelper.CurrentValue += pieceLength;
-                        }
+                        _fileStream.Write(responseBytes, 0, pieceLength);
                     }
-                }
-                catch (Exception e)
-                {
-                    if (downloadStream != null) downloadStream.Dispose();
-                    if (fileStream != null) fileStream.Dispose();
-                    HandleError(e, code);
-                    return;
+                    catch (Exception e)
+                    {
+                        if (_downloadStream != null) _downloadStream.Dispose();
+                        if (_fileStream != null) _fileStream.Dispose();
+                        HandleError(e, _operationCode);
+                        return;
+                    }
+                    remain -= pieceLength;
+
+                    lock (Message)
+                    {
+                        Message.Threads.ThreadSize[_threadIndex] += pieceLength;
+                        Message.DownloadSize += pieceLength;
+                    }
+
+                    lock (speedHelper) { speedHelper.CurrentValue += pieceLength; }
                 }
 
                 //释放资源
-                if (downloadStream != null) downloadStream.Dispose();
-                if (fileStream != null) fileStream.Dispose();
+                if (_downloadStream != null) _downloadStream.Dispose();
+                if (_fileStream != null) _fileStream.Dispose();
                 if (remain <= 0)
                 {
-                    Debug.WriteLine("线程 " + threadIndex + " 已完成");
-                    await CheckIsDownloadDoneAsync(code);
+                    Debug.WriteLine("线程 " + _threadIndex + " 已完成");
+                    await CheckIsDownloadDoneAsync(_operationCode);
                 }
-            });
-
-            return t;
+            }, new Tuple<Stream, FileStream, long, int, int>(downloadStream, fileStream, targetSize, threadIndex, operationCode));
         }
 
-        /// <summary>
-        /// 检查下载是否已完成
-        /// </summary>
         private async Task CheckIsDownloadDoneAsync(int operationCode)
         {
-            lock (this)
+            lock (threadLock)
             {
                 if (operationCode != CurrentOperationCode || State != DownloadState.Downloading) return;
+                if (Message.DownloadSize >= Message.FileSize)
+                {
+                    State = DownloadState.Done;
+                    DisposeThreads();
+                }
+                else return;
             }
-
-            if (Message.DownloadSize >= Message.FileSize)
-            {
-                State = DownloadState.Done;
-                DisposeThreads();
-            }
-            else return;
-
+            //进入这里没有return表示已经完成
             try
             {
                 string path = StorageTools.Settings.DownloadFolderPath;
@@ -260,43 +266,35 @@ namespace TX.Downloaders
             }
         }
 
-
-        /// <summary>
-        /// 内部发生错误时调用的处理函数，负责状态的维护和将异常信息传递出去
-        /// </summary>
         private void HandleError(Exception e, int operationCode)
         {
-            lock (this)
+            lock (threadLock)
             {
                 if (operationCode != CurrentOperationCode || State == DownloadState.Error) return;
-            }
 
-            if (State == DownloadState.Downloading && retryCount < MaxiMaximumRetries)
-            {//自动重试，不烦用户
-                retryCount++;
-                Debug.WriteLine("正在进行第" + retryCount + "次重试...");
-                Refresh();
+                if (State == DownloadState.Downloading && retryCount < MaxiMaximumRetries)
+                {//自动重试，不烦用户
+                    retryCount++;
+                    Debug.WriteLine("正在进行第" + retryCount + "次重试...");
+                    AutoRefresh();
+                    return;
+                }
+                else
+                {
+                    State = DownloadState.Error;
+                    DisposeThreads();
+                }
             }
-            else
-            {
-                State = DownloadState.Error;
-                DisposeThreads();
-                DownloadError?.Invoke(e);
-            }
+            //上面的else执行后没有return，会执行这里（事件回调内含Async不应在lock块中？）
+            DownloadError?.Invoke(e);
         }
         private uint retryCount = 0;
 
-        /// <summary>
-        /// 释放线程资源
-        /// </summary>
         private void DisposeThreads()
         {
             CurrentOperationCode++;
         }
 
-        /// <summary>
-        /// 删除临时文件
-        /// </summary>
         private void StartDisposeTemporaryFile()
         {
             Task.Run(async () =>
@@ -312,6 +310,16 @@ namespace TX.Downloaders
                     Debug.WriteLine(e.ToString());
                 }
             });
+        }
+
+        private void AutoRefresh()
+        {
+            if (State != DownloadState.Pause
+                && State != DownloadState.Downloading
+                && State != DownloadState.Error) return;
+            DisposeThreads();
+            State = DownloadState.Prepared;
+            Start();
         }
     }
 }

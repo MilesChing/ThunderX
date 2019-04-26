@@ -12,7 +12,7 @@ namespace TX.NetWork
     /// </summary>
     class SpeedCalculator : IDisposable
     {
-        private ulong time = 0;
+        private long time = 0;
         private Timer timer;
         private long lastValue = 0;
         private bool isEnabled = false;
@@ -71,6 +71,7 @@ namespace TX.NetWork
         
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            if (time > 1e10) time = 1;
             time++;
             Speed = (CurrentValue - lastValue) / Interval * 1000;
             AverageSpeed = (time == 0 ? 0 : ((AverageSpeed * (time - 1) + Speed) / time));
