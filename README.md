@@ -12,6 +12,12 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.8.1.0
+
+- Fix a bug: Download progress may be wrong sometimes.
+- Fix a bug: Data corruption may be produced when downloading a large file.
+- Now you can use this software to download video from Youtube.
+
 ### 1.8.0.0
 
 - Steadier core downloader
@@ -26,19 +32,6 @@ This project has two branches. `master` represents the latest stable release. `d
 - Fix an issue that occurs when a task is paused
 - Several UI adjustments
 - Provides messages of URL analyses in details
-
-### 1.7.9.0
-
-- Several bugs are fixed
-- Download stability has been improved
-- Interface adjustments at "New Task" page
-
-### 1.7.7.0
-
-- Illegal link will not cause crashes now
-- The Chinese translation of notifications has been improved
-- Software can better guess the target file's extension
-- Interface adjustments
 
 ## Privacy Policy
 
