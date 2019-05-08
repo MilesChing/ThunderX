@@ -23,4 +23,16 @@
     <SolidColorBrush x:Key="SolidSystemAltMediumHighColorBrush"  Color="{ThemeResource SystemAltMediumHighColor}"/>
     <SolidColorBrush x:Key="SolidSystemAltMediumLowColorBrush"  Color="{ThemeResource SystemAltMediumLowColor}"/>
 
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="TXDownloadBarBackground" Color="White"/>
+            <Color x:Key="TXBackgroundAcrylicColor">#ffffff</Color>
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="TXDownloadBarBackground" Color="#000000"/>
+            <Color x:Key="TXBackgroundAcrylicColor">#181818</Color>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
 </ResourceDictionary>

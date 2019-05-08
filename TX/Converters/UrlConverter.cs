@@ -10,13 +10,20 @@ namespace TX.Converters
 {
     public static class UrlConverter
     {
-        /// <summary>
-        /// 判断给出的url是否基于http协议
-        /// </summary>
-        public static bool IsHttpUrl(string url)
+        public static bool IsThunderURL(string url)
+        {
+            return url.ToLower().StartsWith("thunder://");
+        }
+
+        public static bool IsHttpURL(string url)
         {
             string p = url.ToLower();
             return p.StartsWith("https://") || p.StartsWith("http://");
+        }
+
+        public static bool IsYouTubeURL(string url)
+        {
+            return IsHttpURL(url) && url.Contains("www.youtube.com/watch?v=");
         }
 
         /// <summary>
@@ -24,12 +31,9 @@ namespace TX.Converters
         /// </summary>
         public static bool MaybeLegal(string url)
         {
-            return IsHttpUrl(url);
+            return IsHttpURL(url) || IsThunderURL(url);
         }
 
-        /// <summary>
-        /// 转换迅雷链接（不是就返回自身）
-        /// </summary>
         public static string TranslateURLThunder(string url)
         {
             if (!url.ToLower().StartsWith("thunder://")) return url;
@@ -39,7 +43,7 @@ namespace TX.Converters
                 string t = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(url.Substring(10, url.Length - 11)));
                 return t.Substring(2, t.Length - 4);
             }
-            catch (Exception) { return null; }
+            catch (Exception) { return string.Empty; }
         }
 
         /// <summary>
@@ -47,8 +51,9 @@ namespace TX.Converters
         /// </summary>
         public static AbstractAnalyser GetAnalyser(string url)
         {
-            url = TranslateURLThunder(url);
-            if (IsHttpUrl(url)) return new HttpAnalyser();
+            if (IsYouTubeURL(url)) return new YouTubeAnalyser();
+            else if (IsHttpURL(url)) return new HttpAnalyser();
+            else if (IsThunderURL(url)) return new ThunderAnalyser();
             else return null;
         }
 

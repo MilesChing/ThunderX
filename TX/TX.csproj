@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>TX_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>6F8FC6040585BBF725A0E8F390918ADE45A823CC</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
@@ -121,13 +121,14 @@
     <Compile Include="Models\InitializeMessage.cs" />
     <Compile Include="Models\Progress.cs" />
     <Compile Include="Models\ThreadMessage.cs" />
+    <Compile Include="Models\PlainTextComboBoxData.cs" />
     <Compile Include="NetWork\HttpNetWorkMethods.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\HttpAnalyser.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\AbstractAnalyser.cs" />
+    <Compile Include="NetWork\NetWorkAnalysers\ThunderAnalyser.cs" />
+    <Compile Include="NetWork\NetWorkAnalysers\YouTubeAnalyser.cs" />
     <Compile Include="NetWork\SpeedCalculator.cs" />
     <Compile Include="Converters\UrlConverter.cs" />
-    <Compile Include="NetWork\URLAnalysers\AbstractURLAnalyser.cs" />
-    <Compile Include="NetWork\URLAnalysers\ThunderURLAnalyser.cs" />
     <Compile Include="NewTaskPage.xaml.cs">
       <DependentUpon>NewTaskPage.xaml</DependentUpon>
     </Compile>
@@ -140,6 +141,7 @@
     <Compile Include="StorageTools\StorageManager.cs" />
     <Compile Include="Resources\Strings\AppResources.cs" />
     <Compile Include="Toasts\ToastManager.cs" />
+    <Compile Include="VisualManager\NewTaskPageVisualController.cs" />
     <Compile Include="VisualManager\PropertyAnimationManager.cs" />
     <Compile Include="VisualManager\VisibilityAnimationManager.cs" />
   </ItemGroup>
@@ -265,6 +267,9 @@
     </PackageReference>
     <PackageReference Include="XPShadow">
       <Version>0.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="YoutubeExplode">
+      <Version>4.7.0-beta</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

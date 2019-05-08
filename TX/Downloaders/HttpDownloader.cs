@@ -29,11 +29,13 @@ namespace TX.Downloaders
             speedHelper.Updated += (h) =>
             {
                 if (State != DownloadState.Downloading) return;
-                _prog_.AverageSpeed = speedHelper.AverageSpeed;
-                _prog_.CurrentValue = speedHelper.CurrentValue;
-                _prog_.Speed = speedHelper.Speed;
-                _prog_.TargetValue = Message.FileSize;
-
+                lock (speedHelper)
+                {
+                    _prog_.AverageSpeed = speedHelper.AverageSpeed;
+                    _prog_.CurrentValue = speedHelper.CurrentValue;
+                    _prog_.Speed = speedHelper.Speed;
+                    _prog_.TargetValue = Message.FileSize;
+                }
                 DownloadProgressChanged(_prog_);
             };
         }
@@ -127,28 +129,32 @@ namespace TX.Downloaders
                 {
                     if (startCode != CurrentOperationCode) return;  //已经不是这个操作码了，继续开线程没有意义
 
-                    ThreadMessage thm = Message.Threads;
+                    long _offset = Message.Threads.ThreadOffset[threadIndex];
+                    long _size = 0;
+                    long _targetSize = Message.Threads.ThreadTargetSize[threadIndex];
+
+                    lock (Message.Threads){ _size = Message.Threads.ThreadSize[threadIndex]; }
+                    
                     //线程是否已完成
-                    if (thm.ThreadSize[threadIndex] == thm.ThreadTargetSize[threadIndex])
-                        continue;
+                    if (_size == _targetSize) continue;
                     //每个线程建立单独的流，在线程结束时由线程负责释放
                     //获取网络流
                     Stream source = await NetWork.HttpNetWorkMethods.GetResponseStreamAsync(Message.URL,
-                        thm.ThreadOffset[threadIndex] + thm.ThreadSize[threadIndex],
-                        thm.ThreadOffset[threadIndex] + thm.ThreadTargetSize[threadIndex]);
+                        _offset + _size,
+                        _offset + _targetSize);
 
                     //获取文件流
                     FileStream sink = new FileStream(Message.TempFilePath,
                         FileMode.Open,
                         FileAccess.Write,
-                        FileShare.ReadWrite);
+                        FileShare.Write);
 
                     //设置文件流的头
-                    sink.Position = thm.ThreadOffset[threadIndex] + thm.ThreadSize[threadIndex];
+                    sink.Position = _offset + _size;
 
                     //启动下载线程
                     StartNewDownloadThread(source, sink,
-                        thm.ThreadTargetSize[threadIndex] - thm.ThreadSize[threadIndex],
+                        _targetSize - _size,
                         threadIndex,
                         startCode);
 
@@ -214,18 +220,16 @@ namespace TX.Downloaders
                     }
                     remain -= pieceLength;
 
-                    lock (Message)
-                    {
-                        Message.Threads.ThreadSize[_threadIndex] += pieceLength;
-                        Message.DownloadSize += pieceLength;
-                    }
-
+                    lock (Message.Threads) { Message.Threads.ThreadSize[_threadIndex] += pieceLength; }
+                    lock (Message) Message.DownloadSize += pieceLength;
                     lock (speedHelper) { speedHelper.CurrentValue += pieceLength; }
                 }
 
                 //释放资源
                 if (_downloadStream != null) _downloadStream.Dispose();
                 if (_fileStream != null) _fileStream.Dispose();
+                GC.Collect();
+
                 if (remain <= 0)
                 {
                     Debug.WriteLine("线程 " + _threadIndex + " 已完成");
@@ -249,6 +253,8 @@ namespace TX.Downloaders
             //进入这里没有return表示已经完成
             try
             {
+                GC.Collect();
+
                 string path = StorageTools.Settings.DownloadFolderPath;
                 StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
                 await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);

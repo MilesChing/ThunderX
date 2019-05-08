@@ -78,9 +78,9 @@ namespace TX.Downloaders
             Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
             Message.Extention = Path.GetExtension(iMessage.FileName);
             Message.FileSize = null;
-            Message.TempFilePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path 
-                + @"\" + StorageTools.StorageManager.GetTemporaryName() 
-                + iMessage.FileName;
+            Message.TempFilePath = Path.Combine(
+                Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, 
+                StorageTools.StorageManager.GetTemporaryName() + iMessage.FileName);
             Message.URL = iMessage.Url;
             State = DownloadState.Prepared;
             return;

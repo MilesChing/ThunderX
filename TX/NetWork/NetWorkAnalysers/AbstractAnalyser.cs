@@ -4,11 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Downloaders;
+using TX.VisualManager;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
     public abstract class AbstractAnalyser : IDisposable
     {
+        /// <summary>
+        /// 视觉控制器，用于与界面进行交互
+        /// </summary>
+        protected NewTaskPageVisualController Controller { get; private set; }
+
         public string URL { get; protected set; }
 
         /// <summary>
@@ -37,13 +43,16 @@ namespace TX.NetWork.NetWorkAnalysers
         public abstract long GetStreamSize();
 
         /// <summary>
-        /// 获取URL对应的界面细节
-        /// </summary>
-        public abstract NewTaskPageVisualDetail GetVisualDetail();
-
-        /// <summary>
-        /// 释放资源
+        /// 释放资源，解除对控制器做的更改
         /// </summary>
         public abstract void Dispose();
+
+        /// <summary>
+        /// 绑定界面控制器，用于与页面进行信息交换
+        /// </summary>
+        public void BindVisualController(NewTaskPageVisualController controller)
+        {
+            Controller = controller;
+        }
     }
 }

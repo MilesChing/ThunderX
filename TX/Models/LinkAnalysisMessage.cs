@@ -20,5 +20,10 @@ namespace TX.Models
         /// 消息包括的文本
         /// </summary>
         public string Message { get; set; } = "";
+
+        public bool Equals(LinkAnalysisMessage obj)
+        {
+            return Message.Equals(obj.Message);
+        }
     }
 }

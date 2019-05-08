@@ -21,10 +21,19 @@ namespace TX
 {
     public sealed partial class NewTaskPage : Page
     {
+        private object urlAnalyseLock = new object();
+
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
+        private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
+
         private AbstractAnalyser analyser = null;
+        private NewTaskPageVisualController controller = null;
+
         private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages 
             = new ObservableCollection<LinkAnalysisMessage>();
+
+        private ObservableCollection<PlainTextComboBoxData> comboBoxItems
+            = new ObservableCollection<PlainTextComboBoxData>();
 
         public NewTaskPage()
         {
@@ -33,12 +42,19 @@ namespace TX
             ResetTitleBar();
 
             InitializeComponent();
+
             SetVisualManagers();
+            controller = new NewTaskPageVisualController(linkAnalysisMessages,
+                ThreadLayoutVisibilityManager,
+                ComboBoxLayoutVisibilityManager,
+                SubmitButton,
+                RecommendedNameBlock,
+                ComboBox,
+                comboBoxItems);
 
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
 
             RefreshUI();
-            Clipboard_ContentChanged(this, this);//检查一下剪贴板里有没有url
         }
 
         private void RefreshUI()
@@ -47,7 +63,7 @@ namespace TX
             UrlBox.Text = "";
             NeedRenameButton.IsChecked = false;
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
-            OurAdviceBlock.Text = RenameBox.Text;
+            RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
         }
 
@@ -66,6 +82,7 @@ namespace TX
         {
             //设置相关视觉控制器，在构造方法中调用
             ThreadLayoutVisibilityManager = new VisibilityAnimationManager(ThreadLayout);
+            ComboBoxLayoutVisibilityManager = new VisibilityAnimationManager(ComboBoxLayout);
         }
 
         private async void Clipboard_ContentChanged(object sender, object e)
@@ -78,7 +95,6 @@ namespace TX
                     if (url != string.Empty)
                     {
                         UrlBox.Text = url;
-                        UrlBox_TextChanged(null, null);
                     }
                 }
             }
@@ -90,42 +106,15 @@ namespace TX
 
         private async void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SubmitButton.IsEnabled = false;
             string url = UrlBox.Text;
-            AbstractAnalyser manalyser = UrlConverter.GetAnalyser(url);
-            if (manalyser == null)
-            {
-                ApplyVisualDetail(new NewTaskPageVisualDetail());
-                return;
-            }
-            await manalyser.SetURLAsync(url);
-            if (url == UrlBox.Text)
-            {
-                //确保url不会发生变化
-                lock (this)
-                {
-                    analyser?.Dispose();
-                    analyser = manalyser;
-                    OurAdviceBlock.Text = System.IO.Path.GetFileName(url);
-                    OurAdviceBlock.Opacity = 0.5;
-                    if (OurAdviceBlock.Text == string.Empty) OurAdviceBlock.Text = Strings.AppResources.GetString("Unknown");
+            
+            analyser?.Dispose();
+            analyser = UrlConverter.GetAnalyser(url);
+            if (analyser == null) return;
 
-                    ApplyVisualDetail(analyser.GetVisualDetail());
-
-                    if (analyser.IsLegal())
-                    {
-                        OurAdviceBlock.Text = analyser.GetRecommendedName();
-                        OurAdviceBlock.Opacity = 1;
-                        SubmitButton.IsEnabled = true;
-                    }
-                    else
-                    {
-                        analyser.Dispose();
-                        analyser = null;
-                    }
-                }
-            }
-            else manalyser.Dispose();
+            controller.RegistAnalyser(null, analyser);
+            analyser.BindVisualController(controller);
+            await analyser.SetURLAsync(url);
         }
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -151,32 +140,8 @@ namespace TX
         private void NeedRenameButton_ValueChanged(object sender, RoutedEventArgs e)
         {
             bool isChecked = (bool)((CheckBox)sender).IsChecked;
-            OurAdviceBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
+            RecommendedNameBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
             RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void ApplyVisualDetail(NewTaskPageVisualDetail detail)
-        {
-            if (detail.NeedThreadsSlider ^ (ThreadLayoutVisibilityManager.Element.Visibility == Visibility.Visible))
-            {
-                if (detail.NeedThreadsSlider) ThreadLayoutVisibilityManager.Show();
-                else ThreadLayoutVisibilityManager.Hide();
-            }
-
-            if (detail.LinkAnalysisMessages != null && linkAnalysisMessages.Count == detail.LinkAnalysisMessages.Length)
-            {
-                for (int i = 0; i < linkAnalysisMessages.Count; i++)
-                {
-                    if (detail.LinkAnalysisMessages[i].Message != linkAnalysisMessages[i].Message) break;
-                    if (i == linkAnalysisMessages.Count - 1) return;
-                }
-            }
-
-            linkAnalysisMessages.Clear();
-
-            if (detail.LinkAnalysisMessages != null && detail.LinkAnalysisMessages.Length != 0)
-                foreach (LinkAnalysisMessage mes in detail.LinkAnalysisMessages)
-                    linkAnalysisMessages.Add(mes);
         }
 
         private void SetThemeChangedListener()
@@ -190,30 +155,16 @@ namespace TX
                 });
             };
         }
-    }
 
-    /// <summary>
-    /// 包含对新任务页面布局做出调整的细节
-    /// 用于对目标URL进行额外的界面调整
-    /// </summary>
-    public class NewTaskPageVisualDetail
-    {
-        public NewTaskPageVisualDetail(
-            bool needThreadsSlider = false,
-            LinkAnalysisMessage[] linkAnalysisMessages = null)
+        private void ClearVisualStates()
         {
-            NeedThreadsSlider = needThreadsSlider;
-            LinkAnalysisMessages = linkAnalysisMessages;
+            SubmitButton.IsEnabled = false;
+            ThreadLayoutVisibilityManager.Hide();
+            ComboBoxLayoutVisibilityManager.Hide();
+            RecommendedNameBlock.Text = Strings.AppResources.GetString("Unknown");
+            RecommendedNameBlock.Opacity = 0.5;
+            linkAnalysisMessages.Clear();
+            comboBoxItems.Clear();
         }
-
-        /// <summary>
-        /// 是否需要选择线程数的滑动栏
-        /// </summary>
-        public bool NeedThreadsSlider { get; set; }
-
-        /// <summary>
-        /// 展示给用户的多行文字提示，每行展示一条
-        /// </summary>
-        public LinkAnalysisMessage[] LinkAnalysisMessages { get; set; }
     }
 }

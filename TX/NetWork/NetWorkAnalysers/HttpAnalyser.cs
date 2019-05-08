@@ -7,15 +7,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Downloaders;
-using TX.NetWork.URLAnalysers;
+using TX.Strings;
+using TX.Models;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
     class HttpAnalyser : AbstractAnalyser
     {
-        private AbstractURLAnalyser[] analysers = { new ThunderURLAnalyser() };
-
-        private string legitimacyInformation = null;
+        private const string KEY_LEGITIMACY = "Legitimacy";
+        private const string KEY_MULTITHREAD = "Multithread";
 
         private HttpWebResponse _hresp_ = null;
 
@@ -32,15 +32,16 @@ namespace TX.NetWork.NetWorkAnalysers
                 if (fileinfo != null) name = fileinfo.Substring(fileinfo.LastIndexOf(mathkey)).Replace(mathkey, "");
                 else name = Path.GetFileName(_hresp_.ResponseUri.OriginalString);
 
-                string contentType = _hresp_.Headers["content-type"];
+                string contentType = _hresp_.ContentType;
                 if (contentType.Contains(';')) contentType = contentType.Split(';')[0];
+                if (name.Length >= 32) name = name.Substring(name.Length - 32);
 
                 if (contentType == null) return name;
                 else
                 {
                     string extent = Converters.ExtentionConverter.TryGetExtention(contentType);
                     if (extent != ".*" && Path.GetExtension(name) != extent)
-                        return name + extent;
+                        return (name + extent);
                     else return name;
                 }
             }
@@ -68,7 +69,13 @@ namespace TX.NetWork.NetWorkAnalysers
 
         public override void Dispose()
         {
-            Debug.WriteLine("分析器已释放");
+            Controller.RemoveMessage(this, KEY_LEGITIMACY);
+            Controller.RemoveMessage(this, KEY_MULTITHREAD);
+            Controller.SetSubmitButtonEnabled(this, false);
+            Controller.SetThreadLayoutVisibility(this, false);
+            Controller.SetRecommendedName(this, AppResources.GetString("Unknown"), 0.5);
+            Controller.RemoveAnalyser(this);
+
             _hresp_?.Dispose();
             _hresp_ = null;
             URL = null;
@@ -90,45 +97,47 @@ namespace TX.NetWork.NetWorkAnalysers
                 {
                     HttpWebRequest req = WebRequest.CreateHttp(URL);
                     _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
-                    legitimacyInformation = Strings.AppResources.GetString("SuccessfullyConnected");
                 }
-                else legitimacyInformation = null;
             }
             catch (Exception)
             {
                 _hresp_ = null;
-                legitimacyInformation = Strings.AppResources.GetString("UnableToConnect");
                 return;
             }
         }
 
-        public override NewTaskPageVisualDetail GetVisualDetail()
-        {
-            bool needThreadNum = (GetStreamSize() > 0);
-            NewTaskPageVisualDetail detail = new NewTaskPageVisualDetail(needThreadNum);
-            List<Models.LinkAnalysisMessage> messages = new List<Models.LinkAnalysisMessage>();
-
-            foreach (AbstractURLAnalyser analyser in analysers)
-                if (analyser.Message != null)
-                    messages.Add(new Models.LinkAnalysisMessage(analyser.Message));
-
-            if (legitimacyInformation != null)
-                messages.Add(new Models.LinkAnalysisMessage(legitimacyInformation));
-            
-            return new NewTaskPageVisualDetail(needThreadNum, messages.ToArray());
-        }
-
         public override async Task SetURLAsync(string url)
         {
-            Dispose();
             URL = url;
-            foreach(AbstractURLAnalyser analyser in analysers)
-            {
-                analyser.OriginalURL = URL;
-                URL = analyser.TransferedURL;
-            }
-            legitimacyInformation = null;
+
+            Controller.SetRecommendedName(this, Path.GetFileName(url), 0.5);
+            Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+                new LinkAnalysisMessage(AppResources.GetString("Connecting")));
+
             await GetResponseAsync();
+            if (_hresp_ == null)
+                Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+                    new LinkAnalysisMessage(AppResources.GetString("UnableToConnect")));
+            else
+            {
+                Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+                    new LinkAnalysisMessage(AppResources.GetString("SuccessfullyConnected")));
+                Controller.SetSubmitButtonEnabled(this, true);
+                
+                if (GetStreamSize() > 0)
+                {
+                    Controller.SetThreadLayoutVisibility(this, true);
+                    Controller.UpdateMessage(this, KEY_MULTITHREAD, 
+                        new LinkAnalysisMessage(AppResources.GetString("Multithread")));
+                }
+                else
+                {
+                    Controller.SetThreadLayoutVisibility(this, false);
+                    Controller.RemoveMessage(this, KEY_MULTITHREAD);
+                }
+
+                Controller.SetRecommendedName(this, GetRecommendedName(), 1);
+            }
         }
     }
 }

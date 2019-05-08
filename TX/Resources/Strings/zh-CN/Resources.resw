@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Connecting" xml:space="preserve">
+    <value>正在连接远程服务器</value>
+  </data>
   <data name="DownloadCompleted" xml:space="preserve">
     <value>下载完成</value>
   </data>
@@ -132,8 +135,14 @@
   <data name="MainPage_SetButton.Label" xml:space="preserve">
     <value>设置</value>
   </data>
+  <data name="Multithread" xml:space="preserve">
+    <value>已启用多线程模式</value>
+  </data>
   <data name="NewTaskPageName" xml:space="preserve">
     <value>新增</value>
+  </data>
+  <data name="NewTaskPage_ComboBox.PlaceholderText" xml:space="preserve">
+    <value>选择视频源</value>
   </data>
   <data name="NewTaskPage_GuideText1.Text" xml:space="preserve">
     <value>填入链接以新增项目。</value>
@@ -216,10 +225,22 @@
   <data name="ThunderLinkDetected" xml:space="preserve">
     <value>检测到Thunderbolt链接</value>
   </data>
+  <data name="ThunderLinkDetectedButFailed" xml:space="preserve">
+    <value>检测到Thunderbolt链接，但转换后的内容非法</value>
+  </data>
   <data name="UnableToConnect" xml:space="preserve">
     <value>无法连接：请检查设备的网络连接</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>未知</value>
+  </data>
+  <data name="YouTubeLinkDetected" xml:space="preserve">
+    <value>已解析YouTube链接</value>
+  </data>
+  <data name="YouTubeLinkDetectedButFailed" xml:space="preserve">
+    <value>检测到YouTube链接，但解析视频失败</value>
+  </data>
+  <data name="YouTubeLinkDetectedButWaiting" xml:space="preserve">
+    <value>检测到YouTube链接，正在解析</value>
   </data>
 </root>

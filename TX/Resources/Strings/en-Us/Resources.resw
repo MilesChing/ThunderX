@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Connecting" xml:space="preserve">
+    <value>Connecting to a remote server</value>
+  </data>
   <data name="DownloadCompleted" xml:space="preserve">
     <value>Download completed</value>
   </data>
@@ -132,8 +135,14 @@
   <data name="MainPage_SetButton.Label" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="Multithread" xml:space="preserve">
+    <value>Multithreading enabled</value>
+  </data>
   <data name="NewTaskPageName" xml:space="preserve">
     <value>Start New</value>
+  </data>
+  <data name="NewTaskPage_ComboBox.PlaceholderText" xml:space="preserve">
+    <value>Video source</value>
   </data>
   <data name="NewTaskPage_GuideText1.Text" xml:space="preserve">
     <value>Fill in the following text box to start a new download task.</value>
@@ -216,10 +225,22 @@
   <data name="ThunderLinkDetected" xml:space="preserve">
     <value>Thunderbolt link detected</value>
   </data>
+  <data name="ThunderLinkDetectedButFailed" xml:space="preserve">
+    <value>Thunderbolt link detected, but converted content is illegal</value>
+  </data>
   <data name="UnableToConnect" xml:space="preserve">
     <value>Unable to connect: please check the network connection of the device</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="YouTubeLinkDetected" xml:space="preserve">
+    <value>Youtube link parsed</value>
+  </data>
+  <data name="YouTubeLinkDetectedButFailed" xml:space="preserve">
+    <value>Youtube link detected but unable to get the video</value>
+  </data>
+  <data name="YouTubeLinkDetectedButWaiting" xml:space="preserve">
+    <value>YouTube link detected</value>
   </data>
 </root>

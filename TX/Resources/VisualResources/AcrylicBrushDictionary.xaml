@@ -5,13 +5,13 @@
 
     <AcrylicBrush x:Key="TXBackgroundAcrylicBrush"
                   BackgroundSource="HostBackdrop"
-                  TintColor="{ThemeResource SystemAltHighColor}"
+                  TintColor="{ThemeResource TXBackgroundAcrylicColor}"
                   TintOpacity="0.9"
-                  FallbackColor="{ThemeResource SystemAltHighColor}"/>
+                  FallbackColor="{ThemeResource TXBackgroundAcrylicColor}"/>
 
     <AcrylicBrush x:Key="TXControlAcrylicBrush"
                           BackgroundSource="Backdrop"
-                          TintColor="{ThemeResource SystemAltHighColor}"
+                          TintColor="{ThemeResource TXBackgroundAcrylicColor}"
                           TintOpacity="0.1"
-                          FallbackColor="{ThemeResource SystemAltHighColor}" />
+                          FallbackColor="{ThemeResource TXBackgroundAcrylicColor}" />
 </ResourceDictionary>

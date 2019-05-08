@@ -45,7 +45,7 @@ namespace TX.StorageTools
         {
             StorageFile file;
             try { file = await ApplicationData.Current.LocalCacheFolder.GetFileAsync("log.mls"); }
-            catch (Exception){ return null; }
+            catch (Exception) { return null; }
             string str = await FileIO.ReadTextAsync(file);
             await file.DeleteAsync();
             //string str = (string)ApplicationData.Current.LocalSettings.Values["SavedTasks"];
@@ -59,24 +59,29 @@ namespace TX.StorageTools
         /// </summary>
         public static async Task GetCleanAsync()
         {
-            ulong size = 0;
-            StorageFolder folder = ApplicationData.Current.LocalCacheFolder;
-            var files = await folder.GetFilesAsync();
-            foreach(StorageFile file in files)
+            try
             {
-                if (file.Name == "log.mls") continue;
-                bool remove = true;
-                foreach (DownloadBar bar in MainPage.Current.DownloadBarCollection)
-                    if(bar.downloader.Message.TempFilePath == file.Path)
+                ulong size = 0;
+                StorageFolder folder = ApplicationData.Current.LocalCacheFolder;
+                var files = await folder.GetFilesAsync();
+                foreach (StorageFile file in files)
+                {
+                    if (file.Name == "log.mls") continue;
+                    bool remove = true;
+                    foreach (DownloadBar bar in MainPage.Current.DownloadBarCollection)
+                        if (bar.downloader.Message.TempFilePath == file.Path)
+                        {
+                            remove = false;
+                            break;
+                        }
+                    if (remove)
                     {
-                        remove = false;
-                        break;
+                        size += (await file.GetBasicPropertiesAsync()).Size;
+                        await file.DeleteAsync();
                     }
-                if (remove){
-                    size += (await file.GetBasicPropertiesAsync()).Size;
-                    await file.DeleteAsync();
                 }
             }
+            catch (Exception) { }
         }
     }
 }

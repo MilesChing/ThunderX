@@ -11,6 +11,7 @@
              d:DesignWidth="500">
 
     <UserControl.Resources>
+        
         <Storyboard x:Name="ShowGlassLabel">
             <DoubleAnimation Duration="00:00:00.1"
                              To="1"
@@ -46,15 +47,16 @@
                                       Value="0" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        
     </UserControl.Resources>
 
     <control:DropShadowPanel x:Name="shadow"
                              HorizontalContentAlignment="Stretch"
-                             BlurRadius="4"
+                             BlurRadius="8"
                              Margin="4"
-                             Height="60"
+                             Height="64"
                              ShadowOpacity="0.4">
-        <Grid Background="{ThemeResource SolidSystemAltHighColorBrush}"
+        <Grid Background="{ThemeResource TXDownloadBarBackground}"
               CornerRadius="2">
             
             <ProgressBar x:Name="Bar"
@@ -74,6 +76,8 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*"
                                       MaxWidth="80" />
+                    <ColumnDefinition Width="*"
+                                      MaxWidth="10" />
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="LeftSmallBar"
@@ -119,7 +123,7 @@
 
                 <Grid Grid.Column="2">
                     <TextBlock x:Name="ProgressBlock"
-                               HorizontalAlignment="Center"
+                               HorizontalAlignment="Right"
                                VerticalAlignment="Center"
                                Text="30%"
                                FontWeight="SemiBold"
@@ -165,6 +169,7 @@
         </Grid>
 
     </control:DropShadowPanel>
+    
 </UserControl>
 
     
