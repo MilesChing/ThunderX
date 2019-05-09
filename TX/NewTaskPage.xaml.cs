@@ -60,7 +60,7 @@ namespace TX
         private void RefreshUI()
         {
             //将UI恢复到初始值（窗口的循环利用机制）
-            UrlBox.Text = "";
+            URLBox.Text = "";
             NeedRenameButton.IsChecked = false;
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
             RecommendedNameBlock.Text = RenameBox.Text;
@@ -92,9 +92,9 @@ namespace TX
                 if (!SubmitButton.IsEnabled)
                 {
                     string url = await UrlConverter.CheckClipBoardAsync();
-                    if (url != string.Empty)
+                    if (url != string.Empty && !SubmitButton.IsEnabled)
                     {
-                        UrlBox.Text = url;
+                        URLBox.Text = url;
                     }
                 }
             }
@@ -104,9 +104,9 @@ namespace TX
             }
         }
 
-        private async void UrlBox_TextChanged(object sender, TextChangedEventArgs e)
+        private async void URLBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string url = UrlBox.Text;
+            string url = URLBox.Text;
             
             analyser?.Dispose();
             analyser = UrlConverter.GetAnalyser(url);
@@ -154,17 +154,6 @@ namespace TX
                     ResetTitleBar();
                 });
             };
-        }
-
-        private void ClearVisualStates()
-        {
-            SubmitButton.IsEnabled = false;
-            ThreadLayoutVisibilityManager.Hide();
-            ComboBoxLayoutVisibilityManager.Hide();
-            RecommendedNameBlock.Text = Strings.AppResources.GetString("Unknown");
-            RecommendedNameBlock.Opacity = 0.5;
-            linkAnalysisMessages.Clear();
-            comboBoxItems.Clear();
         }
     }
 }

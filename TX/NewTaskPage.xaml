@@ -72,21 +72,18 @@
                            x:Uid="NewTaskPage_Title" />
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           x:Uid="NewTaskPage_GuideText1" />
+                           x:Uid="NewTaskPage_GuideText_URLBox" />
                 <Border Style="{ThemeResource TXBorder}" />
-                <TextBox x:Name="UrlBox"
+                <TextBox x:Name="URLBox"
                          Style="{ThemeResource TextBoxStyle}"
-                         TextChanged="UrlBox_TextChanged" />
+                         TextChanged="URLBox_TextChanged" />
                 <Border Style="{ThemeResource TXBorder}" />
-
                 <ListView 
                     IsItemClickEnabled="False"
                     ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
                     ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
                     ItemsSource="{x:Bind linkAnalysisMessages}"/>
-
                 <Border Style="{ThemeResource TXBigBorder}" />
-
                 <StackPanel x:Name="ComboBoxLayout"
                             Visibility="Collapsed"
                             Orientation="Vertical">
@@ -101,7 +98,7 @@
                     <Border Style="{ThemeResource TXBigBorder}" />
                 </StackPanel>
                 
-                <TextBlock x:Uid="NewTaskPage_Subtitle2"
+                <TextBlock x:Uid="NewTaskPage_Subtitle_Rename"
                            Style="{ThemeResource TXSubTitle}" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <Grid>
@@ -116,7 +113,7 @@
                 <Border Style="{ThemeResource TXBorder}" />
                 <CheckBox Style="{ThemeResource CheckBoxStyle}" 
                           x:Name="NeedRenameButton"
-                          x:Uid="NewTaskPage_NeedRenameButton"
+                          x:Uid="NewTaskPage_NeedRenameCheckBox"
                           Checked="NeedRenameButton_ValueChanged"
                           Unchecked="NeedRenameButton_ValueChanged" />
                 <Border Style="{ThemeResource TXBigBorder}" />
@@ -124,11 +121,11 @@
                 <StackPanel x:Name="ThreadLayout"
                             Visibility="Collapsed"
                             Orientation="Vertical">
-                    <TextBlock x:Uid="NewTaskPage_Subtitle3"
+                    <TextBlock x:Uid="NewTaskPage_Subtitle_ThreadNum"
                            Style="{ThemeResource TXSubTitle}" />
                     <Border Style="{ThemeResource TXBorder}" />
                     <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           x:Uid="NewTaskPage_GuideText2" />
+                           x:Uid="NewTaskPage_GuideText_ThreadNum" />
                     <Border Style="{ThemeResource TXBorder}" />
                     <Slider x:Name="ThreadNumSlider"
                         Minimum="1"

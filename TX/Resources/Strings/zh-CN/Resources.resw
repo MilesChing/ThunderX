@@ -144,22 +144,22 @@
   <data name="NewTaskPage_ComboBox.PlaceholderText" xml:space="preserve">
     <value>选择视频源</value>
   </data>
-  <data name="NewTaskPage_GuideText1.Text" xml:space="preserve">
-    <value>填入链接以新增项目。</value>
-  </data>
-  <data name="NewTaskPage_GuideText2.Text" xml:space="preserve">
+  <data name="NewTaskPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>拖动滑块为项目单独设置下载时的线程数。</value>
   </data>
-  <data name="NewTaskPage_NeedRenameButton.Content" xml:space="preserve">
+  <data name="NewTaskPage_GuideText_URLBox.Text" xml:space="preserve">
+    <value>填入链接以新增项目。</value>
+  </data>
+  <data name="NewTaskPage_NeedRenameCheckBox.Content" xml:space="preserve">
     <value>需要重命名</value>
   </data>
   <data name="NewTaskPage_SubmitButton.Content" xml:space="preserve">
     <value>提交</value>
   </data>
-  <data name="NewTaskPage_Subtitle2.Text" xml:space="preserve">
+  <data name="NewTaskPage_Subtitle_Rename.Text" xml:space="preserve">
     <value>重命名</value>
   </data>
-  <data name="NewTaskPage_Subtitle3.Text" xml:space="preserve">
+  <data name="NewTaskPage_Subtitle_ThreadNum.Text" xml:space="preserve">
     <value>线程数</value>
   </data>
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
@@ -183,35 +183,35 @@
   <data name="SetPageName" xml:space="preserve">
     <value>设置</value>
   </data>
-  <data name="SetPage_GuideText1.Text" xml:space="preserve">
-    <value>拖动下面的滑块以设置默认的线程数。线程数对下载速度的影响取决于设备和网络环境。</value>
-  </data>
-  <data name="SetPage_GuideText2.Text" xml:space="preserve">
+  <data name="SetPage_GuideText_DefaultFolder.Text" xml:space="preserve">
     <value>将文件夹设置为每个下载任务的默认目录。确保在使用此文件夹时不会移动、删除或重命名该文件夹。</value>
   </data>
-  <data name="SetPage_GuideText3.Text" xml:space="preserve">
+  <data name="SetPage_GuideText_MaxRetries.Text" xml:space="preserve">
+    <value>在某些错误发生时，我们可以自动为您重试，请为这个行为设置一个上限。</value>
+  </data>
+  <data name="SetPage_GuideText_Review.Text" xml:space="preserve">
     <value>在Windows应用商店中评价我们，助力应用开发!</value>
   </data>
-  <data name="SetPage_GuideText5.Text" xml:space="preserve">
-    <value>在某些错误发生时，我们可以自动为您重试，请为这个行为设置一个上限。</value>
+  <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
+    <value>拖动下面的滑块以设置默认的线程数。线程数对下载速度的影响取决于设备和网络环境。</value>
   </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>选择文件夹</value>
   </data>
-  <data name="SetPage_Subtitle1.Text" xml:space="preserve">
-    <value>默认线程数</value>
-  </data>
-  <data name="SetPage_Subtitle2.Text" xml:space="preserve">
-    <value>设置默认下载文件夹</value>
-  </data>
-  <data name="SetPage_Subtitle3.Text" xml:space="preserve">
-    <value>评分</value>
-  </data>
-  <data name="SetPage_Subtitle4.Text" xml:space="preserve">
+  <data name="SetPage_Subtitle_DarkMode.Text" xml:space="preserve">
     <value>黑暗模式</value>
   </data>
-  <data name="SetPage_Subtitle5.Text" xml:space="preserve">
+  <data name="SetPage_Subtitle_DefaultFolder.Text" xml:space="preserve">
+    <value>设置默认下载文件夹</value>
+  </data>
+  <data name="SetPage_Subtitle_MaxRetries.Text" xml:space="preserve">
     <value>重试次数上限</value>
+  </data>
+  <data name="SetPage_Subtitle_Review.Text" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="SetPage_Subtitle_ThreadNum.Text" xml:space="preserve">
+    <value>默认线程数</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>

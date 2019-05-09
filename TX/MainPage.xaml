@@ -78,6 +78,7 @@
                 </Canvas>
             </Canvas>
         </Viewbox>
+        
         <GridView x:Name="gv"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"

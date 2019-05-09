@@ -23,17 +23,17 @@
                            x:Uid="SetPage_Title"/>
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="SetPage_Subtitle4" />
+                           x:Uid="SetPage_Subtitle_DarkMode" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <ToggleSwitch x:Name="DarkModeSwitch"
                               Toggled="DarkModeSwitch_Toggled"/>
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="SetPage_Subtitle1"/>
+                           x:Uid="SetPage_Subtitle_ThreadNum"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap"
                            Style="{ThemeResource TXPlainText}"
-                           x:Uid="SetPage_GuideText1"/>
+                           x:Uid="SetPage_GuideText_ThreadNum"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <Slider Template="{ThemeResource TXSliderTemplate}" 
                         x:Name="ThreadNumSlider"
@@ -42,11 +42,11 @@
                         Maximum="218" />
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="SetPage_Subtitle5"/>
+                           x:Uid="SetPage_Subtitle_MaxRetries"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap"
                            Style="{ThemeResource TXPlainText}"
-                           x:Uid="SetPage_GuideText5"/>
+                           x:Uid="SetPage_GuideText_MaxRetries"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <Slider x:Name="MaximumRetriesSlider"
                         Template="{ThemeResource TXSliderTemplate}" 
@@ -55,10 +55,10 @@
                         Maximum="50" />
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="SetPage_Subtitle2"/>
+                           x:Uid="SetPage_Subtitle_DefaultFolder"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           x:Uid="SetPage_GuideText2"/>
+                           x:Uid="SetPage_GuideText_DefaultFolder"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock x:Name="NowFolderTextBlock" 
                            FontFamily="Consolas"
@@ -72,10 +72,10 @@
                         Click="SubmitButton_Click" />
                 <Border Style="{ThemeResource TXBigBorder}" />
                 <TextBlock Style="{ThemeResource TXSubTitle}"
-                           x:Uid="SetPage_Subtitle3" />
+                           x:Uid="SetPage_Subtitle_Review" />
                 <Border Style="{ThemeResource TXBorder}" />
                 <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           x:Uid="SetPage_GuideText3"/>
+                           x:Uid="SetPage_GuideText_Review"/>
                 <Border Style="{ThemeResource TXBorder}" />
                 <RatingControl HorizontalAlignment="Left"
                                PlaceholderValue="5"

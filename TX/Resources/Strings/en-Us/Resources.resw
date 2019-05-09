@@ -144,22 +144,22 @@
   <data name="NewTaskPage_ComboBox.PlaceholderText" xml:space="preserve">
     <value>Video source</value>
   </data>
-  <data name="NewTaskPage_GuideText1.Text" xml:space="preserve">
-    <value>Fill in the following text box to start a new download task.</value>
-  </data>
-  <data name="NewTaskPage_GuideText2.Text" xml:space="preserve">
+  <data name="NewTaskPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>Drag the slider if you need to set the number of threads separately for the task.</value>
   </data>
-  <data name="NewTaskPage_NeedRenameButton.Content" xml:space="preserve">
+  <data name="NewTaskPage_GuideText_URLBox.Text" xml:space="preserve">
+    <value>Fill in the following text box to start a new download task.</value>
+  </data>
+  <data name="NewTaskPage_NeedRenameCheckBox.Content" xml:space="preserve">
     <value>I need to rename it</value>
   </data>
   <data name="NewTaskPage_SubmitButton.Content" xml:space="preserve">
     <value>Submit</value>
   </data>
-  <data name="NewTaskPage_Subtitle2.Text" xml:space="preserve">
+  <data name="NewTaskPage_Subtitle_Rename.Text" xml:space="preserve">
     <value>Rename</value>
   </data>
-  <data name="NewTaskPage_Subtitle3.Text" xml:space="preserve">
+  <data name="NewTaskPage_Subtitle_ThreadNum.Text" xml:space="preserve">
     <value>Number of threads</value>
   </data>
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
@@ -183,35 +183,35 @@
   <data name="SetPageName" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="SetPage_GuideText1.Text" xml:space="preserve">
-    <value>Drag the slider below to set the default number of threads. The effect of the number of threads on download speed depends on the device and network environment.</value>
-  </data>
-  <data name="SetPage_GuideText2.Text" xml:space="preserve">
+  <data name="SetPage_GuideText_DefaultFolder.Text" xml:space="preserve">
     <value>Set a folder as the default directory for every download task. Make sure this folder is not moved, deleted, or renamed when you use it.</value>
   </data>
-  <data name="SetPage_GuideText3.Text" xml:space="preserve">
+  <data name="SetPage_GuideText_MaxRetries.Text" xml:space="preserve">
+    <value>We will automatically retry the task for you when certain errors occur. Drag the slider to set an upper number of times.</value>
+  </data>
+  <data name="SetPage_GuideText_Review.Text" xml:space="preserve">
     <value>Showing us some love on the store helps us to continue to work on the app and make things even better !</value>
   </data>
-  <data name="SetPage_GuideText5.Text" xml:space="preserve">
-    <value>We will automatically retry the task for you when certain errors occur. Drag the slider to set an upper number of times.</value>
+  <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
+    <value>Drag the slider below to set the default number of threads. The effect of the number of threads on download speed depends on the device and network environment.</value>
   </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
-  <data name="SetPage_Subtitle1.Text" xml:space="preserve">
-    <value>Default Number of threads</value>
-  </data>
-  <data name="SetPage_Subtitle2.Text" xml:space="preserve">
-    <value>Reset Download Folder</value>
-  </data>
-  <data name="SetPage_Subtitle3.Text" xml:space="preserve">
-    <value>Rate Our App</value>
-  </data>
-  <data name="SetPage_Subtitle4.Text" xml:space="preserve">
+  <data name="SetPage_Subtitle_DarkMode.Text" xml:space="preserve">
     <value>Dark Mode</value>
   </data>
-  <data name="SetPage_Subtitle5.Text" xml:space="preserve">
+  <data name="SetPage_Subtitle_DefaultFolder.Text" xml:space="preserve">
+    <value>Reset Download Folder</value>
+  </data>
+  <data name="SetPage_Subtitle_MaxRetries.Text" xml:space="preserve">
     <value>Maximum Number of Retries</value>
+  </data>
+  <data name="SetPage_Subtitle_Review.Text" xml:space="preserve">
+    <value>Rate Our App</value>
+  </data>
+  <data name="SetPage_Subtitle_ThreadNum.Text" xml:space="preserve">
+    <value>Default Number of threads</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
