@@ -53,7 +53,6 @@ namespace TX
                     DownloadBar db = new DownloadBar();
                     DownloadBarCollection.Add(db);
                     AbstractDownloader dw = AbstractDownloader.GetDownloaderFromType(ms.DownloaderType);
-                    dw.MaxiMaximumRetries = Settings.MaximumRetries;
                     db.SetDownloader(dw);
                     dw.SetDownloaderFromBreakpoint(ms);
                 }

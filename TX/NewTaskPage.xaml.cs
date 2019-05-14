@@ -127,8 +127,8 @@ namespace TX
                 Url = analyser.URL,
                 FileName = (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
                 Size = analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
-                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null,
-                MaximumRetries = Settings.MaximumRetries
+                Threads = ThreadLayout.Visibility == Visibility.Visible ? (int?)ThreadNumSlider.Value : null,
+                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null
             };
             
             downloader.SetDownloader(settings);

@@ -73,7 +73,12 @@ namespace TX.StorageTools
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRetries"))
-                    return (int)ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
+                {
+                    var p = ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
+                    //兼容uint
+                    if (p is int) return (int)p;
+                    else return (int)((uint)p);
+                }
                 else return 0;
             }
             set { ApplicationData.Current.LocalSettings.Values["MaximumRetries"] = value; }

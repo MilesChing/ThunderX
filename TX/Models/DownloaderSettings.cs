@@ -31,10 +31,5 @@ namespace TX.Models
         /// 临时文件的路径（含文件名）
         /// </summary>
         public string FilePath;
-
-        /// <summary>
-        /// 任务允许的最大自动重试次数
-        /// </summary>
-        public int MaximumRetries;
     }
 }

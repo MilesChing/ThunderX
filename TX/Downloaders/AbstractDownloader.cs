@@ -1,6 +1,7 @@
 ﻿using System;
 using TX.Enums;
 using TX.Models;
+using TX.StorageTools;
 
 namespace TX.Downloaders
 {
@@ -100,6 +101,6 @@ namespace TX.Downloaders
         /// <summary>
         /// 发生错误时的最大重试次数
         /// </summary>
-        protected readonly uint MaximumRetries = 0;
+        protected readonly int MaximumRetries = Settings.MaximumRetries;
     }
 }

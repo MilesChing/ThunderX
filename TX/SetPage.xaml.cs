@@ -34,7 +34,7 @@ namespace TX
             //所以需要用prev记录好内部存储的ThreadNumber
             //不然就在ValueChanged里面被更新了
             int prev_th = Settings.ThreadNumber;
-            uint prev_re = Settings.MaximumRetries;
+            int prev_re = Settings.MaximumRetries;
             bool dark = Settings.DarkMode;
             this.InitializeComponent();
             SetThemeChangedListener();
@@ -102,7 +102,7 @@ namespace TX
 
         private void MaximumRetriesSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            Settings.MaximumRetries = (uint)e.NewValue;
+            Settings.MaximumRetries = (int)e.NewValue;
         }
     }
 }
