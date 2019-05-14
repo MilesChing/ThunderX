@@ -271,8 +271,8 @@ namespace TX.Converters
 
         public static string TryGetExtention(string contentType)
         {
-            string ext;
-            if (_mappings.TryGetValue(contentType, out ext))
+            string ext = null;
+            if (_mappings.TryGetValue(contentType.ToLower(), out ext))
                 return ext;
             else return ".*";
         }

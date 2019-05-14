@@ -4,7 +4,7 @@ Thunder X is a multi-threaded download tool that provides excellent interface an
 
 This software runs on universal windows platform.
 
-![Thunder X](ScreenShots/TXW.png)
+![Thunder X](https://s2.ax1x.com/2019/05/10/E2Orz4.png)
 
 ## Branches
 
@@ -14,9 +14,9 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ### 1.8.1.0
 
-- Fix a bug: Download progress may be wrong sometimes.
-- Fix a bug: Data corruption may be produced when downloading a large file.
-- Now you can use this software to download video from Youtube.
+- Download video from YouTube: Automatic link analysis.
+- Fix a bug: Download progress exceeds 100% sometimes.
+- Fix a bug: Data loss may happened when downloading a large file.
 
 ### 1.8.0.0
 

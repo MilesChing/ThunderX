@@ -31,19 +31,16 @@ namespace TX.NetWork.NetWorkAnalysers
                 string name = null;
                 if (fileinfo != null) name = fileinfo.Substring(fileinfo.LastIndexOf(mathkey)).Replace(mathkey, "");
                 else name = Path.GetFileName(_hresp_.ResponseUri.OriginalString);
-
+                //name是从链接中分析到的全名
                 string contentType = _hresp_.ContentType;
                 if (contentType.Contains(';')) contentType = contentType.Split(';')[0];
                 if (name.Length >= 32) name = name.Substring(name.Length - 32);
-
-                if (contentType == null) return name;
-                else
-                {
-                    string extent = Converters.ExtentionConverter.TryGetExtention(contentType);
-                    if (extent != ".*" && Path.GetExtension(name) != extent)
-                        return (name + extent);
-                    else return name;
-                }
+                //根据contentType推测扩展名
+                if (contentType == null) contentType = "text/html";
+                string extent = Converters.ExtentionConverter.TryGetExtention(contentType);
+                if (extent == ".*") extent = ".unknown";
+                if (name.EndsWith(extent)) return name;
+                else return name + extent;
             }
             catch (Exception)
             {
@@ -86,7 +83,7 @@ namespace TX.NetWork.NetWorkAnalysers
             Debug.WriteLine("检测链接 " + URL + " " + _hresp_ == null ? "非法" : "合法");
             return _hresp_ != null;
         }
-        
+
         private async Task GetResponseAsync()
         {
             try
@@ -111,23 +108,23 @@ namespace TX.NetWork.NetWorkAnalysers
             URL = url;
 
             Controller.SetRecommendedName(this, Path.GetFileName(url), 0.5);
-            Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+            Controller.UpdateMessage(this, KEY_LEGITIMACY,
                 new LinkAnalysisMessage(AppResources.GetString("Connecting")));
 
             await GetResponseAsync();
             if (_hresp_ == null)
-                Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+                Controller.UpdateMessage(this, KEY_LEGITIMACY,
                     new LinkAnalysisMessage(AppResources.GetString("UnableToConnect")));
             else
             {
-                Controller.UpdateMessage(this, KEY_LEGITIMACY, 
+                Controller.UpdateMessage(this, KEY_LEGITIMACY,
                     new LinkAnalysisMessage(AppResources.GetString("SuccessfullyConnected")));
                 Controller.SetSubmitButtonEnabled(this, true);
-                
+
                 if (GetStreamSize() > 0)
                 {
                     Controller.SetThreadLayoutVisibility(this, true);
-                    Controller.UpdateMessage(this, KEY_MULTITHREAD, 
+                    Controller.UpdateMessage(this, KEY_MULTITHREAD,
                         new LinkAnalysisMessage(AppResources.GetString("Multithread")));
                 }
                 else
