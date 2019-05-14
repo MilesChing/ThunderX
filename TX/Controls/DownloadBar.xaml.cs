@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using TX.Converters;
+using System.Diagnostics;
 
 namespace TX.Controls
 {
@@ -146,12 +147,14 @@ namespace TX.Controls
         
         private void TopGlassLabel_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            ShowGlassLabel.Begin();
+            if(e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+                ShowGlassLabel.Begin();
         }
 
         private void TopGlassLabel_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            HideGlassLabel.Begin();
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+                HideGlassLabel.Begin();
         }
         
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -173,6 +176,14 @@ namespace TX.Controls
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();
+        }
+
+        private void TopGlassLabel_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse) return;
+            if (TopGlassLabel.Opacity == 0) ShowGlassLabel.Begin();
+            else if (TopGlassLabel.Opacity == 1) HideGlassLabel.Begin();
+            else return;
         }
     }
 }

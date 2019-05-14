@@ -135,7 +135,8 @@
             <Grid x:Name="TopGlassLabel"
                   Background="{ThemeResource TXControlAcrylicBrush}"
                   PointerEntered="TopGlassLabel_PointerEntered"
-                  PointerExited="TopGlassLabel_PointerExited">
+                  PointerExited="TopGlassLabel_PointerExited"
+                  PointerReleased="TopGlassLabel_PointerReleased">
                 <CommandBar x:Name="cmdBar"
                             IsOpen="False"
                             Background="Transparent"

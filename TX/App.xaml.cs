@@ -97,6 +97,7 @@ namespace TX
                         Toasts.ToastManager.ShowSimpleToast("Oops", "Maybe the folder doesn't exist.");
                     }
                 }
+                Current.Exit();
             }
         }
 
