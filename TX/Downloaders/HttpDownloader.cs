@@ -40,23 +40,22 @@ namespace TX.Downloaders
             };
         }
 
-        public override void SetDownloader(InitializeMessage iMessage)
+        public override void SetDownloader(DownloaderSettings settings)
         {
             if (State != DownloadState.Uninitialized) return;
-
             try
             {
                 Message = new DownloaderMessage();
                 Message.DownloaderType = Type;
                 //设置文件信息
-                Message.FileSize = iMessage.Size;
-                Message.URL = iMessage.Url;
-                Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
-                Message.Extention = Path.GetExtension(iMessage.FileName);
+                Message.FileSize = settings.Size;
+                Message.URL = settings.Url;
+                Message.FileName = Path.GetFileNameWithoutExtension(settings.FileName);
+                Message.Extention = Path.GetExtension(settings.FileName);
                 //安排线程
-                Message.Threads.ArrangeThreads((long)Message.FileSize, iMessage.Threads <= 0 ? StorageTools.Settings.ThreadNumber : iMessage.Threads);
+                Message.Threads.ArrangeThreads((long)Message.FileSize, settings.Threads <= 0 ? StorageTools.Settings.ThreadNumber : ((int)settings.Threads));
                 //申请临时文件
-                Message.TempFilePath = iMessage.FilePath;
+                Message.TempFilePath = settings.FilePath;
                 State = DownloadState.Prepared;
             }
             catch (Exception e) { HandleError(e, CurrentOperationCode); }
@@ -278,7 +277,7 @@ namespace TX.Downloaders
             {
                 if (operationCode != CurrentOperationCode || State == DownloadState.Error) return;
 
-                if (State == DownloadState.Downloading && retryCount < MaxiMaximumRetries)
+                if (State == DownloadState.Downloading && retryCount < MaximumRetries)
                 {//自动重试，不烦用户
                     retryCount++;
                     Debug.WriteLine("正在进行第" + retryCount + "次重试...");

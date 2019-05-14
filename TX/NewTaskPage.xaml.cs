@@ -122,15 +122,16 @@ namespace TX
             SubmitButton.IsEnabled = false;
             AbstractDownloader downloader = analyser.GetDownloader();
 
-            Models.InitializeMessage im = new Models.InitializeMessage(
-                analyser.URL,
-                (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
-                (int)ThreadNumSlider.Value,
-                analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
-                downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null);
-
-            downloader.SetDownloader(im);
-            downloader.MaxiMaximumRetries = 10;
+            Models.DownloaderSettings settings = new Models.DownloaderSettings()
+            {
+                Url = analyser.URL,
+                FileName = (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
+                Size = analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
+                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null,
+                MaximumRetries = Settings.MaximumRetries
+            };
+            
+            downloader.SetDownloader(settings);
             MainPage.Current.AddDownloadBar(downloader);
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();

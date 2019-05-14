@@ -68,20 +68,20 @@ namespace TX.Downloaders
             State = DownloadState.Prepared;
         }
 
-        public override void SetDownloader(InitializeMessage iMessage)
+        public override void SetDownloader(DownloaderSettings settings)
         {
             if (State != DownloadState.Uninitialized) return;
 
             Message = new DownloaderMessage();
             Message.DownloaderType = Type;
             Message.DownloadSize = 0;
-            Message.FileName = Path.GetFileNameWithoutExtension(iMessage.FileName);
-            Message.Extention = Path.GetExtension(iMessage.FileName);
+            Message.FileName = Path.GetFileNameWithoutExtension(settings.FileName);
+            Message.Extention = Path.GetExtension(settings.FileName);
             Message.FileSize = null;
             Message.TempFilePath = Path.Combine(
                 Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path, 
-                StorageTools.StorageManager.GetTemporaryName() + iMessage.FileName);
-            Message.URL = iMessage.Url;
+                StorageTools.StorageManager.GetTemporaryName() + settings.FileName);
+            Message.URL = settings.Url;
             State = DownloadState.Prepared;
             return;
         }

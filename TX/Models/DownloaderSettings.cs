@@ -5,39 +5,36 @@ namespace TX.Models
     /// <summary>
     /// 结构体，用于存储初始化新任务的信息
     /// </summary>
-    public class InitializeMessage
+    public class DownloaderSettings
     {
-        public InitializeMessage(string url, string fileName, int threads, long? size, string path)
-        {
-            Url = url ?? throw new Exception("InitializeMessage_URL_NULL");
-            FileName = fileName;
-            Threads = threads;
-            Size = size;
-            FilePath = path;
-        }
         /// <summary>
         /// 任务链接
         /// </summary>
         public string Url;
 
         /// <summary>
-        /// 重命名为
+        /// 指定的文件全名（含扩展名）
         /// </summary>
         public string FileName;
 
         /// <summary>
         /// 需要使用的线程数
         /// </summary>
-        public int Threads;
+        public int? Threads;
 
         /// <summary>
-        /// 文件大小，获取不到则可能为-1
+        /// 文件大小
         /// </summary>
         public long? Size;
 
         /// <summary>
-        /// 目标文件的地址
+        /// 临时文件的路径（含文件名）
         /// </summary>
         public string FilePath;
+
+        /// <summary>
+        /// 任务允许的最大自动重试次数
+        /// </summary>
+        public int MaximumRetries;
     }
 }

@@ -62,7 +62,7 @@ namespace TX.Downloaders
         /// <summary>
         /// 使用链接重置下载器
         /// </summary>
-        public abstract void SetDownloader(InitializeMessage imessage);
+        public abstract void SetDownloader(DownloaderSettings settings);
 
         /// <summary>
         /// 使用Message从断点恢复下载器
@@ -100,6 +100,6 @@ namespace TX.Downloaders
         /// <summary>
         /// 发生错误时的最大重试次数
         /// </summary>
-        public uint MaxiMaximumRetries = 0;
+        protected readonly uint MaximumRetries = 0;
     }
 }

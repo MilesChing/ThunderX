@@ -68,12 +68,12 @@ namespace TX.StorageTools
         /// <summary>
         /// 发生错误时的最大重试次数
         /// </summary>
-        public static uint MaximumRetries
+        public static int MaximumRetries
         {
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRetries"))
-                    return (uint)ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
+                    return (int)ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
                 else return 0;
             }
             set { ApplicationData.Current.LocalSettings.Values["MaximumRetries"] = value; }

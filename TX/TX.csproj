@@ -118,7 +118,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\DownloaderMessage.cs" />
-    <Compile Include="Models\InitializeMessage.cs" />
+    <Compile Include="Models\DownloaderSettings.cs" />
     <Compile Include="Models\Progress.cs" />
     <Compile Include="Models\ThreadMessage.cs" />
     <Compile Include="Models\PlainTextComboBoxData.cs" />
