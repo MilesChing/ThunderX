@@ -175,7 +175,7 @@
     <value>Pause</value>
   </data>
   <data name="Prediction" xml:space="preserve">
-    <value>Prediction</value>
+    <value>Prediction: </value>
   </data>
   <data name="Refreshing" xml:space="preserve">
     <value>Refreshing</value>
