@@ -9,7 +9,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace TX.Controls
+namespace TX.VisualManager
 {
     /// <summary>
     /// 用于管理一个新建窗口，该窗口有固定的Page和Title

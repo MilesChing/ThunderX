@@ -102,7 +102,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ApplicationWindowControl.cs" />
+    <Compile Include="VisualManager\ApplicationWindowControl.cs" />
     <Compile Include="Controls\DownloadBar.xaml.cs">
       <DependentUpon>DownloadBar.xaml</DependentUpon>
     </Compile>

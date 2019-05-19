@@ -9,8 +9,7 @@
 
     <ScrollViewer x:Name="scrollViewer"
                   VerticalAlignment="Top"
-                  HorizontalScrollMode="Disabled"
-                  HorizontalAlignment="Left"
+                  HorizontalContentAlignment="Left"
                   VerticalScrollBarVisibility="Hidden">
         <Grid MaxWidth="700">
             <StackPanel x:Name="stack"

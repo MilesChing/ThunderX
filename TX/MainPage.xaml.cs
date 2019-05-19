@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using TX.Controls;
-using TX.Converters;
+using TX.VisualManager;
 using TX.Downloaders;
 using TX.StorageTools;
 using Windows.UI;
@@ -10,11 +9,6 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
-using Windows.Storage;
-using MonoTorrent.Client;
-using MonoTorrent.Client.Encryption;
-using MonoTorrent.Common;
-using System.Net;
 
 namespace TX
 {
@@ -150,8 +144,8 @@ namespace TX
         /// 用于打开窗口的控制器，这两个控制器包含设置窗口和新建项目窗口
         /// 用于处理新窗口的各种问题，包括窗口未关闭等等
         /// </summary>
-        private Controls.ApplicationWindowControl newTaskPageControl;
-        private Controls.ApplicationWindowControl setPageControl;
+        private ApplicationWindowControl newTaskPageControl;
+        private ApplicationWindowControl setPageControl;
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
