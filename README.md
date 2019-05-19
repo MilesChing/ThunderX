@@ -12,6 +12,12 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.8.2.0
+
+- Adjust the UI of "New Task" page.
+- Fix a bug: Application window won't be closed automatically after activated by a click on the notification.
+- Experience on touch screen devices is enhanced.
+
 ### 1.8.1.0
 
 - Download video from YouTube: Automatic link analysis.
