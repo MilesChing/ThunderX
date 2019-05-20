@@ -5,19 +5,18 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
+      HorizontalContentAlignment="Left"
       Background="{ThemeResource TXBackgroundAcrylicBrush}">
 
     <ScrollViewer x:Name="scrollViewer"
-                  VerticalAlignment="Top"
-                  HorizontalContentAlignment="Left"
+                  HorizontalScrollMode="Disabled"
+                  HorizontalAlignment="Left"
                   VerticalScrollBarVisibility="Hidden">
-        <Grid MaxWidth="700">
+        <Grid MaxWidth="600">
             <StackPanel x:Name="stack"
                         Orientation="Vertical"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
                         Margin="28,20,28,0">
-                <Border Width="800" />
+                <Border Width="600" />
                 <TextBlock Style="{ThemeResource TXTitle}"
                            x:Uid="SetPage_Title"/>
                 <Border Style="{ThemeResource TXBigBorder}" />
@@ -34,6 +33,14 @@
                            Style="{ThemeResource TXPlainText}"
                            x:Uid="SetPage_GuideText_ThreadNum"/>
                 <Border Style="{ThemeResource TXBorder}" />
+                <StackPanel x:Name="ThreadLayout_TrialMessage"
+                                Visibility="Collapsed">
+                    <TextBlock Style="{ThemeResource TXPlainText}"
+                                   Opacity="1"
+                                   x:Uid="TrailMessage"
+                                   Foreground="{StaticResource SolidWarningTextColorBrush}"/>
+                    <Border Style="{ThemeResource TXBorder}"/>
+                </StackPanel>
                 <Slider Template="{ThemeResource TXSliderTemplate}" 
                         x:Name="ThreadNumSlider"
                         Minimum="1"
@@ -85,4 +92,5 @@
             </StackPanel>
         </Grid>
     </ScrollViewer>
+    
 </Page>

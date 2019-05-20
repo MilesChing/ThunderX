@@ -174,15 +174,21 @@
                     <VisualState x:Name="Pressed">
                         <Storyboard>
                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="HorizontalShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.1" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.2" />
                             </DoubleAnimationUsingKeyFrames>
                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="HorizontalShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.1" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1.2" />
                             </DoubleAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalShadowPanel" Storyboard.TargetProperty="ShadowOpacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.2" />
+                            </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalShadowPanel" Storyboard.TargetProperty="ShadowOpacity">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderHeaderForegroundDisabled}"/>
                             </ObjectAnimationUsingKeyFrames>
@@ -266,11 +272,11 @@
                     <TickBar x:Name="TopTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,0,0,4" VerticalAlignment="Bottom" Visibility="Collapsed"/>
                     <TickBar x:Name="HorizontalInlineTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Visibility="Collapsed"/>
                     <TickBar x:Name="BottomTickBar" Grid.ColumnSpan="3" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" Margin="0,4,0,0" Grid.Row="2" VerticalAlignment="Top" Visibility="Collapsed"/>
-                    <control:DropShadowPanel x:Name="HorizontalShadowPanel" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BlurRadius="8" FocusVisualMargin="-14,-6,-14,-6" ShadowOpacity="0.2"  Height="24" Width="8" RenderTransformOrigin="0.5,0.5">
+                    <control:DropShadowPanel x:Name="HorizontalShadowPanel" OffsetY="1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BlurRadius="8" FocusVisualMargin="-14,-6,-14,-6" ShadowOpacity="0.1"  Height="24" Width="8" RenderTransformOrigin="0.5,0.5">
                         <control:DropShadowPanel.RenderTransform>
                             <CompositeTransform/>
                         </control:DropShadowPanel.RenderTransform>
-                        <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" DataContext="{TemplateBinding Value}" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{StaticResource SliderThumbStyle}" Width="8"/>
+                        <Thumb x:Name="HorizontalThumb" BorderThickness="1" BorderBrush="{StaticResource SolidSystemAccentColorDark1Brush}" AutomationProperties.AccessibilityView="Raw" Grid.Column="1" DataContext="{TemplateBinding Value}" FocusVisualMargin="-14,-6,-14,-6" Height="24" Grid.RowSpan="3" Grid.Row="0" Style="{StaticResource SliderThumbStyle}" Width="8"/>
                     </control:DropShadowPanel>
                 </Grid>
                 <Grid x:Name="VerticalTemplate" MinWidth="44" Visibility="Collapsed">
@@ -405,7 +411,7 @@
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxBorderBrushChecked}"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Stroke">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundStrokeChecked}"/>
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SolidSystemAccentColorDark1Brush}"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="Fill">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckBackgroundFillChecked}"/>
@@ -413,7 +419,6 @@
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Foreground">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxCheckGlyphForegroundChecked}"/>
                             </ObjectAnimationUsingKeyFrames>
-                            <DoubleAnimation Duration="0" Storyboard.TargetName="NormalRectangle" Storyboard.TargetProperty="StrokeThickness" To="{ThemeResource CheckBoxCheckedStrokeThickness}"/>
                             <DoubleAnimation Duration="0" Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Opacity" To="1"/>
                         </Storyboard>
                     </VisualState>
@@ -603,7 +608,8 @@
 
     <ControlTemplate x:Key="TXAnimateButtonTemplate" TargetType="Button">
         <control:DropShadowPanel x:Name="ShadowPanel" ShadowOpacity="0.5"
-                                 BlurRadius="2"
+                                 BlurRadius="4"
+                                 OffsetY="1" 
                                  RenderTransformOrigin="0.5,0.5">
             <control:DropShadowPanel.RenderTransform>
                 <CompositeTransform/>
@@ -611,31 +617,11 @@
             <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal">
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1" />
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1" />
-                            </DoubleAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="ShadowOpacity">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.5"/>
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.05" Value="1.05" />
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.05" Value="1.05" />
-                            </DoubleAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="ShadowOpacity">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="0.6"/>
-                            </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ShadowPanel" Storyboard.TargetProperty="BlurRadius">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="4"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SolidSystemAccentColorDark1Brush}"/>
                             </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
@@ -657,6 +643,9 @@
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundDisabled}"/>
                             </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderThickness">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushDisabled}"/>
                             </ObjectAnimationUsingKeyFrames>
@@ -670,7 +659,11 @@
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="2">
+            <Grid x:Name="RootGrid" 
+                  Background="{TemplateBinding Background}" 
+                  CornerRadius="2"
+                  BorderBrush="{ThemeResource SolidSystemAccentColorBrush}"
+                  BorderThickness="1">
                 <Grid.RenderTransform>
                     <CompositeTransform/>
                 </Grid.RenderTransform>
@@ -691,7 +684,6 @@
                 </ContentPresenter>
             </Grid>
         </control:DropShadowPanel>
-
     </ControlTemplate>
 
     <ControlTemplate x:Key="TXTextBoxTemplate" TargetType="TextBox">

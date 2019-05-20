@@ -39,7 +39,7 @@ namespace TX.NetWork.NetWorkAnalysers
                 if (contentType == null) contentType = "text/html";
                 string extent = Converters.ExtentionConverter.TryGetExtention(contentType);
                 if (extent == ".*") extent = ".unknown";
-                if (name.EndsWith(extent)) return name;
+                if (name.EndsWith(extent) || extent.Equals("octet-stream")) return name;
                 else return name + extent;
             }
             catch (Exception)

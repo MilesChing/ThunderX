@@ -11,6 +11,7 @@ using TX.NetWork;
 using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using TX.VisualManager;
+using Windows.Services.Store;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -21,7 +22,7 @@ namespace TX
 {
     public sealed partial class NewTaskPage : Page
     {
-        private object urlAnalyseLock = new object();
+        private App CurrentApplication = ((App)Application.Current);
 
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
         private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
@@ -53,8 +54,28 @@ namespace TX
                 comboBoxItems);
 
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
+            CurrentApplication.LicenseChanged += CurrentApplication_LicenseChanged;
+            CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
+        }
 
-            RefreshUI();
+        private void CurrentApplication_LicenseChanged(StoreAppLicense license)
+        {
+            if (license == null) return;
+            if (license.IsActive)
+            {
+                if (license.IsTrial)
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
+                    ThreadNumSlider.Value = 1;
+                    ThreadNumSlider.IsEnabled = false;
+                }
+                else
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
+                    ThreadNumSlider.Value = Settings.ThreadNumber;
+                    ThreadNumSlider.IsEnabled = true;
+                }
+            }
         }
 
         private void RefreshUI()

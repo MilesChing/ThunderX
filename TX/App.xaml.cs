@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Services.Store;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -24,10 +25,22 @@ namespace TX
     /// </summary>
     sealed partial class App : Application
     {
+        private StoreContext storeContext = StoreContext.GetDefault();
+
+        /// <summary>
+        /// 当前用户的许可证状态
+        /// </summary>
+        public StoreAppLicense AppLicense { get; private set; } = null;
+
         /// <summary>
         /// 在App主题在Dark/Light间切换时（根据用户设置）调用
         /// </summary>
         public event Action<ElementTheme> ThemeChanged;
+
+        /// <summary>
+        /// 用户的许可证状态发生变化
+        /// </summary>
+        public event Action<StoreAppLicense> LicenseChanged;
 
         /// <summary>
         /// 宣布一次主题切换，只能由设置Page调用
@@ -40,11 +53,7 @@ namespace TX
         /// <summary>
         /// 指示应用是否处于后台
         /// </summary>
-        public bool InBackground
-        {
-            get { return inBackground; }
-        }
-        private bool inBackground = true;
+        public bool InBackground { get; private set; }
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -57,6 +66,18 @@ namespace TX
             this.EnteredBackground += OnEnteringBackground;
             this.LeavingBackground += OnLeavingBackground;
             this.Resuming += OnResuming;
+            storeContext.OfflineLicensesChanged += async (s, e) =>
+            {
+                AppLicense = await s.GetAppLicenseAsync();
+                LicenseChanged?.Invoke(AppLicense);
+            };
+            InitializeAppLicense();
+        }
+
+        private async void InitializeAppLicense()
+        {
+            AppLicense = await storeContext.GetAppLicenseAsync();
+            LicenseChanged?.Invoke(AppLicense);
         }
 
         /// <summary>
@@ -97,6 +118,7 @@ namespace TX
                         Toasts.ToastManager.ShowSimpleToast("Oops", "Maybe the folder doesn't exist.");
                     }
                 }
+                //退出程序
                 Current.Exit();
             }
         }
@@ -108,13 +130,13 @@ namespace TX
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
-            inBackground = false;
+            InBackground = false;
             Debug.WriteLine("Foreground");
         }
 
         private void OnEnteringBackground(object sender, EnteredBackgroundEventArgs e)
         {
-            inBackground = true;
+            InBackground = true;
             Debug.WriteLine("Background");
         }
 

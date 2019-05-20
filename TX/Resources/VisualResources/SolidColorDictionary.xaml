@@ -23,6 +23,8 @@
     <SolidColorBrush x:Key="SolidSystemAltMediumHighColorBrush"  Color="{ThemeResource SystemAltMediumHighColor}"/>
     <SolidColorBrush x:Key="SolidSystemAltMediumLowColorBrush"  Color="{ThemeResource SystemAltMediumLowColor}"/>
 
+    <SolidColorBrush x:Key="SolidWarningTextColorBrush" Color="Red"/>
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="TXDownloadBarBackground" Color="White"/>

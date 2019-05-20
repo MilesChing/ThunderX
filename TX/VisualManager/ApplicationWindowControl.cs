@@ -59,7 +59,6 @@ namespace TX.VisualManager
                     newAppView.TitleBar.BackgroundColor = Windows.UI.ColorHelper.FromArgb(0xff, 0xee, 0xee, 0xee);
                     newAppView.TitleBar.ButtonBackgroundColor = Windows.UI.ColorHelper.FromArgb(0xff, 0xee, 0xee, 0xee);
                     frame = new Frame();
-                    frame.HorizontalContentAlignment = HorizontalAlignment.Left;
                     frame.Navigate(pageType);
                     newWindow.Content = frame;
                     newWindow.Activate();

@@ -25,6 +25,8 @@ namespace TX
     /// </summary>
     public sealed partial class SetPage : Page
     {
+        private App CurrentApplication = ((App)Application.Current);
+
         public SetPage()
         {
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
@@ -43,6 +45,27 @@ namespace TX
             MaximumRetriesSlider.Value = prev_re;
             DarkModeSwitch.IsOn = dark;
             NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
+
+            CurrentApplication.LicenseChanged += CurrentApplication_LicenseChanged;
+            CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
+        }
+
+        private void CurrentApplication_LicenseChanged(Windows.Services.Store.StoreAppLicense license)
+        {
+            if (license == null) return;
+            if (license.IsActive)
+            {
+                if (license.IsTrial)
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
+                    ThreadNumSlider.IsEnabled = false;
+                }
+                else
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
+                    ThreadNumSlider.IsEnabled = true;
+                }
+            }
         }
 
         /// <summary>

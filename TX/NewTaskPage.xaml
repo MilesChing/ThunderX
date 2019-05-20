@@ -6,6 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:models="using:TX.Models"
       mc:Ignorable="d"
+      HorizontalContentAlignment="Left"
       Background="{ThemeResource TXBackgroundAcrylicBrush}"
     xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
@@ -57,17 +58,16 @@
     </Page.Resources>
     
     <ScrollViewer x:Name="scrollViewer"
-                  VerticalAlignment="Top"
                   HorizontalScrollMode="Disabled"
                   HorizontalAlignment="Left"
                   VerticalScrollBarVisibility="Hidden">
-        <Grid MaxWidth="700">
+        <Grid MaxWidth="600">
             <StackPanel x:Name="stack"
                         Orientation="Vertical"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         Margin="28,20,28,0">
-                <Border Width="800" />
+                <Border Width="600" />
                 <TextBlock Style="{ThemeResource TXTitle}"
                            x:Uid="NewTaskPage_Title" />
                 <Border Style="{ThemeResource TXBigBorder}" />
@@ -124,12 +124,20 @@
                     <TextBlock x:Uid="NewTaskPage_Subtitle_ThreadNum"
                            Style="{ThemeResource TXSubTitle}" />
                     <Border Style="{ThemeResource TXBorder}" />
-                    <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
+                    <TextBlock Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText_ThreadNum" />
                     <Border Style="{ThemeResource TXBorder}" />
+                    <StackPanel x:Name="ThreadLayout_TrialMessage"
+                                Visibility="Collapsed">
+                        <TextBlock Style="{ThemeResource TXPlainText}"
+                                   Opacity="1"
+                                   x:Uid="TrailMessage"
+                                   Foreground="{StaticResource SolidWarningTextColorBrush}"/>
+                        <Border Style="{ThemeResource TXBorder}"/>
+                    </StackPanel>
                     <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
-                            Template="{ThemeResource TXSliderTemplate}"
+                        Template="{ThemeResource TXSliderTemplate}"
                         Maximum="256" />
                     <Border Style="{ThemeResource TXBigBorder}" />
                 </StackPanel>

@@ -228,6 +228,9 @@
   <data name="ThunderLinkDetectedButFailed" xml:space="preserve">
     <value>Thunderbolt link detected, but converted content is illegal</value>
   </data>
+  <data name="TrailMessage.Text" xml:space="preserve">
+    <value>Multithreading mode is not enabled in trail version.</value>
+  </data>
   <data name="UnableToConnect" xml:space="preserve">
     <value>Unable to connect: please check the network connection of the device</value>
   </data>

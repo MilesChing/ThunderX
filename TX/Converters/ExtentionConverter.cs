@@ -12,7 +12,7 @@ namespace TX.Converters
         private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
  
         #region Big freaking list of mime types
-    	{"application/octet-stream",".*"}
+    	{"application/octet-stream","octet-stream"}
         ,{"application/x-001","0.001"}
         ,{"text/h323","0.323"}
         ,{"drawing/907","0.907"}
