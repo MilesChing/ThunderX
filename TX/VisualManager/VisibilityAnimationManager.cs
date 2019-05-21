@@ -45,7 +45,6 @@ namespace TX.VisualManager
                 storyboard.Children.Add(scaleAnimationY);
                 storyboard.Completed += (o, e) => 
                 {
-                    element.Visibility = Visibility.Visible;
                     ShowAnimationCompleted?.Invoke(o, e);
                     showAnimatePlaying = false;
                 };
@@ -169,6 +168,7 @@ namespace TX.VisualManager
         public void Show()
         {
             if (element.Visibility == Visibility.Visible || showAnimatePlaying) return;
+            element.Visibility = Visibility.Visible;
             ShowAnimationBeginning?.Invoke();
             showAnimatePlaying = true;
             ShowElementStoryboard.Begin();

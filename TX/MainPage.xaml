@@ -6,6 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:controls="using:TX.Controls"
       xmlns:xp="using:XP"
+      xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls"
       mc:Ignorable="d"
       SizeChanged="Page_SizeChanged">
     <Page.Resources>
@@ -109,5 +110,14 @@
                           Click="AboutButton_Click">
             </AppBarButton>
         </CommandBar>
+
+
+        <control:DropShadowPanel x:Name="MainFrameLabel" ShadowOpacity="0.5" BlurRadius="4" OffsetY="1" HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch" PointerReleased="MainFrameLabel_PointerReleased" Visibility="Collapsed">
+            <Frame x:Name="MainFrame" Width="200"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Height="400"/>
+        </control:DropShadowPanel>
     </Grid>
 </Page>

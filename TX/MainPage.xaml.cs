@@ -17,6 +17,8 @@ namespace TX
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private VisualManager.VisibilityAnimationManager MainFrameLabelVisibilityManager;
+
         /// <summary>
         /// 指向当前MainPage的引用
         /// </summary>
@@ -28,6 +30,9 @@ namespace TX
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
             Current = this;//设置Current指针（以便在全局访问）
             InitializeComponent();
+
+            MainFrameLabelVisibilityManager = new VisibilityAnimationManager(MainFrameLabel);
+
             ResetTitleBar();//设置标题栏颜色
             InitializeAsync();
         }
@@ -173,7 +178,11 @@ namespace TX
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            await newTaskPageControl.OpenNewWindowAsync();
+            //MainFrame.Navigate(typeof(NewTaskPage));
+            if (MainFrameLabel.Visibility == Visibility.Visible)
+                MainFrameLabelVisibilityManager.Hide();
+            else MainFrameLabelVisibilityManager.Show();
+            //await newTaskPageControl.OpenNewWindowAsync();
         }
 
         private async void SetButton_Click(object sender, RoutedEventArgs e)
@@ -184,6 +193,11 @@ namespace TX
         private async void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             await aboutPageControl.OpenNewWindowAsync();
+        }
+
+        private void MainFrameLabel_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            
         }
     }
 }
