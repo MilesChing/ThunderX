@@ -117,6 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutPageName" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="AboutPage_Button_Github.Content" xml:space="preserve">
+    <value>访问我的Github</value>
+  </data>
+  <data name="AboutPage_Button_Trail.Content" xml:space="preserve">
+    <value>购买完整版</value>
+  </data>
+  <data name="AboutPage_GuideText_AboutDeveloper.Text" xml:space="preserve">
+    <value>一名热爱生活的普通肥宅。</value>
+  </data>
+  <data name="AboutPage_GuideText_Active.Text" xml:space="preserve">
+    <value>正在使用完整版Thunder X，感谢支持！</value>
+  </data>
+  <data name="AboutPage_GuideText_Review.Text" xml:space="preserve">
+    <value>在Windows应用商店中评价我们，助力应用开发!</value>
+  </data>
+  <data name="AboutPage_GuideText_Trail.Text" xml:space="preserve">
+    <value>正在使用试用版本（无限期），解锁全部功能？只要一杯咖啡的价格！</value>
+  </data>
+  <data name="AboutPage_SubTitle_AboutDeveloper.Text" xml:space="preserve">
+    <value>关于开发者</value>
+  </data>
+  <data name="AboutPage_Title.Text" xml:space="preserve">
+    <value>关于</value>
+  </data>
   <data name="Connecting" xml:space="preserve">
     <value>正在连接远程服务器</value>
   </data>
@@ -128,6 +155,9 @@
   </data>
   <data name="Downloading" xml:space="preserve">
     <value>正在下载</value>
+  </data>
+  <data name="MainPage_AboutButton.Label" xml:space="preserve">
+    <value>关于</value>
   </data>
   <data name="MainPage_AddButton.Label" xml:space="preserve">
     <value>新增</value>
@@ -189,17 +219,14 @@
   <data name="SetPage_GuideText_MaxRetries.Text" xml:space="preserve">
     <value>在某些错误发生时，我们可以自动为您重试，请为这个行为设置一个上限。</value>
   </data>
-  <data name="SetPage_GuideText_Review.Text" xml:space="preserve">
-    <value>在Windows应用商店中评价我们，助力应用开发!</value>
-  </data>
   <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>拖动下面的滑块以设置默认的线程数。线程数对下载速度的影响取决于设备和网络环境。</value>
   </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>选择文件夹</value>
   </data>
-  <data name="SetPage_Subtitle_DarkMode.Text" xml:space="preserve">
-    <value>黑暗模式</value>
+  <data name="SetPage_Subtitle_Appearance.Text" xml:space="preserve">
+    <value>外观</value>
   </data>
   <data name="SetPage_Subtitle_DefaultFolder.Text" xml:space="preserve">
     <value>设置默认下载文件夹</value>
@@ -207,14 +234,14 @@
   <data name="SetPage_Subtitle_MaxRetries.Text" xml:space="preserve">
     <value>重试次数上限</value>
   </data>
-  <data name="SetPage_Subtitle_Review.Text" xml:space="preserve">
-    <value>评分</value>
-  </data>
   <data name="SetPage_Subtitle_ThreadNum.Text" xml:space="preserve">
     <value>默认线程数</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="SetPage_ToggleSwitch_DarkMode.Header" xml:space="preserve">
+    <value>黑色主题</value>
   </data>
   <data name="SomethingWrong" xml:space="preserve">
     <value>意想不到的事情发生了！</value>

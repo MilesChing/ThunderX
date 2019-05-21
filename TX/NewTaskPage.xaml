@@ -56,100 +56,100 @@
         </Style>
 
     </Page.Resources>
-    
+
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
                   HorizontalAlignment="Left"
                   VerticalScrollBarVisibility="Hidden">
-        <Grid MaxWidth="600">
-            <StackPanel x:Name="stack"
-                        Orientation="Vertical"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
-                        Margin="28,20,28,0">
-                <Border Width="600" />
-                <TextBlock Style="{ThemeResource TXTitle}"
-                           x:Uid="NewTaskPage_Title" />
-                <Border Style="{ThemeResource TXBigBorder}" />
-                <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                           x:Uid="NewTaskPage_GuideText_URLBox" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <TextBox x:Name="URLBox"
+        <StackPanel x:Name="stack"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    MaxWidth="600"
+                    Margin="28,20,28,0">
+            <Border Width="600" />
+            <TextBlock Style="{ThemeResource TXTitle}"
+                       x:Uid="NewTaskPage_Title" />
+            <Border Style="{ThemeResource TXBigBorder}" />
+            <TextBlock TextWrapping="Wrap" 
+                       Style="{ThemeResource TXPlainText}"
+                       x:Uid="NewTaskPage_GuideText_URLBox" />
+            <Border Style="{ThemeResource TXBorder}" />
+            <TextBox x:Name="URLBox"
                          Style="{ThemeResource TextBoxStyle}"
                          TextChanged="URLBox_TextChanged" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <ListView 
-                    IsItemClickEnabled="False"
-                    ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
-                    ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
-                    ItemsSource="{x:Bind linkAnalysisMessages}"/>
+            <Border Style="{ThemeResource TXBorder}" />
+            <ListView IsItemClickEnabled="False"
+                      ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
+                      ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
+                      ItemsSource="{x:Bind linkAnalysisMessages}"/>
+            <Border Style="{ThemeResource TXBigBorder}" />
+            <StackPanel x:Name="ComboBoxLayout"
+                        Visibility="Collapsed"
+                        Orientation="Vertical">
+                <ComboBox x:Name="ComboBox"
+                          Background="{ThemeResource TXDownloadBarBackground}"
+                          Template="{ThemeResource TXComboBoxTemplate}"
+                          ItemsSource="{x:Bind comboBoxItems}"
+                          ItemTemplate="{StaticResource ComboBoxDataTemplate}"
+                          BorderThickness="1"
+                          Width="150"
+                          x:Uid="NewTaskPage_ComboBox"/>
                 <Border Style="{ThemeResource TXBigBorder}" />
-                <StackPanel x:Name="ComboBoxLayout"
-                            Visibility="Collapsed"
-                            Orientation="Vertical">
-                    <ComboBox x:Name="ComboBox"
-                              Background="{ThemeResource TXDownloadBarBackground}"
-                              Template="{ThemeResource TXComboBoxTemplate}"
-                              ItemsSource="{x:Bind comboBoxItems}"
-                              ItemTemplate="{StaticResource ComboBoxDataTemplate}"
-                              BorderThickness="1"
-                              Width="150"
-                              x:Uid="NewTaskPage_ComboBox"/>
-                    <Border Style="{ThemeResource TXBigBorder}" />
-                </StackPanel>
-                
-                <TextBlock x:Uid="NewTaskPage_Subtitle_Rename"
-                           Style="{ThemeResource TXSubTitle}" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <Grid>
-                    <TextBlock x:Name="RecommendedNameBlock"
-                               MaxLines="2"
-                               Style="{ThemeResource BaseTextBlockStyle}"
-                               Foreground="{ThemeResource SystemControlForegroundAccentBrush}" />
-                    <TextBox x:Name="RenameBox"
-                             Style="{ThemeResource TextBoxStyle}"
-                             Visibility="Collapsed" />
-                </Grid>
-                <Border Style="{ThemeResource TXBorder}" />
-                <CheckBox Style="{ThemeResource CheckBoxStyle}" 
-                          x:Name="NeedRenameButton"
-                          x:Uid="NewTaskPage_NeedRenameCheckBox"
-                          Checked="NeedRenameButton_ValueChanged"
-                          Unchecked="NeedRenameButton_ValueChanged" />
-                <Border Style="{ThemeResource TXBigBorder}" />
+            </StackPanel>
 
-                <StackPanel x:Name="ThreadLayout"
-                            Visibility="Collapsed"
-                            Orientation="Vertical">
-                    <TextBlock x:Uid="NewTaskPage_Subtitle_ThreadNum"
+            <TextBlock x:Uid="NewTaskPage_Subtitle_Rename"
+                       Style="{ThemeResource TXSubTitle}" />
+            <Border Style="{ThemeResource TXBorder}" />
+            <Grid>
+                <TextBlock x:Name="RecommendedNameBlock"
+                           MaxLines="2"
+                           Style="{ThemeResource BaseTextBlockStyle}"
+                           Foreground="{ThemeResource SystemControlForegroundAccentBrush}" />
+                <TextBox x:Name="RenameBox"
+                         Style="{ThemeResource TextBoxStyle}"
+                         Visibility="Collapsed" />
+            </Grid>
+            <Border Style="{ThemeResource TXBorder}" />
+            <CheckBox Style="{ThemeResource CheckBoxStyle}" 
+                      x:Name="NeedRenameButton"
+                      x:Uid="NewTaskPage_NeedRenameCheckBox"
+                      Checked="NeedRenameButton_ValueChanged"
+                      Unchecked="NeedRenameButton_ValueChanged" />
+            <Border Style="{ThemeResource TXBigBorder}" />
+
+            <StackPanel x:Name="ThreadLayout"
+                        Visibility="Collapsed"
+                        Orientation="Vertical">
+                <TextBlock x:Uid="NewTaskPage_Subtitle_ThreadNum"
                            Style="{ThemeResource TXSubTitle}" />
-                    <Border Style="{ThemeResource TXBorder}" />
-                    <TextBlock Style="{ThemeResource TXPlainText}"
+                <Border Style="{ThemeResource TXBorder}" />
+                <TextBlock Style="{ThemeResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText_ThreadNum" />
-                    <Border Style="{ThemeResource TXBorder}" />
-                    <StackPanel x:Name="ThreadLayout_TrialMessage"
-                                Visibility="Collapsed">
-                        <TextBlock Style="{ThemeResource TXPlainText}"
-                                   Opacity="1"
-                                   x:Uid="TrailMessage"
-                                   Foreground="{StaticResource SolidWarningTextColorBrush}"/>
-                        <Border Style="{ThemeResource TXBorder}"/>
-                    </StackPanel>
-                    <Slider x:Name="ThreadNumSlider"
+                <Border Style="{ThemeResource TXBorder}" />
+                <StackPanel x:Name="ThreadLayout_TrialMessage"
+                            Visibility="Collapsed">
+                    <TextBlock Style="{ThemeResource TXPlainText}"
+                               Opacity="1"
+                               x:Uid="TrailMessage"
+                               Foreground="{StaticResource SolidWarningTextColorBrush}"/>
+                    <Border Style="{ThemeResource TXBorder}"/>
+                </StackPanel>
+                <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
                         Template="{ThemeResource TXSliderTemplate}"
                         Maximum="256" />
-                    <Border Style="{ThemeResource TXBigBorder}" />
-                </StackPanel>
-
-                <Button x:Name="SubmitButton"
-                        Style="{ThemeResource TXButtonStyle}"
-                        x:Uid="NewTaskPage_SubmitButton"
-                        IsEnabled="False"
-                        Click="SubmitButton_Click" />
-
                 <Border Style="{ThemeResource TXBigBorder}" />
             </StackPanel>
-        </Grid>
+
+            <Button x:Name="SubmitButton"
+                    Style="{ThemeResource TXButtonStyle}"
+                    x:Uid="NewTaskPage_SubmitButton"
+                    IsEnabled="False"
+                    Click="SubmitButton_Click" />
+
+            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{ThemeResource TXBigBorder}" />
+        </StackPanel>
     </ScrollViewer>
 </Page>

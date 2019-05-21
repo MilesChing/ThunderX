@@ -117,6 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutPageName" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutPage_Button_Github.Content" xml:space="preserve">
+    <value>GOTO Github</value>
+  </data>
+  <data name="AboutPage_Button_Trail.Content" xml:space="preserve">
+    <value>Buy the full version</value>
+  </data>
+  <data name="AboutPage_GuideText_AboutDeveloper.Text" xml:space="preserve">
+    <value>An ordinary student who loves life.</value>
+  </data>
+  <data name="AboutPage_GuideText_Active.Text" xml:space="preserve">
+    <value>You are using the full version of Thunder X.</value>
+  </data>
+  <data name="AboutPage_GuideText_Review.Text" xml:space="preserve">
+    <value>Showing us some love on the store helps us to continue to work on the app and make things even better !</value>
+  </data>
+  <data name="AboutPage_GuideText_Trail.Text" xml:space="preserve">
+    <value>You are using a trial version. The price of a cup of coffee to unlock all features!</value>
+  </data>
+  <data name="AboutPage_SubTitle_AboutDeveloper.Text" xml:space="preserve">
+    <value>About Developer</value>
+  </data>
+  <data name="AboutPage_Title.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="Connecting" xml:space="preserve">
     <value>Connecting to a remote server</value>
   </data>
@@ -128,6 +155,9 @@
   </data>
   <data name="Downloading" xml:space="preserve">
     <value>Downloading</value>
+  </data>
+  <data name="MainPage_AboutButton.Label" xml:space="preserve">
+    <value>About</value>
   </data>
   <data name="MainPage_AddButton.Label" xml:space="preserve">
     <value>Add New</value>
@@ -189,17 +219,14 @@
   <data name="SetPage_GuideText_MaxRetries.Text" xml:space="preserve">
     <value>We will automatically retry the task for you when certain errors occur. Drag the slider to set an upper number of times.</value>
   </data>
-  <data name="SetPage_GuideText_Review.Text" xml:space="preserve">
-    <value>Showing us some love on the store helps us to continue to work on the app and make things even better !</value>
-  </data>
   <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>Drag the slider below to set the default number of threads. The effect of the number of threads on download speed depends on the device and network environment.</value>
   </data>
   <data name="SetPage_SubmitButton.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
-  <data name="SetPage_Subtitle_DarkMode.Text" xml:space="preserve">
-    <value>Dark Mode</value>
+  <data name="SetPage_Subtitle_Appearance.Text" xml:space="preserve">
+    <value>Appearance</value>
   </data>
   <data name="SetPage_Subtitle_DefaultFolder.Text" xml:space="preserve">
     <value>Reset Download Folder</value>
@@ -207,14 +234,14 @@
   <data name="SetPage_Subtitle_MaxRetries.Text" xml:space="preserve">
     <value>Maximum Number of Retries</value>
   </data>
-  <data name="SetPage_Subtitle_Review.Text" xml:space="preserve">
-    <value>Rate Our App</value>
-  </data>
   <data name="SetPage_Subtitle_ThreadNum.Text" xml:space="preserve">
     <value>Default Number of threads</value>
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SetPage_ToggleSwitch_DarkMode.Header" xml:space="preserve">
+    <value>Dark Mode</value>
   </data>
   <data name="SomethingWrong" xml:space="preserve">
     <value>Something goes wrong</value>

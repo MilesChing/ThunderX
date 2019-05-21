@@ -98,13 +98,6 @@ namespace TX
             StorageTools.Settings.ThreadNumber = (int)ThreadNumSlider.Value;
         }
 
-        private async void RatingControl_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            if (((RatingControl)sender).Value < 4) return;
-            var pfn = Windows.ApplicationModel.Package.Current.Id.FamilyName;
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?PFN=" + pfn));
-        }
-        
         private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.DarkMode = DarkModeSwitch.IsOn;

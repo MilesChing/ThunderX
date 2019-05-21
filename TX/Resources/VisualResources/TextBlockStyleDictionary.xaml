@@ -20,7 +20,7 @@
     <Style x:Key="TXPlainText"
                    TargetType="TextBlock"
                    BasedOn="{StaticResource BodyTextBlockStyle}">
-        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="Opacity" Value="0.8"/>
         <Setter Property="FontWeight" Value="SemiLight"/>
     </Style>
 

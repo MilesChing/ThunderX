@@ -24,7 +24,6 @@ namespace TX
         public MainPage()
         {
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
-
             SetThemeChangedListener();
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
             Current = this;//设置Current指针（以便在全局访问）
@@ -37,8 +36,6 @@ namespace TX
         {
             DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
             gv.DataContext = DownloadBarCollection;//设置绑定
-            newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
-            setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
             //恢复上次关闭时保存的控件
             var list = await StorageManager.GetMessagesAsync();
             if (list != null)
@@ -141,23 +138,6 @@ namespace TX
         }
 
         /// <summary>
-        /// 用于打开窗口的控制器，这两个控制器包含设置窗口和新建项目窗口
-        /// 用于处理新窗口的各种问题，包括窗口未关闭等等
-        /// </summary>
-        private ApplicationWindowControl newTaskPageControl;
-        private ApplicationWindowControl setPageControl;
-
-        private async void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            await newTaskPageControl.OpenNewWindowAsync();
-        }
-
-        private async void SetButton_Click(object sender, RoutedEventArgs e)
-        {
-            await setPageControl.OpenNewWindowAsync();
-        }
-
-        /// <summary>
         /// 添加一个DownloadBar到主界面，为了避免线程问题写在这里
         /// 这段代码包含建立下载器的细节
         /// </summary>
@@ -181,6 +161,29 @@ namespace TX
                     ResetTitleBar();
                 });
             };
+        }
+
+        /// <summary>
+        /// 用于打开窗口的控制器，这两个控制器包含设置窗口和新建项目窗口
+        /// 用于处理新窗口的各种问题，包括窗口未关闭等等
+        /// </summary>
+        private ApplicationWindowControl newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
+        private ApplicationWindowControl setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
+        private ApplicationWindowControl aboutPageControl = new ApplicationWindowControl(typeof(AboutPage), Strings.AppResources.GetString("AboutPageName"));
+
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            await newTaskPageControl.OpenNewWindowAsync();
+        }
+
+        private async void SetButton_Click(object sender, RoutedEventArgs e)
+        {
+            await setPageControl.OpenNewWindowAsync();
+        }
+
+        private async void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            await aboutPageControl.OpenNewWindowAsync();
         }
     }
 }
