@@ -76,6 +76,8 @@ namespace TX.NetWork.NetWorkAnalysers
             _hresp_?.Dispose();
             _hresp_ = null;
             URL = null;
+
+            GC.Collect();
         }
 
         public override bool IsLegal()

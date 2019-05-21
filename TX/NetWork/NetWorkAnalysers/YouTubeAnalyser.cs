@@ -31,6 +31,8 @@ namespace TX.NetWork.NetWorkAnalysers
             Controller.RemoveMessage(this, KEY_YOUTUBE);
             Controller.ClearComboBoxItem(this);
             Controller.RemoveAnalyser(this);
+
+            GC.Collect();
         }
 
         public override AbstractDownloader GetDownloader()

@@ -12,6 +12,13 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Update List
 
+### 1.8.4.0
+
+- Fix a bug: Background can't fill the window correctly.
+- Fix a bug: Some animations are disappeared.
+- Multithreading mode is disabled now in trial version.
+- UI adjustment.
+
 ### 1.8.2.0
 
 - Adjust the UI of "New Task" page.
@@ -32,12 +39,6 @@ This project has two branches. `master` represents the latest stable release. `d
 - Fix a bug: The time predictions of suspended tasks will change.
 - Fix a bug: A "file not exist" exception may be throwed after a task is removed.
 - Several UI improvements
-
-### 1.7.10.0
-
-- Fix an issue that occurs when a task is paused
-- Several UI adjustments
-- Provides messages of URL analyses in details
 
 ## Privacy Policy
 

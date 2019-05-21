@@ -21,6 +21,8 @@ namespace TX.NetWork.NetWorkAnalysers
             Controller.RemoveMessage(this, KEY_THUNDER);
             innerAnalyser = null;
             Controller.RemoveAnalyser(this);
+
+            GC.Collect();
         }
 
         public override AbstractDownloader GetDownloader()

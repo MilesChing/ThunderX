@@ -63,6 +63,7 @@ namespace TX
         /// </summary>
         private void DownloadBarCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            GC.Collect();
             if (DownloadBarCollection.Count == 0 && viewbox.Opacity == 0) ShowLogo.Begin();
             if (e.NewItems == null) return;
             foreach (Controls.DownloadBar db in e.NewItems)
@@ -143,6 +144,7 @@ namespace TX
         /// </summary>
         public async void AddDownloadBar(AbstractDownloader downloader)
         {
+            GC.Collect();
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {
                  DownloadBar db = new DownloadBar();

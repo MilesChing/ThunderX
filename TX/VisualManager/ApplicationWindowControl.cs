@@ -38,6 +38,7 @@ namespace TX.VisualManager
         /// <returns></returns>
         public async Task OpenNewWindowAsync()
         {
+            GC.Collect();
             CoreApplicationView newView = CoreApplication.CreateNewView();
             if (viewShown)
             {
@@ -73,6 +74,7 @@ namespace TX.VisualManager
         /// </summary>
         private void NewAppView_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
         {
+            GC.Collect();
             viewClosed = true;
         }
     }

@@ -59,12 +59,14 @@ namespace TX.VisualManager
                 if (analyser == null) throw new Exception("不能为null移除权限");
                 while (analysers.Contains(analyser))
                     analysers.Remove(analyser);
+                GC.Collect();
             }
         }
 
         public void RemoveAllAnalysers()
         {
             analysers.Clear();
+            GC.Collect();
         }
 
         public NewTaskPageVisualController(ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages,

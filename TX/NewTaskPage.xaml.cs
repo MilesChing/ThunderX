@@ -86,6 +86,7 @@ namespace TX
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
             RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
+            GC.Collect();
         }
 
         private void ResetTitleBar()
