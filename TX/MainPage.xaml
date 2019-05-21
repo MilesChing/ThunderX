@@ -110,14 +110,5 @@
                           Click="AboutButton_Click">
             </AppBarButton>
         </CommandBar>
-
-
-        <control:DropShadowPanel x:Name="MainFrameLabel" ShadowOpacity="0.5" BlurRadius="4" OffsetY="1" HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch" PointerReleased="MainFrameLabel_PointerReleased" Visibility="Collapsed">
-            <Frame x:Name="MainFrame" Width="200"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Height="400"/>
-        </control:DropShadowPanel>
     </Grid>
 </Page>
