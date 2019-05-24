@@ -83,6 +83,7 @@
                        FontStyle="Italic"
                        FontWeight="SemiBold"
                        Foreground="{StaticResource SolidSystemAccentColorBrush}"
+                       Opacity="1"
                        Text="Miles Ching"/>
             <Border Style="{StaticResource TXBorder}"/>
             <TextBlock Style="{StaticResource TXPlainText}"
