@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TX.StorageTools;
+using Windows.ApplicationModel;
 using Windows.Services.Store;
 using Windows.System;
 using Windows.UI;
@@ -30,6 +31,7 @@ namespace TX
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();
             this.InitializeComponent();
+            SetVersionName();
             SetThemeChangedListener();
             CurrentApplication.LicenseChanged += CurrentApplication_LicenseChanged;
             CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
@@ -91,6 +93,16 @@ namespace TX
             TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
             TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
             TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
+        }
+
+        private void SetVersionName()
+        {
+            string appVersion = string.Format("VERSION {0}.{1}.{2}.{3} ",
+                    Package.Current.Id.Version.Major,
+                    Package.Current.Id.Version.Minor,
+                    Package.Current.Id.Version.Build,
+                    Package.Current.Id.Version.Revision);
+            VersionNameBlock.Text = appVersion;
         }
     }
 }
