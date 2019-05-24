@@ -55,7 +55,8 @@
                              BlurRadius="8"
                              Margin="4"
                              Height="64"
-                             ShadowOpacity="0.4">
+                             OffsetY="1"
+                             ShadowOpacity="0.2">
         <Grid Background="{ThemeResource TXDownloadBarBackground}"
               CornerRadius="2">
             

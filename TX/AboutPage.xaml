@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    Background="{ThemeResource TXBackgroundAcrylicBrush}">
+    Background="{StaticResource TXBackgroundAcrylicBrush}">
 
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
@@ -19,31 +19,44 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     Margin="28,20,28,0">
-            <TextBlock Style="{ThemeResource TXTitle}"
+            <TextBlock Style="{StaticResource TXTitle}"
                        x:Uid="AboutPage_Title"/>
             <Border Style="{StaticResource TXBigBorder}"/>
-            <TextBlock Style="{ThemeResource TXSubTitle}"
-                       Text="Thunder X"/>
-            <Border Style="{StaticResource TXBorder}"/>
-            <control:DropShadowPanel
-                BlurRadius="4"
-                ShadowOpacity="0.4">
-                <Grid Background="{ThemeResource SolidSystemAccentColorBrush}"
-                      CornerRadius="2"
-                      Padding="2">
-                    <TextBlock x:Name="VersionNameBlock"
-                               Style="{ThemeResource CaptionTextBlockStyle}"
-                               Foreground="{ThemeResource SolidSystemAltMediumHighColorBrush}"/>
-                </Grid>
-            </control:DropShadowPanel>
-            <Border Style="{StaticResource TXBorder}"/>
+            <StackPanel Orientation="Horizontal">
+                <control:DropShadowPanel BlurRadius="4" 
+                                         ShadowOpacity="0.6" 
+                                         OffsetY="1"
+                                         Margin="0,0,16,0">
+                    <Grid Background="Black"
+                          CornerRadius="2">
+                        <Image Width="50" Height="50" Source="/Assets/LargeTile.png" />
+                    </Grid>
+                </control:DropShadowPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Style="{StaticResource TXSubTitle}"
+                               Text="Thunder X"/>
+                    <Border Height="8"/>
+                    <control:DropShadowPanel  BlurRadius="4"
+                                              ShadowOpacity="0.4">
+                        <Grid Background="{StaticResource SolidSystemAccentColorBrush}"
+                              CornerRadius="2"
+                              Padding="4,2,4,2">
+                            <TextBlock x:Name="VersionNameBlock"
+                                       FontWeight="Bold"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+                        </Grid>
+                    </control:DropShadowPanel>
+                </StackPanel>
+            </StackPanel>
+            <Border Style="{StaticResource TXBigBorder}"/>
             <!--显示给试用版的界面-->
             <StackPanel x:Name="TrialPanel"
                         Visibility="Collapsed">
-                <TextBlock Style="{ThemeResource TXPlainText}"
+                <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="AboutPage_GuideText_Trail"/>
                 <Border Style="{StaticResource TXBorder}"/>
-                <Button Style="{ThemeResource TXButtonStyle}"
+                <Button Style="{StaticResource TXButtonStyle}"
                         x:Name="PurchaseButton"
                         x:Uid="AboutPage_Button_Trail"
                         Click="PurchaseButton_Click"/>
@@ -51,16 +64,16 @@
             <!--显示给完整版的界面-->
             <StackPanel x:Name="ActivePanel"
                         Visibility="Collapsed">
-                <TextBlock Style="{ThemeResource TXPlainText}"
+                <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="AboutPage_GuideText_Active"/>
             </StackPanel>
             <Border Style="{StaticResource TXBorder}"/>
-            <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource TXPlainText}"
                        x:Uid="AboutPage_GuideText_Review"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <RatingControl HorizontalAlignment="Left"
                            PlaceholderValue="5"
-                           Foreground="{ThemeResource SolidSystemAccentColorLight1Brush}"
+                           Foreground="{StaticResource SolidSystemAccentColorLight1Brush}"
                            Tapped="RatingControl_Tapped"/>
             <Border Style="{StaticResource TXBigBorder}"/>
             <TextBlock Style="{StaticResource TXSubTitle}"
@@ -69,18 +82,18 @@
             <TextBlock Style="{StaticResource TXPlainText}"
                        FontStyle="Italic"
                        FontWeight="SemiBold"
-                       Foreground="{ThemeResource SolidSystemAccentColorBrush}"
+                       Foreground="{StaticResource SolidSystemAccentColorBrush}"
                        Text="Miles Ching"/>
             <Border Style="{StaticResource TXBorder}"/>
             <TextBlock Style="{StaticResource TXPlainText}"
                        x:Uid="AboutPage_GuideText_AboutDeveloper"/>
             <Border Style="{StaticResource TXBigBorder}"/>
             <Button x:Name="GithubButton"
-                    Style="{ThemeResource TXButtonStyle}"
+                    Style="{StaticResource TXButtonStyle}"
                     x:Uid="AboutPage_Button_Github"
                     Click="GithubButton_Click"/>
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

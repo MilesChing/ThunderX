@@ -49,7 +49,7 @@
         </Storyboard>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource TXBackgroundAcrylicBrush}"
+    <Grid Background="{StaticResource TXBackgroundAcrylicBrush}"
           x:Name="grid">
         <Border x:Name="WidthBindTool"
                 Width="100" />

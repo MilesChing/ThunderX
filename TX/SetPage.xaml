@@ -6,7 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
       HorizontalContentAlignment="Left"
-      Background="{ThemeResource TXBackgroundAcrylicBrush}">
+      Background="{StaticResource TXBackgroundAcrylicBrush}">
 
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
@@ -17,70 +17,70 @@
                     MaxWidth="600"
                     Margin="28,20,28,0">
             <Border Width="600" />
-            <TextBlock Style="{ThemeResource TXTitle}"
+            <TextBlock Style="{StaticResource TXTitle}"
                        x:Uid="SetPage_Title"/>
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <TextBlock Style="{ThemeResource TXSubTitle}"
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_Appearance" />
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <ToggleSwitch x:Name="DarkModeSwitch"
                           RelativePanel.AlignVerticalCenterWithPanel="True"
                           RelativePanel.AlignRightWithPanel="True"
                           x:Uid="SetPage_ToggleSwitch_DarkMode"
                           Toggled="DarkModeSwitch_Toggled"/>
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <TextBlock Style="{ThemeResource TXSubTitle}"
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_ThreadNum"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <TextBlock TextWrapping="Wrap"
-                       Style="{ThemeResource TXPlainText}"
+                       Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_ThreadNum"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <StackPanel x:Name="ThreadLayout_TrialMessage"
                         Visibility="Collapsed">
-                <TextBlock Style="{ThemeResource TXPlainText}"
+                <TextBlock Style="{StaticResource TXPlainText}"
                            Opacity="1"
                            x:Uid="TrailMessage"
                            Foreground="{StaticResource SolidWarningTextColorBrush}"/>
-                <Border Style="{ThemeResource TXBorder}"/>
+                <Border Style="{StaticResource TXBorder}"/>
             </StackPanel>
-            <Slider Template="{ThemeResource TXSliderTemplate}" 
+            <Slider Template="{StaticResource TXSliderTemplate}" 
                     x:Name="ThreadNumSlider"
                     Minimum="1"
                     ValueChanged="ThreadNumSlider_ValueChanged"
                     Maximum="218" />
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <TextBlock Style="{ThemeResource TXSubTitle}"
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxRetries"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <TextBlock TextWrapping="Wrap"
-                       Style="{ThemeResource TXPlainText}"
+                       Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_MaxRetries"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <Slider x:Name="MaximumRetriesSlider"
-                    Template="{ThemeResource TXSliderTemplate}" 
+                    Template="{StaticResource TXSliderTemplate}" 
                     Minimum="0"
                     ValueChanged="MaximumRetriesSlider_ValueChanged"
                     Maximum="50" />
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <TextBlock Style="{ThemeResource TXSubTitle}"
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
                            x:Uid="SetPage_Subtitle_DefaultFolder"/>
-            <Border Style="{ThemeResource TXBorder}" />
-            <TextBlock TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
+            <Border Style="{StaticResource TXBorder}" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_DefaultFolder"/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <TextBlock x:Name="NowFolderTextBlock" 
                        FontFamily="Consolas"
-                       TextWrapping="Wrap" Style="{ThemeResource TXPlainText}"
-                       Foreground="{ThemeResource SolidSystemAccentColorBrush}"
+                       TextWrapping="Wrap" Style="{StaticResource TXPlainText}"
+                       Foreground="{StaticResource SolidSystemAccentColorBrush}"
                        Text="..."/>
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <Button x:Name="SubmitButton"
-                    Style="{ThemeResource TXButtonStyle}"
+                    Style="{StaticResource TXButtonStyle}"
                     x:Uid="SetPage_SubmitButton"
                     Click="SubmitButton_Click" />
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>
     </ScrollViewer>
 

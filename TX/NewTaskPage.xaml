@@ -7,7 +7,7 @@
       xmlns:models="using:TX.Models"
       mc:Ignorable="d"
       HorizontalContentAlignment="Left"
-      Background="{ThemeResource TXBackgroundAcrylicBrush}"
+      Background="{StaticResource TXBackgroundAcrylicBrush}"
     xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Page.Resources>
@@ -17,21 +17,21 @@
             <control:DropShadowPanel
                 BlurRadius="4"
                 ShadowOpacity="0.4">
-                <Grid Background="{ThemeResource SolidSystemAccentColorBrush}"
+                <Grid Background="{StaticResource SolidSystemAccentColorBrush}"
                       CornerRadius="2"
                       Padding="4">
-                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                        Text="{x:Bind Message}"
-                       Foreground="{ThemeResource SolidSystemAltMediumHighColorBrush}"/>
+                       Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
                 </Grid>
             </control:DropShadowPanel>
         </DataTemplate>
 
         <DataTemplate x:DataType="models:PlainTextComboBoxData"
                       x:Key="ComboBoxDataTemplate">
-            <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                        Text="{x:Bind Text}"
-                       Foreground="{ThemeResource SolidSystemBaseHighColorBrush}"/>
+                       Foreground="{StaticResource SolidSystemBaseHighColorBrush}"/>
         </DataTemplate>
 
         <Style TargetType="Control" x:Key="LinkAnalysisMessageListItemContainerStyle">
@@ -47,12 +47,12 @@
 
         <Style TargetType="TextBox" x:Key="TextBoxStyle">
             <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"/>
-            <Setter Property="Template" Value="{ThemeResource TXTextBoxTemplate}"/>
+            <Setter Property="Template" Value="{StaticResource TXTextBoxTemplate}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
 
         <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
-            <Setter Property="Template" Value="{ThemeResource TXCheckBoxTemplate}"/>
+            <Setter Property="Template" Value="{StaticResource TXCheckBoxTemplate}"/>
         </Style>
 
     </Page.Resources>
@@ -68,88 +68,88 @@
                     MaxWidth="600"
                     Margin="28,20,28,0">
             <Border Width="600" />
-            <TextBlock Style="{ThemeResource TXTitle}"
+            <TextBlock Style="{StaticResource TXTitle}"
                        x:Uid="NewTaskPage_Title" />
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock TextWrapping="Wrap" 
-                       Style="{ThemeResource TXPlainText}"
+                       Style="{StaticResource TXPlainText}"
                        x:Uid="NewTaskPage_GuideText_URLBox" />
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <TextBox x:Name="URLBox"
-                     Style="{ThemeResource TextBoxStyle}"
+                     Style="{StaticResource TextBoxStyle}"
                      TextChanged="URLBox_TextChanged" />
-            <Border Style="{ThemeResource TXBorder}" />
+            <Border Style="{StaticResource TXBorder}" />
             <ListView IsItemClickEnabled="False"
                       ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
                       ItemTemplate="{StaticResource LinkAnalysisMessageListDataTemplate}"
                       ItemsSource="{x:Bind linkAnalysisMessages}"/>
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
             <StackPanel x:Name="ComboBoxLayout"
                         Visibility="Collapsed"
                         Orientation="Vertical">
                 <ComboBox x:Name="ComboBox"
-                          Background="{ThemeResource TXDownloadBarBackground}"
-                          Template="{ThemeResource TXComboBoxTemplate}"
+                          Background="{StaticResource TXDownloadBarBackground}"
+                          Template="{StaticResource TXComboBoxTemplate}"
                           ItemsSource="{x:Bind comboBoxItems}"
                           ItemTemplate="{StaticResource ComboBoxDataTemplate}"
                           BorderThickness="1"
                           Width="150"
                           x:Uid="NewTaskPage_ComboBox"/>
-                <Border Style="{ThemeResource TXBigBorder}" />
+                <Border Style="{StaticResource TXBigBorder}" />
             </StackPanel>
 
             <TextBlock x:Uid="NewTaskPage_Subtitle_Rename"
-                       Style="{ThemeResource TXSubTitle}" />
-            <Border Style="{ThemeResource TXBorder}" />
+                       Style="{StaticResource TXSubTitle}" />
+            <Border Style="{StaticResource TXBorder}" />
             <Grid>
                 <TextBlock x:Name="RecommendedNameBlock"
                            MaxLines="2"
-                           Style="{ThemeResource BaseTextBlockStyle}"
-                           Foreground="{ThemeResource SolidSystemAccentColorBrush}" />
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Foreground="{StaticResource SolidSystemAccentColorBrush}" />
                 <TextBox x:Name="RenameBox"
-                         Style="{ThemeResource TextBoxStyle}"
+                         Style="{StaticResource TextBoxStyle}"
                          Visibility="Collapsed" />
             </Grid>
-            <Border Style="{ThemeResource TXBorder}" />
-            <CheckBox Style="{ThemeResource CheckBoxStyle}" 
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox Style="{StaticResource CheckBoxStyle}" 
                       x:Name="NeedRenameButton"
                       x:Uid="NewTaskPage_NeedRenameCheckBox"
                       Checked="NeedRenameButton_ValueChanged"
                       Unchecked="NeedRenameButton_ValueChanged" />
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
 
             <StackPanel x:Name="ThreadLayout"
                         Visibility="Collapsed"
                         Orientation="Vertical">
                 <TextBlock x:Uid="NewTaskPage_Subtitle_ThreadNum"
-                           Style="{ThemeResource TXSubTitle}" />
-                <Border Style="{ThemeResource TXBorder}" />
-                <TextBlock Style="{ThemeResource TXPlainText}"
+                           Style="{StaticResource TXSubTitle}" />
+                <Border Style="{StaticResource TXBorder}" />
+                <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="NewTaskPage_GuideText_ThreadNum" />
-                <Border Style="{ThemeResource TXBorder}" />
+                <Border Style="{StaticResource TXBorder}" />
                 <StackPanel x:Name="ThreadLayout_TrialMessage"
                             Visibility="Collapsed">
-                    <TextBlock Style="{ThemeResource TXPlainText}"
+                    <TextBlock Style="{StaticResource TXPlainText}"
                                Opacity="1"
                                x:Uid="TrailMessage"
                                Foreground="{StaticResource SolidWarningTextColorBrush}"/>
-                    <Border Style="{ThemeResource TXBorder}"/>
+                    <Border Style="{StaticResource TXBorder}"/>
                 </StackPanel>
                 <Slider x:Name="ThreadNumSlider"
                         Minimum="1"
-                        Template="{ThemeResource TXSliderTemplate}"
+                        Template="{StaticResource TXSliderTemplate}"
                         Maximum="256" />
-                <Border Style="{ThemeResource TXBigBorder}" />
+                <Border Style="{StaticResource TXBigBorder}" />
             </StackPanel>
 
             <Button x:Name="SubmitButton"
-                    Style="{ThemeResource TXButtonStyle}"
+                    Style="{StaticResource TXButtonStyle}"
                     x:Uid="NewTaskPage_SubmitButton"
                     IsEnabled="False"
                     Click="SubmitButton_Click" />
 
-            <Border Style="{ThemeResource TXBigBorder}" />
-            <Border Style="{ThemeResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
+            <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>
     </ScrollViewer>
 </Page>
