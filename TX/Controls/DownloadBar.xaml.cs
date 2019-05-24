@@ -79,6 +79,7 @@ namespace TX.Controls
                         PlayButton.IsEnabled = true;
                         DeleteButton.IsEnabled = true;
                         RefreshButton.IsEnabled = true;
+                        Bar.ShowPaused = true;
                     }
                     else if (state == Enums.DownloadState.Error)
                     {
@@ -86,6 +87,7 @@ namespace TX.Controls
                         PlayButton.IsEnabled = false;
                         DeleteButton.IsEnabled = true;
                         RefreshButton.IsEnabled = true;
+                        Bar.ShowPaused = true;
                     }
                     else if (state == Enums.DownloadState.Downloading)
                     {
@@ -93,6 +95,7 @@ namespace TX.Controls
                         PlayButton.IsEnabled = false;
                         DeleteButton.IsEnabled = true;
                         RefreshButton.IsEnabled = true;
+                        Bar.ShowPaused = false;
                     }
                     else if (state == Enums.DownloadState.Done)
                     {
