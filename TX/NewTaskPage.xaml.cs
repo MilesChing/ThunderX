@@ -16,7 +16,7 @@ using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using Windows.UI.Xaml.Navigation;
 
 namespace TX
 {
@@ -58,6 +58,13 @@ namespace TX
             CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            RefreshUI();
+            Clipboard_ContentChanged(null, null);
+        }
+
         private void CurrentApplication_LicenseChanged(StoreAppLicense license)
         {
             if (license == null) return;
@@ -81,9 +88,10 @@ namespace TX
         private void RefreshUI()
         {
             //将UI恢复到初始值（窗口的循环利用机制）
-            URLBox.Text = "";
+            URLBox.Text = string.Empty;
             NeedRenameButton.IsChecked = false;
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
+            RecommendedNameBlock.Opacity = 0.5;
             RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
             GC.Collect();
@@ -117,6 +125,8 @@ namespace TX
                     if (url != string.Empty && !SubmitButton.IsEnabled)
                     {
                         URLBox.Text = url;
+                        if (sender == null && e == null)
+                            URLBox_TextChanged(null, null);
                     }
                 }
             }

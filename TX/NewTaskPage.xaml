@@ -76,8 +76,8 @@
                        x:Uid="NewTaskPage_GuideText_URLBox" />
             <Border Style="{ThemeResource TXBorder}" />
             <TextBox x:Name="URLBox"
-                         Style="{ThemeResource TextBoxStyle}"
-                         TextChanged="URLBox_TextChanged" />
+                     Style="{ThemeResource TextBoxStyle}"
+                     TextChanged="URLBox_TextChanged" />
             <Border Style="{ThemeResource TXBorder}" />
             <ListView IsItemClickEnabled="False"
                       ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
@@ -105,7 +105,7 @@
                 <TextBlock x:Name="RecommendedNameBlock"
                            MaxLines="2"
                            Style="{ThemeResource BaseTextBlockStyle}"
-                           Foreground="{ThemeResource SystemControlForegroundAccentBrush}" />
+                           Foreground="{ThemeResource SolidSystemAccentColorBrush}" />
                 <TextBox x:Name="RenameBox"
                          Style="{ThemeResource TextBoxStyle}"
                          Visibility="Collapsed" />
