@@ -169,9 +169,9 @@ namespace TX
         /// 用于打开窗口的控制器，这两个控制器包含设置窗口和新建项目窗口
         /// 用于处理新窗口的各种问题，包括窗口未关闭等等
         /// </summary>
-        private ApplicationWindowControl newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
-        private ApplicationWindowControl setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
-        private ApplicationWindowControl aboutPageControl = new ApplicationWindowControl(typeof(AboutPage), Strings.AppResources.GetString("AboutPageName"));
+        private ApplicationWindowControl newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName")) { CacheView = true };
+        private ApplicationWindowControl setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName")) { CacheView = true };
+        private ApplicationWindowControl aboutPageControl = new ApplicationWindowControl(typeof(AboutPage), Strings.AppResources.GetString("AboutPageName")) { CacheView = true };
         private ApplicationWindowControl browserPageControl = new ApplicationWindowControl(typeof(WebBrowserPage), Strings.AppResources.GetString("WebBrowserPageName"));
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)

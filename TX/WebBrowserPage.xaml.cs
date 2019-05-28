@@ -38,17 +38,13 @@ namespace TX
 
         public WebBrowserPage()
         {
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();
 
             this.InitializeComponent();
+            
             SetThemeChangedListener();
-
-            ApplicationView.GetForCurrentView().Consolidated += async (sender, e) =>
-            {
-                await WebView.ClearTemporaryWebDataAsync();
-                RefreshPage();
-            };
 
             MainWebView.NavigationCompleted += MainWebView_NavigationCompleted;
             //将打开新标签页转换为在当前页面打开
@@ -65,6 +61,10 @@ namespace TX
                 if (args.Key != Windows.System.VirtualKey.Enter) return;
                 SafeNavigate(URLBox.Text);
             };
+
+            MainWebView.NavigationFailed += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
+            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.IsIndeterminate = true; };
+            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
         }
 
         private void MainWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
@@ -134,14 +134,25 @@ namespace TX
 
         private void SetThemeChangedListener()
         {
-            ((App)App.Current).ThemeChanged += async (theme) =>
+            ((App)App.Current).ThemeChanged += WebBrowserPage_ThemeChanged; 
+        }
+
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            //不消除全局事件的话要内存泄漏的喔
+            ((App)App.Current).ThemeChanged -= WebBrowserPage_ThemeChanged;
+            //清理WebView缓存
+            await WebView.ClearTemporaryWebDataAsync();
+            base.OnNavigatedFrom(e);
+        }
+
+        private async void WebBrowserPage_ThemeChanged(ElementTheme theme)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    this.RequestedTheme = theme;
-                    ResetTitleBar();
-                });
-            };
+                this.RequestedTheme = theme;
+                ResetTitleBar();
+            });
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

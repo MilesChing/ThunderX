@@ -83,11 +83,54 @@
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <SplitView x:Name="MainSplitView" 
+                   DisplayMode="Overlay"
+                   Grid.Row="1"
+                   PaneBackground="Transparent">
+            <SplitView.Pane>
+                <controls:DropShadowPanel ShadowOpacity="0.4" BlurRadius="8">
+                    <RelativePanel Background="{StaticResource TXBackgroundAcrylicBrush}">
+                        <StackPanel x:Name="PaneStack"
+                                    Padding="20,0,20,0"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.AlignTopWithPanel="True">
+                            <Border Style="{StaticResource TXBigBorder}"/>
+                            <TextBlock Style="{StaticResource TXSubTitle}" x:Uid="WebBrowserPage_SubTitle_WebResources"/>
+                            <Border Style="{StaticResource TXBigBorder}"/>
+                            <TextBlock Style="{StaticResource TXPlainText}" x:Uid="WebBrowserPage_GuideText_WebResources"/>
+                            <Border Style="{StaticResource TXBigBorder}"/>
+                        </StackPanel>
+                        <ListView ItemsSource="{x:Bind URLMessageCollection}"
+                                  RelativePanel.Below="PaneStack"
+                                  RelativePanel.AlignBottomWithPanel="True"
+                                  RelativePanel.AlignLeftWithPanel="True"
+                                  RelativePanel.AlignRightWithPanel="True"
+                                  SelectionMode="Extended"
+                                  ItemContainerStyle="{StaticResource TXListViewItemContainerStyle}"
+                                  ItemTemplate="{StaticResource URLMessageDataTemplate}"
+                                  ScrollViewer.VerticalScrollMode="Enabled"/>
+                    </RelativePanel>
+                </controls:DropShadowPanel>
+            </SplitView.Pane>
+
+            <Grid>
+                <WebView x:Name="MainWebView"/>
+                <ProgressBar x:Name="MainProgressBar" 
+                             VerticalAlignment="Top"
+                             Background="Transparent"
+                             Value="0"/>
+            </Grid>
+
+        </SplitView>
+
         <controls:DropShadowPanel HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   BlurRadius="4"
                                   ShadowOpacity="0.4"
-                                  OffsetY="1">
+                                  OffsetY="1"
+                                  OffsetZ="20">
             <Grid VerticalAlignment="Top"
                   HorizontalAlignment="Stretch"
                   Background="{StaticResource TXBackgroundAcrylicBrush}">
@@ -116,39 +159,5 @@
                               Click="RefreshButton_Click"/>
             </Grid>
         </controls:DropShadowPanel>
-
-        <SplitView x:Name="MainSplitView" 
-                   DisplayMode="Overlay"
-                   Grid.Row="1"
-                   PaneBackground="Transparent">
-            <SplitView.Pane>
-                <controls:DropShadowPanel ShadowOpacity="0.6" BlurRadius="16">
-                    <RelativePanel Background="{StaticResource TXBackgroundAcrylicBrush}">
-                        <StackPanel x:Name="PaneStack"
-                                    Padding="20,0,20,0"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.AlignTopWithPanel="True">
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                            <TextBlock Style="{StaticResource TXSubTitle}" x:Uid="WebBrowserPage_SubTitle_WebResources"/>
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                            <TextBlock Style="{StaticResource TXPlainText}" x:Uid="WebBrowserPage_GuideText_WebResources"/>
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                        </StackPanel>
-                        <ListView ItemsSource="{x:Bind URLMessageCollection}"
-                                  RelativePanel.Below="PaneStack"
-                                  RelativePanel.AlignBottomWithPanel="True"
-                                  RelativePanel.AlignLeftWithPanel="True"
-                                  RelativePanel.AlignRightWithPanel="True"
-                                  SelectionMode="Extended"
-                                  ItemContainerStyle="{StaticResource TXListViewItemContainerStyle}"
-                                  ItemTemplate="{StaticResource URLMessageDataTemplate}"
-                                  ScrollViewer.VerticalScrollMode="Enabled"/>
-                    </RelativePanel>
-                </controls:DropShadowPanel>
-            </SplitView.Pane>
-            <WebView x:Name="MainWebView"
-                     />
-        </SplitView>
     </Grid>
 </Page>
