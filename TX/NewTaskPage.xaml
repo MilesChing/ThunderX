@@ -8,11 +8,11 @@
       mc:Ignorable="d"
       HorizontalContentAlignment="Left"
       Background="{StaticResource TXBackgroundAcrylicBrush}"
-    xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls">
+      xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Page.Resources>
 
-        <DataTemplate x:DataType="models:LinkAnalysisMessage"
+        <DataTemplate x:DataType="models:PlainTextMessage"
                       x:Key="LinkAnalysisMessageListDataTemplate">
             <control:DropShadowPanel
                 BlurRadius="4"
@@ -97,7 +97,6 @@
                           x:Uid="NewTaskPage_ComboBox"/>
                 <Border Style="{StaticResource TXBigBorder}" />
             </StackPanel>
-
             <TextBlock x:Uid="NewTaskPage_Subtitle_Rename"
                        Style="{StaticResource TXSubTitle}" />
             <Border Style="{StaticResource TXBorder}" />

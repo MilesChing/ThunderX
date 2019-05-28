@@ -172,6 +172,7 @@ namespace TX
         private ApplicationWindowControl newTaskPageControl = new ApplicationWindowControl(typeof(NewTaskPage), Strings.AppResources.GetString("NewTaskPageName"));
         private ApplicationWindowControl setPageControl = new ApplicationWindowControl(typeof(SetPage), Strings.AppResources.GetString("SetPageName"));
         private ApplicationWindowControl aboutPageControl = new ApplicationWindowControl(typeof(AboutPage), Strings.AppResources.GetString("AboutPageName"));
+        private ApplicationWindowControl browserPageControl = new ApplicationWindowControl(typeof(WebBrowserPage), Strings.AppResources.GetString("WebBrowserPageName"));
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -186,6 +187,11 @@ namespace TX
         private async void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             await aboutPageControl.OpenNewWindowAsync();
+        }
+
+        private async void BrowserButton_Click(object sender, RoutedEventArgs e)
+        {
+            await browserPageControl.OpenNewWindowAsync();
         }
     }
 }

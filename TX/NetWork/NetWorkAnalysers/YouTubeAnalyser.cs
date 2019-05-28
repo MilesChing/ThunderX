@@ -26,11 +26,11 @@ namespace TX.NetWork.NetWorkAnalysers
         public override void Dispose()
         {
             innerAnalyser?.Dispose();
-            Controller.SetComboBoxLayoutVisibility(this, false);
-            Controller.SetComboBoxSelectionChangedListener(this, null);
-            Controller.RemoveMessage(this, KEY_YOUTUBE);
-            Controller.ClearComboBoxItem(this);
-            Controller.RemoveAnalyser(this);
+            Controller?.SetComboBoxLayoutVisibility(this, false);
+            Controller?.SetComboBoxSelectionChangedListener(this, null);
+            Controller?.RemoveMessage(this, KEY_YOUTUBE);
+            Controller?.ClearComboBoxItem(this);
+            Controller?.RemoveAnalyser(this);
 
             GC.Collect();
         }
@@ -71,16 +71,16 @@ namespace TX.NetWork.NetWorkAnalysers
             {
                 id = YoutubeClient.ParseVideoId(url);
                 var client = new YoutubeClient();
-                Controller.UpdateMessage(this, KEY_YOUTUBE,
-                    new LinkAnalysisMessage(AppResources.GetString("YouTubeLinkDetectedButWaiting")));
+                Controller?.UpdateMessage(this, KEY_YOUTUBE,
+                    new PlainTextMessage(AppResources.GetString("YouTubeLinkDetectedButWaiting")));
                 video = await client.GetVideoAsync(id);
                 infos = await client.GetVideoMediaStreamInfosAsync(id);
                 if (infos.Muxed.Count > 0)
-                    Controller.SetComboBoxLayoutVisibility(this, true);
+                    Controller?.SetComboBoxLayoutVisibility(this, true);
                 else throw new Exception();
 
-                Controller.UpdateMessage(this, KEY_YOUTUBE,
-                    new LinkAnalysisMessage(
+                Controller?.UpdateMessage(this, KEY_YOUTUBE,
+                    new PlainTextMessage(
                     AppResources.GetString("YouTubeLinkDetectedButWaiting")
                     + " - " +
                     video.Title
@@ -90,10 +90,10 @@ namespace TX.NetWork.NetWorkAnalysers
                 {
                     PlainTextComboBoxData data = new PlainTextComboBoxData();
                     data.Text = info.VideoQuality.ToString() + " - " + info.VideoEncoding.ToString();
-                    Controller.AddComboBoxItem(this, data);
+                    Controller?.AddComboBoxItem(this, data);
                 }
 
-                Controller.SetComboBoxSelectionChangedListener(this, 
+                Controller?.SetComboBoxSelectionChangedListener(this, 
                     async (item) => {
                         innerAnalyser?.Dispose();
                         string target = GetURLFromInfos(item.Text);
@@ -104,7 +104,7 @@ namespace TX.NetWork.NetWorkAnalysers
                             {
                                 URL = target;
                                 innerAnalyser.BindVisualController(Controller);
-                                Controller.RegistAnalyser(this, innerAnalyser);
+                                Controller?.RegistAnalyser(this, innerAnalyser);
                                 await innerAnalyser.SetURLAsync(target);
                             }
                         }
@@ -113,11 +113,11 @@ namespace TX.NetWork.NetWorkAnalysers
             }
             catch (Exception)
             {
-                Controller.UpdateMessage(this, KEY_YOUTUBE,
-                    new LinkAnalysisMessage(
+                Controller?.UpdateMessage(this, KEY_YOUTUBE,
+                    new PlainTextMessage(
                     AppResources.GetString("YouTubeLinkDetectedButFailed")
                     ));
-                Controller.SetComboBoxLayoutVisibility(this, false);
+                Controller?.SetComboBoxLayoutVisibility(this, false);
             }
         }
     }

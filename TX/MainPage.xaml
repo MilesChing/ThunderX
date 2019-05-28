@@ -87,7 +87,7 @@
                 </Canvas>
             </Canvas>
         </Viewbox>
-        
+
         <GridView x:Name="gv"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
@@ -112,6 +112,10 @@
                           x:Uid="MainPage_SetButton"
                           Click="SetButton_Click">
             </AppBarButton>
+            <AppBarButton x:Name="BrowserButton"
+                          x:Uid="MainPage_BrowserButton"
+                          Click="BrowserButton_Click" 
+                          Icon="Globe"/>
             <AppBarButton x:Name="AboutButton"
                           Icon="More"
                           x:Uid="MainPage_AboutButton"

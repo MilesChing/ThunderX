@@ -162,6 +162,9 @@
   <data name="MainPage_AddButton.Label" xml:space="preserve">
     <value>Add New</value>
   </data>
+  <data name="MainPage_BrowserButton.Label" xml:space="preserve">
+    <value>Browser</value>
+  </data>
   <data name="MainPage_SetButton.Label" xml:space="preserve">
     <value>Settings</value>
   </data>
@@ -263,6 +266,15 @@
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="WebBrowserPageName" xml:space="preserve">
+    <value>Browser</value>
+  </data>
+  <data name="WebBrowserPage_GuideText_WebResources.Text" xml:space="preserve">
+    <value>The following list records all the links we have analyzed from the current page.</value>
+  </data>
+  <data name="WebBrowserPage_SubTitle_WebResources.Text" xml:space="preserve">
+    <value>URL List</value>
   </data>
   <data name="YouTubeLinkDetected" xml:space="preserve">
     <value>Youtube link parsed</value>

@@ -35,9 +35,16 @@ namespace TX.StorageTools
 
         public static async Task SaveDownloadMessagesAsync(List<Models.DownloaderMessage> messages)
         {
-            string str = JsonHelper.SerializeObject(messages);
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls");
-            await FileIO.WriteTextAsync(file, str);
+            try
+            {
+                string str = JsonHelper.SerializeObject(messages);
+                var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls", CreationCollisionOption.OpenIfExists);
+                await FileIO.WriteTextAsync(file, str);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
             //Windows.Storage.ApplicationData.Current.LocalSettings.Values["SavedTasks"] = str;
         }
 

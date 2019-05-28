@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace TX.Models
 {
-    /// <summary>
-    /// 对链接进行分析后，返回的单条消息内容
-    /// </summary>
-    public class LinkAnalysisMessage
+    public class PlainTextMessage
     {
-        public LinkAnalysisMessage(string message)
+        public PlainTextMessage(string message)
         {
             Message = message;
         }
@@ -21,7 +18,7 @@ namespace TX.Models
         /// </summary>
         public string Message { get; set; } = "";
 
-        public bool Equals(LinkAnalysisMessage obj)
+        public bool Equals(PlainTextMessage obj)
         {
             return Message.Equals(obj.Message);
         }

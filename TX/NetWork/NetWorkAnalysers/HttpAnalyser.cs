@@ -66,12 +66,12 @@ namespace TX.NetWork.NetWorkAnalysers
 
         public override void Dispose()
         {
-            Controller.RemoveMessage(this, KEY_LEGITIMACY);
-            Controller.RemoveMessage(this, KEY_MULTITHREAD);
-            Controller.SetSubmitButtonEnabled(this, false);
-            Controller.SetThreadLayoutVisibility(this, false);
-            Controller.SetRecommendedName(this, AppResources.GetString("Unknown"), 0.5);
-            Controller.RemoveAnalyser(this);
+            Controller?.RemoveMessage(this, KEY_LEGITIMACY);
+            Controller?.RemoveMessage(this, KEY_MULTITHREAD);
+            Controller?.SetSubmitButtonEnabled(this, false);
+            Controller?.SetThreadLayoutVisibility(this, false);
+            Controller?.SetRecommendedName(this, AppResources.GetString("Unknown"), 0.5);
+            Controller?.RemoveAnalyser(this);
 
             _hresp_?.Dispose();
             _hresp_ = null;
@@ -109,33 +109,33 @@ namespace TX.NetWork.NetWorkAnalysers
         {
             URL = url;
 
-            Controller.SetRecommendedName(this, Path.GetFileName(url), 0.5);
-            Controller.UpdateMessage(this, KEY_LEGITIMACY,
-                new LinkAnalysisMessage(AppResources.GetString("Connecting")));
+            Controller?.SetRecommendedName(this, Path.GetFileName(url), 0.5);
+            Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+                new PlainTextMessage(AppResources.GetString("Connecting")));
 
             await GetResponseAsync();
             if (_hresp_ == null)
-                Controller.UpdateMessage(this, KEY_LEGITIMACY,
-                    new LinkAnalysisMessage(AppResources.GetString("UnableToConnect")));
+                Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+                    new PlainTextMessage(AppResources.GetString("UnableToConnect")));
             else
             {
-                Controller.UpdateMessage(this, KEY_LEGITIMACY,
-                    new LinkAnalysisMessage(AppResources.GetString("SuccessfullyConnected")));
-                Controller.SetSubmitButtonEnabled(this, true);
+                Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+                    new PlainTextMessage(AppResources.GetString("SuccessfullyConnected")));
+                Controller?.SetSubmitButtonEnabled(this, true);
 
                 if (GetStreamSize() > 0)
                 {
-                    Controller.SetThreadLayoutVisibility(this, true);
-                    Controller.UpdateMessage(this, KEY_MULTITHREAD,
-                        new LinkAnalysisMessage(AppResources.GetString("Multithread")));
+                    Controller?.SetThreadLayoutVisibility(this, true);
+                    Controller?.UpdateMessage(this, KEY_MULTITHREAD,
+                        new PlainTextMessage(AppResources.GetString("Multithread")));
                 }
                 else
                 {
-                    Controller.SetThreadLayoutVisibility(this, false);
-                    Controller.RemoveMessage(this, KEY_MULTITHREAD);
+                    Controller?.SetThreadLayoutVisibility(this, false);
+                    Controller?.RemoveMessage(this, KEY_MULTITHREAD);
                 }
 
-                Controller.SetRecommendedName(this, GetRecommendedName(), 1);
+                Controller?.SetRecommendedName(this, GetRecommendedName(), 1);
             }
         }
     }

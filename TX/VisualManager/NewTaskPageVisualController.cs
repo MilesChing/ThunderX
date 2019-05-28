@@ -20,11 +20,11 @@ namespace TX.VisualManager
 
         private Collection<AbstractAnalyser> analysers = new Collection<AbstractAnalyser>();
 
-        private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages;
+        private ObservableCollection<PlainTextMessage> linkAnalysisMessages;
         private VisibilityAnimationManager threadLayoutVisibilityManager;
         private VisibilityAnimationManager comboBoxLayoutVisibilityManager;
-        private Dictionary<string, LinkAnalysisMessage> existMessages
-            = new Dictionary<string, LinkAnalysisMessage>();
+        private Dictionary<string, PlainTextMessage> existMessages
+            = new Dictionary<string, PlainTextMessage>();
         private Button submitButton;
         private TextBlock recommendedNameBlock;
         private ComboBox comboBox;
@@ -69,7 +69,7 @@ namespace TX.VisualManager
             GC.Collect();
         }
 
-        public NewTaskPageVisualController(ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages,
+        public NewTaskPageVisualController(ObservableCollection<PlainTextMessage> linkAnalysisMessages,
             VisibilityAnimationManager threadLayoutVisibilityManager,
             VisibilityAnimationManager comboBoxLayoutVisibilityManager,
             Button submitButton,
@@ -117,14 +117,14 @@ namespace TX.VisualManager
             }
         }
 
-        public void UpdateMessage(AbstractAnalyser me, string key, LinkAnalysisMessage message)
+        public void UpdateMessage(AbstractAnalyser me, string key, PlainTextMessage message)
         {
             lock (operationLock)
             {
                 if (me != null && !CheckPermission(me)) return;
                 if (existMessages.ContainsKey(key))
                 {
-                    LinkAnalysisMessage intermes = existMessages[key];
+                    PlainTextMessage intermes = existMessages[key];
                     if (intermes.Equals(message))
                         return;
                     for (int i = 0; i < linkAnalysisMessages.Count; ++i)

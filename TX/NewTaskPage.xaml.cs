@@ -30,8 +30,8 @@ namespace TX
         private AbstractAnalyser analyser = null;
         private NewTaskPageVisualController controller = null;
 
-        private ObservableCollection<LinkAnalysisMessage> linkAnalysisMessages 
-            = new ObservableCollection<LinkAnalysisMessage>();
+        private ObservableCollection<PlainTextMessage> linkAnalysisMessages 
+            = new ObservableCollection<PlainTextMessage>();
 
         private ObservableCollection<PlainTextComboBoxData> comboBoxItems
             = new ObservableCollection<PlainTextComboBoxData>();

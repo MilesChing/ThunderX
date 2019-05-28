@@ -18,9 +18,9 @@ namespace TX.NetWork.NetWorkAnalysers
         public override void Dispose()
         {
             innerAnalyser?.Dispose();
-            Controller.RemoveMessage(this, KEY_THUNDER);
+            Controller?.RemoveMessage(this, KEY_THUNDER);
             innerAnalyser = null;
-            Controller.RemoveAnalyser(this);
+            Controller?.RemoveAnalyser(this);
 
             GC.Collect();
         }
@@ -48,19 +48,19 @@ namespace TX.NetWork.NetWorkAnalysers
         public override async Task SetURLAsync(string url)
         {
             URL = Converters.UrlConverter.TranslateURLThunder(url);
-            Controller.UpdateMessage(this, KEY_THUNDER, new LinkAnalysisMessage(
+            Controller?.UpdateMessage(this, KEY_THUNDER, new PlainTextMessage(
                 AppResources.GetString("ThunderLinkDetected")));
             innerAnalyser?.Dispose();
             innerAnalyser = null;
             innerAnalyser = Converters.UrlConverter.GetAnalyser(URL);
             if (innerAnalyser == null)
             {
-                Controller.UpdateMessage(this, KEY_THUNDER, new LinkAnalysisMessage(
+                Controller?.UpdateMessage(this, KEY_THUNDER, new PlainTextMessage(
                     AppResources.GetString("ThunderLinkDetectedButFailed")));
                 return;
             }
 
-            Controller.RegistAnalyser(this, innerAnalyser);
+            Controller?.RegistAnalyser(this, innerAnalyser);
             innerAnalyser.BindVisualController(Controller);
             await innerAnalyser.SetURLAsync(URL);
         }
