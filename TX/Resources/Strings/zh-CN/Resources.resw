@@ -271,7 +271,7 @@
     <value>浏览器</value>
   </data>
   <data name="WebBrowserPage_GuideText_WebResources.Text" xml:space="preserve">
-    <value>资源列表中记录了我们根据当前页面分析出的文件链接及其资源大小，点按已复制所需链接进行下载。</value>
+    <value>资源列表中记录了我们根据当前页面分析出的文件链接及其资源大小，点按以复制所需链接进行下载。</value>
   </data>
   <data name="WebBrowserPage_SubTitle_WebResources.Text" xml:space="preserve">
     <value>资源列表</value>
