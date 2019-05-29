@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using TX.Models;
 using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -28,7 +30,7 @@ namespace TX
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class WebBrowserPage : Page
+    public sealed partial class WebBrowserPage : TXPage
     {
         private const int MAX_URL_MESSAGE_NUMBER = 20;
 
@@ -39,37 +41,8 @@ namespace TX
         public WebBrowserPage()
         {
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
-            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
-            ResetTitleBar();
-
             this.InitializeComponent();
-            
-            SetThemeChangedListener();
-
-            MainWebView.NavigationCompleted += MainWebView_NavigationCompleted;
-            //将打开新标签页转换为在当前页面打开
-            MainWebView.NewWindowRequested += (sender, args) =>
-            {
-                SafeNavigate(args.Uri.ToString());
-                args.Handled = true;
-            };
-            //填入正确的URL
-            URLBox.LostFocus += (sender, args) => { URLBox.Text = CurrentURL; };
-            //注册回车键事件
-            URLBox.KeyDown += (sender, args) =>
-            {
-                if (args.Key != Windows.System.VirtualKey.Enter) return;
-                SafeNavigate(URLBox.Text);
-            };
-
-            MainWebView.NavigationFailed += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
-            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.IsIndeterminate = true; };
-            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
-            MainWebView.NavigationStarting += (sender, e) => 
-            {
-                BackwardButton.IsEnabled = MainWebView.CanGoBack;
-                ForwardButton.IsEnabled = MainWebView.CanGoForward;
-            };
+            SetWebView();
         }
 
         private void MainWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
@@ -102,18 +75,27 @@ namespace TX
             }
             catch (Exception exp)
             {
-                MainWebView.NavigateToString(exp.ToString());
+                //填充问题页
+                GetHtmlTemplateAndRun((content) =>
+                {
+                    string html = content.Replace("Title", Strings.AppResources.GetString("SomethingWrong"))
+                                        .Replace("Text", string.Join(" ", exp.Message, "HResult: " + exp.HResult, "HelpLink: " + exp.HelpLink));
+                    MainWebView.NavigateToString(html);
+                });
             }
         }
 
         private async void AddURL(string URL)
         {
+            foreach (URLMessage mes in URLMessageCollection)
+                if (mes.URL.Equals(URL))
+                    return;
             AbstractAnalyser analyser = Converters.UrlConverter.GetAnalyser(URL);
             await analyser.SetURLAsync(URL);
             if (analyser.IsLegal())
             {
                 URLMessage message = new URLMessage();
-                message.URL = URL;
+                message.URL = analyser.URL;
                 message.RecommendedFileName = analyser.GetRecommendedName();
                 if (message.RecommendedFileName == null) message.RecommendedFileName = string.Empty;
                 message.StreamSizeToString = Converters.StringConverter.GetPrintSize(analyser.GetStreamSize());
@@ -124,40 +106,10 @@ namespace TX
             analyser.Dispose();
         }
 
-        /// <summary>
-        /// 设置状态栏透明、扩展内容到状态栏
-        /// </summary>
-        private void ResetTitleBar()
-        {
-            var TB = ApplicationView.GetForCurrentView().TitleBar;
-            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
-            byte fr = (byte)(0xff - co);
-            TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
-        }
-
-        private void SetThemeChangedListener()
-        {
-            ((App)App.Current).ThemeChanged += WebBrowserPage_ThemeChanged; 
-        }
-
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
-            //不消除全局事件的话要内存泄漏的喔
-            ((App)App.Current).ThemeChanged -= WebBrowserPage_ThemeChanged;
-            //清理WebView缓存
             await WebView.ClearTemporaryWebDataAsync();
             base.OnNavigatedFrom(e);
-        }
-
-        private async void WebBrowserPage_ThemeChanged(ElementTheme theme)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                this.RequestedTheme = theme;
-                ResetTitleBar();
-            });
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -170,11 +122,6 @@ namespace TX
             Clipboard.SetContent(dp);
         }
 
-        private void RefreshPage()
-        {
-            URLMessageCollection.Clear();
-        }
-
         private void BackwardButton_Click(object sender, RoutedEventArgs e)
         {
             if (MainWebView.CanGoBack) MainWebView.GoBack();
@@ -183,6 +130,75 @@ namespace TX
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
             if (MainWebView.CanGoForward) MainWebView.GoForward();
+        }
+
+        private void SetWebView()
+        {
+            //填充空白页
+            GetHtmlTemplateAndRun((content) =>
+            {
+                string html = content.Replace("Title", Strings.AppResources.GetString("WebBrowserPage_Title"))
+                                    .Replace("Text", Strings.AppResources.GetString("WebBrowserPage_GuideText"));
+                MainWebView.NavigateToString(html);
+            });
+
+            MainWebView.NavigationCompleted += MainWebView_NavigationCompleted;
+            //将打开新标签页转换为在当前页面打开
+            MainWebView.NewWindowRequested += (sender, args) =>
+            {
+                SafeNavigate(args.Uri.ToString());
+                args.Handled = true;
+            };
+            //填入正确的URL
+            URLBox.LostFocus += (sender, args) => { URLBox.Text = CurrentURL; };
+            //注册回车键事件
+            URLBox.KeyDown += (sender, args) =>
+            {
+                if (args.Key != Windows.System.VirtualKey.Enter) return;
+                SafeNavigate(URLBox.Text);
+            };
+
+            MainWebView.NavigationFailed += MainWebView_NavigationFailed;
+            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.IsIndeterminate = true; };
+            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
+            MainWebView.NavigationStarting += (sender, e) =>
+            {
+                BackwardButton.IsEnabled = MainWebView.CanGoBack;
+                ForwardButton.IsEnabled = MainWebView.CanGoForward;
+            };
+        }
+
+        private void MainWebView_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
+        {
+            //填充问题页
+            GetHtmlTemplateAndRun((content) =>
+            {
+                string html = content.Replace("Title", "ERROR " + (int)e.WebErrorStatus)
+                                    .Replace("Text", e.WebErrorStatus + ": " + e.Uri.ToString());
+                MainWebView.NavigateToString(html);
+            });
+            MainProgressBar.IsIndeterminate = false;
+        }
+
+        private static string HTMLTemplateContent = null;
+
+        private async Task loadHTMLTemplateAsync()
+        {
+            Uri uri = new Uri("ms-appx:///Resources/HTMLs/EmptyHtML.html");
+            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+            HTMLTemplateContent = await FileIO.ReadTextAsync(file);
+        }
+
+        private async void GetHtmlTemplateAndRun(Action<string> function)
+        {
+            if (HTMLTemplateContent == null) await loadHTMLTemplateAsync();
+            function(HTMLTemplateContent);
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView listView = (ListView)sender;
+            listView.SelectedItems.Clear();
         }
     }
 }
