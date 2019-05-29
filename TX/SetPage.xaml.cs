@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TX.StorageTools;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Services.Store;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -23,35 +24,26 @@ namespace TX
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SetPage : Page
+    public sealed partial class SetPage : TXPage
     {
         private App CurrentApplication = ((App)Application.Current);
 
+        private bool UserModify = false;
+
         public SetPage()
         {
-            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
-            ResetTitleBar();
-
-            //在InitializeComponent的时候会触发一次ValueChanged
-            //所以需要用prev记录好内部存储的ThreadNumber
-            //不然就在ValueChanged里面被更新了
-            int prev_th = Settings.ThreadNumber;
-            int prev_re = Settings.MaximumRetries;
-            bool dark = Settings.DarkMode;
             this.InitializeComponent();
-            SetThemeChangedListener();
-            //赋初值
-            ThreadNumSlider.Value = prev_th;
-            MaximumRetriesSlider.Value = prev_re;
-            DarkModeSwitch.IsOn = dark;
+            ThreadNumSlider.Value = Settings.ThreadNumber;
+            MaximumRetriesSlider.Value = Settings.MaximumRetries;
+            DarkModeSwitch.IsOn = Settings.DarkMode;
             NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
-
-            CurrentApplication.LicenseChanged += CurrentApplication_LicenseChanged;
-            CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
+            LicenseChanged(((App)App.Current).AppLicense);
+            UserModify = true;
         }
 
-        private void CurrentApplication_LicenseChanged(Windows.Services.Store.StoreAppLicense license)
+        protected override void LicenseChanged(StoreAppLicense license)
         {
+            base.LicenseChanged(license);
             if (license == null) return;
             if (license.IsActive)
             {
@@ -68,19 +60,6 @@ namespace TX
             }
         }
 
-        /// <summary>
-        /// 设置状态栏透明、扩展内容到状态栏
-        /// </summary>
-        private void ResetTitleBar()
-        {
-            var TB = ApplicationView.GetForCurrentView().TitleBar;
-            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
-            byte fr = (byte)(0xff - co);
-            TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
-        }
-
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
@@ -93,31 +72,24 @@ namespace TX
             Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
         }
 
+        //ValueChanged调用开始先检查UserModify
+
         private void ThreadNumSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            if (!UserModify) return;
             StorageTools.Settings.ThreadNumber = (int)ThreadNumSlider.Value;
         }
 
         private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
+            if (!UserModify) return;
             Settings.DarkMode = DarkModeSwitch.IsOn;
             ((App)App.Current).CallThemeUpdate(DarkModeSwitch.IsOn ? ElementTheme.Dark : ElementTheme.Light);
         }
 
-        private void SetThemeChangedListener()
-        {
-            ((App)App.Current).ThemeChanged += async (theme) =>
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    this.RequestedTheme = theme;
-                    ResetTitleBar();
-                });
-            };
-        }
-
         private void MaximumRetriesSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            if (!UserModify) return;
             Settings.MaximumRetries = (int)e.NewValue;
         }
     }

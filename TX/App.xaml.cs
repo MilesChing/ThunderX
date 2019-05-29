@@ -201,7 +201,6 @@ namespace TX
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             Debug.WriteLine("OnSuspending");
-
             var deferral = e.SuspendingOperation.GetDeferral();
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
@@ -217,6 +216,5 @@ namespace TX
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
         }
-
     }
 }

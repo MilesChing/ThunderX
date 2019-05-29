@@ -1,12 +1,12 @@
-﻿<Page x:Class="TX.SetPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:TX"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d"
-      HorizontalContentAlignment="Left"
-      Background="{StaticResource TXBackgroundAcrylicBrush}">
+﻿<local:TXPage x:Class="TX.SetPage"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:local="using:TX"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              mc:Ignorable="d"
+              HorizontalContentAlignment="Left"
+              Background="{StaticResource TXBackgroundAcrylicBrush}">
 
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
@@ -84,4 +84,4 @@
         </StackPanel>
     </ScrollViewer>
 
-</Page>
+</local:TXPage>

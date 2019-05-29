@@ -93,7 +93,7 @@
                   VerticalAlignment="Stretch"
                   Margin="40,20,40,80"
                   SelectionMode="None"
-                  ItemsSource="{Binding}"
+                  ItemsSource="{x:Bind DownloadBarCollection}"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden">
         </GridView>
 

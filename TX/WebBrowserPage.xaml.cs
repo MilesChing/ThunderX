@@ -65,6 +65,11 @@ namespace TX
             MainWebView.NavigationFailed += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
             MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.IsIndeterminate = true; };
             MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
+            MainWebView.NavigationStarting += (sender, e) => 
+            {
+                BackwardButton.IsEnabled = MainWebView.CanGoBack;
+                ForwardButton.IsEnabled = MainWebView.CanGoForward;
+            };
         }
 
         private void MainWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
@@ -168,6 +173,16 @@ namespace TX
         private void RefreshPage()
         {
             URLMessageCollection.Clear();
+        }
+
+        private void BackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWebView.CanGoBack) MainWebView.GoBack();
+        }
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWebView.CanGoForward) MainWebView.GoForward();
         }
     }
 }

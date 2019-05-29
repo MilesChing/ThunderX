@@ -23,19 +23,18 @@ namespace TX
         public static MainPage Current;
         public MainPage()
         {
+            Current = this;
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            ResetTitleBar();//设置标题栏颜色
             SetThemeChangedListener();
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
-            Current = this;//设置Current指针（以便在全局访问）
             InitializeComponent();
-            ResetTitleBar();//设置标题栏颜色
             InitializeAsync();
         }
 
         private async void InitializeAsync()
         {
             DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
-            gv.DataContext = DownloadBarCollection;//设置绑定
             //恢复上次关闭时保存的控件
             var list = await StorageManager.GetMessagesAsync();
             if (list != null)

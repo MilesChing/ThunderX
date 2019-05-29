@@ -20,10 +20,8 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TX
 {
-    public sealed partial class NewTaskPage : Page
+    public sealed partial class NewTaskPage : TXPage
     {
-        private App CurrentApplication = ((App)Application.Current);
-
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
         private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
 
@@ -38,10 +36,6 @@ namespace TX
 
         public NewTaskPage()
         {
-            RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
-            SetThemeChangedListener();
-            ResetTitleBar();
-
             InitializeComponent();
 
             SetVisualManagers();
@@ -52,37 +46,18 @@ namespace TX
                 RecommendedNameBlock,
                 ComboBox,
                 comboBoxItems);
-
-            Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
-            CurrentApplication.LicenseChanged += CurrentApplication_LicenseChanged;
-            CurrentApplication_LicenseChanged(CurrentApplication.AppLicense);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            RefreshUI();
-            Clipboard_ContentChanged(null, null);
+            Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
         }
 
-        private void CurrentApplication_LicenseChanged(StoreAppLicense license)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (license == null) return;
-            if (license.IsActive)
-            {
-                if (license.IsTrial)
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
-                    ThreadNumSlider.Value = 1;
-                    ThreadNumSlider.IsEnabled = false;
-                }
-                else
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
-                    ThreadNumSlider.Value = Settings.ThreadNumber;
-                    ThreadNumSlider.IsEnabled = true;
-                }
-            }
+            base.OnNavigatedFrom(e);
+            Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged -= Clipboard_ContentChanged;
         }
 
         private void RefreshUI()
@@ -95,17 +70,6 @@ namespace TX
             RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
             GC.Collect();
-        }
-
-        private void ResetTitleBar()
-        {
-            // 设置状态栏透明、扩展内容到状态栏
-            var TB = ApplicationView.GetForCurrentView().TitleBar;
-            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
-            byte fr = (byte)(0xff - co);
-            TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
-            TB.ButtonForegroundColor = Color.FromArgb(0xcc, fr, fr, fr);
         }
 
         private void SetVisualManagers()
@@ -175,18 +139,6 @@ namespace TX
             bool isChecked = (bool)((CheckBox)sender).IsChecked;
             RecommendedNameBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
             RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void SetThemeChangedListener()
-        {
-            ((App)App.Current).ThemeChanged += async (theme) =>
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    this.RequestedTheme = theme;
-                    ResetTitleBar();
-                });
-            };
         }
     }
 }

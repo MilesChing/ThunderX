@@ -38,27 +38,28 @@ namespace TX.StorageTools
             try
             {
                 string str = JsonHelper.SerializeObject(messages);
-                var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls", CreationCollisionOption.OpenIfExists);
+                var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
             }
             catch(Exception e)
             {
                 Debug.WriteLine(e.ToString());
             }
-            //Windows.Storage.ApplicationData.Current.LocalSettings.Values["SavedTasks"] = str;
         }
 
         public static async Task<List<Models.DownloaderMessage>> GetMessagesAsync()
         {
-            StorageFile file;
+            StorageFile file = null;
             try { file = await ApplicationData.Current.LocalCacheFolder.GetFileAsync("log.mls"); }
             catch (Exception) { return null; }
-            string str = await FileIO.ReadTextAsync(file);
-            await file.DeleteAsync();
-            //string str = (string)ApplicationData.Current.LocalSettings.Values["SavedTasks"];
-            if (str == null) return null;
-            //ApplicationData.Current.LocalSettings.Values["SavedTasks"] = null;
-            return JsonHelper.DeserializeJsonToList<Models.DownloaderMessage>(str);
+            try
+            {
+                string str = await FileIO.ReadTextAsync(file);
+                await file.DeleteAsync();
+                if (str == null) return null;
+                return JsonHelper.DeserializeJsonToList<Models.DownloaderMessage>(str);
+            }
+            catch (Exception) { return null; }
         }
 
         /// <summary>
@@ -73,10 +74,10 @@ namespace TX.StorageTools
                 var files = await folder.GetFilesAsync();
                 foreach (StorageFile file in files)
                 {
-                    if (file.Name == "log.mls") continue;
+                    if (file.Name.Equals("log.mls")) continue;
                     bool remove = true;
                     foreach (DownloadBar bar in MainPage.Current.DownloadBarCollection)
-                        if (bar.downloader.Message.TempFilePath == file.Path)
+                        if (bar.downloader.Message.TempFilePath.Equals(file.Path))
                         {
                             remove = false;
                             break;

@@ -136,27 +136,45 @@
                   Background="{StaticResource TXBackgroundAcrylicBrush}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="144"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
                 <AppBarButton Name="HamburgButton" 
                               Width="48"
                               Height="48"
+                              Background="#22777777"
                               Icon="GlobalNavigationButton"
                               LabelPosition="Collapsed"
                               Click="HamburgButton_Click"/>
                 <TextBox x:Name="URLBox"
-                         Grid.Column="1"
+                         Grid.Column="2"
                          VerticalAlignment="Center"
                          Margin="8,0,8,0"
                          Style="{StaticResource TextBoxStyle}"/>
-                <AppBarButton Name="RefreshButton" 
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal">
+                    <AppBarButton Name="RefreshButton" 
                               Width="48"
                               Height="48"
-                              Grid.Column="2"
                               Icon="Refresh"
                               LabelPosition="Collapsed"
                               Click="RefreshButton_Click"/>
+                    <AppBarButton Name="BackwardButton" 
+                              Width="48"
+                              Height="48"
+                              Icon="Back"
+                              LabelPosition="Collapsed"
+                              Click="BackwardButton_Click"/>
+                    <AppBarButton Name="ForwardButton" 
+                              Width="48"
+                              Height="48"
+                              Icon="Forward"
+                              LabelPosition="Collapsed"
+                              Click="ForwardButton_Click"/>
+                </StackPanel>
+                
+                
             </Grid>
         </controls:DropShadowPanel>
     </Grid>
