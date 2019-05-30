@@ -118,8 +118,9 @@ namespace TX
                         Toasts.ToastManager.ShowSimpleToast("Oops", "Maybe the folder doesn't exist.");
                     }
                 }
-                //退出程序
-                Current.Exit();
+                //如果点击通知打开应用前是未运行状态，就退出程序（否则应保持原界面）
+                if(args.PreviousExecutionState != ApplicationExecutionState.Running)
+                    Current.Exit();
             }
         }
 
