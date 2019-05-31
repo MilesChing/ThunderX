@@ -182,6 +182,9 @@
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalShadowPanel" Storyboard.TargetProperty="ShadowOpacity">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="0.2" />
                             </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SolidSystemOutStandingAccentColorBrush1}"/>
+                            </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
                     <VisualState x:Name="Disabled">
@@ -230,7 +233,13 @@
                             </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
-                    <VisualState x:Name="PointerOver"/>
+                    <VisualState x:Name="PointerOver">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SolidSystemOutStandingAccentColorBrush1}"/>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
                 </VisualStateGroup>
                 <VisualStateGroup x:Name="FocusEngagementStates">
                     <VisualState x:Name="FocusDisengaged"/>

@@ -6,39 +6,11 @@ This software runs on universal windows platform.
 
 ![Thunder X](https://s2.ax1x.com/2019/05/10/E2Orz4.png)
 
+[Instructions of Thunder X (Zh-CN)](https://www.zybuluo.com/MilesChing/note/1486607)
+
 ## Branches
 
 This project has two branches. `master` represents the latest stable release. `develop` is used to deploy the code to be published.
-
-## Update List
-
-### 1.8.4.0
-
-- Fix a bug: Background can't fill the window correctly.
-- Fix a bug: Some animations are disappeared.
-- Multithreading mode is disabled now in trial version.
-- UI adjustment.
-
-### 1.8.2.0
-
-- Adjust the UI of "New Task" page.
-- Fix a bug: Application window won't be closed automatically after activated by a click on the notification.
-- Experience on touch screen devices is enhanced.
-
-### 1.8.1.0
-
-- Download video from YouTube: Automatic link analysis.
-- Fix a bug: Download progress exceeds 100% sometimes.
-- Fix a bug: Data loss may happened when downloading a large file.
-
-### 1.8.0.0
-
-- Steadier core downloader
-- Reduced startup time
-- Automatic reconnection
-- Fix a bug: The time predictions of suspended tasks will change.
-- Fix a bug: A "file not exist" exception may be throwed after a task is removed.
-- Several UI improvements
 
 ## Privacy Policy
 
