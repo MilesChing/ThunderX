@@ -144,6 +144,9 @@
   <data name="AboutPage_Title.Text" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="CheckDownloadFolder" xml:space="preserve">
+    <value>Please check the legality of the path of your downloads folder.</value>
+  </data>
   <data name="Connecting" xml:space="preserve">
     <value>Connecting to a remote server</value>
   </data>
@@ -225,14 +228,17 @@
   <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>Drag the slider below to set the default number of threads. The effect of the number of threads on download speed depends on the device and network environment.</value>
   </data>
-  <data name="SetPage_SubmitButton.Content" xml:space="preserve">
-    <value>Select Folder</value>
+  <data name="SetPage_OpenFolderButton.Content" xml:space="preserve">
+    <value>Open Downloads Folder</value>
+  </data>
+  <data name="SetPage_SelectFolderButton.Content" xml:space="preserve">
+    <value>Select New</value>
   </data>
   <data name="SetPage_Subtitle_Appearance.Text" xml:space="preserve">
     <value>Appearance</value>
   </data>
   <data name="SetPage_Subtitle_DefaultFolder.Text" xml:space="preserve">
-    <value>Reset Download Folder</value>
+    <value>Reset Downloads Folder</value>
   </data>
   <data name="SetPage_Subtitle_MaxRetries.Text" xml:space="preserve">
     <value>Maximum Number of Retries</value>

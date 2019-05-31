@@ -49,13 +49,17 @@
                 </StackPanel>
             </StackPanel>
             <Border Style="{StaticResource TXBigBorder}"/>
+            <HyperlinkButton Foreground="{StaticResource SolidSystemAccentColorBrush}" 
+                             Content="打开Thunder X使用帮助"
+                             Click="HyperlinkButton_Click"/>
+            <Border Style="{StaticResource TXBigBorder}"/>
             <!--显示给试用版的界面-->
             <StackPanel x:Name="TrialPanel"
                         Visibility="Collapsed">
                 <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="AboutPage_GuideText_Trail"/>
                 <Border Style="{StaticResource TXBorder}"/>
-                <Button Style="{StaticResource TXButtonStyle}"
+                <Button Style="{StaticResource TXAccentButtonStyle}"
                         x:Name="PurchaseButton"
                         x:Uid="AboutPage_Button_Trail"
                         Click="PurchaseButton_Click"/>
@@ -89,7 +93,7 @@
                        x:Uid="AboutPage_GuideText_AboutDeveloper"/>
             <Border Style="{StaticResource TXBigBorder}"/>
             <Button x:Name="GithubButton"
-                    Style="{StaticResource TXButtonStyle}"
+                    Style="{StaticResource TXOrdinaryButtonStyle}"
                     x:Uid="AboutPage_Button_Github"
                     Click="GithubButton_Click"/>
             <Border Style="{StaticResource TXBigBorder}" />

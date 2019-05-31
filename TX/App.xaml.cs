@@ -4,12 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TX.StorageTools;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Services.Store;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -66,6 +69,7 @@ namespace TX
             this.EnteredBackground += OnEnteringBackground;
             this.LeavingBackground += OnLeavingBackground;
             this.Resuming += OnResuming;
+            FirstRunWork();
             storeContext.OfflineLicensesChanged += async (s, e) =>
             {
                 AppLicense = await s.GetAppLicenseAsync();
@@ -86,6 +90,7 @@ namespace TX
         /// <param name="args"></param>
         protected override async void OnActivated(IActivatedEventArgs args)
         {
+            base.OnActivated(args);
             //从Toast通知激活
             if(args.Kind == ActivationKind.ToastNotification)
             {
@@ -216,6 +221,28 @@ namespace TX
             await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
+        }
+
+        private async void FirstRunWork()
+        {
+            if (Settings.DownloadFolderPath == null)
+            {
+                //第一次运行
+                try
+                {
+                    var folder = await DownloadsFolder.CreateFolderAsync("DownloadsFolder", CreationCollisionOption.GenerateUniqueName);
+                    StorageApplicationPermissions.FutureAccessList.Clear();
+                    StorageApplicationPermissions.FutureAccessList.Add(folder);
+                    Settings.DownloadFolderPath = folder.Path;
+                }
+                catch (Exception)
+                {
+                    Settings.DownloadFolderPath = ApplicationData.Current.LocalCacheFolder.Path;
+                }
+
+                //打开帮助页面
+                await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
+            }
         }
     }
 }

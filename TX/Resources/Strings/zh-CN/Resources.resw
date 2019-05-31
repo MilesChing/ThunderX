@@ -144,6 +144,9 @@
   <data name="AboutPage_Title.Text" xml:space="preserve">
     <value>关于</value>
   </data>
+  <data name="CheckDownloadFolder" xml:space="preserve">
+    <value>请检查您下载文件夹路径的合法性</value>
+  </data>
   <data name="Connecting" xml:space="preserve">
     <value>正在连接远程服务器</value>
   </data>
@@ -225,8 +228,11 @@
   <data name="SetPage_GuideText_ThreadNum.Text" xml:space="preserve">
     <value>拖动下面的滑块以设置默认的线程数。线程数对下载速度的影响取决于设备和网络环境。</value>
   </data>
-  <data name="SetPage_SubmitButton.Content" xml:space="preserve">
-    <value>选择文件夹</value>
+  <data name="SetPage_OpenFolderButton.Content" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="SetPage_SelectFolderButton.Content" xml:space="preserve">
+    <value>更改现有</value>
   </data>
   <data name="SetPage_Subtitle_Appearance.Text" xml:space="preserve">
     <value>外观</value>

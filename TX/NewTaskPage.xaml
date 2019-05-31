@@ -142,7 +142,7 @@
             </StackPanel>
 
             <Button x:Name="SubmitButton"
-                    Style="{StaticResource TXButtonStyle}"
+                    Style="{StaticResource TXAccentButtonStyle}"
                     x:Uid="NewTaskPage_SubmitButton"
                     IsEnabled="False"
                     Click="SubmitButton_Click" />

@@ -7,6 +7,8 @@ using TX.StorageTools;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Services.Store;
+using Windows.Storage;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -60,16 +62,29 @@ namespace TX
             }
         }
 
-        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
+        private async void SelectFolderButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.FileTypeFilter.Add(".");
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            StorageTools.Settings.DownloadFolderPath = folder.Path;
+            Settings.DownloadFolderPath = folder.Path;
             NowFolderTextBlock.Text = folder.Path;
             Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Clear();
             Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
+        }
+
+        private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(Settings.DownloadFolderPath));
+            }
+            catch (Exception)
+            {
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("CheckDownloadFolder"));
+            }
         }
 
         //ValueChanged调用开始先检查UserModify
@@ -92,5 +107,6 @@ namespace TX
             if (!UserModify) return;
             Settings.MaximumRetries = (int)e.NewValue;
         }
+
     }
 }

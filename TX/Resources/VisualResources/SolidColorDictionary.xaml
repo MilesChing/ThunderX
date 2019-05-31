@@ -25,15 +25,50 @@
 
     <SolidColorBrush x:Key="SolidWarningTextColorBrush" Color="Red"/>
 
+    
+
+    <Color x:Key="B0">#000000</Color>
+    <Color x:Key="B1">#111111</Color>
+    <Color x:Key="B2">#222222</Color>
+    <Color x:Key="B3">#333333</Color>
+    <Color x:Key="B4">#444444</Color>
+    <Color x:Key="B5">#555555</Color>
+    <Color x:Key="B6">#666666</Color>
+    <Color x:Key="B7">#777777</Color>
+    <Color x:Key="B8">#888888</Color>
+    <Color x:Key="B9">#999999</Color>
+    <Color x:Key="BA">#AAAAAA</Color>
+    <Color x:Key="BB">#BBBBBB</Color>
+    <Color x:Key="BC">#CCCCCC</Color>
+    <Color x:Key="BD">#DDDDDD</Color>
+    <Color x:Key="BE">#EEEEEE</Color>
+    <Color x:Key="BF">#FFFFFF</Color>
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="TXDownloadBarBackground" Color="White"/>
             <Color x:Key="TXBackgroundAcrylicColor">#ffffff</Color>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush1" Color="{ThemeResource SystemAccentColorDark1}"/>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush2" Color="{ThemeResource SystemAccentColorDark2}"/>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush3" Color="{ThemeResource SystemAccentColorDark3}"/>
+            <SolidColorBrush x:Key="SolidBackground10ColorBrush" Color="{StaticResource BF}"/>
+            <SolidColorBrush x:Key="SolidBackground08ColorBrush" Color="{StaticResource BC}"/>
+            <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B9}"/>
+            <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B6}"/>
+            <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource B3}"/>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="TXDownloadBarBackground" Color="#000000"/>
             <Color x:Key="TXBackgroundAcrylicColor">#181818</Color>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush1" Color="{ThemeResource SystemAccentColorLight1}"/>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush2" Color="{ThemeResource SystemAccentColorLight2}"/>
+            <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush3" Color="{ThemeResource SystemAccentColorLight3}"/>
+            <SolidColorBrush x:Key="SolidBackground10ColorBrush" Color="{StaticResource B0}"/>
+            <SolidColorBrush x:Key="SolidBackground08ColorBrush" Color="{StaticResource B3}"/>
+            <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B6}"/>
+            <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B9}"/>
+            <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource BF}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

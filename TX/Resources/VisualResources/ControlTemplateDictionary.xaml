@@ -623,8 +623,8 @@
                     </VisualState>
                     <VisualState x:Name="PointerOver">
                         <Storyboard>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SolidSystemAccentColorDark1Brush}"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="BorderThickness">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="2"/>
                             </ObjectAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
@@ -662,18 +662,17 @@
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid x:Name="RootGrid" 
+            <Grid>
+                <Grid x:Name="RootGrid" 
+                  BorderBrush="{TemplateBinding Background}"
+                  BorderThickness="2"
                   Background="{TemplateBinding Background}" 
-                  CornerRadius="2"
-                  BorderBrush="{ThemeResource SolidSystemAccentColorBrush}"
-                  BorderThickness="1">
+                  CornerRadius="2">
                 <Grid.RenderTransform>
                     <CompositeTransform/>
                 </Grid.RenderTransform>
                 <ContentPresenter x:Name="ContentPresenter"
-                              AutomationProperties.AccessibilityView="Raw" 
-                              BorderThickness="{TemplateBinding BorderThickness}" 
-                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              AutomationProperties.AccessibilityView="Raw"
                               ContentTemplate="{TemplateBinding ContentTemplate}"
                               Content="{TemplateBinding Content}" 
                               ContentTransitions="{TemplateBinding ContentTransitions}" 
@@ -686,6 +685,9 @@
                     </ContentPresenter.RenderTransform>
                 </ContentPresenter>
             </Grid>
+                <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="2"/>
+            </Grid>
+            
         </control:DropShadowPanel>
     </ControlTemplate>
 
@@ -747,7 +749,8 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Grid x:Name="RootGrid"
-                  Background="{TemplateBinding Background}" CornerRadius="2"
+                  Background="{TemplateBinding Background}" 
+                  CornerRadius="2"
                   BorderThickness="1">
                 <Grid.Resources>
                     <Style x:Name="DeleteButtonStyle" TargetType="Button">

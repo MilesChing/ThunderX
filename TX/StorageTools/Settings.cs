@@ -21,6 +21,11 @@ namespace TX.StorageTools
         }
 
         /// <summary>
+        /// 帮助页面链接
+        /// </summary>
+        public const string HelpLink = "https://www.zybuluo.com/MilesChing/note/1486607";
+
+        /// <summary>
         /// 下载文件夹路径
         /// </summary>
         public static string DownloadFolderPath
@@ -29,7 +34,7 @@ namespace TX.StorageTools
             {
                 if (ApplicationData.Current.LocalSettings.Values.ContainsKey("DownloadFolderPath"))
                     return (string)ApplicationData.Current.LocalSettings.Values["DownloadFolderPath"];
-                else return ApplicationData.Current.LocalFolder.Path;
+                else return null;
             }
             set
             {
