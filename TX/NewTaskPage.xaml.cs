@@ -22,6 +22,8 @@ namespace TX
 {
     public sealed partial class NewTaskPage : TXPage
     {
+        public static NewTaskPage Current;
+
         private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
         private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
 
@@ -36,6 +38,8 @@ namespace TX
 
         public NewTaskPage()
         {
+            Current = this;
+
             InitializeComponent();
 
             SetVisualManagers();
@@ -60,7 +64,7 @@ namespace TX
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged -= Clipboard_ContentChanged;
         }
 
-        private void RefreshUI()
+        public void RefreshUI()
         {
             //将UI恢复到初始值（窗口的循环利用机制）
             URLBox.Text = string.Empty;
@@ -139,6 +143,12 @@ namespace TX
             bool isChecked = (bool)((CheckBox)sender).IsChecked;
             RecommendedNameBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
             RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public async void ForciblySetURL(string URL)
+        {
+            await URLBox.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                    () => { URLBox.Text = URL; });
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace TX.Converters
 {
@@ -49,6 +51,19 @@ namespace TX.Converters
             else if (min > 0) time = min + "m" + sec + "s";
             else time = sec + "s";
             return time;
+        }
+
+        /// <summary>
+        /// 从HTML页面代码解析超链接
+        /// </summary>
+        /// <param name="html">输入页面</param>
+        public static string[] PickURLFromHTML(string html)
+        {
+            LinkedList<string> list = new LinkedList<string>();
+            string pattern = "https{0,1}://[^\\n\\r\\s<>\"]{1,}";
+            foreach (Match match in Regex.Matches(html, pattern))
+                list.AddLast(match.Value);
+            return list.ToArray();
         }
     }
 }

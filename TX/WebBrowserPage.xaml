@@ -50,17 +50,14 @@
                     <Grid Style="{StaticResource RoundColoredGridStyle}">
                         <TextBlock Text="{x:Bind RecommendedFileName}"
                                    Foreground="{StaticResource SolidSystemAltHighColorBrush}"
-                                   FontWeight="Bold"
-                                   TextTrimming="CharacterEllipsis"/>
+                                   FontWeight="Bold"/>
                     </Grid>
                 </StackPanel> 
                 <AppBarButton LabelPosition="Collapsed"
-                              Icon="Copy"
-                              Grid.Row="1"
+                              Icon="Add" Grid.Row="1"
                               HorizontalAlignment="Right"
-                              Height="48"
-                              Width="48"
-                              Click="AppBarButton_Click"/>
+                              Height="48" Width="48"
+                              Click="AddNewButton_Click"/>
             </Grid>
         </DataTemplate>
 
@@ -74,6 +71,14 @@
             <Setter Property="MinHeight" Value="0"/>
             <Setter Property="MinWidth" Value="0"/>
         </Style>
+
+        <Storyboard x:Name="HideProgressBarStoryboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainProgressBar"
+                                           Storyboard.TargetProperty="(UIElement.Opacity)">
+                <LinearDoubleKeyFrame KeyTime="00:0:00.5" Value="1"/>
+                <LinearDoubleKeyFrame KeyTime="00:00:00.6" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
 
     </Page.Resources>
 
@@ -102,8 +107,11 @@
                             <TextBlock Style="{StaticResource TXPlainText}" x:Uid="WebBrowserPage_GuideText_WebResources"/>
                             <Border Style="{StaticResource TXBigBorder}"/>
                         </StackPanel>
+                        <ProgressBar x:Name="SideBarProgress" Maximum="1" RelativePanel.Below="PaneStack"
+                                     Background="Transparent"
+                                     RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"/>
                         <ListView ItemsSource="{x:Bind URLMessageCollection}"
-                                  RelativePanel.Below="PaneStack"
+                                  RelativePanel.Below="SideBarProgress"
                                   RelativePanel.AlignBottomWithPanel="True"
                                   RelativePanel.AlignLeftWithPanel="True"
                                   RelativePanel.AlignRightWithPanel="True"
@@ -121,7 +129,7 @@
                 <ProgressBar x:Name="MainProgressBar" 
                              VerticalAlignment="Top"
                              Background="Transparent"
-                             Value="0"/>
+                             Maximum="1"/>
             </Grid>
 
         </SplitView>

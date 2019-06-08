@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading.Tasks;
 using TX.Models;
 using TX.NetWork.NetWorkAnalysers;
@@ -32,7 +34,7 @@ namespace TX
     /// </summary>
     public sealed partial class WebBrowserPage : TXPage
     {
-        private const int MAX_URL_MESSAGE_NUMBER = 20;
+        private const int MAX_URL_MESSAGE_NUMBER = 100;
 
         private string CurrentURL = string.Empty;
 
@@ -43,26 +45,6 @@ namespace TX
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.InitializeComponent();
             SetWebView();
-        }
-
-        private void MainWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            if (args == null || args.Uri == null) return;
-            CurrentURL = args.Uri.ToString();
-            URLBox.Text = CurrentURL;
-            AddURL(CurrentURL);
-        }
-
-        private void HamburgButton_Click(object sender, RoutedEventArgs e)
-        {
-            MainSplitView.IsPaneOpen ^= true;
-        }
-
-        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            await WebView.ClearTemporaryWebDataAsync();
-            CurrentURL = URLBox.Text;
-            SafeNavigate(URLBox.Text);
         }
 
         private void SafeNavigate(string Url)
@@ -85,53 +67,74 @@ namespace TX
             }
         }
 
+        //得到了一个新URL，分析其文件名，文件大小
         private async void AddURL(string URL)
         {
-            foreach (URLMessage mes in URLMessageCollection)
-                if (mes.URL.Equals(URL))
-                    return;
             AbstractAnalyser analyser = Converters.UrlConverter.GetAnalyser(URL);
             await analyser.SetURLAsync(URL);
             if (analyser.IsLegal())
             {
                 URLMessage message = new URLMessage();
                 message.URL = analyser.URL;
+                message.StreamSize = analyser.GetStreamSize();
                 message.RecommendedFileName = analyser.GetRecommendedName();
                 if (message.RecommendedFileName == null) message.RecommendedFileName = string.Empty;
                 message.StreamSizeToString = Converters.StringConverter.GetPrintSize(analyser.GetStreamSize());
-                URLMessageCollection.Insert(0, message);
-                if (URLMessageCollection.Count == MAX_URL_MESSAGE_NUMBER)
-                    URLMessageCollection.RemoveAt(MAX_URL_MESSAGE_NUMBER - 1);
+                AddListViewItem(message);
+                LimitListLength();
             }
             analyser.Dispose();
         }
 
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        //定义了向Collection中加入URL的排序规则（插入排序）
+        private void AddListViewItem(URLMessage message)
         {
-            await WebView.ClearTemporaryWebDataAsync();
-            base.OnNavigatedFrom(e);
+            if (message.IsHTML()) return;
+
+            if (URLMessageCollection.Count == 0)
+            {
+                URLMessageCollection.Add(message);
+                return;
+            }
+
+            for(int i = 0; i<URLMessageCollection.Count; ++i)
+            {
+                var cur = URLMessageCollection[i];
+                if (cur.URL.Equals(message.URL))
+                    return;
+                if(message.StreamSize > cur.StreamSize)
+                {
+                    URLMessageCollection.Insert(i, message);
+                    return;
+                }
+            }
+
+            URLMessageCollection.Append(message);
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        //约束链接列表最大数量
+        private void LimitListLength()
         {
-            AppBarButton button = (AppBarButton)sender;
-            Grid parent = (Grid)button.Parent;
-            TextBlock urlTextBlock = (TextBlock)parent.Children[0];
-            DataPackage dp = new DataPackage();
-            dp.SetText(urlTextBlock.Text);
-            Clipboard.SetContent(dp);
+            if (URLMessageCollection.Count > MAX_URL_MESSAGE_NUMBER)
+                URLMessageCollection.RemoveAt(MAX_URL_MESSAGE_NUMBER);
         }
 
-        private void BackwardButton_Click(object sender, RoutedEventArgs e)
+        //分析当前页
+        private async void AnalyseWebPage()
         {
-            if (MainWebView.CanGoBack) MainWebView.GoBack();
+            SideBarProgress.IsIndeterminate = true;
+            try
+            {
+                var html = await MainWebView.InvokeScriptAsync("eval", new string[] { "document.documentElement.outerHTML;" });
+                var urls = Converters.StringConverter.PickURLFromHTML(html);
+                foreach (string p in urls)
+                    AddURL(p);
+            }
+            catch (Exception) { }
+            SideBarProgress.IsIndeterminate = false;
         }
 
-        private void ForwardButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (MainWebView.CanGoForward) MainWebView.GoForward();
-        }
-
+        //进行MainWebView的初始化设置
         private void SetWebView()
         {
             //填充空白页
@@ -141,8 +144,9 @@ namespace TX
                                     .Replace("Text", Strings.AppResources.GetString("WebBrowserPage_GuideText"));
                 MainWebView.NavigateToString(html);
             });
-
+            MainWebView.NavigationFailed += MainWebView_NavigationFailed;
             MainWebView.NavigationCompleted += MainWebView_NavigationCompleted;
+
             //将打开新标签页转换为在当前页面打开
             MainWebView.NewWindowRequested += (sender, args) =>
             {
@@ -157,15 +161,40 @@ namespace TX
                 if (args.Key != Windows.System.VirtualKey.Enter) return;
                 SafeNavigate(URLBox.Text);
             };
-
-            MainWebView.NavigationFailed += MainWebView_NavigationFailed;
-            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.IsIndeterminate = true; };
-            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.IsIndeterminate = false; };
+            
+            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.Value = 0.2; MainProgressBar.Opacity = 1;  };
+            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.Value = 1; HideProgressBarStoryboard.Begin();};
             MainWebView.NavigationStarting += (sender, e) =>
             {
                 BackwardButton.IsEnabled = MainWebView.CanGoBack;
                 ForwardButton.IsEnabled = MainWebView.CanGoForward;
             };
+        }
+
+        private static string _HTMLTemplateContent = null;
+
+        private async Task _loadHTMLTemplateAsync()
+        {
+            Uri uri = new Uri("ms-appx:///Resources/HTMLs/EmptyHtML.html");
+            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+            _HTMLTemplateContent = await FileIO.ReadTextAsync(file);
+        }
+
+        //获得一段HTML模板，包含标题和正文，并调用function函数
+        private async void GetHtmlTemplateAndRun(Action<string> function)
+        {
+            if (_HTMLTemplateContent == null) await _loadHTMLTemplateAsync();
+            function(_HTMLTemplateContent);
+        }
+
+        private void MainWebView_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            if (args == null || args.Uri == null || !args.IsSuccess) return;
+            URLMessageCollection.Clear();
+            CurrentURL = args.Uri.ToString();
+            URLBox.Text = CurrentURL;
+            AddURL(CurrentURL);
+            AnalyseWebPage();
         }
 
         private void MainWebView_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
@@ -180,19 +209,43 @@ namespace TX
             MainProgressBar.IsIndeterminate = false;
         }
 
-        private static string HTMLTemplateContent = null;
-
-        private async Task loadHTMLTemplateAsync()
+        private void HamburgButton_Click(object sender, RoutedEventArgs e)
         {
-            Uri uri = new Uri("ms-appx:///Resources/HTMLs/EmptyHtML.html");
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-            HTMLTemplateContent = await FileIO.ReadTextAsync(file);
+            MainSplitView.IsPaneOpen ^= true;
         }
 
-        private async void GetHtmlTemplateAndRun(Action<string> function)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            if (HTMLTemplateContent == null) await loadHTMLTemplateAsync();
-            function(HTMLTemplateContent);
+            await WebView.ClearTemporaryWebDataAsync();
+            CurrentURL = URLBox.Text;
+            SafeNavigate(URLBox.Text);
+        }
+
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            await WebView.ClearTemporaryWebDataAsync();
+            base.OnNavigatedFrom(e);
+        }
+
+        private void AddNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            AppBarButton button = (AppBarButton)sender;
+            Grid parent = (Grid)button.Parent;
+            TextBlock urlTextBlock = (TextBlock)parent.Children[0];
+            DataPackage dp = new DataPackage();
+            dp.SetText(urlTextBlock.Text);
+            Clipboard.SetContent(dp);
+            MainPage.Current.OpenNewTask(urlTextBlock.Text);
+        }
+
+        private void BackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWebView.CanGoBack) MainWebView.GoBack();
+        }
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainWebView.CanGoForward) MainWebView.GoForward();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

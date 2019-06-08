@@ -13,5 +13,12 @@ namespace TX.Models
         public string StreamSizeToString = null;
 
         public string RecommendedFileName = null;
+
+        public long StreamSize;
+
+        public bool IsHTML()
+        {
+            return RecommendedFileName.EndsWith(".html") || RecommendedFileName.EndsWith(".htm");
+        }
     }
 }

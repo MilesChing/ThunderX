@@ -176,6 +176,7 @@ namespace TX
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             await newTaskPageControl.OpenNewWindowAsync();
+            NewTaskPage.Current.RefreshUI();
         }
 
         private async void SetButton_Click(object sender, RoutedEventArgs e)
@@ -191,6 +192,12 @@ namespace TX
         private async void BrowserButton_Click(object sender, RoutedEventArgs e)
         {
             await browserPageControl.OpenNewWindowAsync();
+        }
+
+        public async void OpenNewTask(string URL)
+        {
+            await newTaskPageControl.OpenNewWindowAsync();
+            NewTaskPage.Current.ForciblySetURL(URL);
         }
     }
 }
