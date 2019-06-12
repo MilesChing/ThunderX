@@ -176,7 +176,8 @@ namespace TX
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             await newTaskPageControl.OpenNewWindowAsync();
-            NewTaskPage.Current.RefreshUI();
+            await NewTaskPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                ()=>NewTaskPage.Current.RefreshUI());
         }
 
         private async void SetButton_Click(object sender, RoutedEventArgs e)

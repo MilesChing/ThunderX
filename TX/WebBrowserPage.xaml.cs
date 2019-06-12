@@ -153,8 +153,7 @@ namespace TX
                 SafeNavigate(args.Uri.ToString());
                 args.Handled = true;
             };
-            //填入正确的URL
-            URLBox.LostFocus += (sender, args) => { URLBox.Text = CurrentURL; };
+
             //注册回车键事件
             URLBox.KeyDown += (sender, args) =>
             {

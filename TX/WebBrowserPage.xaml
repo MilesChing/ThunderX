@@ -54,7 +54,7 @@
                     </Grid>
                 </StackPanel> 
                 <AppBarButton LabelPosition="Collapsed"
-                              Icon="Add" Grid.Row="1"
+                              Icon="Download" Grid.Row="1"
                               HorizontalAlignment="Right"
                               Height="48" Width="48"
                               Click="AddNewButton_Click"/>
@@ -93,24 +93,24 @@
                    Grid.Row="1"
                    PaneBackground="Transparent">
             <SplitView.Pane>
-                <controls:DropShadowPanel ShadowOpacity="0.4" 
-                                          BlurRadius="8">
-                    <RelativePanel Background="{StaticResource TXBackgroundAcrylicBrush}">
-                        <StackPanel x:Name="PaneStack"
+                <RelativePanel Background="{StaticResource TXBackgroundAcrylicBrush}"
+                               BorderBrush="{StaticResource SolidSystemBaseLowColorBrush}"
+                               BorderThickness="0,0,1,0">
+                    <StackPanel x:Name="PaneStack"
                                     Padding="20,0,20,0"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.AlignTopWithPanel="True">
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                            <TextBlock Style="{StaticResource TXSubTitle}" x:Uid="WebBrowserPage_SubTitle_WebResources"/>
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                            <TextBlock Style="{StaticResource TXPlainText}" x:Uid="WebBrowserPage_GuideText_WebResources"/>
-                            <Border Style="{StaticResource TXBigBorder}"/>
-                        </StackPanel>
-                        <ProgressBar x:Name="SideBarProgress" Maximum="1" RelativePanel.Below="PaneStack"
+                        <Border Style="{StaticResource TXBigBorder}"/>
+                        <TextBlock Style="{StaticResource TXSubTitle}" x:Uid="WebBrowserPage_SubTitle_WebResources"/>
+                        <Border Style="{StaticResource TXBigBorder}"/>
+                        <TextBlock Style="{StaticResource TXPlainText}" x:Uid="WebBrowserPage_GuideText_WebResources"/>
+                        <Border Style="{StaticResource TXBigBorder}"/>
+                    </StackPanel>
+                    <ProgressBar x:Name="SideBarProgress" Maximum="1" RelativePanel.Below="PaneStack"
                                      Background="Transparent"
                                      RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"/>
-                        <ListView ItemsSource="{x:Bind URLMessageCollection}"
+                    <ListView ItemsSource="{x:Bind URLMessageCollection}"
                                   RelativePanel.Below="SideBarProgress"
                                   RelativePanel.AlignBottomWithPanel="True"
                                   RelativePanel.AlignLeftWithPanel="True"
@@ -120,8 +120,7 @@
                                   ItemContainerStyle="{StaticResource TXListViewItemContainerStyle}"
                                   ItemTemplate="{StaticResource URLMessageDataTemplate}"
                                   ScrollViewer.VerticalScrollMode="Enabled"/>
-                    </RelativePanel>
-                </controls:DropShadowPanel>
+                </RelativePanel>
             </SplitView.Pane>
 
             <Grid>
@@ -134,57 +133,52 @@
 
         </SplitView>
 
-        <controls:DropShadowPanel HorizontalAlignment="Stretch"
-                                  HorizontalContentAlignment="Stretch"
-                                  BlurRadius="4"
-                                  ShadowOpacity="0.4"
-                                  OffsetY="1"
-                                  OffsetZ="20">
-            <Grid VerticalAlignment="Top"
-                  HorizontalAlignment="Stretch"
-                  Background="{StaticResource TXBackgroundAcrylicBrush}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48"/>
-                    <ColumnDefinition Width="144"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <AppBarButton Name="HamburgButton" 
-                              Width="48"
-                              Height="48"
-                              Background="#22777777"
-                              Icon="GlobalNavigationButton"
-                              LabelPosition="Collapsed"
-                              Click="HamburgButton_Click"/>
-                <TextBox x:Name="URLBox"
-                         Grid.Column="2"
-                         VerticalAlignment="Center"
-                         Margin="8,0,8,0"
-                         HorizontalAlignment="Stretch"
-                         Style="{StaticResource TextBoxStyle}"/>
+        <Grid VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              Background="{StaticResource TXBackgroundAcrylicBrush}"
+              BorderBrush="{StaticResource SolidSystemBaseLowColorBrush}"
+              BorderThickness="0,0,0,1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="144"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <AppBarButton Name="HamburgButton" 
+                          Width="48"
+                          Height="48"
+                          Background="#22777777"
+                          Icon="GlobalNavigationButton"
+                          LabelPosition="Collapsed"
+                          Click="HamburgButton_Click"/>
+            <TextBox x:Name="URLBox"
+                     Grid.Column="2"
+                     VerticalAlignment="Center"
+                     Margin="8,0,8,0"
+                     HorizontalAlignment="Stretch"
+                     Style="{StaticResource TextBoxStyle}"/>
 
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal">
-                    <AppBarButton Name="RefreshButton" 
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+                <AppBarButton Name="RefreshButton" 
                               Width="48"
                               Height="48"
                               Icon="Refresh"
                               LabelPosition="Collapsed"
                               Click="RefreshButton_Click"/>
-                    <AppBarButton Name="BackwardButton" 
+                <AppBarButton Name="BackwardButton" 
                               Width="48"
                               Height="48"
                               Icon="Back"
                               LabelPosition="Collapsed"
                               Click="BackwardButton_Click"/>
-                    <AppBarButton Name="ForwardButton" 
+                <AppBarButton Name="ForwardButton" 
                               Width="48"
                               Height="48"
                               Icon="Forward"
                               LabelPosition="Collapsed"
                               Click="ForwardButton_Click"/>
-                </StackPanel>
-            </Grid>
-        </controls:DropShadowPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </local:TXPage>

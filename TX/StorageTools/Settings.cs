@@ -23,7 +23,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 帮助页面链接
         /// </summary>
-        public const string HelpLink = "https://www.zybuluo.com/MilesChing/note/1486607";
+        public const string HelpLink = "https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html";
 
         /// <summary>
         /// 下载文件夹路径

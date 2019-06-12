@@ -159,6 +159,9 @@
   <data name="Downloading" xml:space="preserve">
     <value>Downloading</value>
   </data>
+  <data name="HelpLink" xml:space="preserve">
+    <value>https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html</value>
+  </data>
   <data name="MainPage_AboutButton.Label" xml:space="preserve">
     <value>About</value>
   </data>

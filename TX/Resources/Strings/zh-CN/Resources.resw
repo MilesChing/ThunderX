@@ -159,6 +159,9 @@
   <data name="Downloading" xml:space="preserve">
     <value>正在下载</value>
   </data>
+  <data name="HelpLink" xml:space="preserve">
+    <value>https://milesching.github.io/thunder-https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html</value>
+  </data>
   <data name="MainPage_AboutButton.Label" xml:space="preserve">
     <value>关于</value>
   </data>
@@ -280,7 +283,7 @@
     <value>您可以借助内置浏览器获得那些通过网页脚本生成的或隐藏于页面的HTTP链接。访问网页后点击菜单按钮打开侧栏以检索目前可用的链接。</value>
   </data>
   <data name="WebBrowserPage_GuideText_WebResources.Text" xml:space="preserve">
-    <value>资源列表中记录了我们根据当前页面分析出的文件链接及其资源大小，点按以复制所需链接进行下载。</value>
+    <value>资源列表中记录了我们根据当前页面分析出的文件链接及其资源大小，点按 + 以跳转到新建任务页面。</value>
   </data>
   <data name="WebBrowserPage_SubTitle_WebResources.Text" xml:space="preserve">
     <value>资源列表</value>
