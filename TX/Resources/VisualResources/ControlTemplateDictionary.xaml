@@ -701,7 +701,7 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="TXTextBoxTemplate" TargetType="TextBox">
-        <control:DropShadowPanel BlurRadius="4" ShadowOpacity="0.4"
+        <control:DropShadowPanel BlurRadius="8" ShadowOpacity="0.2"
                                  HorizontalContentAlignment="Stretch"
                                  VerticalAlignment="Stretch"
                                  Color="{ThemeResource SystemBaseMediumHighColor}">
