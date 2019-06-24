@@ -6,7 +6,7 @@ This software runs on universal windows platform.
 
 ![Thunder X](https://s2.ax1x.com/2019/05/10/E2Orz4.png)
 
-[Instructions of Thunder X (Zh-CN)](https://www.zybuluo.com/MilesChing/note/1486607)
+[Instructions of Thunder X (Zh-CN)](https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html)
 
 ## Branches
 
