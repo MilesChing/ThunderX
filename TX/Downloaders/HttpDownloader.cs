@@ -197,12 +197,11 @@ namespace TX.Downloaders
                 long remain = _targetSize;
 
                 //下载数据缓存数组
-                byte[] responseBytes = new byte[100000];
+                byte[] responseBytes = new byte[10*1024];
+                int pieceLength = 0;
                 //剩余字节为0时停止下载
-
                 while (remain > 0 && State == DownloadState.Downloading && _operationCode == CurrentOperationCode)
                 {
-                    int pieceLength = 0;
                     try
                     {
                         //下载数据
