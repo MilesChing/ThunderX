@@ -125,12 +125,15 @@ namespace TX.Downloaders
             if (sender != client) return;
             try
             {
-                string path = StorageTools.Settings.DownloadFolderPath;
                 StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
-                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
+                StorageFolder folder = await StorageTools.StorageManager.TryGetDownloadFolderAsync();
+
+                if (folder == null) folder = ApplicationData.Current.LocalCacheFolder;
+
+                await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
                 //播放一个通知
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + ": " +
-                    Converters.StringConverter.GetPrintSize(_prog_.CurrentValue), file.Path);
+                    Converters.StringConverter.GetPrintSize(_prog_.CurrentValue), file.Path, folder.Path);
                 //触发事件
                 DownloadComplete?.Invoke(Message);
             }

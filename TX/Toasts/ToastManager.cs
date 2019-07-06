@@ -33,7 +33,7 @@ namespace TX.Toasts
         /// 第一个按钮用于打开文件，第二个用于打开文件夹
         /// </summary>
         /// <param name="filePath">要打开的文件目录</param>
-        public static async void ShowDownloadCompleteToastAsync(string title, string text, string filePath)
+        public static async void ShowDownloadCompleteToastAsync(string title, string text, string filePath, string folderPath)
         {
             Uri uri = new Uri("ms-appx:///Resources/XMLs/toast_complete.xml");
 
@@ -45,8 +45,9 @@ namespace TX.Toasts
             textElements[1].AppendChild(Xml.CreateTextNode(text));
 
             var actionElements = Xml.GetElementsByTagName("action");
-            actionElements[0].Attributes.GetNamedItem("arguments").InnerText = filePath;
-            
+            actionElements[0].Attributes.GetNamedItem("arguments").InnerText = "file$"+filePath;
+            actionElements[1].Attributes.GetNamedItem("arguments").InnerText = "folder$"+folderPath;
+
             var toast = new ToastNotification(Xml);
             ToastNotificationManager.CreateToastNotifier().Show(toast);
         }

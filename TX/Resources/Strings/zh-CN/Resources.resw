@@ -156,6 +156,12 @@
   <data name="DownloaderDone" xml:space="preserve">
     <value>已准备好开始</value>
   </data>
+  <data name="DownloadFolderPathIllegal" xml:space="preserve">
+    <value>下载文件夹不存在</value>
+  </data>
+  <data name="DownloadFolderPathIllegalMessage" xml:space="preserve">
+    <value>请检查该文件夹是否被重命名、移动或删除。在此期间我们将把你的下载任务保存在别处。</value>
+  </data>
   <data name="Downloading" xml:space="preserve">
     <value>正在下载</value>
   </data>

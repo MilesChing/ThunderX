@@ -254,18 +254,23 @@ namespace TX.Downloaders
             {
                 GC.Collect();
 
-                string path = StorageTools.Settings.DownloadFolderPath;
                 StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
-                await file.MoveAsync(await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath), Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
+                StorageFolder folder = await StorageTools.StorageManager.TryGetDownloadFolderAsync();
+
+                if(folder == null) folder = ApplicationData.Current.LocalCacheFolder;
+
+                await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
+                
                 //播放一个通知
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
-                    Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path);
+                    Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path, folder.Path);
+
                 //触发事件
                 DownloadComplete?.Invoke(Message);
             }
             catch (Exception e)
             {
-                //若用户把下载文件夹设置在奇怪的地方，这里会导致无法访问，触发异常
+                //其他异常
                 Debug.WriteLine(e.ToString());
                 HandleError(e, CurrentOperationCode);
             }

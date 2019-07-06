@@ -96,32 +96,20 @@ namespace TX
             {
                 //从事件参数中获取预定义的数据和用户输入
                 string message = (args as ToastNotificationActivatedEventArgs).Argument;
-                if(message != "directory")
+
+                string[] arguments = message.Split('$');
+
+                if(arguments.Length == 2 && arguments[0] == "file")
                 {
-                    Debug.WriteLine("Launch file from toast: " + message);
-                    try
-                    {
-                        StorageFile target = await StorageFile.GetFileFromPathAsync(message);
-                        await Windows.System.Launcher.LaunchFileAsync(target);
-                    }
-                    catch (Exception e){
-                        Debug.WriteLine(e.ToString());
-                        Toasts.ToastManager.ShowSimpleToast("Oops", "Maybe the file doesn't exist.");
-                    }
+                    Debug.WriteLine("Launch file from toast: " + arguments[1]);
+                    StorageFile target = await StorageFile.GetFileFromPathAsync(arguments[1]);
+                    await Windows.System.Launcher.LaunchFileAsync(target);
                 }
-                else
+                else if (arguments.Length == 2 && arguments[0] == "folder")
                 {
-                    Debug.WriteLine("Launch directory from toast.");
-                    try
-                    {
-                        StorageFolder target = await StorageFolder.GetFolderFromPathAsync(StorageTools.Settings.DownloadFolderPath);
-                        await Windows.System.Launcher.LaunchFolderAsync(target);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.ToString());
-                        Toasts.ToastManager.ShowSimpleToast("Oops", "Maybe the folder doesn't exist.");
-                    }
+                    Debug.WriteLine("Launch directory from toast: " + arguments[1]);
+                    StorageFolder target = await StorageFolder.GetFolderFromPathAsync(arguments[1]);
+                    await Windows.System.Launcher.LaunchFolderAsync(target);
                 }
                 //如果点击通知打开应用前是未运行状态，就退出程序（否则应保持原界面）
                 if(args.PreviousExecutionState != ApplicationExecutionState.Running)

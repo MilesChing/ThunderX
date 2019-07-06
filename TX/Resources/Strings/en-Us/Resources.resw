@@ -156,6 +156,12 @@
   <data name="DownloaderDone" xml:space="preserve">
     <value>Downloader done</value>
   </data>
+  <data name="DownloadFolderPathIllegal" xml:space="preserve">
+    <value>Download folder is illegal</value>
+  </data>
+  <data name="DownloadFolderPathIllegalMessage" xml:space="preserve">
+    <value>Check wheather the folder has been renamed or removed. We will save your files at another place until everything's correct.</value>
+  </data>
   <data name="Downloading" xml:space="preserve">
     <value>Downloading</value>
   </data>

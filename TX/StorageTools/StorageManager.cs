@@ -11,6 +11,22 @@ namespace TX.StorageTools
 {
     class StorageManager
     {
+        /// <returns>获取不到返回null</returns>
+        public static async Task<StorageFolder> TryGetDownloadFolderAsync()
+        {
+            try
+            {
+                return await StorageFolder.GetFolderFromPathAsync(Settings.DownloadFolderPath);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("获取DownloadFolder错误：" + e.Message);
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("DownloadFolderPathIllegal"),
+                    Strings.AppResources.GetString("DownloadFolderPathIllegalMessage"));
+                return null;
+            }
+        }
+
         public static string GetTemporaryName()
         {
             Random rd = new Random();
