@@ -46,6 +46,8 @@ namespace TX
                     db.SetDownloader(dw);
                     dw.SetDownloaderFromBreakpoint(ms);
                 }
+
+            await StorageManager.TryGetDownloadFolderAsync();
         }
 
         /// <summary>

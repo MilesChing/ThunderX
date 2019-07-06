@@ -42,7 +42,9 @@ namespace TX.Controls
 
         private async void DownloaderDownloadProgressChanged(Models.Progress progress)
         {
+            //在后台运行（挂起或最小化）不更新UI
             if (((App)App.Current).InBackground) return;
+
             int per = (int)((progress.TargetValue == null) ? 0
                 : (100f * progress.CurrentValue / progress.TargetValue));
             //更新所有进度显示
@@ -65,8 +67,6 @@ namespace TX.Controls
 
         private async void DownloaderStateChanged(Enums.DownloadState state)
         {
-            //在后台运行（挂起或最小化）不更新UI
-            if (((App)App.Current).InBackground) return;
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 if (state == Enums.DownloadState.Pause)
