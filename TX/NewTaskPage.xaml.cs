@@ -136,6 +136,7 @@ namespace TX
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
             await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
+            
         }
 
         private void NeedRenameButton_ValueChanged(object sender, RoutedEventArgs e)

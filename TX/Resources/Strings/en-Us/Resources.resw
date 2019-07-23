@@ -306,4 +306,7 @@
   <data name="YouTubeLinkDetectedButWaiting" xml:space="preserve">
     <value>YouTube link detected</value>
   </data>
+  <data name="FileNotExist" xml:space="preserve">
+    <value>Your file is not exist. Check whether it has been moved or deleted.</value>
+  </data>
 </root>

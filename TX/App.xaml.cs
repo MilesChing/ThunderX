@@ -200,11 +200,8 @@ namespace TX
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
             foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
             {
-                if(bar.downloader.State != Enums.DownloadState.Done)
-                {
-                    bar.downloader.Pause();
-                    list.Add(bar.downloader.Message);
-                }
+                bar.downloader.Pause();
+                list.Add(bar.downloader.Message);
             }
             await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();

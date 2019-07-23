@@ -66,6 +66,7 @@ namespace TX.Downloaders
             if (State != DownloadState.Uninitialized) return;
             this.Message = Message;
             State = DownloadState.Prepared;
+            if (Message.IsDone) State = DownloadState.Done;
         }
 
         public override void SetDownloader(DownloaderSettings settings)
@@ -131,10 +132,18 @@ namespace TX.Downloaders
                 if (folder == null) folder = ApplicationData.Current.LocalCacheFolder;
 
                 await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
+
+                Message.DownloadSize = (long)(await file.GetBasicPropertiesAsync()).Size;
+
+                Message.FolderPath = folder.Path;
+
+                Message.IsDone = true;
+                
                 //播放一个通知
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + ": " +
                     Converters.StringConverter.GetPrintSize(_prog_.CurrentValue), file.Path, folder.Path);
                 //触发事件
+                State = DownloadState.Done;
                 DownloadComplete?.Invoke(Message);
             }
             catch (Exception ex)

@@ -306,4 +306,7 @@
   <data name="YouTubeLinkDetectedButWaiting" xml:space="preserve">
     <value>检测到YouTube链接，正在解析</value>
   </data>
+  <data name="FileNotExist" xml:space="preserve">
+    <value>打开失败，请检查文件是否被移动或删除</value>
+  </data>
 </root>

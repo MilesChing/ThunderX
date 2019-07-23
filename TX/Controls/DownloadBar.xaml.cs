@@ -6,14 +6,15 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using TX.Converters;
 using System.Diagnostics;
+using Windows.System;
+using Windows.Storage;
+using System.IO;
+using TX.Enums;
 
 namespace TX.Controls
 {
     public sealed partial class DownloadBar : UserControl
     {
-        /// <summary>
-        /// 空构造函数
-        /// </summary>
         public DownloadBar()
         {
             this.InitializeComponent();
@@ -25,9 +26,6 @@ namespace TX.Controls
             downloader = null;
         }
 
-        /// <summary>
-        /// 提供下载器的引用，以显示其信息。
-        /// </summary>
         public void SetDownloader(AbstractDownloader dw)
         {
             downloader = dw;
@@ -69,6 +67,7 @@ namespace TX.Controls
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
+                SetButtonsVisibility(state);
                 if (state == Enums.DownloadState.Pause)
                 {
                     PauseButton.IsEnabled = false;
@@ -95,8 +94,18 @@ namespace TX.Controls
                 }
                 else if (state == Enums.DownloadState.Done)
                 {
-                    Bar.Value = 100;
-                    ProgressBlock.Text = "100%";
+                    shadow.ShadowOpacity = 0.1;
+
+                    SizeBlock.Text = StringConverter.GetPrintSize(downloader.Message.DownloadSize);
+                    SpeedBlock.Text = downloader.Message.FolderPath;
+
+                    Models.DownloaderMessage message = downloader.Message;
+                    NameBlock.Text = message.FileName + message.Extention;
+
+                    LeftSmallBar.Visibility = Visibility.Collapsed;
+                    Bar.Visibility = Visibility.Collapsed;
+                    ProgressBlock.Visibility = Visibility.Collapsed;
+
                     PlayButton.IsEnabled = false;
                     PauseButton.IsEnabled = false;
                     DeleteButton.IsEnabled = false;
@@ -124,17 +133,23 @@ namespace TX.Controls
             });
         }
 
-        /// <summary>
-        /// 控件绑定的下载器
-        /// </summary>
         public AbstractDownloader downloader { get; private set; }
 
         private async void DownloadCompleted(Models.DownloaderMessage message)
         {
-            //必须Dispose(), 否则里面的Timer不会停止
-            downloader.Dispose();
             await MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                () => { MainPage.Current.DownloadBarCollection.Remove(this); });
+                () => {
+                    var collection = MainPage.Current.DownloadBarCollection;
+                    int index = collection.IndexOf(this);
+                    for (int i = index + 1; i<collection.Count; ++i)
+                        if(collection[i].downloader.Message.IsDone)
+                        {
+                            collection.Move(index, i - 1);
+                            return;
+                        }
+                    //没有return证明没有完成的任务记录，要把this移动到结尾
+                    collection.Move(index, collection.Count - 1);
+                });
         }
 
         private void DisplayError(Exception e)
@@ -181,6 +196,53 @@ namespace TX.Controls
             if (TopGlassLabel.Opacity == 0) ShowGlassLabel.Begin();
             else if (TopGlassLabel.Opacity == 1) HideGlassLabel.Begin();
             else return;
+        }
+
+        private async void FileButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(
+                    Path.Combine(downloader.Message.FolderPath, 
+                                downloader.Message.FileName, 
+                                downloader.Message.Extention)));
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("FileNotExist"));
+            }
+        }
+
+        private async void FolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(
+                    downloader.Message.FolderPath));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("FileNotExist"));
+            }
+        }
+
+        private void SetButtonsVisibility(DownloadState state)
+        {
+            //当任务结束后（isDone == true）显示FileButton和FolderButton，否则显示其他Button
+            var vis = state == DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
+            var _vis = state != DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
+            FileButton.Visibility = FolderButton.Visibility = HideButton.Visibility = vis;
+            DeleteButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = RefreshButton.Visibility = _vis;
+        }
+
+        private void HideButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (downloader != null) downloader.Dispose();
+            MainPage.Current.DownloadBarCollection.Remove(this);
         }
     }
 }

@@ -40,9 +40,6 @@ namespace TX.StorageTools
             return fileName;
         }
 
-        /// <summary>
-        /// 获取临时文件
-        /// </summary>
         public static async Task<string> GetTemporaryFileAsync()
         {
             StorageFolder folder = ApplicationData.Current.LocalCacheFolder;
@@ -56,6 +53,7 @@ namespace TX.StorageTools
                 string str = JsonHelper.SerializeObject(messages);
                 var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
+                Debug.WriteLine("写入文件：\n" + str);
             }
             catch(Exception e)
             {
@@ -73,14 +71,15 @@ namespace TX.StorageTools
                 string str = await FileIO.ReadTextAsync(file);
                 await file.DeleteAsync();
                 if (str == null) return null;
-                return JsonHelper.DeserializeJsonToList<Models.DownloaderMessage>(str);
+                var list = JsonHelper.DeserializeJsonToList<Models.NullableAttributesDownloaderMessage>(str);
+                //首先解析为NullableAttributesDownloaderMessage
+                //接下来通过类型转换为DownloaderMessage解决某些属性解析不出来的问题
+                return list.ConvertAll(new Converter<Models.NullableAttributesDownloaderMessage,
+                    Models.DownloaderMessage>((old) => { return new Models.DownloaderMessage(old); }));
             }
             catch (Exception) { return null; }
         }
 
-        /// <summary>
-        /// 删除缓存文件夹中没用的东西
-        /// </summary>
         public static async Task GetCleanAsync()
         {
             try

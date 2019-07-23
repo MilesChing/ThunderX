@@ -65,9 +65,7 @@ namespace TX.Downloaders
         {
             if (State == DownloadState.Disposed) return;
             DisposeThreads();
-            speedHelper.IsEnabled = false;
-            speedHelper.Dispose();
-            speedHelper = null;
+            DisposeSpeedHelper();
             StartDisposeTemporaryFile();
             State = DownloadState.Disposed;
         }
@@ -106,6 +104,11 @@ namespace TX.Downloaders
             Message = mes;
             speedHelper.CurrentValue = mes.DownloadSize;
             State = DownloadState.Prepared;
+            if (Message.IsDone)
+            {
+                State = DownloadState.Done;
+                DisposeSpeedHelper();
+            }
         }
 
         public override DownloaderType Type { get { return DownloaderType.HttpDownloader; } }
@@ -119,7 +122,7 @@ namespace TX.Downloaders
             int startCode = CurrentOperationCode;   //记录当前操作码，保证建立的线程均属于统一操作码
 
             if (Message.Threads.ThreadNum <= 0)
-                throw new Exception("线程大小未计算");
+                throw new Exception("任务 "+Message.URL+" 线程大小未计算");
 
             //枚举每个线程，由Message中的信息设置线程
             try
@@ -157,7 +160,7 @@ namespace TX.Downloaders
                         threadIndex,
                         startCode);
 
-                    Debug.WriteLine("线程 " + threadIndex + " 已开始");
+                    Debug.WriteLine("任务 " + Message.URL + " 线程 " + threadIndex + " 已开始");
                 }
             }
             catch (Exception e) { HandleError(e, startCode); }
@@ -182,7 +185,7 @@ namespace TX.Downloaders
         /// <param name="fileStream">文件流，线程会把targetSize个字节送入流的开始</param>
         /// <param name="targetSize">目标大小</param>
         /// <param name="threadIndex">线程编号，用于更新Message中的Threads信息</param>
-        /// <param name="operationCode">操作码，用于确定线程是否处于受控状态</param>
+        /// <param name="operationCode">操作码，用于确定线程是否处于当前操作批次</param>
         private void StartNewDownloadThread(Stream downloadStream, FileStream fileStream,
             long targetSize, int threadIndex, int operationCode)
         {
@@ -230,7 +233,7 @@ namespace TX.Downloaders
 
                 if (remain <= 0)
                 {
-                    Debug.WriteLine("线程 " + _threadIndex + " 已完成");
+                    Debug.WriteLine("任务 " + Message.URL + " 线程 " + _threadIndex + " 已完成");
                     await CheckIsDownloadDoneAsync(_operationCode);
                 }
             }, new Tuple<Stream, FileStream, long, int, int>(downloadStream, fileStream, targetSize, threadIndex, operationCode));
@@ -243,7 +246,6 @@ namespace TX.Downloaders
                 if (operationCode != CurrentOperationCode || State != DownloadState.Downloading) return;
                 if (Message.DownloadSize >= Message.FileSize)
                 {
-                    State = DownloadState.Done;
                     DisposeThreads();
                 }
                 else return;
@@ -259,12 +261,19 @@ namespace TX.Downloaders
                 if(folder == null) folder = ApplicationData.Current.LocalCacheFolder;
 
                 await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
-                
+
+                Message.FolderPath = folder.Path;
+
+                Message.IsDone = true;
+
+                DisposeSpeedHelper();
+
                 //播放一个通知
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
                     Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path, folder.Path);
 
                 //触发事件
+                State = DownloadState.Done;
                 DownloadComplete?.Invoke(Message);
             }
             catch (Exception e)
@@ -302,6 +311,14 @@ namespace TX.Downloaders
         private void DisposeThreads()
         {
             CurrentOperationCode++;
+        }
+
+        private void DisposeSpeedHelper()
+        {
+            if (speedHelper == null) return;
+            speedHelper.IsEnabled = false;
+            speedHelper.Dispose();
+            speedHelper = null;
         }
 
         private void StartDisposeTemporaryFile()

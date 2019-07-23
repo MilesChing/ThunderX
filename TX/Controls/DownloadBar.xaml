@@ -165,6 +165,25 @@
                                   Icon="Refresh"
                                   Width="48"
                                   Click="RefreshButton_Click" />
+                    <AppBarButton x:Name="FileButton"
+                                  IsEnabled="True"
+                                  Visibility="Collapsed"
+                                  Icon="OpenFile"
+                                  Width="48"
+                                  Click="FileButton_Click" />
+                    <AppBarButton x:Name="FolderButton"
+                                  IsEnabled="True"
+                                  Visibility="Collapsed"
+                                  Icon="OpenLocal"
+                                  Width="48"
+                                  Click="FolderButton_Click" />
+                    <AppBarButton x:Name="HideButton"
+                                  IsEnabled="True"
+                                  Visibility="Collapsed"
+                                  Icon="UnPin"
+                                  Width="48"
+                                  Click="HideButton_Click" />
+                    
                 </CommandBar>
             </Grid>
 
