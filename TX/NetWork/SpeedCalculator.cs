@@ -14,7 +14,10 @@ namespace TX.NetWork
     {
         private long time = 0;
         private Timer timer;
-        private long lastValue = 0;
+        /// <summary>
+        /// 记录最后一次更新的值，当用于从非零数计算速度时设置此值
+        /// </summary>
+        public long LastValue { set; private get; } = 0;
         private bool isEnabled = false;
 
         /// <summary>
@@ -73,9 +76,9 @@ namespace TX.NetWork
         {
             if (time > 1e10) time = 1;
             time++;
-            Speed = (CurrentValue - lastValue) / Interval * 1000;
+            Speed = (CurrentValue - LastValue) / Interval * 1000;
             AverageSpeed = (time == 0 ? 0 : ((AverageSpeed * (time - 1) + Speed) / time));
-            lastValue = CurrentValue;
+            LastValue = CurrentValue;
             Updated?.Invoke(this);
         }
         

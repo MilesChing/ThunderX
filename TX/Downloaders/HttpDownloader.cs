@@ -102,7 +102,7 @@ namespace TX.Downloaders
             if (State != DownloadState.Uninitialized) return;
             //触发事件指示控件加载已完成
             Message = mes;
-            speedHelper.CurrentValue = mes.DownloadSize;
+            speedHelper.LastValue = speedHelper.CurrentValue = mes.DownloadSize;
             State = DownloadState.Prepared;
             if (Message.IsDone)
             {
