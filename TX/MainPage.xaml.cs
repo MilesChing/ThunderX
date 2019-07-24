@@ -35,7 +35,8 @@ namespace TX
 
         private async void InitializeAsync()
         {
-            DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;//订阅内容变化事件
+            Converters.ExtentionConverter.InitializeDictionary();   //开始初始化扩展名字典，异步
+            DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged; //订阅内容变化事件
             //恢复上次关闭时保存的控件
             var list = await StorageManager.GetMessagesAsync();
             if (list != null)
@@ -150,7 +151,7 @@ namespace TX
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {
                  DownloadBar db = new DownloadBar();
-                 DownloadBarCollection.Add(db);
+                 DownloadBarCollection.Insert(0, db);
                  db.SetDownloader(downloader);
              });
         }
