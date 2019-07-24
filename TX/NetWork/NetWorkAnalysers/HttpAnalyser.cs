@@ -16,6 +16,7 @@ namespace TX.NetWork.NetWorkAnalysers
     {
         private const string KEY_LEGITIMACY = "Legitimacy";
         private const string KEY_MULTITHREAD = "Multithread";
+        private const string KEY_RECOMMENDED_TYPES = "RecommendedTypes";
 
         private HttpWebResponse _hresp_ = null;
 
@@ -37,10 +38,26 @@ namespace TX.NetWork.NetWorkAnalysers
                 if (name.Length >= 32) name = name.Substring(name.Length - 32);
                 //根据contentType推测扩展名
                 if (contentType == null) contentType = "text/html";
-                string extent = Converters.ExtentionConverter.TryGetExtention(contentType);
-                if (extent == ".*") extent = ".unknown";
-                if (name.EndsWith(extent) || extent.Equals("octet-stream")) return name;
-                else return name + extent;
+                string[] rec_exts = new string[0];
+                if (Converters.ExtentionConverter.Dictionary != null &&
+                    Converters.ExtentionConverter.Dictionary.ContainsKey(contentType))
+                    rec_exts = Converters.ExtentionConverter.Dictionary[contentType].Split('#');
+                //判断是否有一个和文件名相符
+                foreach (string ext in rec_exts)
+                    if (name.EndsWith(ext)) return name;
+
+                //如果rec_exts不为空，显示一条提示给用户
+                if (rec_exts.Length != 0)
+                {
+                    string message = AppResources.GetString("RecommendTypeMessage") + String.Join(" ", rec_exts);
+                    Controller?.UpdateMessage(this, KEY_RECOMMENDED_TYPES,
+                        new PlainTextMessage(message));
+                }
+
+                //没有和文件名相符的，判断文件名是否含后缀
+                if (name.Contains('.')) return name;
+                else if (rec_exts.Length != 0) return name + rec_exts[0];
+                else return name + ".unknown";
             }
             catch (Exception)
             {
@@ -68,6 +85,7 @@ namespace TX.NetWork.NetWorkAnalysers
         {
             Controller?.RemoveMessage(this, KEY_LEGITIMACY);
             Controller?.RemoveMessage(this, KEY_MULTITHREAD);
+            Controller?.RemoveMessage(this, KEY_RECOMMENDED_TYPES);
             Controller?.SetSubmitButtonEnabled(this, false);
             Controller?.SetThreadLayoutVisibility(this, false);
             Controller?.SetRecommendedName(this, AppResources.GetString("Unknown"), 0.5);

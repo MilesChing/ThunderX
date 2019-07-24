@@ -309,4 +309,7 @@
   <data name="FileNotExist" xml:space="preserve">
     <value>Your file is not exist. Check whether it has been moved or deleted.</value>
   </data>
+  <data name="RecommendTypeMessage" xml:space="preserve">
+    <value>Recommended extensions: </value>
+  </data>
 </root>

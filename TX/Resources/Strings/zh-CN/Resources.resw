@@ -309,4 +309,7 @@
   <data name="FileNotExist" xml:space="preserve">
     <value>打开失败，请检查文件是否被移动或删除</value>
   </data>
+  <data name="RecommendTypeMessage" xml:space="preserve">
+    <value>建议的扩展名：</value>
+  </data>
 </root>
