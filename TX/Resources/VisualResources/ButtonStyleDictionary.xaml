@@ -24,8 +24,8 @@
            x:FieldModifier="Public"
            TargetType="Button"
            BasedOn="{StaticResource TXAccentButtonStyle}">
-        <Setter Property="Background" Value="{ThemeResource SolidBackground04ColorBrush}"/>
-        <Setter Property="BorderBrush" Value="{ThemeResource SolidBackground02ColorBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource SolidSystemOutStandingAccentColorBrush2}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource SolidSystemOutStandingAccentColorBrush1}"/>
     </Style>
 
 </ResourceDictionary>

@@ -312,4 +312,25 @@
   <data name="RecommendTypeMessage" xml:space="preserve">
     <value>建议的扩展名：</value>
   </data>
+  <data name="DownloadBar_DeleteButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>删除任务和临时文件</value>
+  </data>
+  <data name="DownloadBar_FileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>打开文件</value>
+  </data>
+  <data name="DownloadBar_FolderButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>打开所在文件夹</value>
+  </data>
+  <data name="DownloadBar_HideButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>删除此条记录</value>
+  </data>
+  <data name="DownloadBar_PauseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="DownloadBar_PlayButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>开始/继续</value>
+  </data>
+  <data name="DownloadBar_RefreshButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>刷新</value>
+  </data>
 </root>

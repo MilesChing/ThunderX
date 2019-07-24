@@ -102,8 +102,10 @@ namespace TX
                 if(arguments.Length == 2 && arguments[0] == "file")
                 {
                     Debug.WriteLine("Launch file from toast: " + arguments[1]);
+                    var options = new LauncherOptions();
+                    options.DisplayApplicationPicker = true;
                     StorageFile target = await StorageFile.GetFileFromPathAsync(arguments[1]);
-                    await Windows.System.Launcher.LaunchFileAsync(target);
+                    await Windows.System.Launcher.LaunchFileAsync(target, options);
                 }
                 else if (arguments.Length == 2 && arguments[0] == "folder")
                 {

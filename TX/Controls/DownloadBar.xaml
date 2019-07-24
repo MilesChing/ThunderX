@@ -59,7 +59,7 @@
                              ShadowOpacity="0.2">
         <Grid Background="{ThemeResource TXDownloadBarBackground}"
               CornerRadius="2">
-            
+
             <ProgressBar x:Name="Bar"
                          Background="Transparent"
                          Foreground="{ThemeResource SolidSystemAccentColorBrush}"
@@ -69,7 +69,7 @@
                          Value="30"
                          HorizontalAlignment="Stretch"
                          VerticalAlignment="Bottom" />
-
+            
             <Grid x:Name="Label">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"
@@ -78,7 +78,7 @@
                     <ColumnDefinition Width="*"
                                       MaxWidth="80" />
                     <ColumnDefinition Width="*"
-                                      MaxWidth="10" />
+                                      MaxWidth="16" />
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="LeftSmallBar"
@@ -134,59 +134,80 @@
             </Grid>
 
             <Grid x:Name="TopGlassLabel"
-                  Background="{ThemeResource TXControlAcrylicBrush}"
+                  Background="Transparent"
                   PointerEntered="TopGlassLabel_PointerEntered"
                   PointerExited="TopGlassLabel_PointerExited"
                   PointerReleased="TopGlassLabel_PointerReleased">
-                <CommandBar x:Name="cmdBar"
-                            IsOpen="False"
-                            Background="Transparent"
-                            DefaultLabelPosition="Collapsed"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Margin="0,0,20,0">
-                    <AppBarButton x:Name="DeleteButton"
-                                  Icon="Delete"
-                                  Width="48"
-                                  IsEnabled="False"
-                                  Click="DeleteButton_Click" />
-                    <AppBarButton x:Name="PlayButton"
-                                  Icon="Play"
-                                  Width="48"
-                                  IsEnabled="False"
-                                  Click="PlayButton_Click" />
-                    <AppBarButton x:Name="PauseButton"
-                                  IsEnabled="False"
-                                  Icon="Pause"
-                                  Width="48"
-                                  Click="PauseButton_Click" />
-                    <AppBarButton x:Name="RefreshButton"
-                                  IsEnabled="False"
-                                  Icon="Refresh"
-                                  Width="48"
-                                  Click="RefreshButton_Click" />
-                    <AppBarButton x:Name="FileButton"
-                                  IsEnabled="True"
-                                  Visibility="Collapsed"
-                                  Icon="OpenFile"
-                                  Width="48"
-                                  Click="FileButton_Click" />
-                    <AppBarButton x:Name="FolderButton"
-                                  IsEnabled="True"
-                                  Visibility="Collapsed"
-                                  Icon="OpenLocal"
-                                  Width="48"
-                                  Click="FolderButton_Click" />
-                    <AppBarButton x:Name="HideButton"
-                                  IsEnabled="True"
-                                  Visibility="Collapsed"
-                                  Icon="UnPin"
-                                  Width="48"
-                                  Click="HideButton_Click" />
-                    
-                </CommandBar>
-            </Grid>
+                
+                <StackPanel x:Name="cmdBar"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Right">
+                    <Rectangle Width="128">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                <GradientStop Offset="0" Color="Transparent"/>
+                                <GradientStop Offset="1" Color="{ThemeResource SystemAltHighColor}"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
 
+                    <StackPanel HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Height="64"
+                                Padding="8,8,8,8"
+                                Background="{ThemeResource SystemAltHighColor}"
+                                Orientation="Horizontal">
+                        <AppBarButton x:Name="DeleteButton"
+                                      x:Uid="DownloadBar_DeleteButton"
+                                      Icon="Delete"
+                                      Width="48"
+                                      IsEnabled="False"
+                                      Click="DeleteButton_Click" />
+                        <AppBarButton x:Name="PlayButton"
+                                      x:Uid="DownloadBar_PlayButton"
+                                      Icon="Play"
+                                      Width="48"
+                                      IsEnabled="False"
+                                      Click="PlayButton_Click" />
+                        <AppBarButton x:Name="PauseButton"
+                                      x:Uid="DownloadBar_PauseButton"
+                                      IsEnabled="False"
+                                      Icon="Pause"
+                                      Width="48"
+                                      Click="PauseButton_Click" />
+                        <AppBarButton x:Name="RefreshButton"
+                                      x:Uid="DownloadBar_RefreshButton"
+                                      IsEnabled="False"
+                                      Icon="Refresh"
+                                      Width="48"
+                                      Click="RefreshButton_Click" />
+                        <AppBarButton x:Name="FileButton"
+                                      x:Uid="DownloadBar_FileButton"
+                                      IsEnabled="True"
+                                      Visibility="Collapsed"
+                                      Icon="OpenFile"
+                                      Width="48"
+                                      Click="FileButton_Click" />
+                        <AppBarButton x:Name="FolderButton"
+                                      x:Uid="DownloadBar_FolderButton"
+                                      IsEnabled="True"
+                                      Visibility="Collapsed"
+                                      Icon="OpenLocal"
+                                      Width="48"
+                                      Click="FolderButton_Click" />
+                        <AppBarButton x:Name="HideButton"
+                                      x:Uid="DownloadBar_HideButton"
+                                      IsEnabled="True"
+                                      Visibility="Collapsed"
+                                      Icon="UnPin"
+                                      Width="48"
+                                      Click="HideButton_Click" />
+                    </StackPanel>
+                    
+                </StackPanel>
+            </Grid>
+            
         </Grid>
 
     </control:DropShadowPanel>

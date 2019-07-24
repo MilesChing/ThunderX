@@ -94,8 +94,6 @@ namespace TX.Controls
                 }
                 else if (state == Enums.DownloadState.Done)
                 {
-                    shadow.ShadowOpacity = 0.1;
-
                     SizeBlock.Text = StringConverter.GetPrintSize(downloader.Message.DownloadSize);
                     SpeedBlock.Text = downloader.Message.FolderPath;
 
@@ -202,10 +200,13 @@ namespace TX.Controls
         {
             try
             {
+                var options = new LauncherOptions();
+                options.DisplayApplicationPicker = true;
                 await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(
                     Path.Combine(downloader.Message.FolderPath, 
                                 downloader.Message.FileName, 
-                                downloader.Message.Extention)));
+                                downloader.Message.Extention))
+                    , options);
             }
             catch(Exception ex)
             {

@@ -312,4 +312,25 @@
   <data name="RecommendTypeMessage" xml:space="preserve">
     <value>Recommended extensions: </value>
   </data>
+  <data name="DownloadBar_DeleteButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove file</value>
+  </data>
+  <data name="DownloadBar_FileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open file</value>
+  </data>
+  <data name="DownloadBar_FolderButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="DownloadBar_HideButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Delete record</value>
+  </data>
+  <data name="DownloadBar_PauseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="DownloadBar_PlayButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="DownloadBar_RefreshButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>
