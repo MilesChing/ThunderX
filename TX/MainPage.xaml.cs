@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
+using Windows.ApplicationModel.Core;
 
 namespace TX
 {
@@ -22,9 +23,16 @@ namespace TX
         /// 指向当前MainPage的引用
         /// </summary>
         public static MainPage Current;
+
+        /// <summary>
+        /// 在程序运行的过程中，MainPage始终只有一个View，因此有固定的引用和ViewID
+        /// </summary>
+        public int ViewID = 0;
+
         public MainPage()
         {
             Current = this;
+            ViewID = ApplicationView.GetApplicationViewIdForWindow(Window.Current.CoreWindow);
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();//设置标题栏颜色
             SetThemeChangedListener();
