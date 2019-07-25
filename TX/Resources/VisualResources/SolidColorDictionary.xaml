@@ -25,8 +25,6 @@
 
     <SolidColorBrush x:Key="SolidWarningTextColorBrush" Color="Red"/>
 
-    
-
     <Color x:Key="B0">#000000</Color>
     <Color x:Key="B1">#111111</Color>
     <Color x:Key="B2">#222222</Color>
@@ -56,6 +54,14 @@
             <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B9}"/>
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource B3}"/>
+
+            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
+                                 StartPoint="0,0.5"
+                                 EndPoint="1,0.5">
+                <!--水平渐变-->
+                <GradientStop Offset="0" Color="#00ffffff"/>
+                <GradientStop Offset="1" Color="#ffffffff"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
@@ -69,6 +75,14 @@
             <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B9}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource BF}"/>
+
+            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
+                                 StartPoint="0,0.5"
+                                 EndPoint="1,0.5">
+                <!--水平渐变-->
+                <GradientStop Offset="0" Color="#00000000"/>
+                <GradientStop Offset="1" Color="#ff000000"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

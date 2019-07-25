@@ -143,14 +143,8 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Right">
-                    <Rectangle Width="128">
-                        <Rectangle.Fill>
-                            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                <GradientStop Offset="0" Color="Transparent"/>
-                                <GradientStop Offset="1" Color="{ThemeResource SystemAltHighColor}"/>
-                            </LinearGradientBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
+                    
+                    <Rectangle Width="128" Fill="{ThemeResource Transparent2DownloadBarBackgroundLinearGradientBrush}"/>
 
                     <StackPanel HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
