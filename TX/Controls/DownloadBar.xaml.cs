@@ -158,7 +158,7 @@ namespace TX.Controls
         private void TopGlassLabel_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
-                ShowGlassLabel.Begin();
+                ShowGlassLabel_Begin();
         }
 
         private void TopGlassLabel_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -176,22 +176,25 @@ namespace TX.Controls
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Start();
+            HideGlassLabel.Begin();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Pause();
+            HideGlassLabel.Begin();
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();
+            HideGlassLabel.Begin();
         }
 
         private void TopGlassLabel_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse) return;
-            if (TopGlassLabel.Opacity == 0) ShowGlassLabel.Begin();
+            if (TopGlassLabel.Opacity == 0) ShowGlassLabel_Begin();
             else if (TopGlassLabel.Opacity == 1) HideGlassLabel.Begin();
             else return;
         }
@@ -211,6 +214,8 @@ namespace TX.Controls
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
                     Strings.AppResources.GetString("FileNotExist"));
             }
+
+            HideGlassLabel.Begin();
         }
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
@@ -225,6 +230,8 @@ namespace TX.Controls
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
                     Strings.AppResources.GetString("FolderNotExist"));
             }
+
+            HideGlassLabel.Begin();
         }
 
         private void SetButtonsVisibility(DownloadState state)
@@ -232,6 +239,7 @@ namespace TX.Controls
             //当任务结束后（isDone == true）显示FileButton和FolderButton，否则显示其他Button
             var vis = state == DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
             var _vis = state != DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
+            var ena = false;
             FileButton.Visibility = FolderButton.Visibility = HideButton.Visibility = vis;
             DeleteButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = RefreshButton.Visibility = _vis;
         }
@@ -240,6 +248,18 @@ namespace TX.Controls
         {
             if (downloader != null) downloader.Dispose();
             MainPage.Current.DownloadBarCollection.Remove(this);
+        }
+
+        private void HideGlassLabel_Completed(object sender, object e)
+        {
+            ButtonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowGlassLabel_Begin()
+        {
+            if (TopGlassLabel.Opacity != 0) return;
+            ButtonPanel.Visibility = Visibility.Visible;
+            ShowGlassLabel.Begin();
         }
     }
 }

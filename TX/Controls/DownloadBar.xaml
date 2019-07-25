@@ -30,7 +30,8 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
-        <Storyboard x:Name="HideGlassLabel">
+        <Storyboard x:Name="HideGlassLabel"
+                    Completed="HideGlassLabel_Completed">
             <DoubleAnimation Duration="0:0:0.1"
                              To="0"
                              Storyboard.TargetProperty="Opacity"
@@ -146,7 +147,8 @@
                     
                     <Rectangle Width="128" Fill="{ThemeResource Transparent2DownloadBarBackgroundLinearGradientBrush}"/>
 
-                    <StackPanel HorizontalAlignment="Right"
+                    <StackPanel x:Name="ButtonPanel"
+                                HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Height="64"
                                 Padding="8,8,8,8"
