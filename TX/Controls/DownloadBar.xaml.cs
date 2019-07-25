@@ -200,17 +200,14 @@ namespace TX.Controls
         {
             try
             {
-                var options = new LauncherOptions();
-                options.DisplayApplicationPicker = true;
-                await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(
-                    Path.Combine(downloader.Message.FolderPath, 
-                                downloader.Message.FileName, 
-                                downloader.Message.Extention))
-                    , options);
+                string path = Path.Combine(downloader.Message.FolderPath,
+                                downloader.Message.FileName + downloader.Message.Extention);
+                var file = await StorageFile.GetFileFromPathAsync(path);
+
+                StorageTools.StorageManager.LaunchFileAsync(file);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                Debug.WriteLine(ex.Message);
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
                     Strings.AppResources.GetString("FileNotExist"));
             }
@@ -220,14 +217,13 @@ namespace TX.Controls
         {
             try
             {
-                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(
-                    downloader.Message.FolderPath));
+                var folder = await StorageFolder.GetFolderFromPathAsync(downloader.Message.FolderPath);
+                StorageTools.StorageManager.LaunchFolderAsync(folder);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(ex.Message);
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
-                    Strings.AppResources.GetString("FileNotExist"));
+                    Strings.AppResources.GetString("FolderNotExist"));
             }
         }
 

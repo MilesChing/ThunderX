@@ -333,4 +333,10 @@
   <data name="DownloadBar_RefreshButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="ExtentionNotSupported" xml:space="preserve">
+    <value>There isn't any software support this type of file. We will open the folder automatically for you.</value>
+  </data>
+  <data name="FolderNotExist" xml:space="preserve">
+    <value>Your folder is not exist.</value>
+  </data>
 </root>

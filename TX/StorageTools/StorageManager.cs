@@ -106,5 +106,50 @@ namespace TX.StorageTools
             }
             catch (Exception) { }
         }
+
+        public static async void LaunchFileAsync(StorageFile file)
+        {
+            //如果file有软件可打开那么用默认软件打开file，否则打开file所在文件夹
+            var options = new Windows.System.LauncherOptions();
+            options.DisplayApplicationPicker = true;
+            try
+            {
+                await Windows.System.Launcher.LaunchFileAsync(file, options);
+            }
+            catch(Exception)
+            {
+                //如果没有软件可以打开file那么会抛出异常
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("ExtentionNotSupported"));
+
+                StorageFolder folder;
+                try
+                {
+                    folder = await file.GetParentAsync();
+                }
+                catch(Exception)
+                {
+                    Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("FileNotExist"));
+                    return;
+                }
+
+                if (folder != null)
+                    LaunchFolderAsync(folder);
+            }
+        }
+
+        public static async void LaunchFolderAsync(StorageFolder folder)
+        {
+            try
+            {
+                await Windows.System.Launcher.LaunchFolderAsync(folder);
+            }
+            catch (Exception)
+            {
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("FolderNotExist"));
+            }
+        }
     }
 }

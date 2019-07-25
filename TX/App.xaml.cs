@@ -101,17 +101,27 @@ namespace TX
 
                 if(arguments.Length == 2 && arguments[0] == "file")
                 {
-                    Debug.WriteLine("Launch file from toast: " + arguments[1]);
-                    var options = new LauncherOptions();
-                    options.DisplayApplicationPicker = true;
-                    StorageFile target = await StorageFile.GetFileFromPathAsync(arguments[1]);
-                    await Windows.System.Launcher.LaunchFileAsync(target, options);
+                    StorageFile target;
+                    try { target = await StorageFile.GetFileFromPathAsync(arguments[1]); }
+                    catch(Exception)
+                    {
+                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                            Strings.AppResources.GetString("FileNotExist"));
+                        return;
+                    }
+                    if(target != null) StorageManager.LaunchFileAsync(target);
                 }
                 else if (arguments.Length == 2 && arguments[0] == "folder")
                 {
-                    Debug.WriteLine("Launch directory from toast: " + arguments[1]);
-                    StorageFolder target = await StorageFolder.GetFolderFromPathAsync(arguments[1]);
-                    await Windows.System.Launcher.LaunchFolderAsync(target);
+                    StorageFolder target;
+                    try { target = await StorageFolder.GetFolderFromPathAsync(arguments[1]); }
+                    catch (Exception)
+                    {
+                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                            Strings.AppResources.GetString("FolderNotExist"));
+                        return;
+                    }
+                    if (target != null) StorageManager.LaunchFolderAsync(target);
                 }
                 //如果点击通知打开应用前是未运行状态，就退出程序（否则应保持原界面）
                 if(args.PreviousExecutionState != ApplicationExecutionState.Running)
