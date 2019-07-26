@@ -55,6 +55,8 @@
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource B3}"/>
 
+            <SolidColorBrush x:Key="SolidErrorColor" Color="#C62828"/>
+
             <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
                                  StartPoint="0,0.5"
                                  EndPoint="1,0.5">
@@ -75,6 +77,8 @@
             <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B9}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource BF}"/>
+
+            <SolidColorBrush x:Key="SolidErrorColor" Color="#F44336"/>
 
             <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
                                  StartPoint="0,0.5"

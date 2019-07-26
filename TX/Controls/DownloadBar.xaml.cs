@@ -67,58 +67,20 @@ namespace TX.Controls
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                SetButtonsVisibility(state);
-                if (state == Enums.DownloadState.Pause)
-                {
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = true;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = true;
-                }
-                else if (state == Enums.DownloadState.Error)
-                {
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = true;
-                }
-                else if (state == Enums.DownloadState.Downloading)
-                {
-                    PauseButton.IsEnabled = true;
-                    PlayButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = false;
-                }
-                else if (state == Enums.DownloadState.Done)
+                Debug.WriteLine("State Change: " + state.ToString());
+                VisualStateManager.GoToState(this, state.ToString(), false);
+                if (state == Enums.DownloadState.Done)
                 {
                     SizeBlock.Text = StringConverter.GetPrintSize(downloader.Message.DownloadSize);
                     SpeedBlock.Text = downloader.Message.FolderPath;
 
                     Models.DownloaderMessage message = downloader.Message;
                     NameBlock.Text = message.FileName + message.Extention;
-
-                    LeftSmallBar.Visibility = Visibility.Collapsed;
-                    Bar.Visibility = Visibility.Collapsed;
-                    ProgressBlock.Visibility = Visibility.Collapsed;
-
-                    PlayButton.IsEnabled = false;
-                    PauseButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = false;
-                    RefreshButton.IsEnabled = false;
                 }
                 else if (state == Enums.DownloadState.Prepared)
                 {
-                    HideGlassLabel.Begin();
-
                     Models.DownloaderMessage message = downloader.Message;
                     NameBlock.Text = message.FileName + message.Extention;
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = true;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = false;
                     int per = (int)((message.FileSize == null) ? 0
                         : (100f * message.DownloadSize / message.FileSize));
                     ProgressBlock.Text = (message.FileSize == null) ? "-%" : (per + "%");
@@ -234,32 +196,52 @@ namespace TX.Controls
             HideGlassLabel.Begin();
         }
 
-        private void SetButtonsVisibility(DownloadState state)
-        {
-            //当任务结束后（isDone == true）显示FileButton和FolderButton，否则显示其他Button
-            var vis = state == DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
-            var _vis = state != DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
-            var ena = false;
-            FileButton.Visibility = FolderButton.Visibility = HideButton.Visibility = vis;
-            DeleteButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = RefreshButton.Visibility = _vis;
-        }
-
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
             if (downloader != null) downloader.Dispose();
             MainPage.Current.DownloadBarCollection.Remove(this);
         }
 
+        //为了避免在TopGlassLabel的Opacity为0时用户误触TopGlassLabel上面的按键
+        //我们在Hide动画结束后把按键所在控件的Visibility改成不可见
+        //在Show动画开始前把Visibility改为可见
+        //这样会出现一个问题，如果Hide动画没结束而Show动画开始了，那么Show动画结束后，按钮将变为不可见
+        //使用showing记录当前是否在执行Show动画，如果Hide动画结束时，发现Show动画在播放，那么就不作更改
+        private bool showing = false;
+
         private void HideGlassLabel_Completed(object sender, object e)
         {
+            if (showing) return;
             ButtonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void ShowGlassLabel_Begin()
         {
-            if (TopGlassLabel.Opacity != 0) return;
+            showing = true;
             ButtonPanel.Visibility = Visibility.Visible;
             ShowGlassLabel.Begin();
         }
+
+        private void ShowGlassLabel_Completed(object sender, object e)
+        {
+            showing = false;
+        }
+
+        private void TopGlassLabel_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            Debug.WriteLine("DoubleTapped");
+            var state = downloader.State;
+            if (state == Enums.DownloadState.Pause)
+                downloader.Start();
+            else if (state == Enums.DownloadState.Error)
+                downloader.Refresh();
+            else if (state == Enums.DownloadState.Downloading)
+                downloader.Pause();
+            else if (state == Enums.DownloadState.Done)
+                FileButton_Click(null, null);
+            else if (state == Enums.DownloadState.Prepared)
+                downloader.Start();
+        }
+
     }
 }
