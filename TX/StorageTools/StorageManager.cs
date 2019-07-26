@@ -109,7 +109,13 @@ namespace TX.StorageTools
 
         public static async void LaunchFileAsync(StorageFile file)
         {
-            //如果file有软件可打开那么用默认软件打开file，否则打开file所在文件夹
+            if(file.FileType.ToLower() == ".exe")
+            {
+                LaunchFolderAsync(await file.GetParentAsync());
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("ExtentionNotSupported"), "");
+                return;
+            }
+            //如果file不是可执行文件那么用默认软件打开file，否则打开file所在文件夹
             var options = new Windows.System.LauncherOptions();
             options.DisplayApplicationPicker = true;
             await Windows.System.Launcher.LaunchFileAsync(file, options);
