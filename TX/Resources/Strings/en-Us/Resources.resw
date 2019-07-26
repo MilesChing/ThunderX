@@ -339,4 +339,10 @@
   <data name="FolderNotExist" xml:space="preserve">
     <value>Your folder is not exist.</value>
   </data>
+  <data name="SetPage_GuideText_MaxRecords.Text" xml:space="preserve">
+    <value>Our number of records will not exceed this value, you can also set zero to cancel this function.</value>
+  </data>
+  <data name="SetPage_Subtitle_MaxRecords.Text" xml:space="preserve">
+    <value>Maximum Number of Records</value>
+  </data>
 </root>

@@ -53,8 +53,7 @@
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxRetries"/>
             <Border Style="{StaticResource TXBorder}" />
-            <TextBlock TextWrapping="Wrap"
-                       Style="{StaticResource TXPlainText}"
+            <TextBlock Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_MaxRetries"/>
             <Border Style="{StaticResource TXBorder}" />
             <Slider x:Name="MaximumRetriesSlider"
@@ -62,6 +61,23 @@
                     Minimum="0"
                     ValueChanged="MaximumRetriesSlider_ValueChanged"
                     Maximum="50" />
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="SetPage_Subtitle_MaxRecords"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <TextBlock Style="{StaticResource TXPlainText}"
+                       x:Uid="SetPage_GuideText_MaxRecords"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <ComboBox x:Name="MaximumRecordsComboBox"
+                      Width="200"
+                      SelectionChanged="MaximumRecordsComboBox_SelectionChanged">
+                <ComboBox.Items>
+                    <TextBlock Text="0"/>
+                    <TextBlock Text="50"/>
+                    <TextBlock Text="200"/>
+                    <TextBlock Text="1000"/>
+                </ComboBox.Items>
+            </ComboBox>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                            x:Uid="SetPage_Subtitle_DefaultFolder"/>

@@ -39,6 +39,9 @@ namespace TX
             MaximumRetriesSlider.Value = Settings.MaximumRetries;
             DarkModeSwitch.IsOn = Settings.DarkMode;
             NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
+            for (int i = 0; i < Settings.NormalRecordNumberParser.Length; ++i)
+                ((TextBlock)MaximumRecordsComboBox.Items[i]).Text = Settings.NormalRecordNumberParser[i].ToString();
+            MaximumRecordsComboBox.SelectedIndex = Settings.MaximumRecordsIndex;
             LicenseChanged(((App)App.Current).AppLicense);
             UserModify = true;
         }
@@ -108,5 +111,10 @@ namespace TX
             Settings.MaximumRetries = (int)e.NewValue;
         }
 
+        private void MaximumRecordsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!UserModify) return;
+            Settings.MaximumRecordsIndex = MaximumRecordsComboBox.SelectedIndex;
+        }
     }
 }

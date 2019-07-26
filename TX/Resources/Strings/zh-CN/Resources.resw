@@ -339,4 +339,10 @@
   <data name="FolderNotExist" xml:space="preserve">
     <value>打开文件夹失败</value>
   </data>
+  <data name="SetPage_GuideText_MaxRecords.Text" xml:space="preserve">
+    <value>我们将根据此上限记录最新的下载历史，你也可以设置零以取消这个功能。</value>
+  </data>
+  <data name="SetPage_Subtitle_MaxRecords.Text" xml:space="preserve">
+    <value>历史记录上限</value>
+  </data>
 </root>

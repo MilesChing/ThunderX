@@ -206,12 +206,24 @@ namespace TX
         /// <param name="e">有关挂起请求的详细信息。</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            int doneNum = 0;
             Debug.WriteLine("OnSuspending");
             var deferral = e.SuspendingOperation.GetDeferral();
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
             foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
             {
+                if (bar.downloader.State == Enums.DownloadState.Disposed ||
+                    bar.downloader.State == Enums.DownloadState.Uninitialized)
+                    continue;
+
+                if(bar.downloader.State == Enums.DownloadState.Done)
+                {
+                    doneNum++;
+                    if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                        continue;
+                }
+
                 bar.downloader.Pause();
                 list.Add(bar.downloader.Message);
             }

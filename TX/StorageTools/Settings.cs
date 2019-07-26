@@ -88,5 +88,23 @@ namespace TX.StorageTools
             }
             set { ApplicationData.Current.LocalSettings.Values["MaximumRetries"] = value; }
         }
+
+        /// <summary>
+        /// 保存的最大历史记录数在NormalRecordNumberParser中的索引
+        /// </summary>
+        public static int MaximumRecordsIndex
+        {
+            get
+            {
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRecords"))
+                {
+                    return (int)ApplicationData.Current.LocalSettings.Values["MaximumRecords"];
+                }
+                else return 1;
+            }
+            set { ApplicationData.Current.LocalSettings.Values["MaximumRecords"] = value; }
+        }
+        //当MaximumRecords记录了k时，真实的上限是NormalRecordNumberParser[k]
+        public static readonly int[] NormalRecordNumberParser = new int[4]{ 0, 50, 200, 1000 };
     }
 }
