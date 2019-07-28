@@ -275,6 +275,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Leak.Core">
+      <Version>4.7.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.8</Version>
     </PackageReference>
