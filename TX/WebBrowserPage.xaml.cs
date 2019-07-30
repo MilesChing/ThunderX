@@ -47,24 +47,30 @@ namespace TX
             SetWebView();
         }
 
-        private void SafeNavigate(string Url)
+        private void SafeNavigateAsync(string Url)
         {
-            try
+            //不使用异步写法的话，MainWebView.Navigate可能阻塞线程
+            Task.Run(async () =>
             {
-                string url = Url.ToString();
-                if (!url.Contains("://")) url = "http://" + url;
-                MainWebView.Navigate(new Uri(url));
-            }
-            catch (Exception exp)
-            {
-                //填充问题页
-                GetHtmlTemplateAndRun((content) =>
+                try
                 {
-                    string html = content.Replace("Title", Strings.AppResources.GetString("SomethingWrong"))
-                                        .Replace("Text", string.Join(" ", exp.Message, "HResult: " + exp.HResult, "HelpLink: " + exp.HelpLink));
-                    MainWebView.NavigateToString(html);
-                });
-            }
+                    string url = Url.ToString();
+                    if (!url.Contains("://")) url = "http://" + url;
+                    await MainWebView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        () => { MainWebView.Navigate(new Uri(url)); });                   
+                }
+                catch (Exception exp)
+                {
+                    //填充问题页
+                    GetHtmlTemplateAndRun(async (content) =>
+                    {
+                        string html = content.Replace("Title", Strings.AppResources.GetString("SomethingWrong"))
+                                            .Replace("Text", string.Join(" ", exp.Message, "HResult: " + exp.HResult, "HelpLink: " + exp.HelpLink));
+                        await MainWebView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                            () => { MainWebView.NavigateToString(html); });
+                    });
+                }
+            });
         }
 
         //得到了一个新URL，分析其文件名，文件大小
@@ -97,12 +103,12 @@ namespace TX
                 return;
             }
 
-            for(int i = 0; i<URLMessageCollection.Count; ++i)
+            for (int i = 0; i < URLMessageCollection.Count; ++i)
             {
                 var cur = URLMessageCollection[i];
                 if (cur.URL.Equals(message.URL))
                     return;
-                if(message.StreamSize > cur.StreamSize)
+                if (message.StreamSize > cur.StreamSize)
                 {
                     URLMessageCollection.Insert(i, message);
                     return;
@@ -150,7 +156,7 @@ namespace TX
             //将打开新标签页转换为在当前页面打开
             MainWebView.NewWindowRequested += (sender, args) =>
             {
-                SafeNavigate(args.Uri.ToString());
+                SafeNavigateAsync(args.Uri.ToString());
                 args.Handled = true;
             };
 
@@ -158,11 +164,11 @@ namespace TX
             URLBox.KeyDown += (sender, args) =>
             {
                 if (args.Key != Windows.System.VirtualKey.Enter) return;
-                SafeNavigate(URLBox.Text);
+                SafeNavigateAsync(URLBox.Text);
             };
-            
-            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.Value = 0.2; MainProgressBar.Opacity = 1;  };
-            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.Value = 1; HideProgressBarStoryboard.Begin();};
+
+            MainWebView.NavigationStarting += (sender, e) => { MainProgressBar.Value = 0.2; MainProgressBar.Opacity = 1; };
+            MainWebView.NavigationCompleted += (sender, e) => { MainProgressBar.Value = 1; HideProgressBarStoryboard.Begin(); };
             MainWebView.NavigationStarting += (sender, e) =>
             {
                 BackwardButton.IsEnabled = MainWebView.CanGoBack;
@@ -217,7 +223,7 @@ namespace TX
         {
             await WebView.ClearTemporaryWebDataAsync();
             CurrentURL = URLBox.Text;
-            SafeNavigate(URLBox.Text);
+            SafeNavigateAsync(URLBox.Text);
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
