@@ -126,9 +126,6 @@
   <data name="AboutPage_Button_Trail.Content" xml:space="preserve">
     <value>Buy the full version</value>
   </data>
-  <data name="AboutPage_GuideText_AboutDeveloper.Text" xml:space="preserve">
-    <value>An ordinary student who loves life.</value>
-  </data>
   <data name="AboutPage_GuideText_Active.Text" xml:space="preserve">
     <value>You are using the full version of Thunder X.</value>
   </data>
@@ -199,7 +196,7 @@
     <value>I need to rename it</value>
   </data>
   <data name="NewTaskPage_SubmitButton.Content" xml:space="preserve">
-    <value>Submit</value>
+    <value>Submit New Task</value>
   </data>
   <data name="NewTaskPage_Subtitle_Rename.Text" xml:space="preserve">
     <value>Rename</value>
@@ -344,5 +341,23 @@
   </data>
   <data name="SetPage_Subtitle_MaxRecords.Text" xml:space="preserve">
     <value>Maximum Number of Records</value>
+  </data>
+  <data name="AboutPage_GuideText_Guide.Content" xml:space="preserve">
+    <value>Guide to Thunder X</value>
+  </data>
+  <data name="AboutPage_SubTitle_Guide.Text" xml:space="preserve">
+    <value>Guide</value>
+  </data>
+  <data name="AboutPage_SubTitle_Version.Text" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="AboutPage_SubTitle_Review.Text" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="NewTaskPage_Subtitle_DownloadFolder.Text" xml:space="preserve">
+    <value>Target Folder</value>
+  </data>
+  <data name="NewTaskPage_FolderButton.Content" xml:space="preserve">
+    <value>Reset Target Folder</value>
   </data>
 </root>

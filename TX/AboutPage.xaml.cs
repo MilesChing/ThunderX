@@ -57,11 +57,6 @@ namespace TX
             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?PFN="+pfn));
         }
 
-        private async void GithubButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri(@"https://github.com/MilesChing"));
-        }
-
         private async void RatingControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (((RatingControl)sender).Value < 4) return;

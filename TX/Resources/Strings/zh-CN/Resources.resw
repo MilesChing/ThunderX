@@ -126,9 +126,6 @@
   <data name="AboutPage_Button_Trail.Content" xml:space="preserve">
     <value>购买完整版</value>
   </data>
-  <data name="AboutPage_GuideText_AboutDeveloper.Text" xml:space="preserve">
-    <value>一名热爱生活的普通肥宅。</value>
-  </data>
   <data name="AboutPage_GuideText_Active.Text" xml:space="preserve">
     <value>正在使用完整版Thunder X，感谢支持！</value>
   </data>
@@ -199,7 +196,7 @@
     <value>需要重命名</value>
   </data>
   <data name="NewTaskPage_SubmitButton.Content" xml:space="preserve">
-    <value>提交</value>
+    <value>提交任务</value>
   </data>
   <data name="NewTaskPage_Subtitle_Rename.Text" xml:space="preserve">
     <value>重命名</value>
@@ -344,5 +341,23 @@
   </data>
   <data name="SetPage_Subtitle_MaxRecords.Text" xml:space="preserve">
     <value>历史记录上限</value>
+  </data>
+  <data name="AboutPage_GuideText_Guide.Content" xml:space="preserve">
+    <value>打开Thunder X使用帮助</value>
+  </data>
+  <data name="AboutPage_SubTitle_Guide.Text" xml:space="preserve">
+    <value>使用帮助</value>
+  </data>
+  <data name="AboutPage_SubTitle_Version.Text" xml:space="preserve">
+    <value>版本信息</value>
+  </data>
+  <data name="AboutPage_SubTitle_Review.Text" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="NewTaskPage_Subtitle_DownloadFolder.Text" xml:space="preserve">
+    <value>目标文件夹</value>
+  </data>
+  <data name="NewTaskPage_FolderButton.Content" xml:space="preserve">
+    <value>选取文件夹</value>
   </data>
 </root>

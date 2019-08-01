@@ -109,6 +109,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\URLMessage.cs" />
+    <Compile Include="StorageTools\TXDataFileIO.cs" />
     <Compile Include="TXPage.cs" />
     <Compile Include="VisualManager\ApplicationWindowControl.cs" />
     <Compile Include="Controls\DownloadBar.xaml.cs">

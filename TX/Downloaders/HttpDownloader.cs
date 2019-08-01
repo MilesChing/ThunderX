@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TX.Enums;
 using TX.Models;
 using TX.NetWork;
+using TX.StorageTools;
 using Windows.Storage;
 
 namespace TX.Downloaders
@@ -56,6 +57,7 @@ namespace TX.Downloaders
                 Message.Threads.ArrangeThreads((long)Message.FileSize, settings.Threads <= 0 ? StorageTools.Settings.ThreadNumber : ((int)settings.Threads));
                 //申请临时文件
                 Message.TempFilePath = settings.FilePath;
+                Message.FolderToken = settings.FolderToken;
                 State = DownloadState.Prepared;
             }
             catch (Exception e) { HandleError(e, CurrentOperationCode); }
@@ -122,7 +124,7 @@ namespace TX.Downloaders
             int startCode = CurrentOperationCode;   //记录当前操作码，保证建立的线程均属于统一操作码
 
             if (Message.Threads.ThreadNum <= 0)
-                throw new Exception("任务 "+Message.URL+" 线程大小未计算");
+                throw new Exception("任务 " + Message.URL + " 线程大小未计算");
 
             //枚举每个线程，由Message中的信息设置线程
             try
@@ -135,8 +137,8 @@ namespace TX.Downloaders
                     long _size = 0;
                     long _targetSize = Message.Threads.ThreadTargetSize[threadIndex];
 
-                    lock (Message.Threads){ _size = Message.Threads.ThreadSize[threadIndex]; }
-                    
+                    lock (Message.Threads) { _size = Message.Threads.ThreadSize[threadIndex]; }
+
                     //线程是否已完成
                     if (_size == _targetSize) continue;
                     //每个线程建立单独的流，在线程结束时由线程负责释放
@@ -200,7 +202,7 @@ namespace TX.Downloaders
                 long remain = _targetSize;
 
                 //下载数据缓存数组
-                byte[] responseBytes = new byte[10*1024];
+                byte[] responseBytes = new byte[10 * 1024];
                 int pieceLength = 0;
                 //剩余字节为0时停止下载
                 while (remain > 0 && State == DownloadState.Downloading && _operationCode == CurrentOperationCode)
@@ -251,37 +253,44 @@ namespace TX.Downloaders
                 else return;
             }
             //进入这里没有return表示已经完成
+
+            GC.Collect();
+
+            StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
+            StorageFolder folder = await StorageManager.TryGetFolderAsync(Message.FolderToken);
+
+            if (folder == null)
+            {
+                //下载文件夹不合法，用别的替代
+                folder = await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken);
+                if (folder == null) folder = ApplicationData.Current.LocalCacheFolder;
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Strings.AppResources.GetString("DownloadFolderPathIllegalMessage"));
+                //不管怎样，都有地方存放已下载文件
+                Message.FolderToken = StorageManager.AddToFutureAccessList(folder); //它实际上所在的文件夹
+            }
+
             try
             {
-                GC.Collect();
-
-                StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
-                StorageFolder folder = await StorageTools.StorageManager.TryGetDownloadFolderAsync();
-
-                if(folder == null) folder = ApplicationData.Current.LocalCacheFolder;
-
                 await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
-
-                Message.FolderPath = folder.Path;
-
-                Message.IsDone = true;
-
-                DisposeSpeedHelper();
-
-                //播放一个通知
-                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
-                    Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path, folder.Path);
-
-                //触发事件
-                State = DownloadState.Done;
-                DownloadComplete?.Invoke(Message);
             }
             catch (Exception e)
             {
-                //其他异常
-                Debug.WriteLine(e.ToString());
-                HandleError(e, CurrentOperationCode);
+                HandleError(e, operationCode);
+                return;
             }
+
+            Message.IsDone = true;
+
+            DisposeSpeedHelper();
+
+            //播放一个通知
+            Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
+                Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path, folder.Path);
+
+            //触发事件
+            State = DownloadState.Done;
+            DownloadComplete?.Invoke(Message);
         }
 
         private void HandleError(Exception e, int operationCode)

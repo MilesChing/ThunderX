@@ -3,17 +3,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="TXBorder"
-                   x:FieldModifier="Public"
-                   TargetType="Border">
+           x:FieldModifier="Public"
+           TargetType="Border">
         <Setter Property="Height"
-                        Value="12" />
+                Value="12" />
     </Style>
 
     <Style x:Key="TXBigBorder"
-                   x:FieldModifier="Public"
-                   TargetType="Border">
+           x:FieldModifier="Public"
+           TargetType="Border">
         <Setter Property="Height"
-                        Value="24" />
+                Value="24" />
     </Style>
-    
+
+    <Style x:Key="TXHorizontalLine"
+           x:FieldModifier="Public"
+           TargetType="Border">
+        <Setter Property="Height"
+                Value="1px" />
+        <Setter Property="Background"
+                Value="{ThemeResource SolidSystemBaseHighColorBrush}" />
+        <Setter Property="Opacity"
+                Value="0.1"/>
+        <Setter Property="HorizontalAlignment"
+                Value="Stretch"/>
+        <Setter Property="Margin"
+                Value="0,12,0,12"/>
+    </Style>
+
 </ResourceDictionary>

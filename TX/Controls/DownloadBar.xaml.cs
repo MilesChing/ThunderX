@@ -10,6 +10,7 @@ using Windows.System;
 using Windows.Storage;
 using System.IO;
 using TX.Enums;
+using TX.StorageTools;
 
 namespace TX.Controls
 {
@@ -65,14 +66,17 @@ namespace TX.Controls
 
         private async void DownloaderStateChanged(Enums.DownloadState state)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
             {
                 Debug.WriteLine("State Change: " + state.ToString());
                 VisualStateManager.GoToState(this, state.ToString(), false);
                 if (state == Enums.DownloadState.Done)
                 {
                     SizeBlock.Text = StringConverter.GetPrintSize(downloader.Message.DownloadSize);
-                    SpeedBlock.Text = downloader.Message.FolderPath;
+
+                    string folderPath = (await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken))?.Path;
+                    if (folderPath == null) folderPath = Strings.AppResources.GetString("FolderNotExist");
+                    SpeedBlock.Text = folderPath;
 
                     Models.DownloaderMessage message = downloader.Message;
                     NameBlock.Text = message.FileName + message.Extention;
@@ -165,7 +169,7 @@ namespace TX.Controls
         {
             try
             {
-                string path = Path.Combine(downloader.Message.FolderPath,
+                string path = Path.Combine((await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken)).Path,
                                 downloader.Message.FileName + downloader.Message.Extention);
                 var file = await StorageFile.GetFileFromPathAsync(path);
 
@@ -184,8 +188,8 @@ namespace TX.Controls
         {
             try
             {
-                var folder = await StorageFolder.GetFolderFromPathAsync(downloader.Message.FolderPath);
-                StorageTools.StorageManager.LaunchFolderAsync(folder);
+                var folder = await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken);
+                StorageManager.LaunchFolderAsync(folder);
             }
             catch (Exception)
             {

@@ -93,17 +93,15 @@
             <Border Style="{StaticResource TXBorder}" />
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="SelectFolderButton"
-                    Style="{StaticResource TXAccentButtonStyle}"
-                    x:Uid="SetPage_SelectFolderButton"
-                    Click="SelectFolderButton_Click" 
-                    Margin="0,0,8,0"/>
+                        Style="{StaticResource TXAccentButtonStyle}"
+                        x:Uid="SetPage_SelectFolderButton"
+                        Click="SelectFolderButton_Click" 
+                        Margin="0,0,8,0"/>
                 <Button x:Name="OpenFolderButton"
                         Style="{StaticResource TXOrdinaryButtonStyle}"
                         x:Uid="SetPage_OpenFolderButton"
                         Click="OpenFolderButton_Click"/>
             </StackPanel>
-            
-            
             <Border Style="{StaticResource TXBigBorder}" />
             <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>

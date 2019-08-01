@@ -8,6 +8,19 @@
               xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls"
               Background="{StaticResource TXBackgroundAcrylicBrush}">
 
+    <Page.Resources>
+        <Style x:Key="ContactDetailsGridStyle"
+               TargetType="Grid">
+            <Style.Setters>
+                <Setter Property="Background" Value="{StaticResource SolidSystemAccentColorBrush}"/>
+                <Setter Property="CornerRadius" Value="2"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="0,0,0,4"/>
+            </Style.Setters>
+        </Style>
+    </Page.Resources>
+    
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
                   HorizontalAlignment="Left"
@@ -49,10 +62,16 @@
                 </StackPanel>
             </StackPanel>
             <Border Style="{StaticResource TXBigBorder}"/>
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="AboutPage_SubTitle_Guide"/>
+            <Border Style="{StaticResource TXBorder}"/>
             <HyperlinkButton Foreground="{StaticResource SolidSystemAccentColorBrush}" 
-                             Content="打开Thunder X使用帮助"
+                             x:Uid="AboutPage_GuideText_Guide"
                              Click="HyperlinkButton_Click"/>
-            <Border Style="{StaticResource TXBigBorder}"/>
+            <Border Style="{StaticResource TXBorder}"/>
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="AboutPage_SubTitle_Version"/>
+            <Border Style="{StaticResource TXBorder}"/>
             <!--显示给试用版的界面-->
             <StackPanel x:Name="TrialPanel"
                         Visibility="Collapsed">
@@ -70,8 +89,11 @@
                 <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="AboutPage_GuideText_Active"/>
             </StackPanel>
+            <Border Style="{StaticResource TXBigBorder}"/>
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="AboutPage_SubTitle_Review"/>
             <Border Style="{StaticResource TXBorder}"/>
-            <TextBlock TextWrapping="Wrap" Style="{StaticResource TXPlainText}"
+            <TextBlock Style="{StaticResource TXPlainText}"
                        x:Uid="AboutPage_GuideText_Review"/>
             <Border Style="{StaticResource TXBorder}" />
             <RatingControl HorizontalAlignment="Left"
@@ -82,7 +104,7 @@
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="AboutPage_SubTitle_AboutDeveloper"/>
             <Border Style="{StaticResource TXBorder}"/>
-            <TextBlock Style="{StaticResource TXPlainText}"
+            <TextBlock Style="{StaticResource TXSubTitle}"
                        FontStyle="Italic"
                        FontWeight="SemiBold"
                        Foreground="{StaticResource SolidSystemAccentColorBrush}"
@@ -90,12 +112,34 @@
                        Text="Miles Ching"/>
             <Border Style="{StaticResource TXBorder}"/>
             <TextBlock Style="{StaticResource TXPlainText}"
-                       x:Uid="AboutPage_GuideText_AboutDeveloper"/>
+                       Text="眼睛望着同一片天空，&#13;心敲击着暮色的鼓。"/>
+            <Border Style="{StaticResource TXHorizontalLine}"/>
+
+            <Grid Style="{StaticResource ContactDetailsGridStyle}">
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="qinzhengrui@live.cn"
+                           FontFamily="Consolas"
+                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+            </Grid>
+            <Grid Style="{StaticResource ContactDetailsGridStyle}">
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="https://github.com/MilesChing"
+                           FontFamily="Consolas"
+                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+            </Grid>
+            <Grid Style="{StaticResource ContactDetailsGridStyle}">
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="Weibo @MilesChing"
+                           FontFamily="Consolas"
+                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+            </Grid>
+            <Grid Style="{StaticResource ContactDetailsGridStyle}">
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="https://milesching.github.io/"
+                           FontFamily="Consolas"
+                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+            </Grid>
             <Border Style="{StaticResource TXBigBorder}"/>
-            <Button x:Name="GithubButton"
-                    Style="{StaticResource TXOrdinaryButtonStyle}"
-                    x:Uid="AboutPage_Button_Github"
-                    Click="GithubButton_Click"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>

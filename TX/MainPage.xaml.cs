@@ -11,6 +11,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Windows.ApplicationModel.Core;
+using Windows.Storage;
+using System.Collections.Generic;
 
 namespace TX
 {
@@ -46,8 +48,19 @@ namespace TX
             Converters.ExtentionConverter.InitializeDictionary();   //开始初始化扩展名字典，异步
             DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged; //订阅内容变化事件
             //恢复上次关闭时保存的控件
-            var list = await StorageManager.GetMessagesAsync();
+            var list = await TXDataFileIO.GetMessagesAsync();
             if (list != null)
+            {
+                if(StorageManager.FutureAccessListCount() >= 500)
+                {
+                    //FutureAccessList中的Token，去除不必要的
+                    string[] tokens = new string[list.Count + 1];
+                    int i = 0;
+                    foreach (var message in list) tokens[i++] = message.FolderToken;
+                    tokens[tokens.Length - 1] = Settings.DownloadsFolderToken;
+                    StorageManager.RemoveFromFutureAccessListExcept(tokens);
+                }
+                
                 foreach (Models.DownloaderMessage ms in list)
                 {
                     DownloadBar db = new DownloadBar();
@@ -56,8 +69,7 @@ namespace TX
                     db.SetDownloader(dw);
                     dw.SetDownloaderFromBreakpoint(ms);
                 }
-
-            await StorageManager.TryGetDownloadFolderAsync();
+            }
         }
 
         /// <summary>

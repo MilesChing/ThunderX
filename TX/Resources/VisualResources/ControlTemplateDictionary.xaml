@@ -655,8 +655,8 @@
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundDisabled}"/>
                             </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderThickness">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundDisabled}"/>
                             </ObjectAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushDisabled}"/>
@@ -673,22 +673,22 @@
             </VisualStateManager.VisualStateGroups>
             <Grid>
                 <Grid x:Name="RootGrid" 
-                  BorderBrush="{TemplateBinding Background}"
-                  BorderThickness="2"
-                  Background="{TemplateBinding Background}" 
-                  CornerRadius="2">
+                      BorderBrush="{TemplateBinding Background}"
+                      BorderThickness="2"
+                      Background="{TemplateBinding Background}" 
+                      CornerRadius="2">
                 <Grid.RenderTransform>
                     <CompositeTransform/>
                 </Grid.RenderTransform>
                 <ContentPresenter x:Name="ContentPresenter"
-                              AutomationProperties.AccessibilityView="Raw"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              Content="{TemplateBinding Content}" 
-                              ContentTransitions="{TemplateBinding ContentTransitions}" 
-                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                              Padding="{TemplateBinding Padding}" 
-                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                              RenderTransformOrigin="0.5,0.5">
+                                  AutomationProperties.AccessibilityView="Raw"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}" 
+                                  ContentTransitions="{TemplateBinding ContentTransitions}" 
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                  Padding="{TemplateBinding Padding}" 
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RenderTransformOrigin="0.5,0.5">
                     <ContentPresenter.RenderTransform>
                         <CompositeTransform/>
                     </ContentPresenter.RenderTransform>

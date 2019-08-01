@@ -12,6 +12,7 @@ using Windows.Foundation.Collections;
 using Windows.Services.Store;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,6 +21,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Newtonsoft.Json;
 
 namespace TX
 {
@@ -69,13 +71,21 @@ namespace TX
             this.EnteredBackground += OnEnteringBackground;
             this.LeavingBackground += OnLeavingBackground;
             this.Resuming += OnResuming;
-            FirstRunWork();
             storeContext.OfflineLicensesChanged += async (s, e) =>
             {
                 AppLicense = await s.GetAppLicenseAsync();
                 LicenseChanged?.Invoke(AppLicense);
             };
             InitializeAppLicense();
+            if (Settings.DownloadsFolderToken == null)
+            {
+                //进入这里表示用户第一次运行程序，导致DownloadsFolderToken是空
+                Settings.DownloadsFolderToken = StorageManager.AddToFutureAccessList(
+                                                    ApplicationData.Current.LocalCacheFolder
+                                                );
+                FirstRun();
+            }
+            TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
         }
 
         private async void InitializeAppLicense()
@@ -227,31 +237,15 @@ namespace TX
                 bar.downloader.Pause();
                 list.Add(bar.downloader.Message);
             }
-            await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载
+            await TXDataFileIO.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
         }
 
-        private async void FirstRunWork()
+        private async void FirstRun()
         {
-            if (Settings.DownloadFolderPath == null)
-            {
-                //第一次运行
-                try
-                {
-                    var folder = await DownloadsFolder.CreateFolderAsync("DownloadsFolder", CreationCollisionOption.GenerateUniqueName);
-                    StorageApplicationPermissions.FutureAccessList.Clear();
-                    StorageApplicationPermissions.FutureAccessList.Add(folder);
-                    Settings.DownloadFolderPath = folder.Path;
-                }
-                catch (Exception)
-                {
-                    Settings.DownloadFolderPath = ApplicationData.Current.LocalCacheFolder.Path;
-                }
-
-                //打开帮助页面
-                await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
-            }
+            await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
         }
+
     }
 }

@@ -143,12 +143,28 @@
                 <Border Style="{StaticResource TXBigBorder}" />
             </StackPanel>
 
-            <Button x:Name="SubmitButton"
-                    Style="{StaticResource TXAccentButtonStyle}"
-                    x:Uid="NewTaskPage_SubmitButton"
-                    IsEnabled="False"
-                    Click="SubmitButton_Click" />
-
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="NewTaskPage_Subtitle_DownloadFolder"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <TextBlock x:Name="NowFolderTextBlock" 
+                       FontFamily="Consolas"
+                       TextWrapping="Wrap" Style="{StaticResource TXPlainText}"
+                       Foreground="{StaticResource SolidSystemAccentColorBrush}"
+                       Text="..."/>
+            <Border Style="{StaticResource TXBigBorder}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="SubmitButton"
+                        Style="{StaticResource TXAccentButtonStyle}"
+                        x:Uid="NewTaskPage_SubmitButton"
+                        IsEnabled="False"
+                        Click="SubmitButton_Click" 
+                         Margin="0,0,8,0"/>
+                <Button x:Name="FolderButton"
+                        Style="{StaticResource TXOrdinaryButtonStyle}"
+                        x:Uid="NewTaskPage_FolderButton"
+                        IsEnabled="True"
+                        Click="FolderButton_Click" />
+            </StackPanel>
             <Border Style="{StaticResource TXBigBorder}" />
             <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>

@@ -10,14 +10,26 @@ namespace TX.StorageTools
     class Settings
     {
         /// <summary>
-        /// 访问设置项
+        /// 尝试访问设置项，若未找到则返回默认值
         /// </summary>
         /// <typeparam name="T">设置项类型</typeparam>
         /// <param name="url">设置项的关键字</param>
-        /// <returns></returns>
-        private static T GetValue<T>(string url)
+        /// <param name="defaultValue">返回的默认值</param>
+        private static T TryGetValue<T>(string key, T defaultValue)
         {
-            return (T)Windows.Storage.ApplicationData.Current.LocalSettings.Values[url];
+            object value;
+            return ApplicationData.Current
+                .LocalSettings.Values
+                .TryGetValue(key, out value) ? (T)value : defaultValue;
+        }
+
+        /// <summary>
+        /// 设置值
+        /// </summary>
+        private static void SetValue<T>(string key, T value)
+        {
+            ApplicationData.Current
+                .LocalSettings.Values[key] = value;
         }
 
         /// <summary>
@@ -26,34 +38,23 @@ namespace TX.StorageTools
         public const string HelpLink = "https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html";
 
         /// <summary>
-        /// 下载文件夹路径
+        /// 下载文件夹Token
+        /// 有关文件夹Token可参考
+        /// https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.AccessCache.StorageApplicationPermissions
         /// </summary>
-        public static string DownloadFolderPath
+        public static string DownloadsFolderToken
         {
-            get
-            {
-                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("DownloadFolderPath"))
-                    return (string)ApplicationData.Current.LocalSettings.Values["DownloadFolderPath"];
-                else return null;
-            }
-            set
-            {
-                Windows.Storage.ApplicationData.Current.LocalSettings.Values["DownloadFolderPath"] = value;
-            }
+            get { return TryGetValue<string>(nameof(DownloadsFolderToken), null); }
+            set { SetValue(nameof(DownloadsFolderToken), value); }
         }
 
         /// <summary>
-        /// 设置的线程数，默认值10
+        /// 设置的线程数
         /// </summary>
         public static int ThreadNumber
         {
-            get
-            {
-                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("ThreadNumber"))
-                    return (int)ApplicationData.Current.LocalSettings.Values["ThreadNumber"];
-                else return 1;
-            }
-            set { ApplicationData.Current.LocalSettings.Values["ThreadNumber"] = value; }
+            get { return TryGetValue<int>(nameof(ThreadNumber), 10); }
+            set { SetValue(nameof(ThreadNumber), value); }
         }
 
         /// <summary>
@@ -61,13 +62,8 @@ namespace TX.StorageTools
         /// </summary>
         public static bool DarkMode
         {
-            get
-            {
-                if(ApplicationData.Current.LocalSettings.Values.ContainsKey("DarkMode"))
-                    return (bool)ApplicationData.Current.LocalSettings.Values["DarkMode"];
-                else return false;
-            }
-            set { ApplicationData.Current.LocalSettings.Values["DarkMode"] = value; }
+            get { return TryGetValue<bool>(nameof(DarkMode), false); }
+            set { SetValue(nameof(DarkMode), value); }
         }
 
         /// <summary>
@@ -75,18 +71,8 @@ namespace TX.StorageTools
         /// </summary>
         public static int MaximumRetries
         {
-            get
-            {
-                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRetries"))
-                {
-                    var p = ApplicationData.Current.LocalSettings.Values["MaximumRetries"];
-                    //兼容uint
-                    if (p is int) return (int)p;
-                    else return (int)((uint)p);
-                }
-                else return 0;
-            }
-            set { ApplicationData.Current.LocalSettings.Values["MaximumRetries"] = value; }
+            get { return TryGetValue<int>(nameof(MaximumRetries), 40); }
+            set { SetValue(nameof(MaximumRetries), value); }
         }
 
         /// <summary>
@@ -94,15 +80,8 @@ namespace TX.StorageTools
         /// </summary>
         public static int MaximumRecordsIndex
         {
-            get
-            {
-                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("MaximumRecords"))
-                {
-                    return (int)ApplicationData.Current.LocalSettings.Values["MaximumRecords"];
-                }
-                else return 1;
-            }
-            set { ApplicationData.Current.LocalSettings.Values["MaximumRecords"] = value; }
+            get { return TryGetValue<int>(nameof(MaximumRecordsIndex), 1); }
+            set { SetValue(nameof(MaximumRecordsIndex), value); }
         }
         //当MaximumRecords记录了k时，真实的上限是NormalRecordNumberParser[k]
         public static readonly int[] NormalRecordNumberParser = new int[4]{ 0, 50, 200, 1000 };

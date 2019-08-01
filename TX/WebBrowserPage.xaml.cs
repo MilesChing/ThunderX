@@ -52,24 +52,22 @@ namespace TX
             //不使用异步写法的话，MainWebView.Navigate可能阻塞线程
             Task.Run(async () =>
             {
-                try
-                {
-                    string url = Url.ToString();
-                    if (!url.Contains("://")) url = "http://" + url;
-                    await MainWebView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        () => { MainWebView.Navigate(new Uri(url)); });                   
-                }
-                catch (Exception exp)
-                {
-                    //填充问题页
-                    GetHtmlTemplateAndRun(async (content) =>
-                    {
-                        string html = content.Replace("Title", Strings.AppResources.GetString("SomethingWrong"))
-                                            .Replace("Text", string.Join(" ", exp.Message, "HResult: " + exp.HResult, "HelpLink: " + exp.HelpLink));
-                        await MainWebView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                            () => { MainWebView.NavigateToString(html); });
-                    });
-                }
+                string url = Url.ToString();
+                if (!url.Contains("://")) url = "http://" + url;
+                await MainWebView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                    () => {
+                        try { MainWebView.Navigate(new Uri(url)); }
+                        catch(Exception exp)
+                        {
+                            //填充问题页
+                            GetHtmlTemplateAndRun((content) =>
+                            {
+                                string html = content.Replace("Title", Strings.AppResources.GetString("SomethingWrong"))
+                                                    .Replace("Text", string.Join(" ", exp.Message, "HResult: " + exp.HResult, "HelpLink: " + exp.HelpLink));
+                                MainWebView.NavigateToString(html);
+                            });
+                        }
+                    });  
             });
         }
 
@@ -158,6 +156,12 @@ namespace TX
             {
                 SafeNavigateAsync(args.Uri.ToString());
                 args.Handled = true;
+            };
+
+            MainWebView.FrameNavigationStarting += (sender, args) =>
+            {
+                args.Cancel = true;
+                SafeNavigateAsync(args.Uri.ToString());
             };
 
             //注册回车键事件
