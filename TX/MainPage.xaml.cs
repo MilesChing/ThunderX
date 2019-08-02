@@ -29,24 +29,22 @@ namespace TX
         /// <summary>
         /// 在程序运行的过程中，MainPage始终只有一个View，因此有固定的引用和ViewID
         /// </summary>
-        public int ViewID = 0;
+        public int ViewID = ApplicationView.GetApplicationViewIdForWindow(Window.Current.CoreWindow);
 
         public MainPage()
         {
             Current = this;
-            ViewID = ApplicationView.GetApplicationViewIdForWindow(Window.Current.CoreWindow);
             this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();//设置标题栏颜色
             SetThemeChangedListener();
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
+            DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;
             InitializeComponent();
             InitializeAsync();
         }
 
         private async void InitializeAsync()
         {
-            Converters.ExtentionConverter.InitializeDictionary();   //开始初始化扩展名字典，异步
-            DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged; //订阅内容变化事件
             //恢复上次关闭时保存的控件
             var list = await TXDataFileIO.GetMessagesAsync();
             if (list != null)
@@ -223,6 +221,17 @@ namespace TX
         {
             await newTaskPageControl.OpenNewWindowAsync();
             NewTaskPage.Current.ForciblySetURL(URL);
+        }
+
+        private ApplicationViewMode _viewMode = ApplicationViewMode.Default;
+
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationViewMode target = _viewMode == ApplicationViewMode.CompactOverlay ?
+                ApplicationViewMode.Default : ApplicationViewMode.CompactOverlay;
+            _viewMode = target;
+            await ApplicationViewSwitcher.TryShowAsViewModeAsync(ViewID, target);
+            VisualStateManager.GoToState(this, target.ToString(), false);
         }
     }
 }

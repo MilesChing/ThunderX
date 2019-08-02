@@ -247,5 +247,14 @@ namespace TX.Controls
                 downloader.Start();
         }
 
+        /// <summary>
+        /// 当控件大小变化时采用不同的VisualState
+        /// </summary>
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Debug.WriteLine(e.NewSize.Width);
+            if (e.NewSize.Width < 400) VisualStateManager.GoToState(this, "Simple", false);
+            else VisualStateManager.GoToState(this, "Normal", false);
+        }
     }
 }

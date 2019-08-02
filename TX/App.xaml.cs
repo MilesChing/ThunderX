@@ -86,6 +86,7 @@ namespace TX
                 FirstRun();
             }
             TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
+            Converters.ExtentionConverter.InitializeDictionary();
         }
 
         private async void InitializeAppLicense()
