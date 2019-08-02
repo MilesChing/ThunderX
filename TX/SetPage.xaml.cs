@@ -35,12 +35,22 @@ namespace TX
         public SetPage()
         {
             this.InitializeComponent();
+            StartLoadDownloadFolderPath();
             ThreadNumSlider.Value = Settings.ThreadNumber;
             MaximumRetriesSlider.Value = Settings.MaximumRetries;
             DarkModeSwitch.IsOn = Settings.DarkMode;
-            NowFolderTextBlock.Text = StorageTools.Settings.DownloadFolderPath;
+            for (int i = 0; i < Settings.NormalRecordNumberParser.Length; ++i)
+                ((TextBlock)MaximumRecordsComboBox.Items[i]).Text = Settings.NormalRecordNumberParser[i].ToString();
+            MaximumRecordsComboBox.SelectedIndex = Settings.MaximumRecordsIndex;
             LicenseChanged(((App)App.Current).AppLicense);
             UserModify = true;
+        }
+
+        public async void StartLoadDownloadFolderPath()
+        {
+            string path = (await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken))?.Path;
+            if (path == null) path = Strings.AppResources.GetString("FolderNotExist");
+            NowFolderTextBlock.Text = path;
         }
 
         protected override void LicenseChanged(StoreAppLicense license)
@@ -68,17 +78,15 @@ namespace TX
             folderPicker.FileTypeFilter.Add(".");
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            Settings.DownloadFolderPath = folder.Path;
+            Settings.DownloadsFolderToken = StorageManager.AddToFutureAccessList(folder);
             NowFolderTextBlock.Text = folder.Path;
-            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Clear();
-            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
         }
 
         private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(Settings.DownloadFolderPath));
+                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(NowFolderTextBlock.Text));
             }
             catch (Exception)
             {
@@ -108,5 +116,10 @@ namespace TX
             Settings.MaximumRetries = (int)e.NewValue;
         }
 
+        private void MaximumRecordsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!UserModify) return;
+            Settings.MaximumRecordsIndex = MaximumRecordsComboBox.SelectedIndex;
+        }
     }
 }

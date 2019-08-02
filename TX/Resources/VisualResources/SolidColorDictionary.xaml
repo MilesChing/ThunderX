@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TX.Resources.VisualResources">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="SolidSystemAccentColorBrush" Color="{ThemeResource SystemAccentColor}"/>
     <SolidColorBrush x:Key="SolidSystemAccentColorLight3Brush"  Color="{ThemeResource SystemAccentColorLight3}"/>
@@ -24,8 +23,6 @@
     <SolidColorBrush x:Key="SolidSystemAltMediumLowColorBrush"  Color="{ThemeResource SystemAltMediumLowColor}"/>
 
     <SolidColorBrush x:Key="SolidWarningTextColorBrush" Color="Red"/>
-
-    
 
     <Color x:Key="B0">#000000</Color>
     <Color x:Key="B1">#111111</Color>
@@ -56,6 +53,16 @@
             <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B9}"/>
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource B3}"/>
+
+            <SolidColorBrush x:Key="SolidErrorColor" Color="#C62828"/>
+
+            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
+                                 StartPoint="0,0.5"
+                                 EndPoint="1,0.5">
+                <!--水平渐变-->
+                <GradientStop Offset="0" Color="#00ffffff"/>
+                <GradientStop Offset="1" Color="#ffffffff"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
@@ -69,6 +76,16 @@
             <SolidColorBrush x:Key="SolidBackground06ColorBrush" Color="{StaticResource B6}"/>
             <SolidColorBrush x:Key="SolidBackground04ColorBrush" Color="{StaticResource B9}"/>
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource BF}"/>
+
+            <SolidColorBrush x:Key="SolidErrorColor" Color="#F44336"/>
+
+            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
+                                 StartPoint="0,0.5"
+                                 EndPoint="1,0.5">
+                <!--水平渐变-->
+                <GradientStop Offset="0" Color="#00000000"/>
+                <GradientStop Offset="1" Color="#ff000000"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 

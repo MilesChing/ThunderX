@@ -53,8 +53,7 @@
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxRetries"/>
             <Border Style="{StaticResource TXBorder}" />
-            <TextBlock TextWrapping="Wrap"
-                       Style="{StaticResource TXPlainText}"
+            <TextBlock Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_MaxRetries"/>
             <Border Style="{StaticResource TXBorder}" />
             <Slider x:Name="MaximumRetriesSlider"
@@ -62,6 +61,23 @@
                     Minimum="0"
                     ValueChanged="MaximumRetriesSlider_ValueChanged"
                     Maximum="50" />
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="SetPage_Subtitle_MaxRecords"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <TextBlock Style="{StaticResource TXPlainText}"
+                       x:Uid="SetPage_GuideText_MaxRecords"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <ComboBox x:Name="MaximumRecordsComboBox"
+                      Width="200"
+                      SelectionChanged="MaximumRecordsComboBox_SelectionChanged">
+                <ComboBox.Items>
+                    <TextBlock Text="0"/>
+                    <TextBlock Text="50"/>
+                    <TextBlock Text="200"/>
+                    <TextBlock Text="1000"/>
+                </ComboBox.Items>
+            </ComboBox>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                            x:Uid="SetPage_Subtitle_DefaultFolder"/>
@@ -77,17 +93,15 @@
             <Border Style="{StaticResource TXBorder}" />
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="SelectFolderButton"
-                    Style="{StaticResource TXAccentButtonStyle}"
-                    x:Uid="SetPage_SelectFolderButton"
-                    Click="SelectFolderButton_Click" 
-                    Margin="0,0,8,0"/>
+                        Style="{StaticResource TXAccentButtonStyle}"
+                        x:Uid="SetPage_SelectFolderButton"
+                        Click="SelectFolderButton_Click" 
+                        Margin="0,0,8,0"/>
                 <Button x:Name="OpenFolderButton"
                         Style="{StaticResource TXOrdinaryButtonStyle}"
                         x:Uid="SetPage_OpenFolderButton"
                         Click="OpenFolderButton_Click"/>
             </StackPanel>
-            
-            
             <Border Style="{StaticResource TXBigBorder}" />
             <Border Style="{StaticResource TXBigBorder}" />
         </StackPanel>

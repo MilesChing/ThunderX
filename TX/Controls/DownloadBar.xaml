@@ -8,11 +8,13 @@
              xmlns:control="using:Microsoft.Toolkit.Uwp.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="80"
-             d:DesignWidth="500">
+             d:DesignWidth="500" 
+             SizeChanged="UserControl_SizeChanged">
 
     <UserControl.Resources>
         
-        <Storyboard x:Name="ShowGlassLabel">
+        <Storyboard x:Name="ShowGlassLabel"
+                    Completed="ShowGlassLabel_Completed">
             <DoubleAnimation Duration="00:00:00.1"
                              To="1"
                              Storyboard.TargetProperty="Opacity"
@@ -30,7 +32,8 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
-        <Storyboard x:Name="HideGlassLabel">
+        <Storyboard x:Name="HideGlassLabel"
+                    Completed="HideGlassLabel_Completed">
             <DoubleAnimation Duration="0:0:0.1"
                              To="0"
                              Storyboard.TargetProperty="Opacity"
@@ -47,6 +50,14 @@
                                       Value="0" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+
+        <Style TargetType="AppBarButton" x:Key="TXDownloadBarButtonStyle">
+            <Style.Setters>
+                <Setter Property="Width" Value="48"/>
+                <Setter Property="Visibility" Value="Collapsed"/>
+                <Setter Property="IsEnabled" Value="false"/>
+            </Style.Setters>
+        </Style>
         
     </UserControl.Resources>
 
@@ -57,8 +68,108 @@
                              Height="64"
                              OffsetY="1"
                              ShadowOpacity="0.2">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DownloaderStates">
+                <VisualState x:Name="Uninitialized">
+                    <VisualState.Setters>
+                        <Setter Target="DeleteButton.IsEnabled" Value="true"/>
+                        <Setter Target="DeleteButton.Visibility" Value="Visible"/>
+                        <Setter Target="PlayButton.Visibility" Value="Visible"/>
+                        <Setter Target="PauseButton.Visibility" Value="Visible"/>
+                        <Setter Target="RefreshButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Prepared">
+                    <VisualState.Setters>
+                        <Setter Target="SpeedBlock.Text" Value="PREPARED"/>
+                        <Setter Target="DeleteButton.IsEnabled" Value="true"/>
+                        <Setter Target="PlayButton.IsEnabled" Value="true"/>
+                        <Setter Target="RefreshButton.IsEnabled" Value="true"/>
+                        <Setter Target="DeleteButton.Visibility" Value="Visible"/>
+                        <Setter Target="PlayButton.Visibility" Value="Visible"/>
+                        <Setter Target="PauseButton.Visibility" Value="Visible"/>
+                        <Setter Target="RefreshButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pause">
+                    <VisualState.Setters>
+                        <Setter Target="NameBlock.Foreground" Value="{ThemeResource SolidSystemBaseMediumColorBrush}"/>
+                        <Setter Target="LeftSmallBar.Background" Value="{ThemeResource SolidSystemBaseMediumColorBrush}"/>
+                        <Setter Target="Bar.Foreground" Value="{ThemeResource SolidSystemBaseMediumColorBrush}"/>
+                        <Setter Target="SpeedBlock.Text" Value="PAUSE"/>
+                        <Setter Target="DeleteButton.IsEnabled" Value="true"/>
+                        <Setter Target="PlayButton.IsEnabled" Value="true"/>
+                        <Setter Target="RefreshButton.IsEnabled" Value="true"/>
+                        <Setter Target="DeleteButton.Visibility" Value="Visible"/>
+                        <Setter Target="PlayButton.Visibility" Value="Visible"/>
+                        <Setter Target="PauseButton.Visibility" Value="Visible"/>
+                        <Setter Target="RefreshButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Downloading">
+                    <VisualState.Setters>
+                        <Setter Target="DeleteButton.IsEnabled" Value="true"/>
+                        <Setter Target="RefreshButton.IsEnabled" Value="true"/>
+                        <Setter Target="PauseButton.IsEnabled" Value="true"/>
+                        <Setter Target="DeleteButton.Visibility" Value="Visible"/>
+                        <Setter Target="PlayButton.Visibility" Value="Visible"/>
+                        <Setter Target="PauseButton.Visibility" Value="Visible"/>
+                        <Setter Target="RefreshButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Target="ErrorBackground.Visibility" Value="Visible"/>
+                        <Setter Target="NameBlock.Foreground" Value="{ThemeResource SolidErrorColor}"/>
+                        <Setter Target="LeftSmallBar.Background" Value="{ThemeResource SolidErrorColor}"/>
+                        <Setter Target="Bar.Foreground" Value="{ThemeResource SolidErrorColor}"/>
+                        <Setter Target="SpeedBlock.Text" Value="ERROR"/>
+                        <Setter Target="DeleteButton.IsEnabled" Value="true"/>
+                        <Setter Target="RefreshButton.IsEnabled" Value="true"/>
+                        <Setter Target="DeleteButton.Visibility" Value="Visible"/>
+                        <Setter Target="PlayButton.Visibility" Value="Visible"/>
+                        <Setter Target="PauseButton.Visibility" Value="Visible"/>
+                        <Setter Target="RefreshButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Done">
+                    <VisualState.Setters>
+                        <Setter Target="Bar.Visibility" Value="Collapsed"/>
+                        <Setter Target="ProgressBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="LeftSmallBar.Visibility" Value="Collapsed"/>
+                        <Setter Target="NameBlock.Foreground" Value="{ThemeResource SolidSystemBaseMediumColorBrush}"/>
+                        <Setter Target="NameBlock.FontWeight" Value="Normal"/>
+                        <Setter Target="FileButton.IsEnabled" Value="true"/>
+                        <Setter Target="FolderButton.IsEnabled" Value="true"/>
+                        <Setter Target="HideButton.IsEnabled" Value="true"/>
+                        <Setter Target="FileButton.Visibility" Value="Visible"/>
+                        <Setter Target="FolderButton.Visibility" Value="Visible"/>
+                        <Setter Target="HideButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+
+            <VisualStateGroup>
+                <VisualState x:Name="Normal">
+                </VisualState>
+                <VisualState x:Name="Simple">
+                    <VisualState.Setters>
+                        <Setter Target="NameBlock.FontSize" Value="16"/>
+                        <Setter Target="LeftSmallColumn.Width" Value="4"/>
+                        <Setter Target="BlocksGrid.Padding" Value="12,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
         <Grid Background="{ThemeResource TXDownloadBarBackground}"
               CornerRadius="2">
+
+            <Border x:Name="ErrorBackground"
+                    Background="{ThemeResource SolidErrorColor}"
+                    Opacity="0.1"
+                    Visibility="Collapsed"/>
 
             <ProgressBar x:Name="Bar"
                          Background="Transparent"
@@ -69,11 +180,11 @@
                          Value="30"
                          HorizontalAlignment="Stretch"
                          VerticalAlignment="Bottom" />
-            
+
             <Grid x:Name="Label">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"
-                                      MaxWidth="10" />
+                    <ColumnDefinition x:Name="LeftSmallColumn"
+                                      Width="Auto"/>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*"
                                       MaxWidth="80" />
@@ -85,7 +196,9 @@
                       Background="{ThemeResource SolidSystemAccentColorBrush}" 
                       Opacity="0.2"/>
 
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="1"
+                      x:Name="BlocksGrid"
+                      Padding="16,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1.6*" />
                         <RowDefinition Height="0.8*" />
@@ -98,10 +211,10 @@
                                VerticalAlignment="Bottom"
                                FontWeight="SemiBold"
                                FontSize="18"
-                               Margin="16,4,4,4"
+                               Margin="0,4,4,4"
                                Foreground="{ThemeResource SolidSystemAccentColorBrush}" />
 
-                    <StackPanel Margin="16,0,0,0"
+                    <StackPanel Margin="0,0,0,0"
                                 Grid.Row="1"
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
@@ -119,7 +232,7 @@
                                MaxLines="1"/>
 
                     </StackPanel>
-                    
+
                 </Grid>
 
                 <Grid Grid.Column="2">
@@ -135,24 +248,20 @@
 
             <Grid x:Name="TopGlassLabel"
                   Background="Transparent"
+                  Opacity="0"
                   PointerEntered="TopGlassLabel_PointerEntered"
                   PointerExited="TopGlassLabel_PointerExited"
-                  PointerReleased="TopGlassLabel_PointerReleased">
-                
+                  PointerReleased="TopGlassLabel_PointerReleased" DoubleTapped="TopGlassLabel_DoubleTapped">
+
                 <StackPanel x:Name="cmdBar"
                             Orientation="Horizontal"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Right">
-                    <Rectangle Width="128">
-                        <Rectangle.Fill>
-                            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                                <GradientStop Offset="0" Color="Transparent"/>
-                                <GradientStop Offset="1" Color="{ThemeResource SystemAltHighColor}"/>
-                            </LinearGradientBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
 
-                    <StackPanel HorizontalAlignment="Right"
+                    <Rectangle Width="128" Fill="{ThemeResource Transparent2DownloadBarBackgroundLinearGradientBrush}"/>
+
+                    <StackPanel x:Name="ButtonPanel"
+                                HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Height="64"
                                 Padding="8,8,8,8"
@@ -161,57 +270,47 @@
                         <AppBarButton x:Name="DeleteButton"
                                       x:Uid="DownloadBar_DeleteButton"
                                       Icon="Delete"
-                                      Width="48"
-                                      IsEnabled="False"
-                                      Click="DeleteButton_Click" />
+                                      Click="DeleteButton_Click"
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="PlayButton"
                                       x:Uid="DownloadBar_PlayButton"
                                       Icon="Play"
-                                      Width="48"
-                                      IsEnabled="False"
-                                      Click="PlayButton_Click" />
+                                      Click="PlayButton_Click" 
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="PauseButton"
                                       x:Uid="DownloadBar_PauseButton"
-                                      IsEnabled="False"
                                       Icon="Pause"
-                                      Width="48"
-                                      Click="PauseButton_Click" />
+                                      Click="PauseButton_Click"
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="RefreshButton"
                                       x:Uid="DownloadBar_RefreshButton"
-                                      IsEnabled="False"
                                       Icon="Refresh"
-                                      Width="48"
-                                      Click="RefreshButton_Click" />
+                                      Click="RefreshButton_Click" 
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="FileButton"
                                       x:Uid="DownloadBar_FileButton"
-                                      IsEnabled="True"
-                                      Visibility="Collapsed"
                                       Icon="OpenFile"
-                                      Width="48"
-                                      Click="FileButton_Click" />
+                                      Click="FileButton_Click"
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="FolderButton"
                                       x:Uid="DownloadBar_FolderButton"
-                                      IsEnabled="True"
-                                      Visibility="Collapsed"
                                       Icon="OpenLocal"
-                                      Width="48"
-                                      Click="FolderButton_Click" />
+                                      Click="FolderButton_Click"
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                         <AppBarButton x:Name="HideButton"
                                       x:Uid="DownloadBar_HideButton"
-                                      IsEnabled="True"
-                                      Visibility="Collapsed"
                                       Icon="UnPin"
-                                      Width="48"
-                                      Click="HideButton_Click" />
+                                      Click="HideButton_Click" 
+                                      Style="{StaticResource TXDownloadBarButtonStyle}"/>
                     </StackPanel>
-                    
+
                 </StackPanel>
             </Grid>
-            
+
         </Grid>
 
     </control:DropShadowPanel>
-    
+
 </UserControl>
 
     

@@ -9,15 +9,7 @@ namespace TX.Models
         /// </summary>
         public DownloaderMessage()
         {
-            TempFilePath = null;
-            URL = null;
-            FileName = null;
-            Extention = null;
-            DownloadSize = 0;
-            FileSize = null;
-            FolderPath = null;
             Threads = new ThreadMessage();
-            IsDone = false;
         }
 
         public DownloaderMessage(NullableAttributesDownloaderMessage message)
@@ -31,7 +23,7 @@ namespace TX.Models
             Threads = message.Threads;
             DownloaderType = message.DownloaderType;
             IsDone = (message.IsDone == null) ? false : (bool) message.IsDone;
-            FolderPath = message.FolderPath;
+            FolderToken = message.FolderToken;
         }
 
         /// <summary>
@@ -82,7 +74,7 @@ namespace TX.Models
         /// <summary>
         /// 下载文件夹地址
         /// </summary>
-        public string FolderPath;
+        public string FolderToken;
     }
 
     public class NullableAttributesDownloaderMessage
@@ -95,7 +87,7 @@ namespace TX.Models
 
         public string Extention;
 
-        public string FolderPath;
+        public string FolderToken;
 
         public long? DownloadSize;
 

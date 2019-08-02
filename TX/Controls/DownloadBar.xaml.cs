@@ -10,6 +10,7 @@ using Windows.System;
 using Windows.Storage;
 using System.IO;
 using TX.Enums;
+using TX.StorageTools;
 
 namespace TX.Controls
 {
@@ -65,60 +66,25 @@ namespace TX.Controls
 
         private async void DownloaderStateChanged(Enums.DownloadState state)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
             {
-                SetButtonsVisibility(state);
-                if (state == Enums.DownloadState.Pause)
-                {
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = true;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = true;
-                }
-                else if (state == Enums.DownloadState.Error)
-                {
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = true;
-                }
-                else if (state == Enums.DownloadState.Downloading)
-                {
-                    PauseButton.IsEnabled = true;
-                    PlayButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = true;
-                    Bar.ShowPaused = false;
-                }
-                else if (state == Enums.DownloadState.Done)
+                Debug.WriteLine("State Change: " + state.ToString());
+                VisualStateManager.GoToState(this, state.ToString(), false);
+                if (state == Enums.DownloadState.Done)
                 {
                     SizeBlock.Text = StringConverter.GetPrintSize(downloader.Message.DownloadSize);
-                    SpeedBlock.Text = downloader.Message.FolderPath;
+
+                    string folderPath = (await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken))?.Path;
+                    if (folderPath == null) folderPath = Strings.AppResources.GetString("FolderNotExist");
+                    SpeedBlock.Text = folderPath;
 
                     Models.DownloaderMessage message = downloader.Message;
                     NameBlock.Text = message.FileName + message.Extention;
-
-                    LeftSmallBar.Visibility = Visibility.Collapsed;
-                    Bar.Visibility = Visibility.Collapsed;
-                    ProgressBlock.Visibility = Visibility.Collapsed;
-
-                    PlayButton.IsEnabled = false;
-                    PauseButton.IsEnabled = false;
-                    DeleteButton.IsEnabled = false;
-                    RefreshButton.IsEnabled = false;
                 }
                 else if (state == Enums.DownloadState.Prepared)
                 {
-                    HideGlassLabel.Begin();
-
                     Models.DownloaderMessage message = downloader.Message;
                     NameBlock.Text = message.FileName + message.Extention;
-                    PauseButton.IsEnabled = false;
-                    PlayButton.IsEnabled = true;
-                    DeleteButton.IsEnabled = true;
-                    RefreshButton.IsEnabled = false;
                     int per = (int)((message.FileSize == null) ? 0
                         : (100f * message.DownloadSize / message.FileSize));
                     ProgressBlock.Text = (message.FileSize == null) ? "-%" : (per + "%");
@@ -158,7 +124,7 @@ namespace TX.Controls
         private void TopGlassLabel_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
-                ShowGlassLabel.Begin();
+                ShowGlassLabel_Begin();
         }
 
         private void TopGlassLabel_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -176,22 +142,25 @@ namespace TX.Controls
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Start();
+            HideGlassLabel.Begin();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Pause();
+            HideGlassLabel.Begin();
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             downloader.Refresh();
+            HideGlassLabel.Begin();
         }
 
         private void TopGlassLabel_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse) return;
-            if (TopGlassLabel.Opacity == 0) ShowGlassLabel.Begin();
+            if (TopGlassLabel.Opacity == 0) ShowGlassLabel_Begin();
             else if (TopGlassLabel.Opacity == 1) HideGlassLabel.Begin();
             else return;
         }
@@ -200,50 +169,92 @@ namespace TX.Controls
         {
             try
             {
-                var options = new LauncherOptions();
-                options.DisplayApplicationPicker = true;
-                await Launcher.LaunchFileAsync(await StorageFile.GetFileFromPathAsync(
-                    Path.Combine(downloader.Message.FolderPath, 
-                                downloader.Message.FileName, 
-                                downloader.Message.Extention))
-                    , options);
+                string path = Path.Combine((await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken)).Path,
+                                downloader.Message.FileName + downloader.Message.Extention);
+                var file = await StorageFile.GetFileFromPathAsync(path);
+
+                StorageTools.StorageManager.LaunchFileAsync(file);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                Debug.WriteLine(ex.Message);
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
                     Strings.AppResources.GetString("FileNotExist"));
             }
+
+            HideGlassLabel.Begin();
         }
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(
-                    downloader.Message.FolderPath));
+                var folder = await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken);
+                StorageManager.LaunchFolderAsync(folder);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(ex.Message);
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
-                    Strings.AppResources.GetString("FileNotExist"));
+                    Strings.AppResources.GetString("FolderNotExist"));
             }
-        }
 
-        private void SetButtonsVisibility(DownloadState state)
-        {
-            //当任务结束后（isDone == true）显示FileButton和FolderButton，否则显示其他Button
-            var vis = state == DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
-            var _vis = state != DownloadState.Done ? Visibility.Visible : Visibility.Collapsed;
-            FileButton.Visibility = FolderButton.Visibility = HideButton.Visibility = vis;
-            DeleteButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = RefreshButton.Visibility = _vis;
+            HideGlassLabel.Begin();
         }
 
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
             if (downloader != null) downloader.Dispose();
             MainPage.Current.DownloadBarCollection.Remove(this);
+        }
+
+        //为了避免在TopGlassLabel的Opacity为0时用户误触TopGlassLabel上面的按键
+        //我们在Hide动画结束后把按键所在控件的Visibility改成不可见
+        //在Show动画开始前把Visibility改为可见
+        //这样会出现一个问题，如果Hide动画没结束而Show动画开始了，那么Show动画结束后，按钮将变为不可见
+        //使用showing记录当前是否在执行Show动画，如果Hide动画结束时，发现Show动画在播放，那么就不作更改
+        private bool showing = false;
+
+        private void HideGlassLabel_Completed(object sender, object e)
+        {
+            if (showing) return;
+            ButtonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowGlassLabel_Begin()
+        {
+            showing = true;
+            ButtonPanel.Visibility = Visibility.Visible;
+            ShowGlassLabel.Begin();
+        }
+
+        private void ShowGlassLabel_Completed(object sender, object e)
+        {
+            showing = false;
+        }
+
+        private void TopGlassLabel_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            Debug.WriteLine("DoubleTapped");
+            var state = downloader.State;
+            if (state == Enums.DownloadState.Pause)
+                downloader.Start();
+            else if (state == Enums.DownloadState.Error)
+                downloader.Refresh();
+            else if (state == Enums.DownloadState.Downloading)
+                downloader.Pause();
+            else if (state == Enums.DownloadState.Done)
+                FileButton_Click(null, null);
+            else if (state == Enums.DownloadState.Prepared)
+                downloader.Start();
+        }
+
+        /// <summary>
+        /// 当控件大小变化时采用不同的VisualState
+        /// </summary>
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Debug.WriteLine(e.NewSize.Width);
+            if (e.NewSize.Width < 400) VisualStateManager.GoToState(this, "Simple", false);
+            else VisualStateManager.GoToState(this, "Normal", false);
         }
     }
 }

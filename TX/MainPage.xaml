@@ -52,6 +52,27 @@
 
     <Grid Background="{StaticResource TXBackgroundAcrylicBrush}"
           x:Name="grid">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="SizeGroup">
+                <VisualState x:Name="Default">
+                    
+                </VisualState>
+                <VisualState x:Name="CompactOverlay">
+                    <VisualState.Setters>
+                        <Setter Target="AddButton.LabelPosition" Value="Collapsed"/>
+                        <Setter Target="SetButton.LabelPosition" Value="Collapsed"/>
+                        <Setter Target="BrowserButton.LabelPosition" Value="Collapsed"/>
+                        <Setter Target="AboutButton.LabelPosition" Value="Collapsed"/>
+
+                        <Setter Target="BottomCommandBar.Margin" Value="0"/>
+                        <Setter Target="gv.Margin" Value="8,32,0,48"/>
+                    </VisualState.Setters>
+                </VisualState>
+                
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
         <Border x:Name="WidthBindTool"
                 Width="100" />
         <!--LOGO-->
@@ -98,6 +119,7 @@
         </GridView>
 
         <CommandBar Background="Transparent"
+                    x:Name="BottomCommandBar"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
                     Margin="20"
@@ -122,5 +144,21 @@
                           Click="AboutButton_Click">
             </AppBarButton>
         </CommandBar>
+
+        <AppBarButton HorizontalAlignment="Left"
+                      VerticalAlignment="Bottom" 
+                      Width="48"
+                      Height="48"
+                      Margin="8"
+                      Click="AppBarButton_Click"
+                      FontFamily="Segoe MDL2 Assets" 
+                      RenderTransformOrigin="0,1">
+            <AppBarButton.Icon>
+                <FontIcon Glyph="&#xE923;"/>
+            </AppBarButton.Icon>
+            <AppBarButton.RenderTransform>
+                <CompositeTransform ScaleX="0.6" ScaleY="0.6"/>
+            </AppBarButton.RenderTransform>
+        </AppBarButton>
     </Grid>
 </Page>

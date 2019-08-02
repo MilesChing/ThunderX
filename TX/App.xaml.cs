@@ -12,6 +12,7 @@ using Windows.Foundation.Collections;
 using Windows.Services.Store;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,6 +21,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Newtonsoft.Json;
 
 namespace TX
 {
@@ -69,13 +71,22 @@ namespace TX
             this.EnteredBackground += OnEnteringBackground;
             this.LeavingBackground += OnLeavingBackground;
             this.Resuming += OnResuming;
-            FirstRunWork();
             storeContext.OfflineLicensesChanged += async (s, e) =>
             {
                 AppLicense = await s.GetAppLicenseAsync();
                 LicenseChanged?.Invoke(AppLicense);
             };
             InitializeAppLicense();
+            if (Settings.DownloadsFolderToken == null)
+            {
+                //进入这里表示用户第一次运行程序，导致DownloadsFolderToken是空
+                Settings.DownloadsFolderToken = StorageManager.AddToFutureAccessList(
+                                                    ApplicationData.Current.LocalCacheFolder
+                                                );
+                FirstRun();
+            }
+            TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
+            Converters.ExtentionConverter.InitializeDictionary();
         }
 
         private async void InitializeAppLicense()
@@ -101,17 +112,27 @@ namespace TX
 
                 if(arguments.Length == 2 && arguments[0] == "file")
                 {
-                    Debug.WriteLine("Launch file from toast: " + arguments[1]);
-                    var options = new LauncherOptions();
-                    options.DisplayApplicationPicker = true;
-                    StorageFile target = await StorageFile.GetFileFromPathAsync(arguments[1]);
-                    await Windows.System.Launcher.LaunchFileAsync(target, options);
+                    StorageFile target;
+                    try { target = await StorageFile.GetFileFromPathAsync(arguments[1]); }
+                    catch(Exception)
+                    {
+                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                            Strings.AppResources.GetString("FileNotExist"));
+                        return;
+                    }
+                    if(target != null) StorageManager.LaunchFileAsync(target);
                 }
                 else if (arguments.Length == 2 && arguments[0] == "folder")
                 {
-                    Debug.WriteLine("Launch directory from toast: " + arguments[1]);
-                    StorageFolder target = await StorageFolder.GetFolderFromPathAsync(arguments[1]);
-                    await Windows.System.Launcher.LaunchFolderAsync(target);
+                    StorageFolder target;
+                    try { target = await StorageFolder.GetFolderFromPathAsync(arguments[1]); }
+                    catch (Exception)
+                    {
+                        Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                            Strings.AppResources.GetString("FolderNotExist"));
+                        return;
+                    }
+                    if (target != null) StorageManager.LaunchFolderAsync(target);
                 }
                 //如果点击通知打开应用前是未运行状态，就退出程序（否则应保持原界面）
                 if(args.PreviousExecutionState != ApplicationExecutionState.Running)
@@ -196,40 +217,36 @@ namespace TX
         /// <param name="e">有关挂起请求的详细信息。</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            int doneNum = 0;
             Debug.WriteLine("OnSuspending");
             var deferral = e.SuspendingOperation.GetDeferral();
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
             foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
             {
+                if (bar.downloader.State == Enums.DownloadState.Disposed ||
+                    bar.downloader.State == Enums.DownloadState.Uninitialized)
+                    continue;
+
+                if(bar.downloader.State == Enums.DownloadState.Done)
+                {
+                    doneNum++;
+                    if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                        continue;
+                }
+
                 bar.downloader.Pause();
                 list.Add(bar.downloader.Message);
             }
-            await StorageTools.StorageManager.SaveDownloadMessagesAsync(list);  //保存未完成的下载
+            await TXDataFileIO.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
         }
 
-        private async void FirstRunWork()
+        private async void FirstRun()
         {
-            if (Settings.DownloadFolderPath == null)
-            {
-                //第一次运行
-                try
-                {
-                    var folder = await DownloadsFolder.CreateFolderAsync("DownloadsFolder", CreationCollisionOption.GenerateUniqueName);
-                    StorageApplicationPermissions.FutureAccessList.Clear();
-                    StorageApplicationPermissions.FutureAccessList.Add(folder);
-                    Settings.DownloadFolderPath = folder.Path;
-                }
-                catch (Exception)
-                {
-                    Settings.DownloadFolderPath = ApplicationData.Current.LocalCacheFolder.Path;
-                }
-
-                //打开帮助页面
-                await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
-            }
+            await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
         }
+
     }
 }

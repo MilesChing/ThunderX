@@ -31,5 +31,10 @@ namespace TX.Models
         /// 临时文件的路径（含文件名）
         /// </summary>
         public string FilePath;
+
+        /// <summary>
+        /// 下载文件最终存放的文件夹地址
+        /// </summary>
+        public string FolderToken;
     }
 }

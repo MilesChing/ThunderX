@@ -5,26 +5,60 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Controls;
+using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.StorageTools
 {
     class StorageManager
     {
-        /// <returns>获取不到返回null</returns>
-        public static async Task<StorageFolder> TryGetDownloadFolderAsync()
+        public static int FutureAccessListCount()
+        {
+            var entries = StorageApplicationPermissions.FutureAccessList.Entries;
+            return StorageApplicationPermissions.FutureAccessList.Entries.Count;
+        }
+
+        public static string AddToFutureAccessList(StorageFolder folder)
+        {
+            return StorageApplicationPermissions.FutureAccessList.Add(folder);
+        }
+
+        public static void RemoveFromFutureAccessList(string token)
         {
             try
             {
-                return await StorageFolder.GetFolderFromPathAsync(Settings.DownloadFolderPath);
+                StorageApplicationPermissions.FutureAccessList.Remove(token);
             }
-            catch(Exception e)
+            catch (Exception) { }
+        }
+
+        public static void RemoveFromFutureAccessListExcept(string[] tokens)
+        {
+            var entries = StorageApplicationPermissions.FutureAccessList.Entries;
+            string[] tokensToRemove = new string[entries.Count];
+            int tail = 0;
+            foreach (var p in entries)
+                if (!tokens.Contains(p.Token))
+                    tokensToRemove[tail++] = p.Token;
+            for (int i = 0; i < tail; ++i) StorageManager.RemoveFromFutureAccessList(tokensToRemove[i]);
+        }
+
+        public static async Task<StorageFolder> TryGetFolderAsync(string token)
+        {
+            try
             {
-                Debug.WriteLine("获取DownloadFolder错误：" + e.Message);
-                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("DownloadFolderPathIllegal"),
-                    Strings.AppResources.GetString("DownloadFolderPathIllegalMessage"));
+                return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+            }
+            catch(Exception)
+            {
                 return null;
             }
+        }
+
+        public static void ClearFutureAccessList()
+        {
+            StorageApplicationPermissions.FutureAccessList.Clear();
         }
 
         public static string GetTemporaryName()
@@ -44,40 +78,6 @@ namespace TX.StorageTools
         {
             StorageFolder folder = ApplicationData.Current.LocalCacheFolder;
             return (await folder.CreateFileAsync(GetTemporaryName(), CreationCollisionOption.GenerateUniqueName)).Path;
-        }
-
-        public static async Task SaveDownloadMessagesAsync(List<Models.DownloaderMessage> messages)
-        {
-            try
-            {
-                string str = JsonHelper.SerializeObject(messages);
-                var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("log.mls", CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteTextAsync(file, str);
-                Debug.WriteLine("写入文件：\n" + str);
-            }
-            catch(Exception e)
-            {
-                Debug.WriteLine(e.ToString());
-            }
-        }
-
-        public static async Task<List<Models.DownloaderMessage>> GetMessagesAsync()
-        {
-            StorageFile file = null;
-            try { file = await ApplicationData.Current.LocalCacheFolder.GetFileAsync("log.mls"); }
-            catch (Exception) { return null; }
-            try
-            {
-                string str = await FileIO.ReadTextAsync(file);
-                await file.DeleteAsync();
-                if (str == null) return null;
-                var list = JsonHelper.DeserializeJsonToList<Models.NullableAttributesDownloaderMessage>(str);
-                //首先解析为NullableAttributesDownloaderMessage
-                //接下来通过类型转换为DownloaderMessage解决某些属性解析不出来的问题
-                return list.ConvertAll(new Converter<Models.NullableAttributesDownloaderMessage,
-                    Models.DownloaderMessage>((old) => { return new Models.DownloaderMessage(old); }));
-            }
-            catch (Exception) { return null; }
         }
 
         public static async Task GetCleanAsync()
@@ -105,6 +105,25 @@ namespace TX.StorageTools
                 }
             }
             catch (Exception) { }
+        }
+
+        public static async void LaunchFileAsync(StorageFile file)
+        {
+            if (file.FileType.ToLower() == ".exe")
+            {
+                LaunchFolderAsync(await file.GetParentAsync());
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("ExtentionNotSupported"), "");
+                return;
+            }
+            //如果file不是可执行文件那么用默认软件打开file，否则打开file所在文件夹
+            var options = new Windows.System.LauncherOptions();
+            options.DisplayApplicationPicker = true;
+            await Windows.System.Launcher.LaunchFileAsync(file, options);
+        }
+
+        public static async void LaunchFolderAsync(StorageFolder folder)
+        {
+            await Windows.System.Launcher.LaunchFolderAsync(folder);
         }
     }
 }

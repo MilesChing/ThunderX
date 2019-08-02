@@ -50,6 +50,8 @@ namespace TX
                 RecommendedNameBlock,
                 ComboBox,
                 comboBoxItems);
+
+            RefreshUI();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -67,6 +69,7 @@ namespace TX
         public void RefreshUI()
         {
             //将UI恢复到初始值（窗口的循环利用机制）
+            StartLoadDownloadFolderPath();
             URLBox.Text = string.Empty;
             NeedRenameButton.IsChecked = false;
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
@@ -74,6 +77,13 @@ namespace TX
             RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
             GC.Collect();
+        }
+
+        public async void StartLoadDownloadFolderPath()
+        {
+            string path = (await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken))?.Path;
+            if (path == null) path = Strings.AppResources.GetString("FolderNotExist");
+            NowFolderTextBlock.Text = path;
         }
 
         private void SetVisualManagers()
@@ -128,15 +138,17 @@ namespace TX
                 FileName = (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
                 Size = analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
                 Threads = ThreadLayout.Visibility == Visibility.Visible ? (int?)ThreadNumSlider.Value : null,
-                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null
+                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null,
+                FolderToken = currentFolderToken
             };
             
             downloader.SetDownloader(settings);
             MainPage.Current.AddDownloadBar(downloader);
             //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
             RefreshUI();
-            await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
             
+            await ApplicationViewSwitcher.SwitchAsync(MainPage.Current.ViewID);//拉起MainPage
+            await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
         }
 
         private void NeedRenameButton_ValueChanged(object sender, RoutedEventArgs e)
@@ -150,6 +162,18 @@ namespace TX
         {
             await URLBox.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                     () => { URLBox.Text = URL; });
+        }
+
+        private string currentFolderToken = Settings.DownloadsFolderToken;
+
+        private async void FolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.FileTypeFilter.Add(".");
+            var folder = await folderPicker.PickSingleFolderAsync();
+            if (folder == null) return;
+            currentFolderToken = StorageManager.AddToFutureAccessList(folder);
+            NowFolderTextBlock.Text = folder.Path;
         }
     }
 }
