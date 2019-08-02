@@ -53,7 +53,7 @@ namespace TX.StorageTools
         /// </summary>
         public static int ThreadNumber
         {
-            get { return TryGetValue<int>(nameof(ThreadNumber), 10); }
+            get { return TryGetValue<int>(nameof(ThreadNumber), 1); }
             set { SetValue(nameof(ThreadNumber), value); }
         }
 
