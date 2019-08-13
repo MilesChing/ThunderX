@@ -75,15 +75,15 @@ namespace TX
             {
                 AppLicense = await s.GetAppLicenseAsync();
                 LicenseChanged?.Invoke(AppLicense);
-            };
-            InitializeAppLicense();
-            if (Settings.DownloadsFolderToken == null)
+            };  //处理运行时版本信息更新
+            InitializeAppLicense(); //初始化版本信息
+            if (Settings.DownloadsFolderToken == null || !StorageApplicationPermissions.MostRecentlyUsedList
+                .ContainsItem(Settings.DownloadsFolderToken))
             {
-                //进入这里表示用户第一次运行程序，导致DownloadsFolderToken是空
-                Settings.DownloadsFolderToken = StorageManager.AddToFutureAccessList(
+                //如果DownloadsFolderToken不合法，使它合法
+                Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(
                                                     ApplicationData.Current.LocalCacheFolder
                                                 );
-                FirstRun();
             }
             TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
             Converters.ExtentionConverter.InitializeDictionary();
@@ -135,6 +135,7 @@ namespace TX
                     if (target != null) StorageManager.LaunchFolderAsync(target);
                 }
                 //如果点击通知打开应用前是未运行状态，就退出程序（否则应保持原界面）
+                
                 if(args.PreviousExecutionState != ApplicationExecutionState.Running)
                     Current.Exit();
             }
@@ -143,6 +144,8 @@ namespace TX
         private void OnResuming(object sender, object e)
         {
             Debug.WriteLine("OnResuming");
+            foreach (var bar in MainPage.Current.DownloadBarCollection)
+                bar.downloader.Start();
         }
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
@@ -209,7 +212,7 @@ namespace TX
         }
 
         /// <summary>
-        /// 在将要挂起应用程序执行时调用。  在不知道应用程序
+        /// 在将要挂起应用程序执行时调用。
         /// 无需知道应用程序会被终止还是会恢复，
         /// 并让内存内容保持不变。
         /// </summary>
@@ -220,6 +223,13 @@ namespace TX
             int doneNum = 0;
             Debug.WriteLine("OnSuspending");
             var deferral = e.SuspendingOperation.GetDeferral();
+
+            if (Settings.IsNotificationShownWhenApplicationSuspended)
+                Toasts.ToastManager.ShowSimpleToast(
+                    Strings.AppResources.GetString("ApplicationSuspendedTitle"),
+                    Strings.AppResources.GetString("ApplicationSuspendedMessage")
+                );
+
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
             foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)

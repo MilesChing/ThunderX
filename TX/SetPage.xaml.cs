@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Services.Store;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -35,10 +36,14 @@ namespace TX
         public SetPage()
         {
             this.InitializeComponent();
+            //将设定项映射到界面上去
             StartLoadDownloadFolderPath();
             ThreadNumSlider.Value = Settings.ThreadNumber;
             MaximumRetriesSlider.Value = Settings.MaximumRetries;
             DarkModeSwitch.IsOn = Settings.DarkMode;
+            ApplicationSuspendedNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenApplicationSuspended;
+            TaskCompletedNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenTaskCompleted;
+            ErrorNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenError;
             for (int i = 0; i < Settings.NormalRecordNumberParser.Length; ++i)
                 ((TextBlock)MaximumRecordsComboBox.Items[i]).Text = Settings.NormalRecordNumberParser[i].ToString();
             MaximumRecordsComboBox.SelectedIndex = Settings.MaximumRecordsIndex;
@@ -48,9 +53,9 @@ namespace TX
 
         public async void StartLoadDownloadFolderPath()
         {
-            string path = (await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken))?.Path;
-            if (path == null) path = Strings.AppResources.GetString("FolderNotExist");
-            NowFolderTextBlock.Text = path;
+            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.DownloadsFolderToken) ?
+                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.DownloadsFolderToken)).Path : 
+                Strings.AppResources.GetString("FolderNotExist");
         }
 
         protected override void LicenseChanged(StoreAppLicense license)
@@ -78,7 +83,7 @@ namespace TX
             folderPicker.FileTypeFilter.Add(".");
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            Settings.DownloadsFolderToken = StorageManager.AddToFutureAccessList(folder);
+            Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
             NowFolderTextBlock.Text = folder.Path;
         }
 
@@ -120,6 +125,27 @@ namespace TX
         {
             if (!UserModify) return;
             Settings.MaximumRecordsIndex = MaximumRecordsComboBox.SelectedIndex;
+        }
+
+        private void TaskCompletedNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!UserModify) return;
+            if(TaskCompletedNotificationCheckbox.IsChecked != null)
+                Settings.IsNotificationShownWhenTaskCompleted = (bool) TaskCompletedNotificationCheckbox.IsChecked;
+        }
+
+        private void ErrorNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!UserModify) return;
+            if (ErrorNotificationCheckbox.IsChecked != null)
+                Settings.IsNotificationShownWhenError = (bool)ErrorNotificationCheckbox.IsChecked;
+        }
+
+        private void ApplicationSuspendedNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!UserModify) return;
+            if (ApplicationSuspendedNotificationCheckbox.IsChecked != null)
+                Settings.IsNotificationShownWhenApplicationSuspended = (bool)ApplicationSuspendedNotificationCheckbox.IsChecked;
         }
     }
 }

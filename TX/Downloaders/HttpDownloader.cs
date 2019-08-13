@@ -11,6 +11,7 @@ using TX.Models;
 using TX.NetWork;
 using TX.StorageTools;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.Downloaders
 {
@@ -259,15 +260,18 @@ namespace TX.Downloaders
             StorageFile file = await StorageFile.GetFileFromPathAsync(Message.TempFilePath);
             StorageFolder folder = await StorageManager.TryGetFolderAsync(Message.FolderToken);
 
-            if (folder == null)
+            if(folder == null)
             {
-                //下载文件夹不合法，用别的替代
                 folder = await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken);
-                if (folder == null) folder = ApplicationData.Current.LocalCacheFolder;
-                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                Message.FolderToken = Settings.DownloadsFolderToken;
+                if (folder == null)
+                {
+                    folder = ApplicationData.Current.LocalCacheFolder; 
+                    Message.FolderToken = StorageApplicationPermissions.FutureAccessList
+                        .Add(ApplicationData.Current.LocalCacheFolder);
+                }
+                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("DownloadFolderPathIllegal"),
                     Strings.AppResources.GetString("DownloadFolderPathIllegalMessage"));
-                //不管怎样，都有地方存放已下载文件
-                Message.FolderToken = StorageManager.AddToFutureAccessList(folder); //它实际上所在的文件夹
             }
 
             try
@@ -283,10 +287,6 @@ namespace TX.Downloaders
             Message.IsDone = true;
 
             DisposeSpeedHelper();
-
-            //播放一个通知
-            Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + " - " +
-                Converters.StringConverter.GetPrintSize((long)Message.FileSize), file.Path, folder.Path);
 
             //触发事件
             State = DownloadState.Done;

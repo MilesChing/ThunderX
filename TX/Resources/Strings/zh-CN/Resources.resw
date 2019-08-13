@@ -360,4 +360,22 @@
   <data name="NewTaskPage_FolderButton.Content" xml:space="preserve">
     <value>选取文件夹</value>
   </data>
+  <data name="SetPage_Checkbox_ApplicationSuspendedNotification.Content" xml:space="preserve">
+    <value>应用程序被挂起时发送通知</value>
+  </data>
+  <data name="SetPage_Checkbox_ErrorNotification.Content" xml:space="preserve">
+    <value>任务出错数量超过设定值后发送通知</value>
+  </data>
+  <data name="SetPage_Checkbox_TaskCompletedNotification.Content" xml:space="preserve">
+    <value>任务完成后发送通知</value>
+  </data>
+  <data name="ApplicationSuspendedMessage" xml:space="preserve">
+    <value>你的任务也会随之暂停，恢复下载请点击这条通知。</value>
+  </data>
+  <data name="ApplicationSuspendedTitle" xml:space="preserve">
+    <value>Thunder X 已挂起</value>
+  </data>
+  <data name="SetPage_Subtitle_Notifications.Text" xml:space="preserve">
+    <value>消息通知</value>
+  </data>
 </root>

@@ -49,16 +49,6 @@ namespace TX
             var list = await TXDataFileIO.GetMessagesAsync();
             if (list != null)
             {
-                if(StorageManager.FutureAccessListCount() >= 500)
-                {
-                    //FutureAccessList中的Token，去除不必要的
-                    string[] tokens = new string[list.Count + 1];
-                    int i = 0;
-                    foreach (var message in list) tokens[i++] = message.FolderToken;
-                    tokens[tokens.Length - 1] = Settings.DownloadsFolderToken;
-                    StorageManager.RemoveFromFutureAccessListExcept(tokens);
-                }
-                
                 foreach (Models.DownloaderMessage ms in list)
                 {
                     DownloadBar db = new DownloadBar();
@@ -75,7 +65,6 @@ namespace TX
         /// </summary>
         private void MainPage_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
         {
-            //应用程序停止
             Application.Current.Exit();
         }
 

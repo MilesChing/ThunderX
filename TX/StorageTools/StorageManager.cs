@@ -13,52 +13,21 @@ namespace TX.StorageTools
 {
     class StorageManager
     {
-        public static int FutureAccessListCount()
-        {
-            var entries = StorageApplicationPermissions.FutureAccessList.Entries;
-            return StorageApplicationPermissions.FutureAccessList.Entries.Count;
-        }
-
-        public static string AddToFutureAccessList(StorageFolder folder)
-        {
-            return StorageApplicationPermissions.FutureAccessList.Add(folder);
-        }
-
-        public static void RemoveFromFutureAccessList(string token)
-        {
-            try
-            {
-                StorageApplicationPermissions.FutureAccessList.Remove(token);
-            }
-            catch (Exception) { }
-        }
-
-        public static void RemoveFromFutureAccessListExcept(string[] tokens)
-        {
-            var entries = StorageApplicationPermissions.FutureAccessList.Entries;
-            string[] tokensToRemove = new string[entries.Count];
-            int tail = 0;
-            foreach (var p in entries)
-                if (!tokens.Contains(p.Token))
-                    tokensToRemove[tail++] = p.Token;
-            for (int i = 0; i < tail; ++i) StorageManager.RemoveFromFutureAccessList(tokensToRemove[i]);
-        }
-
         public static async Task<StorageFolder> TryGetFolderAsync(string token)
         {
-            try
-            {
-                return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
-            }
-            catch(Exception)
-            {
-                return null;
-            }
+            if (token == Settings.DownloadsFolderToken)
+                return await TryGetFolderFromAccessListAsync(token, StorageApplicationPermissions.MostRecentlyUsedList);
+            else return await TryGetFolderFromAccessListAsync(token, StorageApplicationPermissions.FutureAccessList);
         }
 
-        public static void ClearFutureAccessList()
+        public static async Task<StorageFolder> TryGetFolderFromAccessListAsync(string token, IStorageItemAccessList list)
         {
-            StorageApplicationPermissions.FutureAccessList.Clear();
+            if (list.ContainsItem(token))
+            {
+                try { return await list.GetFolderAsync(token); }
+                catch (Exception) { return null; }
+            }
+            else return null;
         }
 
         public static string GetTemporaryName()
