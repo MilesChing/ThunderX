@@ -41,13 +41,20 @@ namespace TX.Downloaders
         {
             if (State != DownloadState.Downloading) return;
             //临时文件统一删除，由于无法获得文件大小，每次下载都是一次性的
-            //表面暂停 嘻嘻嘻嘻
             Message.TempFilePath = "";
-            client.CancelAsync();
-            client.Dispose();
-            client = null;
-            speedHelper.Dispose();
-            speedHelper = null;
+            if(client != null)
+            {
+                client.CancelAsync();
+                client.Dispose();
+                client = null;
+            }
+            
+            if(speedHelper != null)
+            {
+                speedHelper.Dispose();
+                speedHelper = null;
+            }
+
             _prog_.AverageSpeed = _prog_.Speed = _prog_.CurrentValue = 0;
             DownloadProgressChanged(_prog_);
             State = DownloadState.Pause;
