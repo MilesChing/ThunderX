@@ -378,4 +378,7 @@
   <data name="SetPage_Subtitle_Notifications.Text" xml:space="preserve">
     <value>消息通知</value>
   </data>
+  <data name="AboutPage_TrailMessage_1.Text" xml:space="preserve">
+    <value>使用多个线程加速下载</value>
+  </data>
 </root>
