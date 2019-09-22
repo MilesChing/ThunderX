@@ -12,6 +12,7 @@ using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using TX.VisualManager;
 using Windows.Services.Store;
+using Windows.Storage.AccessCache;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -81,9 +82,9 @@ namespace TX
 
         public async void StartLoadDownloadFolderPath()
         {
-            string path = (await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken))?.Path;
-            if (path == null) path = Strings.AppResources.GetString("FolderNotExist");
-            NowFolderTextBlock.Text = path;
+            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.DownloadsFolderToken) ?
+                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.DownloadsFolderToken)).Path :
+                Strings.AppResources.GetString("FolderNotExist");
         }
 
         private void SetVisualManagers()
@@ -172,7 +173,7 @@ namespace TX
             folderPicker.FileTypeFilter.Add(".");
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            currentFolderToken = StorageManager.AddToFutureAccessList(folder);
+            currentFolderToken = StorageApplicationPermissions.FutureAccessList.Add(folder);
             NowFolderTextBlock.Text = folder.Path;
         }
     }

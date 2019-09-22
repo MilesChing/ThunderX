@@ -78,6 +78,33 @@
                 <TextBlock Style="{StaticResource TXPlainText}"
                            x:Uid="AboutPage_GuideText_Trail"/>
                 <Border Style="{StaticResource TXBorder}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Viewbox Height="40" Width="40">
+                            <Canvas x:Name="Layout" Width="608" Height="442.667" Canvas.Left="0" Canvas.Top="0">
+                                <Path x:Name="Path" Width="344.608" Height="442.667" Canvas.Left="-9.53674e-006" Canvas.Top="-0.00029707" Stretch="Fill" StrokeThickness="10.6667" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{ThemeResource SolidSystemBaseHighColorBrush}" Data="F1 M 339.275,227.068L 284.209,227.068L 284.209,5.33304L 141.003,5.33304L 141.003,227.068L 5.33333,227.068L 212.607,437.333L 303.275,345.356"/>
+                                <Path x:Name="Path_0" Width="367.636" Height="382.667" Canvas.Left="240.404" Canvas.Top="60" Stretch="Fill" StrokeThickness="10.6667" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{ThemeResource SolidSystemBaseMediumHighColorBrush}" Data="F1 M 362.564,65.3333L 362.564,256.271L 245.737,256.271L 424.222,437.333L 602.706,256.271L 485.881,256.271L 485.881,65.3333L 362.564,65.3333 Z "/>
+                            </Canvas>
+                        </Viewbox>
+
+                        <TextBlock Grid.Column="1" 
+                                   VerticalAlignment="Center"
+                                   Margin="12, 0, 0, 0"
+                                   x:Uid="AboutPage_TrailMessage_1"/>
+                    </Grid>
+                </StackPanel>
+                <Border Style="{StaticResource TXBorder}"/>
                 <Button Style="{StaticResource TXAccentButtonStyle}"
                         x:Name="PurchaseButton"
                         x:Uid="AboutPage_Button_Trail"

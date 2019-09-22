@@ -360,4 +360,25 @@
   <data name="NewTaskPage_FolderButton.Content" xml:space="preserve">
     <value>Reset Target Folder</value>
   </data>
+  <data name="SetPage_Checkbox_TaskCompletedNotification.Content" xml:space="preserve">
+    <value>Notify when the application is suspended</value>
+  </data>
+  <data name="SetPage_Checkbox_ErrorNotification.Content" xml:space="preserve">
+    <value>Notify when the number of errors exceeds your set value</value>
+  </data>
+  <data name="SetPage_Checkbox_ApplicationSuspendedNotification.Content" xml:space="preserve">
+    <value>Notify after a task is completed</value>
+  </data>
+  <data name="ApplicationSuspendedMessage" xml:space="preserve">
+    <value>Your mission will be suspended too. Click this notification to resume the application.</value>
+  </data>
+  <data name="ApplicationSuspendedTitle" xml:space="preserve">
+    <value>Thunder X is suspended</value>
+  </data>
+  <data name="SetPage_Subtitle_Notifications.Text" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="AboutPage_TrailMessage_1.Text" xml:space="preserve">
+    <value>Use multiple threads to speed up downloads</value>
+  </data>
 </root>

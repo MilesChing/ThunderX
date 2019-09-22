@@ -12,6 +12,7 @@ using TX.Models;
 using TX.NetWork;
 using TX.StorageTools;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.Downloaders
 {
@@ -40,13 +41,20 @@ namespace TX.Downloaders
         {
             if (State != DownloadState.Downloading) return;
             //临时文件统一删除，由于无法获得文件大小，每次下载都是一次性的
-            //表面暂停 嘻嘻嘻嘻
             Message.TempFilePath = "";
-            client.CancelAsync();
-            client.Dispose();
-            client = null;
-            speedHelper.Dispose();
-            speedHelper = null;
+            if(client != null)
+            {
+                client.CancelAsync();
+                client.Dispose();
+                client = null;
+            }
+            
+            if(speedHelper != null)
+            {
+                speedHelper.Dispose();
+                speedHelper = null;
+            }
+
             _prog_.AverageSpeed = _prog_.Speed = _prog_.CurrentValue = 0;
             DownloadProgressChanged(_prog_);
             State = DownloadState.Pause;
@@ -133,16 +141,17 @@ namespace TX.Downloaders
 
                 if (folder == null)
                 {
-                    //下载文件夹不合法，用别的替代
                     folder = await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken);
-                    if (folder == null) folder = ApplicationData.Current.LocalCacheFolder;
-                    Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
+                    Message.FolderToken = Settings.DownloadsFolderToken;
+                    if (folder == null)
+                    {
+                        folder = ApplicationData.Current.LocalCacheFolder;
+                        Message.FolderToken = StorageApplicationPermissions.FutureAccessList
+                            .Add(ApplicationData.Current.LocalCacheFolder);
+                    }
+                    Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("DownloadFolderPathIllegal"),
                         Strings.AppResources.GetString("DownloadFolderPathIllegalMessage"));
                 }
-
-                //临时获取访问权限
-                if (!Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.CheckAccess(folder))
-                    Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
 
                 await file.MoveAsync(folder, Message.FileName + Message.Extention, NameCollisionOption.GenerateUniqueName);
 
@@ -150,10 +159,6 @@ namespace TX.Downloaders
 
                 Message.IsDone = true;
                 
-                //播放一个通知
-                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), Message.FileName + ": " +
-                    Converters.StringConverter.GetPrintSize(_prog_.CurrentValue), file.Path, folder.Path);
-
                 //触发事件
                 State = DownloadState.Done;
                 DownloadComplete?.Invoke(Message);
@@ -163,11 +168,6 @@ namespace TX.Downloaders
                 //若用户把下载文件夹设置在奇怪的地方，这里会导致无法访问，触发异常
                 Debug.WriteLine(ex.ToString());
                 DownloadError?.Invoke(ex);
-            }
-            finally
-            {
-                //无论如何，清空对于文件系统的访问权限
-                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Clear();
             }
         }
 

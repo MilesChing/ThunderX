@@ -35,7 +35,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 帮助页面链接
         /// </summary>
-        public const string HelpLink = "https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html";
+        public const string HelpLink = @"https://milesching.github.io/2019/06/ThunderX_zh_cn.html";
 
         /// <summary>
         /// 下载文件夹Token
@@ -73,6 +73,34 @@ namespace TX.StorageTools
         {
             get { return TryGetValue<int>(nameof(MaximumRetries), 40); }
             set { SetValue(nameof(MaximumRetries), value); }
+        }
+
+
+        /// <summary>
+        /// 下载完成后是否播放通知
+        /// </summary>
+        public static bool IsNotificationShownWhenTaskCompleted
+        {
+            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenTaskCompleted), true); }
+            set { SetValue(nameof(IsNotificationShownWhenTaskCompleted), value); }
+        }
+
+        /// <summary>
+        /// 发生错误后是否播放通知
+        /// </summary>
+        public static bool IsNotificationShownWhenError
+        {
+            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenError), true); }
+            set { SetValue(nameof(IsNotificationShownWhenError), value); }
+        }
+
+        /// <summary>
+        /// 应用被休眠后是否播放通知
+        /// </summary>
+        public static bool IsNotificationShownWhenApplicationSuspended
+        {
+            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenApplicationSuspended), false); }
+            set { SetValue(nameof(IsNotificationShownWhenApplicationSuspended), value); }
         }
 
         /// <summary>

@@ -101,6 +101,17 @@ namespace TX.Controls
 
         private async void DownloadCompleted(Models.DownloaderMessage message)
         {
+
+            var folder = await StorageManager.TryGetFolderAsync(message.FolderToken);
+
+            //播放一个通知
+            if (Settings.IsNotificationShownWhenTaskCompleted)
+                Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + " - " +
+                    Converters.StringConverter.GetPrintSize((long)message.FileSize), 
+                    Path.Combine(folder.Path, message.FileName + message.Extention), 
+                    folder.Path);
+
+
             await MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () => {
                     var collection = MainPage.Current.DownloadBarCollection;
@@ -118,7 +129,10 @@ namespace TX.Controls
 
         private void DisplayError(Exception e)
         {
-            Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"), e.Message);
+            if(Settings.IsNotificationShownWhenError)
+                Toasts.ToastManager.ShowSimpleToast(
+                    Strings.AppResources.GetString("SomethingWrong"), 
+                    e.Message);
         }
 
         private void TopGlassLabel_PointerEntered(object sender, PointerRoutedEventArgs e)

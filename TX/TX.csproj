@@ -276,9 +276,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Leak.Core">
-      <Version>4.7.2</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.8</Version>
     </PackageReference>
@@ -289,7 +286,7 @@
       <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>4.7.6</Version>
+      <Version>4.7.8</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

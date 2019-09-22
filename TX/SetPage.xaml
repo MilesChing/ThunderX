@@ -8,6 +8,12 @@
               HorizontalContentAlignment="Left"
               Background="{StaticResource TXBackgroundAcrylicBrush}">
 
+    <Page.Resources>
+        <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
+            <Setter Property="Template" Value="{StaticResource TXCheckBoxTemplate}"/>
+        </Style>
+    </Page.Resources>
+
     <ScrollViewer x:Name="scrollViewer"
                   HorizontalScrollMode="Disabled"
                   HorizontalAlignment="Left"
@@ -24,10 +30,29 @@
                        x:Uid="SetPage_Subtitle_Appearance" />
             <Border Style="{StaticResource TXBorder}" />
             <ToggleSwitch x:Name="DarkModeSwitch"
-                          RelativePanel.AlignVerticalCenterWithPanel="True"
-                          RelativePanel.AlignRightWithPanel="True"
                           x:Uid="SetPage_ToggleSwitch_DarkMode"
                           Toggled="DarkModeSwitch_Toggled"/>
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="SetPage_Subtitle_Notifications" />
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox x:Name="TaskCompletedNotificationCheckbox"
+                      x:Uid="SetPage_Checkbox_TaskCompletedNotification"
+                      Style="{StaticResource CheckBoxStyle}"
+                      Checked="TaskCompletedNotificationCheckbox_Checked"
+                      Unchecked="TaskCompletedNotificationCheckbox_Checked"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox x:Name="ErrorNotificationCheckbox"
+                      x:Uid="SetPage_Checkbox_ErrorNotification"
+                      Style="{StaticResource CheckBoxStyle}"
+                      Checked="ErrorNotificationCheckbox_Checked"
+                      Unchecked="ErrorNotificationCheckbox_Checked"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox x:Name="ApplicationSuspendedNotificationCheckbox"
+                      x:Uid="SetPage_Checkbox_ApplicationSuspendedNotification"
+                      Style="{StaticResource CheckBoxStyle}"
+                      Checked="ApplicationSuspendedNotificationCheckbox_Checked"
+                      Unchecked="ApplicationSuspendedNotificationCheckbox_Checked"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_ThreadNum"/>
