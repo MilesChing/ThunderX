@@ -38,7 +38,7 @@ namespace TX
             if (license == null) return;
             if (license.IsActive)
             {
-                if (true)
+                if (false)
                 {
                     TrialPanel.Visibility = Visibility.Visible;
                     ActivePanel.Visibility = Visibility.Collapsed;

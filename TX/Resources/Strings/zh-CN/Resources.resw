@@ -381,4 +381,10 @@
   <data name="AboutPage_TrailMessage_1.Text" xml:space="preserve">
     <value>使用多个线程加速下载</value>
   </data>
+  <data name="SetPage_GuideText_MaxBuffer.Text" xml:space="preserve">
+    <value>设置单个线程可使用的动态缓冲区上限（kB）。</value>
+  </data>
+  <data name="SetPage_Subtitle_MaxBuffer.Text" xml:space="preserve">
+    <value>动态缓冲区大小</value>
+  </data>
 </root>

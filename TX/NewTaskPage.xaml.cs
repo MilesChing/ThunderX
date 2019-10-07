@@ -53,6 +53,26 @@ namespace TX
                 comboBoxItems);
 
             RefreshUI();
+            LicenseChanged(((App)App.Current).AppLicense);
+        }
+
+        protected override void LicenseChanged(StoreAppLicense license)
+        {
+            base.LicenseChanged(license);
+            if (license == null) return;
+            if (license.IsActive)
+            {
+                if (license.IsTrial)
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
+                    ThreadNumSlider.IsEnabled = false;
+                }
+                else
+                {
+                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
+                    ThreadNumSlider.IsEnabled = true;
+                }
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
