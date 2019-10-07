@@ -18,9 +18,10 @@ namespace TX.StorageTools
         private static T TryGetValue<T>(string key, T defaultValue)
         {
             object value;
-            return ApplicationData.Current
-                .LocalSettings.Values
-                .TryGetValue(key, out value) ? (T)value : defaultValue;
+            if (ApplicationData.Current.LocalSettings.Values
+                .TryGetValue(key, out value) && value is T)
+                return (T)value;
+            else return defaultValue;
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace TX.StorageTools
         /// </summary>
         public static int ThreadNumber
         {
-            get { return TryGetValue<int>(nameof(ThreadNumber), 1); }
+            get { return TryGetValue(nameof(ThreadNumber), 1); }
             set { SetValue(nameof(ThreadNumber), value); }
         }
 
@@ -62,7 +63,7 @@ namespace TX.StorageTools
         /// </summary>
         public static bool DarkMode
         {
-            get { return TryGetValue<bool>(nameof(DarkMode), false); }
+            get { return TryGetValue(nameof(DarkMode), false); }
             set { SetValue(nameof(DarkMode), value); }
         }
 
@@ -71,17 +72,16 @@ namespace TX.StorageTools
         /// </summary>
         public static int MaximumRetries
         {
-            get { return TryGetValue<int>(nameof(MaximumRetries), 40); }
+            get { return TryGetValue(nameof(MaximumRetries), 40); }
             set { SetValue(nameof(MaximumRetries), value); }
         }
-
 
         /// <summary>
         /// 下载完成后是否播放通知
         /// </summary>
         public static bool IsNotificationShownWhenTaskCompleted
         {
-            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenTaskCompleted), true); }
+            get { return TryGetValue(nameof(IsNotificationShownWhenTaskCompleted), true); }
             set { SetValue(nameof(IsNotificationShownWhenTaskCompleted), value); }
         }
 
@@ -90,7 +90,7 @@ namespace TX.StorageTools
         /// </summary>
         public static bool IsNotificationShownWhenError
         {
-            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenError), true); }
+            get { return TryGetValue(nameof(IsNotificationShownWhenError), true); }
             set { SetValue(nameof(IsNotificationShownWhenError), value); }
         }
 
@@ -99,7 +99,7 @@ namespace TX.StorageTools
         /// </summary>
         public static bool IsNotificationShownWhenApplicationSuspended
         {
-            get { return TryGetValue<bool>(nameof(IsNotificationShownWhenApplicationSuspended), false); }
+            get { return TryGetValue(nameof(IsNotificationShownWhenApplicationSuspended), false); }
             set { SetValue(nameof(IsNotificationShownWhenApplicationSuspended), value); }
         }
 
@@ -108,10 +108,29 @@ namespace TX.StorageTools
         /// </summary>
         public static int MaximumRecordsIndex
         {
-            get { return TryGetValue<int>(nameof(MaximumRecordsIndex), 1); }
+            get { return TryGetValue(nameof(MaximumRecordsIndex), 1); }
             set { SetValue(nameof(MaximumRecordsIndex), value); }
         }
         //当MaximumRecords记录了k时，真实的上限是NormalRecordNumberParser[k]
         public static readonly int[] NormalRecordNumberParser = new int[4]{ 0, 50, 200, 1000 };
+
+        /// <summary>
+        /// 单个线程的动态缓冲区可占用的最大空间（kB)
+        /// </summary>
+        public static int MaximumDynamicBufferSize
+        {
+            get {
+                //加速访问
+                if (_maximumDynamicBufferSize < 0)
+                    return _maximumDynamicBufferSize = 
+                        TryGetValue(nameof(MaximumDynamicBufferSize), 500);
+                else return _maximumDynamicBufferSize;
+            }
+            set {
+                SetValue(nameof(MaximumDynamicBufferSize), value);
+                _maximumDynamicBufferSize = value;
+            }
+        }
+        private static int _maximumDynamicBufferSize = -1;
     }
 }

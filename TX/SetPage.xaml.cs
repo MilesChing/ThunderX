@@ -47,6 +47,7 @@ namespace TX
             for (int i = 0; i < Settings.NormalRecordNumberParser.Length; ++i)
                 ((TextBlock)MaximumRecordsComboBox.Items[i]).Text = Settings.NormalRecordNumberParser[i].ToString();
             MaximumRecordsComboBox.SelectedIndex = Settings.MaximumRecordsIndex;
+            MaximumBufferSizeSlider.Value = Settings.MaximumDynamicBufferSize;
             LicenseChanged(((App)App.Current).AppLicense);
             UserModify = true;
         }
@@ -146,6 +147,12 @@ namespace TX
             if (!UserModify) return;
             if (ApplicationSuspendedNotificationCheckbox.IsChecked != null)
                 Settings.IsNotificationShownWhenApplicationSuspended = (bool)ApplicationSuspendedNotificationCheckbox.IsChecked;
+        }
+
+        private void MaximumBufferSizeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (!UserModify) return;
+            Settings.MaximumDynamicBufferSize = (int)e.NewValue;
         }
     }
 }
