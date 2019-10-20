@@ -86,10 +86,8 @@ namespace TX.Downloaders
 
         public override void Refresh()
         {
-            AutoRefresh();
-            //由外部调用（如用户点击重试按钮）的重试操作
-            //将当前出错次数重置
             retryCount = 0;
+            AutoRefresh();
         }
 
         public override void Start()
