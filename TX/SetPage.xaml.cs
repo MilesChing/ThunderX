@@ -85,6 +85,7 @@ namespace TX
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
             Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
+            System.Diagnostics.Debug.WriteLine(nameof(Settings.DownloadsFolderToken) + ": " + Settings.DownloadsFolderToken);
             NowFolderTextBlock.Text = folder.Path;
         }
 

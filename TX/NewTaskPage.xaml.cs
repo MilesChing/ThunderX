@@ -97,6 +97,7 @@ namespace TX
             RecommendedNameBlock.Opacity = 0.5;
             RecommendedNameBlock.Text = RenameBox.Text;
             ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
+            currentFolderToken = StorageTools.Settings.DownloadsFolderToken;
             GC.Collect();
         }
 
@@ -152,6 +153,8 @@ namespace TX
         {
             SubmitButton.IsEnabled = false;
             AbstractDownloader downloader = analyser.GetDownloader();
+
+            Debug.WriteLine(nameof(currentFolderToken) + ": " + currentFolderToken);
 
             Models.DownloaderSettings settings = new Models.DownloaderSettings()
             {
