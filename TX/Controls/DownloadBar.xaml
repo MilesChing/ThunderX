@@ -163,8 +163,10 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid Background="{ThemeResource TXDownloadBarBackground}"
-              CornerRadius="2">
+        <Grid CornerRadius="2">
+            <Grid.Background>
+                <SolidColorBrush Color="{ThemeResource TXDownloadBarBackgroundColor}"/>
+            </Grid.Background>
 
             <Border x:Name="ErrorBackground"
                     Background="{ThemeResource SolidErrorColor}"
@@ -258,15 +260,24 @@
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Right">
 
-                    <Rectangle Width="128" Fill="{ThemeResource Transparent2DownloadBarBackgroundLinearGradientBrush}"/>
+                    <Rectangle Width="128">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                <GradientStop Offset="0" Color="{ThemeResource TXTransparent}"/>
+                                <GradientStop Offset="1" Color="{ThemeResource TXDownloadBarBackgroundColor}"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
 
                     <StackPanel x:Name="ButtonPanel"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Height="64"
                                 Padding="8,8,8,8"
-                                Background="{ThemeResource SystemAltHighColor}"
                                 Orientation="Horizontal">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{ThemeResource TXDownloadBarBackgroundColor}"/>
+                        </StackPanel.Background>
                         <AppBarButton x:Name="DeleteButton"
                                       x:Uid="DownloadBar_DeleteButton"
                                       Icon="Delete"
