@@ -128,6 +128,8 @@ namespace TX.Downloaders
 
         public override DownloaderType Type { get { return DownloaderType.HttpSystemDownloader; } }
 
+        public override double CurrentSpeed { get { return speedHelper.Speed; } protected set => throw new NotImplementedException(); }
+
         /// <summary>
         /// 下载完成事件的回调函数
         /// </summary>

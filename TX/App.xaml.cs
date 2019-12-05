@@ -144,8 +144,9 @@ namespace TX
         private void OnResuming(object sender, object e)
         {
             Debug.WriteLine("OnResuming");
-            foreach (var bar in MainPage.Current.DownloadBarCollection)
-                bar.downloader.Start();
+            MainPage.Current.DownloadBarManager.Invoke(
+                (collection) => { foreach (var bar in collection) bar.downloader.Start(); }
+            );
         }
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
@@ -232,22 +233,26 @@ namespace TX
 
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
-            foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
+            MainPage.Current.DownloadBarManager.Invoke((collection) =>
             {
-                if (bar.downloader.State == Enums.DownloadState.Disposed ||
-                    bar.downloader.State == Enums.DownloadState.Uninitialized)
-                    continue;
-
-                if(bar.downloader.State == Enums.DownloadState.Done)
+                foreach(Controls.DownloadBar bar in collection)
                 {
-                    doneNum++;
-                    if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                    if (bar.downloader.State == Enums.DownloadState.Disposed ||
+                        bar.downloader.State == Enums.DownloadState.Uninitialized)
                         continue;
-                }
 
-                bar.downloader.Pause();
-                list.Add(bar.downloader.Message);
-            }
+                    if(bar.downloader.State == Enums.DownloadState.Done)
+                    {
+                        doneNum++;
+                        if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                            continue;
+                    }
+
+                    bar.downloader.Pause();
+                    list.Add(bar.downloader.Message);
+                }
+            });
+            
             await TXDataFileIO.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();

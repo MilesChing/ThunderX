@@ -89,13 +89,16 @@
                         Visibility="Collapsed"
                         Orientation="Vertical">
                 <ComboBox x:Name="ComboBox"
-                          Background="{StaticResource TXDownloadBarBackground}"
                           Template="{StaticResource TXComboBoxTemplate}"
                           ItemsSource="{x:Bind comboBoxItems}"
                           ItemTemplate="{StaticResource ComboBoxDataTemplate}"
                           BorderThickness="1"
                           Width="150"
-                          x:Uid="NewTaskPage_ComboBox"/>
+                          x:Uid="NewTaskPage_ComboBox">
+                    <ComboBox.Background>
+                        <SolidColorBrush Color="{ThemeResource TXDownloadBarBackgroundColor}"/>
+                    </ComboBox.Background>
+                </ComboBox>
                 <Border Style="{StaticResource TXBigBorder}" />
             </StackPanel>
             

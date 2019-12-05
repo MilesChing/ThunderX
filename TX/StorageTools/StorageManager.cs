@@ -60,12 +60,16 @@ namespace TX.StorageTools
                 {
                     if (file.Name.Equals("log.mls")) continue;
                     bool remove = true;
-                    foreach (DownloadBar bar in MainPage.Current.DownloadBarCollection)
-                        if (bar.downloader.Message.TempFilePath.Equals(file.Path))
-                        {
-                            remove = false;
-                            break;
-                        }
+                    MainPage.Current.DownloadBarManager.Invoke((collection) =>
+                    {
+                        foreach (DownloadBar bar in collection)
+                            if (bar.downloader.Message.TempFilePath.Equals(file.Path))
+                            {
+                                remove = false;
+                                break;
+                            }
+                    });
+
                     if (remove)
                     {
                         size += (await file.GetBasicPropertiesAsync()).Size;

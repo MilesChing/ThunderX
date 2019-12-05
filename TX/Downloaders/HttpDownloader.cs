@@ -19,7 +19,6 @@ namespace TX.Downloaders
     {
         //locks
         private object threadLock = new object();
-        private object threadSizeLock = new object();
         private object downloadSizeLock = new object();
         private object speedHelperLock = new object();
 
@@ -117,6 +116,8 @@ namespace TX.Downloaders
 
         public override DownloaderType Type { get { return DownloaderType.HttpDownloader; } }
 
+        public override double CurrentSpeed { get { return speedHelper.Speed; } protected set { throw new NotImplementedException(); } }
+
         /// <summary>
         /// 根据Message中的线程信息设置线程（直接开始），用于开始和继续下载
         /// 必须设置Message.Threads，必须设置Message.TempFile
@@ -201,7 +202,6 @@ namespace TX.Downloaders
                 int _threadIndex = args.Item4;
                 long remain = _targetSize;
                 int maximumBufferSize = Settings.MaximumDynamicBufferSize * 1024;
-                Debug.WriteLine(maximumBufferSize);
 
                 //下载数据缓存数组，初始为64kB
                 byte[] responseBytes = new byte[64 * 1024];
@@ -233,7 +233,7 @@ namespace TX.Downloaders
 
                     remain -= pieceLength;
 
-                    lock (threadSizeLock) { Message.Threads.ThreadSize[_threadIndex] += pieceLength; }
+                    Message.Threads.ThreadSize[_threadIndex] += pieceLength;
                     lock (downloadSizeLock) Message.DownloadSize += pieceLength;
                     lock (speedHelperLock) { speedHelper.CurrentValue += pieceLength; }
                 }
@@ -241,7 +241,6 @@ namespace TX.Downloaders
                 //释放资源
                 if (_downloadStream != null) _downloadStream.Dispose();
                 if (_fileStream != null) _fileStream.Dispose();
-                GC.Collect();
 
                 if (remain <= 0) await CheckIsDownloadDoneAsync(_operationCode);
             }, new Tuple<Stream, FileStream, long, int, int>(downloadStream, fileStream, targetSize, threadIndex, operationCode));
