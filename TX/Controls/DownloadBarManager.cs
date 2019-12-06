@@ -18,35 +18,7 @@ namespace TX.Controls
         private ObservableCollection<DownloadBar> collection;
 
         private object downloadBarCollectionLock;
-        /*
-        /// <summary>
-        /// Resort by DownloadBar.downloader.Message.IsDone.
-        /// </summary>
-        public void ResortDownloadBars()
-        {
-            lock (downloadBarCollectionLock)
-            {
-                int completed = collection.Count - 1;
-                for (int i = collection.Count - 1; i >= 0; --i)
-                {
-                    if (collection[i].downloader.Message.IsDone)
-                    {
-                        if (completed == i)
-                        {
-                            --completed;
-                            continue;
-                        }
-                        else
-                        {
-                            collection.Move(i, completed);
-                            --completed;
-                            ++i;
-                        }
-                    }
-                }
-            }
-        }
-        */
+        
         public void Invoke(Action<ObservableCollection<DownloadBar>> act)
         {
             lock (downloadBarCollectionLock)

@@ -116,8 +116,6 @@ namespace TX.Downloaders
 
         public override DownloaderType Type { get { return DownloaderType.HttpDownloader; } }
 
-        public override double CurrentSpeed { get { return speedHelper.Speed; } protected set { throw new NotImplementedException(); } }
-
         /// <summary>
         /// 根据Message中的线程信息设置线程（直接开始），用于开始和继续下载
         /// 必须设置Message.Threads，必须设置Message.TempFile

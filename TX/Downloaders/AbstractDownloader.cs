@@ -21,12 +21,7 @@ namespace TX.Downloaders
         private DownloadState _state_ = DownloadState.Uninitialized;
 
         /// <summary>
-        /// 当前下载速度
-        /// </summary>
-        public abstract double CurrentSpeed { get; protected set; }
-
-        /// <summary>
-        /// 下载任务有关的信息
+        /// 下载器信息
         /// </summary>
         public DownloaderMessage Message { get; protected set; }
 
