@@ -37,6 +37,8 @@ namespace TX
         /// </summary>
         public StoreAppLicense AppLicense { get; private set; } = null;
 
+        public bool First { get; private set; } = false;
+
         /// <summary>
         /// 在App主题在Dark/Light间切换时（根据用户设置）调用
         /// </summary>
@@ -79,12 +81,7 @@ namespace TX
             InitializeAppLicense(); //初始化版本信息
             if (Settings.DownloadsFolderToken == null || !StorageApplicationPermissions.MostRecentlyUsedList
                 .ContainsItem(Settings.DownloadsFolderToken))
-            {
-                //如果DownloadsFolderToken不合法，使它合法
-                Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(
-                                                    ApplicationData.Current.LocalCacheFolder
-                                                );
-            }
+                Settings.DownloadsFolderToken = null;
             TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
             Converters.ExtentionConverter.InitializeDictionary();
         }
@@ -260,8 +257,8 @@ namespace TX
 
         private async void FirstRun()
         {
+            First = true;
             await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
         }
-
     }
 }

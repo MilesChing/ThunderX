@@ -13,6 +13,9 @@ using Windows.UI.Core;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using System.Collections.Generic;
+using Windows.UI.Popups;
+using Windows.Storage.Pickers;
+using Windows.Storage.AccessCache;
 
 namespace TX
 {
@@ -59,6 +62,34 @@ namespace TX
                     db.SetDownloader(dw);
                     dw.SetDownloaderFromBreakpoint(ms);
                 }
+            }
+
+            if(Settings.DownloadsFolderToken == null)
+            {
+                var contentDialog = new ContentDialog()
+                {
+                    Title = Strings.AppResources.GetString("DownloadFolderPathIllegal"),
+                    Content = Strings.AppResources.GetString("SetDownloadFolder"),
+                    PrimaryButtonText = Strings.AppResources.GetString("Select"),
+                    SecondaryButtonText = Strings.AppResources.GetString("Cancel"),
+                    FullSizeDesired = false,
+                };
+
+                contentDialog.PrimaryButtonClick += async (sender, e) =>
+                {
+                    var folderPicker = new FolderPicker();
+                    folderPicker.FileTypeFilter.Add(".");
+                    StorageFolder folder = null;
+                    folder = await folderPicker.PickSingleFolderAsync();
+                    if (folder == null) App.Current.Exit();
+                    else Settings.DownloadsFolderToken = StorageApplicationPermissions
+                        .MostRecentlyUsedList.Add(folder);
+                };
+
+                contentDialog.SecondaryButtonClick += (sender, e) =>
+                    App.Current.Exit();
+
+                await contentDialog.ShowAsync();
             }
         }
 
