@@ -78,7 +78,7 @@ namespace TX.Downloaders
         public override void Pause()
         {
             if (State != DownloadState.Downloading) return;
-            CurrentOperationCode++;
+            DisposeThreads();
             speedHelper.IsEnabled = false;
             State = DownloadState.Pause;
         }
@@ -122,6 +122,7 @@ namespace TX.Downloaders
         /// </summary>
         private async Task SetThreadsAsync()
         {
+            isSettingThreads = true;
             int startCode = CurrentOperationCode;   //记录当前操作码，保证建立的线程均属于统一操作码
 
             if (Message.Threads.ThreadNum <= 0)
@@ -158,13 +159,27 @@ namespace TX.Downloaders
                     sink.Position = _offset + _size;
 
                     //启动下载线程
-                    StartNewDownloadThread(source, sink,
-                        _targetSize - _size,
-                        threadIndex,
-                        startCode);
+                    var task = StartNewDownloadThread(
+                        source, sink, _targetSize - _size, threadIndex, startCode);
+                    task.Start();
+                    downloadThreads.Push(task);
                 }
             }
             catch (Exception e) { HandleError(e, startCode); }
+            finally { isSettingThreads = false; }
+        }
+        private bool isSettingThreads = false;
+        private readonly Stack<Task> downloadThreads = new Stack<Task>();
+        private void WaitAll()
+        {
+            while(isSettingThreads || downloadThreads.Count != 0)
+            {
+                if (downloadThreads.Count != 0)
+                {
+                    var task = downloadThreads.Pop();
+                    if (task.Status == TaskStatus.Running) task.Wait();
+                }
+            }
         }
 
         /// <summary>
@@ -187,11 +202,12 @@ namespace TX.Downloaders
         /// <param name="targetSize">目标大小</param>
         /// <param name="threadIndex">线程编号，用于更新Message中的Threads信息</param>
         /// <param name="operationCode">操作码，用于确定线程是否处于当前操作批次</param>
-        private void StartNewDownloadThread(Stream downloadStream, FileStream fileStream,
+        private Task StartNewDownloadThread(Stream downloadStream, FileStream fileStream,
             long targetSize, int threadIndex, int operationCode)
         {
-            Task.Factory.StartNew(async (arg) =>
+            return new Task(async (arg) =>
             {
+                Debug.WriteLine(threadIndex + " of " + operationCode + " Start");
                 Tuple<Stream, FileStream, long, int, int> args = (Tuple<Stream, FileStream, long, int, int>)arg;
                 Stream _downloadStream = args.Item1;
                 FileStream _fileStream = args.Item2;
@@ -240,7 +256,8 @@ namespace TX.Downloaders
                 if (_downloadStream != null) _downloadStream.Dispose();
                 if (_fileStream != null) _fileStream.Dispose();
 
-                if (remain <= 0) await CheckIsDownloadDoneAsync(_operationCode);
+                if (remain <= 0) _ = Task.Run(() => CheckIsDownloadDoneAsync(_operationCode));
+                Debug.WriteLine(threadIndex + " of " + operationCode + " End");
             }, new Tuple<Stream, FileStream, long, int, int>(downloadStream, fileStream, targetSize, threadIndex, operationCode));
         }
 
@@ -324,7 +341,10 @@ namespace TX.Downloaders
 
         private void DisposeThreads()
         {
+            Debug.WriteLine("Start disposing threads");
             CurrentOperationCode++;
+            WaitAll();
+            Debug.WriteLine("End disposing threads");
         }
 
         private void DisposeSpeedHelper()

@@ -172,9 +172,9 @@ namespace TX.Controls
             HideGlassLabel.Begin();
         }
 
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            downloader.Pause();
+            await Task.Run(() => downloader.Pause());
             HideGlassLabel.Begin();
         }
 
