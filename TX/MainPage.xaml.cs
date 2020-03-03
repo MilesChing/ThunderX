@@ -13,6 +13,9 @@ using Windows.UI.Core;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using System.Collections.Generic;
+using Windows.UI.Popups;
+using Windows.Storage.Pickers;
+using Windows.Storage.AccessCache;
 
 namespace TX
 {
@@ -31,6 +34,7 @@ namespace TX
         /// </summary>
         public int ViewID = ApplicationView.GetApplicationViewIdForWindow(Window.Current.CoreWindow);
 
+
         public MainPage()
         {
             Current = this;
@@ -39,6 +43,7 @@ namespace TX
             SetThemeChangedListener();
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
             DownloadBarCollection.CollectionChanged += DownloadBarCollection_CollectionChanged;
+            DownloadBarManager = new DownloadBarManager(DownloadBarCollection, downloadBarCollectionLock);
             InitializeComponent();
             InitializeAsync();
         }
@@ -58,6 +63,34 @@ namespace TX
                     dw.SetDownloaderFromBreakpoint(ms);
                 }
             }
+
+            if(Settings.DownloadsFolderToken == null)
+            {
+                var contentDialog = new ContentDialog()
+                {
+                    Title = Strings.AppResources.GetString("DownloadFolderPathIllegal"),
+                    Content = Strings.AppResources.GetString("SetDownloadFolder"),
+                    PrimaryButtonText = Strings.AppResources.GetString("Select"),
+                    SecondaryButtonText = Strings.AppResources.GetString("Cancel"),
+                    FullSizeDesired = false,
+                };
+
+                contentDialog.PrimaryButtonClick += async (sender, e) =>
+                {
+                    var folderPicker = new FolderPicker();
+                    folderPicker.FileTypeFilter.Add(".");
+                    StorageFolder folder = null;
+                    folder = await folderPicker.PickSingleFolderAsync();
+                    if (folder == null) App.Current.Exit();
+                    else Settings.DownloadsFolderToken = StorageApplicationPermissions
+                        .MostRecentlyUsedList.Add(folder);
+                };
+
+                contentDialog.SecondaryButtonClick += (sender, e) =>
+                    App.Current.Exit();
+
+                await contentDialog.ShowAsync();
+            }
         }
 
         /// <summary>
@@ -75,19 +108,27 @@ namespace TX
         {
             GC.Collect();
             if (DownloadBarCollection.Count == 0 && viewbox.Opacity == 0) ShowLogo.Begin();
-            if (e.NewItems == null) return;
-            foreach (Controls.DownloadBar db in e.NewItems)
+            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                SetWidthBind(db);//为新加入的控件设置绑定
-                if (viewbox.Opacity != 0)
-                    HideLogo.Begin();
+                foreach (Controls.DownloadBar db in e.NewItems)
+                {
+                    SetWidthBind(db);//为新加入的控件设置绑定
+                    if (viewbox.Opacity != 0)
+                        HideLogo.Begin();
+                }
             }
         }
 
         /// <summary>
         /// 用于显示在界面中的下载器控件集合
         /// </summary>
-        public ObservableCollection<Controls.DownloadBar> DownloadBarCollection = new ObservableCollection<Controls.DownloadBar>();
+        private ObservableCollection<Controls.DownloadBar> DownloadBarCollection = new ObservableCollection<Controls.DownloadBar>();
+        private object downloadBarCollectionLock = new object();
+
+        /// <summary>
+        /// For other modules and pages to observe and modify download bars
+        /// </summary>
+        public DownloadBarManager DownloadBarManager;
 
         /// <summary>
         /// 将新加入GridView的控件与WidthBindTool的宽度做绑定

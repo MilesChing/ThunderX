@@ -12,7 +12,8 @@
         <Style x:Key="ContactDetailsGridStyle"
                TargetType="Grid">
             <Style.Setters>
-                <Setter Property="Background" Value="{StaticResource SolidSystemAccentColorBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource SolidSystemBaseLowColorBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="CornerRadius" Value="2"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="Padding" Value="4"/>
@@ -147,25 +148,13 @@
                 <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                            Text="qinzhengrui@live.cn"
                            FontFamily="Consolas"
-                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+                           Foreground="{StaticResource SolidSystemBaseMediumColorBrush}"/>
             </Grid>
             <Grid Style="{StaticResource ContactDetailsGridStyle}">
                 <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                            Text="https://github.com/MilesChing"
                            FontFamily="Consolas"
-                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
-            </Grid>
-            <Grid Style="{StaticResource ContactDetailsGridStyle}">
-                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="Weibo @MilesChing"
-                           FontFamily="Consolas"
-                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
-            </Grid>
-            <Grid Style="{StaticResource ContactDetailsGridStyle}">
-                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="https://milesching.github.io/"
-                           FontFamily="Consolas"
-                           Foreground="{StaticResource SolidSystemAltMediumHighColorBrush}"/>
+                           Foreground="{StaticResource SolidSystemBaseMediumColorBrush}"/>
             </Grid>
             <Border Style="{StaticResource TXBigBorder}"/>
             <Border Style="{StaticResource TXBigBorder}" />

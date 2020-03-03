@@ -37,6 +37,8 @@ namespace TX
         /// </summary>
         public StoreAppLicense AppLicense { get; private set; } = null;
 
+        public bool First { get; private set; } = false;
+
         /// <summary>
         /// 在App主题在Dark/Light间切换时（根据用户设置）调用
         /// </summary>
@@ -79,12 +81,7 @@ namespace TX
             InitializeAppLicense(); //初始化版本信息
             if (Settings.DownloadsFolderToken == null || !StorageApplicationPermissions.MostRecentlyUsedList
                 .ContainsItem(Settings.DownloadsFolderToken))
-            {
-                //如果DownloadsFolderToken不合法，使它合法
-                Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(
-                                                    ApplicationData.Current.LocalCacheFolder
-                                                );
-            }
+                Settings.DownloadsFolderToken = null;
             TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
             Converters.ExtentionConverter.InitializeDictionary();
         }
@@ -144,8 +141,9 @@ namespace TX
         private void OnResuming(object sender, object e)
         {
             Debug.WriteLine("OnResuming");
-            foreach (var bar in MainPage.Current.DownloadBarCollection)
-                bar.downloader.Start();
+            MainPage.Current.DownloadBarManager.Invoke(
+                (collection) => { foreach (var bar in collection) bar.downloader.Start(); }
+            );
         }
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
@@ -232,22 +230,26 @@ namespace TX
 
             //保存应用程序状态并停止任何后台活动
             List<Models.DownloaderMessage> list = new List<Models.DownloaderMessage>();
-            foreach(Controls.DownloadBar bar in MainPage.Current.DownloadBarCollection)
+            MainPage.Current.DownloadBarManager.Invoke((collection) =>
             {
-                if (bar.downloader.State == Enums.DownloadState.Disposed ||
-                    bar.downloader.State == Enums.DownloadState.Uninitialized)
-                    continue;
-
-                if(bar.downloader.State == Enums.DownloadState.Done)
+                foreach(Controls.DownloadBar bar in collection)
                 {
-                    doneNum++;
-                    if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                    if (bar.downloader.State == Enums.DownloadState.Disposed ||
+                        bar.downloader.State == Enums.DownloadState.Uninitialized)
                         continue;
-                }
 
-                bar.downloader.Pause();
-                list.Add(bar.downloader.Message);
-            }
+                    if(bar.downloader.State == Enums.DownloadState.Done)
+                    {
+                        doneNum++;
+                        if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
+                            continue;
+                    }
+
+                    bar.downloader.Pause();
+                    list.Add(bar.downloader.Message);
+                }
+            });
+            
             await TXDataFileIO.SaveDownloadMessagesAsync(list);  //保存未完成的下载
             await StorageTools.StorageManager.GetCleanAsync();
             deferral.Complete();
@@ -255,8 +257,8 @@ namespace TX
 
         private async void FirstRun()
         {
+            First = true;
             await Launcher.LaunchUriAsync(new Uri(Settings.HelpLink));
         }
-
     }
 }

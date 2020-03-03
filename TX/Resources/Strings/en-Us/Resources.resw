@@ -387,4 +387,13 @@
   <data name="SetPage_Subtitle_MaxBuffer.Text" xml:space="preserve">
     <value>Dynamic Buffer Size</value>
   </data>
+  <data name="SetDownloadFolder" xml:space="preserve">
+    <value>Set the default download folder at the first time you start this application. Ensure that it will not be moved, deleted, or renamed when the application is running.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
 </root>

@@ -115,6 +115,18 @@ namespace TX.StorageTools
         public static readonly int[] NormalRecordNumberParser = new int[4]{ 0, 50, 200, 1000 };
 
         /// <summary>
+        /// 全局速度限制
+        /// </summary>
+        public static int SpeedLimit
+        {
+            get { return TryGetValue(nameof(SpeedLimit), 5); }
+            set { SetValue(nameof(SpeedLimit), value); }
+        }
+        //当SpeedLimit记录了k时，真实的上限是NormalSpeedLimitParser[k]，以kB/s为单位
+        //小于零的值代表No Limit
+        public static readonly int[] NormalSpeedLimitParser = new int[5] { 512, 1024, 2048, 4096, -1 };
+
+        /// <summary>
         /// 单个线程的动态缓冲区可占用的最大空间（kB)
         /// </summary>
         public static int MaximumDynamicBufferSize

@@ -101,7 +101,6 @@ namespace TX.Controls
 
         private async void DownloadCompleted(Models.DownloaderMessage message)
         {
-
             var folder = await StorageManager.TryGetFolderAsync(message.FolderToken);
 
             //播放一个通知
@@ -111,19 +110,31 @@ namespace TX.Controls
                     Path.Combine(folder.Path, message.FileName + message.Extention), 
                     folder.Path);
 
-
             await MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () => {
-                    var collection = MainPage.Current.DownloadBarCollection;
-                    int index = collection.IndexOf(this);
-                    for (int i = index + 1; i<collection.Count; ++i)
-                        if(collection[i].downloader.Message.IsDone)
+                    MainPage.Current.DownloadBarManager.Invoke(
+                        (collection) =>
                         {
-                            collection.Move(index, i - 1);
-                            return;
+                            int completed = collection.Count - 1;
+                            for (int i = collection.Count - 1; i >= 0; --i)
+                            {
+                                if (collection[i].downloader.Message.IsDone)
+                                {
+                                    if (completed == i)
+                                    {
+                                        --completed;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        collection.Move(i, completed);
+                                        --completed;
+                                        ++i;
+                                    }
+                                }
+                            }
                         }
-                    //没有return证明没有完成的任务记录，要把this移动到结尾
-                    collection.Move(index, collection.Count - 1);
+                    ); 
                 });
         }
 
@@ -150,7 +161,9 @@ namespace TX.Controls
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (downloader != null) downloader.Dispose();
-            MainPage.Current.DownloadBarCollection.Remove(this);
+            MainPage.Current.DownloadBarManager.Invoke(
+                (collection) => { collection.Remove(this); }
+            );
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
@@ -159,9 +172,9 @@ namespace TX.Controls
             HideGlassLabel.Begin();
         }
 
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        private async void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            downloader.Pause();
+            await Task.Run(() => downloader.Pause());
             HideGlassLabel.Begin();
         }
 
@@ -217,7 +230,9 @@ namespace TX.Controls
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
             if (downloader != null) downloader.Dispose();
-            MainPage.Current.DownloadBarCollection.Remove(this);
+            MainPage.Current.DownloadBarManager.Invoke(
+                (collection) => { collection.Remove(this); }
+            );
         }
 
         //为了避免在TopGlassLabel的Opacity为0时用户误触TopGlassLabel上面的按键

@@ -43,8 +43,10 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="TXDownloadBarBackground" Color="White"/>
             <Color x:Key="TXBackgroundAcrylicColor">#ffffff</Color>
+            <Color x:Key="TXDownloadBarBackgroundColor">#ffffff</Color>
+            <Color x:Key="TXTransparent">#00ffffff</Color>
+
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush1" Color="{ThemeResource SystemAccentColorDark1}"/>
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush2" Color="{ThemeResource SystemAccentColorDark2}"/>
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush3" Color="{ThemeResource SystemAccentColorDark3}"/>
@@ -55,19 +57,13 @@
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource B3}"/>
 
             <SolidColorBrush x:Key="SolidErrorColor" Color="#C62828"/>
-
-            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
-                                 StartPoint="0,0.5"
-                                 EndPoint="1,0.5">
-                <!--水平渐变-->
-                <GradientStop Offset="0" Color="#00ffffff"/>
-                <GradientStop Offset="1" Color="#ffffffff"/>
-            </LinearGradientBrush>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="TXDownloadBarBackground" Color="#000000"/>
             <Color x:Key="TXBackgroundAcrylicColor">#181818</Color>
+            <Color x:Key="TXDownloadBarBackgroundColor">#0a0a0a</Color>
+            <Color x:Key="TXTransparent">#00000000</Color>
+
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush1" Color="{ThemeResource SystemAccentColorLight1}"/>
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush2" Color="{ThemeResource SystemAccentColorLight2}"/>
             <SolidColorBrush x:Key="SolidSystemOutStandingAccentColorBrush3" Color="{ThemeResource SystemAccentColorLight3}"/>
@@ -78,15 +74,8 @@
             <SolidColorBrush x:Key="SolidBackground02ColorBrush" Color="{StaticResource BF}"/>
 
             <SolidColorBrush x:Key="SolidErrorColor" Color="#F44336"/>
-
-            <LinearGradientBrush x:Key="Transparent2DownloadBarBackgroundLinearGradientBrush"
-                                 StartPoint="0,0.5"
-                                 EndPoint="1,0.5">
-                <!--水平渐变-->
-                <GradientStop Offset="0" Color="#00000000"/>
-                <GradientStop Offset="1" Color="#ff000000"/>
-            </LinearGradientBrush>
         </ResourceDictionary>
+
     </ResourceDictionary.ThemeDictionaries>
 
 </ResourceDictionary>

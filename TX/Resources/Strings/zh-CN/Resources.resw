@@ -387,4 +387,13 @@
   <data name="SetPage_Subtitle_MaxBuffer.Text" xml:space="preserve">
     <value>动态缓冲区大小</value>
   </data>
+  <data name="SetDownloadFolder" xml:space="preserve">
+    <value>首次启动请先设置默认下载文件夹，确保在使用此文件夹时不会移动、删除或重命名该文件夹。</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>选择</value>
+  </data>
 </root>
