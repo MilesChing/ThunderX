@@ -21,7 +21,7 @@
     </PackageCertificateKeyFile>
     <PackageCertificateThumbprint>24FC011449C38315351A5E7AF470ABF2F3989CA9</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
@@ -290,7 +290,7 @@
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>4.7.10</Version>
+      <Version>4.7.13</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
