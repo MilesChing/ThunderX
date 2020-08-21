@@ -116,7 +116,7 @@ namespace TX.NetWork.NetWorkAnalysers
                     _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 _hresp_ = null;
                 return;

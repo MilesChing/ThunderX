@@ -160,7 +160,7 @@ namespace TX.Controls
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (downloader != null) downloader.Dispose();
+            if (downloader != null) Task.Run(() => downloader.Dispose());
             MainPage.Current.DownloadBarManager.Invoke(
                 (collection) => { collection.Remove(this); }
             );
@@ -172,9 +172,9 @@ namespace TX.Controls
             HideGlassLabel.Begin();
         }
 
-        private async void PauseButton_Click(object sender, RoutedEventArgs e)
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() => downloader.Pause());
+            downloader.Pause();
             HideGlassLabel.Begin();
         }
 
@@ -197,7 +197,7 @@ namespace TX.Controls
             try
             {
                 string path = Path.Combine((await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken)).Path,
-                                downloader.Message.FileName + downloader.Message.Extention);
+                    downloader.Message.FileName + downloader.Message.Extention);
                 var file = await StorageFile.GetFileFromPathAsync(path);
 
                 StorageTools.StorageManager.LaunchFileAsync(file);
