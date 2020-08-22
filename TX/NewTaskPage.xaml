@@ -76,8 +76,7 @@
                        x:Uid="NewTaskPage_GuideText_URLBox" />
             <Border Style="{StaticResource TXBorder}" />
             <TextBox x:Name="URLBox"
-                     Style="{StaticResource TextBoxStyle}"
-                     TextChanged="URLBox_TextChanged" />
+                     Style="{StaticResource TextBoxStyle}"/>
             <Border Style="{StaticResource TXBorder}" />
             <ListView IsItemClickEnabled="False"
                       ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"

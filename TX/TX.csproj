@@ -153,7 +153,6 @@
     <Compile Include="StorageTools\StorageManager.cs" />
     <Compile Include="Resources\Strings\AppResources.cs" />
     <Compile Include="Toasts\ToastManager.cs" />
-    <Compile Include="VisualManager\NewTaskPageVisualController.cs" />
     <Compile Include="VisualManager\PropertyAnimationManager.cs" />
     <Compile Include="VisualManager\VisibilityAnimationManager.cs" />
     <Compile Include="WebBrowserPage.xaml.cs">
