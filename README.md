@@ -6,7 +6,7 @@ This software runs on universal windows platform.
 
 ![Thunder X](https://s2.ax1x.com/2019/05/10/E2Orz4.png)
 
-[Instructions of Thunder X (Zh-CN)](https://milesching.github.io/thunder-x/2019/06/08/ThunderX_zh_cn.html)
+[Instructions of Thunder X (Zh-CN)](https://milesching.github.io/2019/07/ThunderX_en_us.html)
 
 ## Branches
 
@@ -18,7 +18,7 @@ Visit [PRIVACY_POLICY](https://github.com/MilesChing/ThunderX/blob/develop/PRIVA
 
 ## License
 
-Copyright © 2019 MilesChing
+Copyright © 2020 MilesChing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
