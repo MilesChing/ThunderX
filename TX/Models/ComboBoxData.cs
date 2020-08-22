@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace TX.Models
 {
-    public class PlainTextComboBoxData
+    public abstract class ComboBoxData
     {
-        public string Text = null;
+        protected abstract string FormatText();
+
+        public string Text => FormatText();
     }
 }

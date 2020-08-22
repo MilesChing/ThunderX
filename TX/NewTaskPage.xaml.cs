@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,11 +37,13 @@ namespace TX
         private ObservableCollection<PlainTextMessage> linkAnalysisMessages 
             = new ObservableCollection<PlainTextMessage>();
 
-        private ObservableCollection<PlainTextComboBoxData> comboBoxItems
-            = new ObservableCollection<PlainTextComboBoxData>();
+        private ObservableCollection<ComboBoxData> comboBoxItems
+            = new ObservableCollection<ComboBoxData>();
 
         private Dictionary<string, PlainTextMessage> existMessages
             = new Dictionary<string, PlainTextMessage>();
+
+        private Action<ComboBoxData> comboBoxItemSelectedCallback;
 
         public NewTaskPage()
         {
@@ -219,6 +222,9 @@ namespace TX
             NowFolderTextBlock.Text = folder.Path;
         }
 
+        private void ComboBox_SelectionChanged(object _, SelectionChangedEventArgs e) =>
+            comboBoxItemSelectedCallback?.Invoke(ComboBox.SelectedItem as ComboBoxData);
+
         // methods for analyzer
         public void UpdateMessage(string key, PlainTextMessage message)
         {
@@ -289,5 +295,15 @@ namespace TX
             }).AsTask().Wait();
         }
 
+        public void SetVersionSelector(ComboBoxData[] items, Action<ComboBoxData> itemSelected)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                comboBoxItems.Clear();
+                foreach (var item in items)
+                    comboBoxItems.Add(item);
+                comboBoxItemSelectedCallback = itemSelected;
+            }).AsTask().Wait();
+        }
     }
 }

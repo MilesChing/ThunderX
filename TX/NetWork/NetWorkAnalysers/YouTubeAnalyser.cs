@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using TX.Downloaders;
 using TX.Models;
 using TX.Strings;
+using Windows.Networking.Sockets;
 using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
@@ -17,20 +19,14 @@ namespace TX.NetWork.NetWorkAnalysers
 
         private string id = null;
 
-        private YoutubeExplode.Models.Video video = null;
-
-        private YoutubeExplode.Models.MediaStreams.MediaStreamInfoSet infos = null;
-
         private AbstractAnalyser innerAnalyser = null;
 
         public override void Dispose()
         {
             innerAnalyser?.Dispose();
-            Controller?.SetComboBoxLayoutVisibility(this, false);
-            Controller?.SetComboBoxSelectionChangedListener(this, null);
-            Controller?.RemoveMessage(this, KEY_YOUTUBE);
-            Controller?.ClearComboBoxItem(this);
-            Controller?.RemoveAnalyser(this);
+            Visual.SetComboBoxLayoutVisibility(false);
+            Visual.SetVersionSelector(Array.Empty<ComboBoxData>(), null);
+            Visual.RemoveMessage(KEY_YOUTUBE);
 
             GC.Collect();
         }
@@ -55,69 +51,96 @@ namespace TX.NetWork.NetWorkAnalysers
             return innerAnalyser == null ? false : innerAnalyser.IsLegal();
         }
 
-        private string GetURLFromInfos(string info)
+        private class YoutubeVideoComboBoxData : ComboBoxData
         {
-            foreach (var inf in infos.Muxed)
+            public IStreamInfo Info;
+            protected override string FormatText()
             {
-                string target = inf.VideoQuality.ToString() + " - " + inf.VideoEncoding.ToString();
-                if (target.Equals(info)) return inf.Url;
+                if (Info is MuxedStreamInfo)
+                {
+                    var muxed = (MuxedStreamInfo)Info;
+                    return string.Format("V&A: {0} | {1} | {2} , Size: {3}", 
+                        muxed.Container.Name, muxed.Resolution, muxed.Framerate, muxed.Size);
+                }
+                else if (Info is VideoOnlyStreamInfo)
+                {
+                    var muxed = (VideoOnlyStreamInfo)Info;
+                    return string.Format("V Only: {0} | {1} | {2} , Size: {3}",
+                        muxed.Container.Name, muxed.Resolution, muxed.Framerate, muxed.Size);
+                }
+                else if (Info is AudioOnlyStreamInfo)
+                {
+                    var muxed = (AudioOnlyStreamInfo)Info;
+                    return string.Format("A Only: {0} | {1} , Size: {2}",
+                        muxed.Container.Name, Info.Bitrate, muxed.Size);
+                }
+
+                return "Unknown Stream Info";
             }
-            return null;
         }
 
         public override async Task SetURLAsync(string url)
         {
             try
             {
-                id = YoutubeClient.ParseVideoId(url);
+                Visual.UpdateMessage(KEY_YOUTUBE, new PlainTextMessage(
+                    AppResources.GetString("YouTubeLinkDetectedButWaiting")));
                 var client = new YoutubeClient();
-                Controller?.UpdateMessage(this, KEY_YOUTUBE,
-                    new PlainTextMessage(AppResources.GetString("YouTubeLinkDetectedButWaiting")));
-                video = await client.GetVideoAsync(id);
-                infos = await client.GetVideoMediaStreamInfosAsync(id);
-                if (infos.Muxed.Count > 0)
-                    Controller?.SetComboBoxLayoutVisibility(this, true);
-                else throw new Exception();
+                var video = await client.Videos.GetAsync(url);
+                var manifests = await client.Videos.Streams.GetManifestAsync(video.Id);
+                if (manifests.Streams.Count <= 0) throw new Exception();
 
-                Controller?.UpdateMessage(this, KEY_YOUTUBE,
+                Visual.UpdateMessage(KEY_YOUTUBE,
                     new PlainTextMessage(
-                    AppResources.GetString("YouTubeLinkDetectedButWaiting")
-                    + " - " +
-                    video.Title
-                    ));
+                        string.Format("{0}\nTitle: {1} Author: {2}",
+                            AppResources.GetString("YouTubeLinkDetected"),
+                            video.Title, video.Author)
+                    )
+                );
 
-                foreach (var info in infos.Muxed)
+                List<ComboBoxData> versions = new List<ComboBoxData>();
+                foreach (var info in manifests.Streams)
+                    versions.Add(new YoutubeVideoComboBoxData() {
+                        Info = info
+                    });
+
+                Visual.SetVersionSelector(versions.ToArray(), (item) =>
                 {
-                    PlainTextComboBoxData data = new PlainTextComboBoxData();
-                    data.Text = info.VideoQuality.ToString() + " - " + info.VideoEncoding.ToString();
-                    Controller?.AddComboBoxItem(this, data);
-                }
-
-                Controller?.SetComboBoxSelectionChangedListener(this, 
-                    async (item) => {
-                        innerAnalyser?.Dispose();
-                        string target = GetURLFromInfos(item.Text);
-                        if(target!=null)
+                    _ = Task.Run(() =>
                         {
-                            innerAnalyser = Converters.UrlConverter.GetAnalyser(target);
-                            if (innerAnalyser != null)
+                            Visual.SetComboBoxLayoutVisibility(false);
+                            try
                             {
-                                URL = target;
-                                innerAnalyser.BindVisualController(Controller);
-                                Controller?.RegistAnalyser(this, innerAnalyser);
-                                await innerAnalyser.SetURLAsync(target);
+                                innerAnalyser?.Dispose();
+                                var info = item as YoutubeVideoComboBoxData;
+                                if (info == null) return;
+                                string target = info.Info.Url;
+                                if (target != null)
+                                {
+                                    innerAnalyser = Converters.UrlConverter.GetAnalyser(target);
+                                    if (innerAnalyser != null)
+                                    {
+                                        URL = target;
+                                        innerAnalyser.BindVisualController(Visual);
+                                        innerAnalyser.SetURLAsync(target).Wait();
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                Visual.SetComboBoxLayoutVisibility(true);
                             }
                         }
-                    }
-                );
+                    );
+                });
+
+                Visual.SetComboBoxLayoutVisibility(true);
             }
             catch (Exception)
             {
-                Controller?.UpdateMessage(this, KEY_YOUTUBE,
-                    new PlainTextMessage(
-                    AppResources.GetString("YouTubeLinkDetectedButFailed")
-                    ));
-                Controller?.SetComboBoxLayoutVisibility(this, false);
+                Visual.UpdateMessage(KEY_YOUTUBE, new PlainTextMessage(
+                    AppResources.GetString("YouTubeLinkDetectedButFailed")));
+                Visual.SetComboBoxLayoutVisibility(false);
             }
         }
     }

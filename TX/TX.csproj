@@ -133,7 +133,7 @@
     <Compile Include="Models\DownloaderSettings.cs" />
     <Compile Include="Models\Progress.cs" />
     <Compile Include="Models\ThreadMessage.cs" />
-    <Compile Include="Models\PlainTextComboBoxData.cs" />
+    <Compile Include="Models\ComboBoxData.cs" />
     <Compile Include="NetWork\HttpNetWorkMethods.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\HttpAnalyser.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\AbstractAnalyser.cs" />
@@ -289,7 +289,7 @@
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>4.7.13</Version>
+      <Version>5.1.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
