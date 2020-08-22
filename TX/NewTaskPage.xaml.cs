@@ -102,15 +102,15 @@ namespace TX
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
             RecommendedNameBlock.Opacity = 0.5;
             RecommendedNameBlock.Text = RenameBox.Text;
-            ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
-            currentFolderToken = StorageTools.Settings.DownloadsFolderToken;
+            ThreadNumSlider.Value = Settings.Instance.ThreadNumber;
+            currentFolderToken = Settings.Instance.DownloadsFolderToken;
             GC.Collect();
         }
 
         public async void StartLoadDownloadFolderPath()
         {
-            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.DownloadsFolderToken) ?
-                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.DownloadsFolderToken)).Path :
+            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.Instance.DownloadsFolderToken) ?
+                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.Instance.DownloadsFolderToken)).Path :
                 Strings.AppResources.GetString("FolderNotExist");
         }
 
@@ -210,7 +210,7 @@ namespace TX
                     () => { URLBox.Text = URL; });
         }
 
-        private string currentFolderToken = Settings.DownloadsFolderToken;
+        private string currentFolderToken = Settings.Instance.DownloadsFolderToken;
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
         {

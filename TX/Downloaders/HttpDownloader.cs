@@ -57,7 +57,8 @@ namespace TX.Downloaders
                 Message.FileName = Path.GetFileNameWithoutExtension(settings.FileName);
                 Message.Extention = Path.GetExtension(settings.FileName);
                 //安排线程
-                Message.Threads.ArrangeThreads((long)Message.FileSize, settings.Threads <= 0 ? StorageTools.Settings.ThreadNumber : ((int)settings.Threads));
+                Message.Threads.ArrangeThreads((long)Message.FileSize, settings.Threads <= 0 ? 
+                    StorageTools.Settings.Instance.ThreadNumber : ((int)settings.Threads));
                 //申请临时文件
                 Message.TempFilePath = settings.FilePath;
                 Message.FolderToken = settings.FolderToken;
@@ -189,7 +190,7 @@ namespace TX.Downloaders
             {
                 Debug.WriteLine(threadIndex + " of " + operationCode + " Start");
                 long remain = targetSize;
-                int maximumBufferSize = Settings.MaximumDynamicBufferSize * 1024;
+                int maximumBufferSize = Settings.Instance.MaximumDynamicBufferSize * 1024;
 
                 //下载数据缓存数组，初始为64kB
                 byte[] responseBytes = new byte[64 * 1024];
@@ -258,8 +259,8 @@ namespace TX.Downloaders
 
             if(folder == null)
             {
-                folder = await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken);
-                Message.FolderToken = Settings.DownloadsFolderToken;
+                folder = await StorageManager.TryGetFolderAsync(Settings.Instance.DownloadsFolderToken);
+                Message.FolderToken = Settings.Instance.DownloadsFolderToken;
                 if (folder == null)
                 {
                     folder = ApplicationData.Current.LocalCacheFolder; 

@@ -29,33 +29,22 @@ namespace TX
     /// </summary>
     public sealed partial class SetPage : TXPage
     {
-        private App CurrentApplication = ((App)Application.Current);
-
-        private bool UserModify = false;
-
         public SetPage()
         {
             this.InitializeComponent();
-            //将设定项映射到界面上去
+            DarkModeSwitch.Toggled += (sender, e) =>
+                ((App)App.Current).CallThemeUpdate(DarkModeSwitch.IsOn ? 
+                ElementTheme.Dark : ElementTheme.Light);
             StartLoadDownloadFolderPath();
-            ThreadNumSlider.Value = Settings.ThreadNumber;
-            MaximumRetriesSlider.Value = Settings.MaximumRetries;
-            DarkModeSwitch.IsOn = Settings.DarkMode;
-            ApplicationSuspendedNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenApplicationSuspended;
-            TaskCompletedNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenTaskCompleted;
-            ErrorNotificationCheckbox.IsChecked = Settings.IsNotificationShownWhenError;
-            for (int i = 0; i < Settings.NormalRecordNumberParser.Length; ++i)
-                ((TextBlock)MaximumRecordsComboBox.Items[i]).Text = Settings.NormalRecordNumberParser[i].ToString();
-            MaximumRecordsComboBox.SelectedIndex = Settings.MaximumRecordsIndex;
-            MaximumBufferSizeSlider.Value = Settings.MaximumDynamicBufferSize;
             LicenseChanged(((App)App.Current).AppLicense);
-            UserModify = true;
         }
+
+        private Settings SettingsInstance => Settings.Instance;
 
         public async void StartLoadDownloadFolderPath()
         {
-            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.DownloadsFolderToken) ?
-                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.DownloadsFolderToken)).Path : 
+            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.Instance.DownloadsFolderToken) ?
+                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.Instance.DownloadsFolderToken)).Path : 
                 Strings.AppResources.GetString("FolderNotExist");
         }
 
@@ -84,8 +73,8 @@ namespace TX
             folderPicker.FileTypeFilter.Add(".");
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            Settings.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
-            System.Diagnostics.Debug.WriteLine(nameof(Settings.DownloadsFolderToken) + ": " + Settings.DownloadsFolderToken);
+            Settings.Instance.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
+            System.Diagnostics.Debug.WriteLine(nameof(Settings.Instance.DownloadsFolderToken) + ": " + Settings.Instance.DownloadsFolderToken);
             NowFolderTextBlock.Text = folder.Path;
         }
 
@@ -100,60 +89,6 @@ namespace TX
                 Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
                     Strings.AppResources.GetString("CheckDownloadFolder"));
             }
-        }
-
-        //ValueChanged调用开始先检查UserModify
-
-        private void ThreadNumSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (!UserModify) return;
-            StorageTools.Settings.ThreadNumber = (int)ThreadNumSlider.Value;
-        }
-
-        private void DarkModeSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!UserModify) return;
-            Settings.DarkMode = DarkModeSwitch.IsOn;
-            ((App)App.Current).CallThemeUpdate(DarkModeSwitch.IsOn ? ElementTheme.Dark : ElementTheme.Light);
-        }
-
-        private void MaximumRetriesSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (!UserModify) return;
-            Settings.MaximumRetries = (int)e.NewValue;
-        }
-
-        private void MaximumRecordsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!UserModify) return;
-            Settings.MaximumRecordsIndex = MaximumRecordsComboBox.SelectedIndex;
-        }
-
-        private void TaskCompletedNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!UserModify) return;
-            if(TaskCompletedNotificationCheckbox.IsChecked != null)
-                Settings.IsNotificationShownWhenTaskCompleted = (bool) TaskCompletedNotificationCheckbox.IsChecked;
-        }
-
-        private void ErrorNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!UserModify) return;
-            if (ErrorNotificationCheckbox.IsChecked != null)
-                Settings.IsNotificationShownWhenError = (bool)ErrorNotificationCheckbox.IsChecked;
-        }
-
-        private void ApplicationSuspendedNotificationCheckbox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!UserModify) return;
-            if (ApplicationSuspendedNotificationCheckbox.IsChecked != null)
-                Settings.IsNotificationShownWhenApplicationSuspended = (bool)ApplicationSuspendedNotificationCheckbox.IsChecked;
-        }
-
-        private void MaximumBufferSizeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            if (!UserModify) return;
-            Settings.MaximumDynamicBufferSize = (int)e.NewValue;
         }
     }
 }

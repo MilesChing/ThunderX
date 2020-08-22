@@ -104,7 +104,7 @@ namespace TX.Controls
             var folder = await StorageManager.TryGetFolderAsync(message.FolderToken);
 
             //播放一个通知
-            if (Settings.IsNotificationShownWhenTaskCompleted)
+            if (Settings.Instance.IsNotificationShownWhenTaskCompleted)
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + " - " +
                     Converters.StringConverter.GetPrintSize((long)message.FileSize), 
                     Path.Combine(folder.Path, message.FileName + message.Extention), 
@@ -140,7 +140,7 @@ namespace TX.Controls
 
         private void DisplayError(Exception e)
         {
-            if(Settings.IsNotificationShownWhenError)
+            if(Settings.Instance.IsNotificationShownWhenError)
                 Toasts.ToastManager.ShowSimpleToast(
                     Strings.AppResources.GetString("SomethingWrong"), 
                     e.Message);

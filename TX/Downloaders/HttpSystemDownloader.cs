@@ -141,8 +141,8 @@ namespace TX.Downloaders
 
                 if (folder == null)
                 {
-                    folder = await StorageManager.TryGetFolderAsync(Settings.DownloadsFolderToken);
-                    Message.FolderToken = Settings.DownloadsFolderToken;
+                    folder = await StorageManager.TryGetFolderAsync(Settings.Instance.DownloadsFolderToken);
+                    Message.FolderToken = Settings.Instance.DownloadsFolderToken;
                     if (folder == null)
                     {
                         folder = ApplicationData.Current.LocalCacheFolder;

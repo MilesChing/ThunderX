@@ -31,7 +31,7 @@
             <Border Style="{StaticResource TXBorder}" />
             <ToggleSwitch x:Name="DarkModeSwitch"
                           x:Uid="SetPage_ToggleSwitch_DarkMode"
-                          Toggled="DarkModeSwitch_Toggled"/>
+                          IsOn="{x:Bind SettingsInstance.DarkMode, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_Notifications" />
@@ -39,20 +39,33 @@
             <CheckBox x:Name="TaskCompletedNotificationCheckbox"
                       x:Uid="SetPage_Checkbox_TaskCompletedNotification"
                       Style="{StaticResource CheckBoxStyle}"
-                      Checked="TaskCompletedNotificationCheckbox_Checked"
-                      Unchecked="TaskCompletedNotificationCheckbox_Checked"/>
+                      IsChecked="{x:Bind SettingsInstance.IsNotificationShownWhenTaskCompleted, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBorder}" />
             <CheckBox x:Name="ErrorNotificationCheckbox"
                       x:Uid="SetPage_Checkbox_ErrorNotification"
                       Style="{StaticResource CheckBoxStyle}"
-                      Checked="ErrorNotificationCheckbox_Checked"
-                      Unchecked="ErrorNotificationCheckbox_Checked"/>
+                      IsChecked="{x:Bind SettingsInstance.IsNotificationShownWhenError, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBorder}" />
             <CheckBox x:Name="ApplicationSuspendedNotificationCheckbox"
                       x:Uid="SetPage_Checkbox_ApplicationSuspendedNotification"
                       Style="{StaticResource CheckBoxStyle}"
-                      Checked="ApplicationSuspendedNotificationCheckbox_Checked"
-                      Unchecked="ApplicationSuspendedNotificationCheckbox_Checked"/>
+                      IsChecked="{x:Bind SettingsInstance.IsNotificationShownWhenApplicationSuspended, Mode=TwoWay}"/>
+            <Border Style="{StaticResource TXBigBorder}" />
+            <TextBlock Style="{StaticResource TXSubTitle}"
+                       x:Uid="SetPage_Subtitle_URLAnalyzer"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <TextBlock Style="{StaticResource TXPlainText}"
+                       x:Uid="SetPage_GuideText_URLAnalyzer"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox x:Name="AnalyzeYouTubeURLCheckbox"
+                      x:Uid="SetPage_Checkbox_YouTubeVideos"
+                      Style="{StaticResource CheckBoxStyle}"
+                      IsChecked="{x:Bind SettingsInstance.EnableYouTubeURLAnalyzer, Mode=TwoWay}"/>
+            <Border Style="{StaticResource TXBorder}" />
+            <CheckBox x:Name="AnalyzeThunderURLCheckbox"
+                      x:Uid="SetPage_Checkbox_ThunderProxy"
+                      Style="{StaticResource CheckBoxStyle}"
+                      IsChecked="{x:Bind SettingsInstance.EnableThunderURLAnalyzer, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_ThreadNum"/>
@@ -71,9 +84,8 @@
             </StackPanel>
             <Slider Template="{StaticResource TXSliderTemplate}" 
                     x:Name="ThreadNumSlider"
-                    Minimum="1"
-                    Maximum="218" 
-                    ValueChanged="ThreadNumSlider_ValueChanged"/>
+                    Minimum="1" Maximum="218" 
+                    Value="{x:Bind SettingsInstance.ThreadNumber, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxRetries"/>
@@ -83,12 +95,9 @@
             <Border Style="{StaticResource TXBorder}" />
             <Slider x:Name="MaximumRetriesSlider"
                     Template="{StaticResource TXSliderTemplate}" 
-                    Minimum="0"
-                    Maximum="100"
-                    StepFrequency="20"
-                    TickFrequency="20"
-                    TickPlacement="Outside"
-                    ValueChanged="MaximumRetriesSlider_ValueChanged"/>
+                    Minimum="0" Maximum="100" StepFrequency="20" 
+                    TickFrequency="20" TickPlacement="Outside"
+                    Value="{x:Bind SettingsInstance.MaximumRetries, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxBuffer"/>
@@ -98,12 +107,9 @@
             <Border Style="{StaticResource TXBorder}" />
             <Slider x:Name="MaximumBufferSizeSlider"
                     Template="{StaticResource TXSliderTemplate}"
-                    ValueChanged="MaximumBufferSizeSlider_ValueChanged" 
-                    TickPlacement="Outside"
-                    Minimum="500"
-                    Maximum="5000"
-                    TickFrequency="500"
-                    StepFrequency="500"/>
+                    Minimum="500" Maximum="5000" TickPlacement="Outside"
+                    TickFrequency="500" StepFrequency="500"
+                    Value="{x:Bind SettingsInstance.MaximumDynamicBufferSize, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                        x:Uid="SetPage_Subtitle_MaxRecords"/>
@@ -111,16 +117,11 @@
             <TextBlock Style="{StaticResource TXPlainText}"
                        x:Uid="SetPage_GuideText_MaxRecords"/>
             <Border Style="{StaticResource TXBorder}" />
-            <ComboBox x:Name="MaximumRecordsComboBox"
-                      Width="200"
-                      SelectionChanged="MaximumRecordsComboBox_SelectionChanged">
-                <ComboBox.Items>
-                    <TextBlock Text="0"/>
-                    <TextBlock Text="50"/>
-                    <TextBlock Text="200"/>
-                    <TextBlock Text="1000"/>
-                </ComboBox.Items>
-            </ComboBox>
+            <Slider x:Name="MaximumRecordsSlider"
+                    Template="{StaticResource TXSliderTemplate}"
+                    Minimum="0" Maximum="1000" TickPlacement="Outside"
+                    TickFrequency="200" StepFrequency="200"
+                    Value="{x:Bind SettingsInstance.MaximumRecords, Mode=TwoWay}"/>
             <Border Style="{StaticResource TXBigBorder}" />
             <TextBlock Style="{StaticResource TXSubTitle}"
                            x:Uid="SetPage_Subtitle_DefaultFolder"/>

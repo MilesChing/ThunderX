@@ -17,8 +17,6 @@ namespace TX.NetWork.NetWorkAnalysers
     {
         private const string KEY_YOUTUBE = "YouTubeURL";
 
-        private string id = null;
-
         private AbstractAnalyser innerAnalyser = null;
 
         public override void Dispose()

@@ -15,7 +15,7 @@ namespace TX.StorageTools
     {
         public static async Task<StorageFolder> TryGetFolderAsync(string token)
         {
-            if (token == Settings.DownloadsFolderToken)
+            if (token == Settings.Instance.DownloadsFolderToken)
                 return await TryGetFolderFromAccessListAsync(token, StorageApplicationPermissions.MostRecentlyUsedList);
             else return await TryGetFolderFromAccessListAsync(token, StorageApplicationPermissions.FutureAccessList);
         }

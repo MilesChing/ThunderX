@@ -396,4 +396,16 @@
   <data name="Select" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="SetPage_Checkbox_ThunderProxy.Content" xml:space="preserve">
+    <value>"thunder://" Proxy</value>
+  </data>
+  <data name="SetPage_Checkbox_YouTubeVideos.Content" xml:space="preserve">
+    <value>YouTube Videos</value>
+  </data>
+  <data name="SetPage_GuideText_URLAnalyzer.Text" xml:space="preserve">
+    <value>Thunder X automatically identifies some special types of URLs and extracts resources (from YouTube video page, etc.) before you're creating a new task. You can still download (like original WEB page) through HTTP/HTTPS protocol by turning off support for the corresponding type of URL.</value>
+  </data>
+  <data name="SetPage_Subtitle_URLAnalyzer.Text" xml:space="preserve">
+    <value>Multi-protocol Support</value>
+  </data>
 </root>

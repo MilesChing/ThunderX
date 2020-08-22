@@ -10,12 +10,28 @@ namespace TX.StorageTools
     class Settings
     {
         /// <summary>
+        /// Settings or its properties must not be static if used as Source in x:Bind
+        /// https://stackoverflow.com/a/39981618
+        /// So we have to implement a singular mode by hand
+        /// </summary>
+        private static Settings instance;
+        public static Settings Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new Settings();
+                return instance;
+            }
+        }
+
+        /// <summary>
         /// 尝试访问设置项，若未找到则返回默认值
         /// </summary>
         /// <typeparam name="T">设置项类型</typeparam>
         /// <param name="url">设置项的关键字</param>
         /// <param name="defaultValue">返回的默认值</param>
-        private static T TryGetValue<T>(string key, T defaultValue)
+        private T TryGetValue<T>(string key, T defaultValue)
         {
             object value;
             if (ApplicationData.Current.LocalSettings.Values
@@ -27,7 +43,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 设置值
         /// </summary>
-        private static void SetValue<T>(string key, T value)
+        private void SetValue<T>(string key, T value)
         {
             ApplicationData.Current
                 .LocalSettings.Values[key] = value;
@@ -43,7 +59,7 @@ namespace TX.StorageTools
         /// 有关文件夹Token可参考
         /// https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.AccessCache.StorageApplicationPermissions
         /// </summary>
-        public static string DownloadsFolderToken
+        public string DownloadsFolderToken
         {
             get { return TryGetValue<string>(nameof(DownloadsFolderToken), null); }
             set { SetValue(nameof(DownloadsFolderToken), value); }
@@ -52,7 +68,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 设置的线程数
         /// </summary>
-        public static int ThreadNumber
+        public int ThreadNumber
         {
             get { return TryGetValue(nameof(ThreadNumber), 1); }
             set { SetValue(nameof(ThreadNumber), value); }
@@ -61,7 +77,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 是否启动夜间模式
         /// </summary>
-        public static bool DarkMode
+        public bool DarkMode
         {
             get { return TryGetValue(nameof(DarkMode), false); }
             set { SetValue(nameof(DarkMode), value); }
@@ -70,7 +86,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 发生错误时的最大重试次数
         /// </summary>
-        public static int MaximumRetries
+        public int MaximumRetries
         {
             get { return TryGetValue(nameof(MaximumRetries), 40); }
             set { SetValue(nameof(MaximumRetries), value); }
@@ -79,7 +95,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 下载完成后是否播放通知
         /// </summary>
-        public static bool IsNotificationShownWhenTaskCompleted
+        public bool IsNotificationShownWhenTaskCompleted
         {
             get { return TryGetValue(nameof(IsNotificationShownWhenTaskCompleted), true); }
             set { SetValue(nameof(IsNotificationShownWhenTaskCompleted), value); }
@@ -88,7 +104,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 发生错误后是否播放通知
         /// </summary>
-        public static bool IsNotificationShownWhenError
+        public bool IsNotificationShownWhenError
         {
             get { return TryGetValue(nameof(IsNotificationShownWhenError), true); }
             set { SetValue(nameof(IsNotificationShownWhenError), value); }
@@ -97,7 +113,7 @@ namespace TX.StorageTools
         /// <summary>
         /// 应用被休眠后是否播放通知
         /// </summary>
-        public static bool IsNotificationShownWhenApplicationSuspended
+        public bool IsNotificationShownWhenApplicationSuspended
         {
             get { return TryGetValue(nameof(IsNotificationShownWhenApplicationSuspended), false); }
             set { SetValue(nameof(IsNotificationShownWhenApplicationSuspended), value); }
@@ -106,43 +122,41 @@ namespace TX.StorageTools
         /// <summary>
         /// 保存的最大历史记录数在NormalRecordNumberParser中的索引
         /// </summary>
-        public static int MaximumRecordsIndex
+        public int MaximumRecords
         {
-            get { return TryGetValue(nameof(MaximumRecordsIndex), 1); }
-            set { SetValue(nameof(MaximumRecordsIndex), value); }
+            get { return TryGetValue(nameof(MaximumRecords), 200); }
+            set { SetValue(nameof(MaximumRecords), value); }
         }
-        //当MaximumRecords记录了k时，真实的上限是NormalRecordNumberParser[k]
-        public static readonly int[] NormalRecordNumberParser = new int[4]{ 0, 50, 200, 1000 };
-
-        /// <summary>
-        /// 全局速度限制
-        /// </summary>
-        public static int SpeedLimit
-        {
-            get { return TryGetValue(nameof(SpeedLimit), 5); }
-            set { SetValue(nameof(SpeedLimit), value); }
-        }
-        //当SpeedLimit记录了k时，真实的上限是NormalSpeedLimitParser[k]，以kB/s为单位
-        //小于零的值代表No Limit
-        public static readonly int[] NormalSpeedLimitParser = new int[5] { 512, 1024, 2048, 4096, -1 };
 
         /// <summary>
         /// 单个线程的动态缓冲区可占用的最大空间（kB)
         /// </summary>
-        public static int MaximumDynamicBufferSize
+        public int MaximumDynamicBufferSize
         {
             get {
-                //加速访问
-                if (_maximumDynamicBufferSize < 0)
-                    return _maximumDynamicBufferSize = 
-                        TryGetValue(nameof(MaximumDynamicBufferSize), 500);
-                else return _maximumDynamicBufferSize;
+                return TryGetValue(nameof(MaximumDynamicBufferSize), 500);
             }
             set {
                 SetValue(nameof(MaximumDynamicBufferSize), value);
-                _maximumDynamicBufferSize = value;
             }
         }
-        private static int _maximumDynamicBufferSize = -1;
+
+        /// <summary>
+        /// Analyze YouTube URL automatically when creating new task.
+        /// </summary>
+        public bool EnableYouTubeURLAnalyzer
+        {
+            get { return TryGetValue(nameof(EnableYouTubeURLAnalyzer), true); }
+            set { SetValue(nameof(EnableYouTubeURLAnalyzer), value); }
+        }
+
+        /// <summary>
+        /// Analyze Thunder URL automatically when creating new task.
+        /// </summary>
+        public bool EnableThunderURLAnalyzer
+        {
+            get { return TryGetValue(nameof(EnableThunderURLAnalyzer), true); }
+            set { SetValue(nameof(EnableThunderURLAnalyzer), value); }
+        }
     }
 }

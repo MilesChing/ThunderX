@@ -22,7 +22,7 @@ namespace TX
     {
         public TXPage()
         {
-            RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            RequestedTheme = Settings.Instance.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();
         }
 
@@ -57,7 +57,7 @@ namespace TX
         private void ResetTitleBar()
         {
             var TB = ApplicationView.GetForCurrentView().TitleBar;
-            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
+            byte co = (byte)(Settings.Instance.DarkMode ? 0x11 : 0xee);
             byte fr = (byte)(0xff - co);
             TB.BackgroundColor = Color.FromArgb(0xcc, co, co, co);
             TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);
