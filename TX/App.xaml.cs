@@ -79,9 +79,9 @@ namespace TX
                 LicenseChanged?.Invoke(AppLicense);
             };  //处理运行时版本信息更新
             InitializeAppLicense(); //初始化版本信息
-            if (Settings.DownloadsFolderToken == null || !StorageApplicationPermissions.MostRecentlyUsedList
-                .ContainsItem(Settings.DownloadsFolderToken))
-                Settings.DownloadsFolderToken = null;
+            if (Settings.Instance.DownloadsFolderToken == null || !StorageApplicationPermissions.MostRecentlyUsedList
+                .ContainsItem(Settings.Instance.DownloadsFolderToken))
+                Settings.Instance.DownloadsFolderToken = null;
             TXDataFileIO.StartInitializeMessages(); //不管有没有都要Start
             Converters.ExtentionConverter.InitializeDictionary();
         }
@@ -222,7 +222,7 @@ namespace TX
             Debug.WriteLine("OnSuspending");
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            if (Settings.IsNotificationShownWhenApplicationSuspended)
+            if (Settings.Instance.IsNotificationShownWhenApplicationSuspended)
                 Toasts.ToastManager.ShowSimpleToast(
                     Strings.AppResources.GetString("ApplicationSuspendedTitle"),
                     Strings.AppResources.GetString("ApplicationSuspendedMessage")
@@ -241,8 +241,7 @@ namespace TX
                     if(bar.downloader.State == Enums.DownloadState.Done)
                     {
                         doneNum++;
-                        if (doneNum > Settings.NormalRecordNumberParser[Settings.MaximumRecordsIndex])
-                            continue;
+                        if (doneNum > Settings.Instance.MaximumRecords) continue;
                     }
 
                     bar.downloader.Pause();

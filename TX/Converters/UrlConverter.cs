@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TX.NetWork.NetWorkAnalysers;
+using TX.StorageTools;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace TX.Converters
@@ -51,9 +52,9 @@ namespace TX.Converters
         /// </summary>
         public static AbstractAnalyser GetAnalyser(string url)
         {
-            if (IsYouTubeURL(url)) return new YouTubeAnalyser();
+            if (Settings.Instance.EnableYouTubeURLAnalyzer && IsYouTubeURL(url)) return new YouTubeAnalyser();
+            else if (Settings.Instance.EnableThunderURLAnalyzer && IsThunderURL(url)) return new ThunderAnalyser();
             else if (IsHttpURL(url)) return new HttpAnalyser();
-            else if (IsThunderURL(url)) return new ThunderAnalyser();
             else return null;
         }
 

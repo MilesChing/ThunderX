@@ -27,7 +27,7 @@
             </control:DropShadowPanel>
         </DataTemplate>
 
-        <DataTemplate x:DataType="models:PlainTextComboBoxData"
+        <DataTemplate x:DataType="models:ComboBoxData"
                       x:Key="ComboBoxDataTemplate">
             <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                        Text="{x:Bind Text}"
@@ -76,8 +76,7 @@
                        x:Uid="NewTaskPage_GuideText_URLBox" />
             <Border Style="{StaticResource TXBorder}" />
             <TextBox x:Name="URLBox"
-                     Style="{StaticResource TextBoxStyle}"
-                     TextChanged="URLBox_TextChanged" />
+                     Style="{StaticResource TextBoxStyle}"/>
             <Border Style="{StaticResource TXBorder}" />
             <ListView IsItemClickEnabled="False"
                       ItemContainerStyle="{StaticResource LinkAnalysisMessageListItemContainerStyle}"
@@ -92,8 +91,8 @@
                           Template="{StaticResource TXComboBoxTemplate}"
                           ItemsSource="{x:Bind comboBoxItems}"
                           ItemTemplate="{StaticResource ComboBoxDataTemplate}"
+                          SelectionChanged="ComboBox_SelectionChanged"
                           BorderThickness="1"
-                          Width="150"
                           x:Uid="NewTaskPage_ComboBox">
                     <ComboBox.Background>
                         <SolidColorBrush Color="{ThemeResource TXDownloadBarBackgroundColor}"/>

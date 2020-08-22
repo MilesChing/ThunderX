@@ -39,7 +39,7 @@ namespace TX.Controls
             DownloaderStateChanged(dw.State);
         }
 
-        private async void DownloaderDownloadProgressChanged(Models.Progress progress)
+        private void DownloaderDownloadProgressChanged(Models.Progress progress)
         {
             //在后台运行（挂起或最小化）不更新UI
             if (((App)App.Current).InBackground) return;
@@ -47,7 +47,7 @@ namespace TX.Controls
             int per = (int)((progress.TargetValue == null) ? 0
                 : (100f * progress.CurrentValue / progress.TargetValue));
             //更新所有进度显示
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
                     ProgressBlock.Text = (progress.TargetValue == null) ? "-%" : (per + "%");
@@ -104,13 +104,13 @@ namespace TX.Controls
             var folder = await StorageManager.TryGetFolderAsync(message.FolderToken);
 
             //播放一个通知
-            if (Settings.IsNotificationShownWhenTaskCompleted)
+            if (Settings.Instance.IsNotificationShownWhenTaskCompleted)
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + " - " +
-                    Converters.StringConverter.GetPrintSize((long)message.FileSize), 
+                    StringConverter.GetPrintSize((long)message.FileSize), 
                     Path.Combine(folder.Path, message.FileName + message.Extention), 
                     folder.Path);
 
-            await MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            _ = MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () => {
                     MainPage.Current.DownloadBarManager.Invoke(
                         (collection) =>
@@ -140,7 +140,7 @@ namespace TX.Controls
 
         private void DisplayError(Exception e)
         {
-            if(Settings.IsNotificationShownWhenError)
+            if(Settings.Instance.IsNotificationShownWhenError)
                 Toasts.ToastManager.ShowSimpleToast(
                     Strings.AppResources.GetString("SomethingWrong"), 
                     e.Message);
@@ -160,7 +160,7 @@ namespace TX.Controls
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (downloader != null) downloader.Dispose();
+            if (downloader != null) Task.Run(() => downloader.Dispose());
             MainPage.Current.DownloadBarManager.Invoke(
                 (collection) => { collection.Remove(this); }
             );
@@ -172,9 +172,9 @@ namespace TX.Controls
             HideGlassLabel.Begin();
         }
 
-        private async void PauseButton_Click(object sender, RoutedEventArgs e)
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() => downloader.Pause());
+            downloader.Pause();
             HideGlassLabel.Begin();
         }
 
@@ -197,7 +197,7 @@ namespace TX.Controls
             try
             {
                 string path = Path.Combine((await StorageManager.TryGetFolderAsync(downloader.Message.FolderToken)).Path,
-                                downloader.Message.FileName + downloader.Message.Extention);
+                    downloader.Message.FileName + downloader.Message.Extention);
                 var file = await StorageFile.GetFileFromPathAsync(path);
 
                 StorageTools.StorageManager.LaunchFileAsync(file);

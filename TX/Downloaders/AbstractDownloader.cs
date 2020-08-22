@@ -101,6 +101,6 @@ namespace TX.Downloaders
         /// <summary>
         /// 发生错误时的最大重试次数
         /// </summary>
-        protected readonly int MaximumRetries = Settings.MaximumRetries;
+        protected readonly int MaximumRetries = Settings.Instance.MaximumRetries;
     }
 }

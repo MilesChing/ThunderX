@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using TX.Converters;
 using TX.Downloaders;
@@ -11,9 +13,11 @@ using TX.NetWork;
 using TX.NetWork.NetWorkAnalysers;
 using TX.StorageTools;
 using TX.VisualManager;
+using Windows.Devices.PointOfService.Provider;
 using Windows.Services.Store;
 using Windows.Storage.AccessCache;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -29,13 +33,17 @@ namespace TX
         private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
 
         private AbstractAnalyser analyser = null;
-        private NewTaskPageVisualController controller = null;
 
         private ObservableCollection<PlainTextMessage> linkAnalysisMessages 
             = new ObservableCollection<PlainTextMessage>();
 
-        private ObservableCollection<PlainTextComboBoxData> comboBoxItems
-            = new ObservableCollection<PlainTextComboBoxData>();
+        private ObservableCollection<ComboBoxData> comboBoxItems
+            = new ObservableCollection<ComboBoxData>();
+
+        private Dictionary<string, PlainTextMessage> existMessages
+            = new Dictionary<string, PlainTextMessage>();
+
+        private Action<ComboBoxData> comboBoxItemSelectedCallback;
 
         public NewTaskPage()
         {
@@ -44,13 +52,6 @@ namespace TX
             InitializeComponent();
 
             SetVisualManagers();
-            controller = new NewTaskPageVisualController(linkAnalysisMessages,
-                ThreadLayoutVisibilityManager,
-                ComboBoxLayoutVisibilityManager,
-                SubmitButton,
-                RecommendedNameBlock,
-                ComboBox,
-                comboBoxItems);
 
             RefreshUI();
             LicenseChanged(((App)App.Current).AppLicense);
@@ -79,12 +80,17 @@ namespace TX
         {
             base.OnNavigatedTo(e);
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
+            syncURLTokenSource?.Dispose();
+            syncURLTokenSource = new CancellationTokenSource();
+            var token = syncURLTokenSource.Token;
+            Task.Run(() => SyncURL(token));
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged -= Clipboard_ContentChanged;
+            syncURLTokenSource?.Cancel();
         }
 
         public void RefreshUI()
@@ -96,16 +102,49 @@ namespace TX
             RenameBox.Text = Strings.AppResources.GetString("Unknown");
             RecommendedNameBlock.Opacity = 0.5;
             RecommendedNameBlock.Text = RenameBox.Text;
-            ThreadNumSlider.Value = StorageTools.Settings.ThreadNumber;
-            currentFolderToken = StorageTools.Settings.DownloadsFolderToken;
+            ThreadNumSlider.Value = Settings.Instance.ThreadNumber;
+            currentFolderToken = Settings.Instance.DownloadsFolderToken;
             GC.Collect();
         }
 
         public async void StartLoadDownloadFolderPath()
         {
-            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.DownloadsFolderToken) ?
-                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.DownloadsFolderToken)).Path :
+            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.Instance.DownloadsFolderToken) ?
+                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.Instance.DownloadsFolderToken)).Path :
                 Strings.AppResources.GetString("FolderNotExist");
+        }
+
+        private CancellationTokenSource syncURLTokenSource;
+        private void SyncURL(CancellationToken token)
+        {
+            string lastCheckURL = "";
+            while (!token.IsCancellationRequested)
+            {
+                string newURL = lastCheckURL;
+                try {
+                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        newURL = URLBox.Text).AsTask().Wait();
+
+                    if (newURL == lastCheckURL)
+                    {
+                        Thread.Sleep(50);
+                        continue;
+                    }
+                    analyser?.Dispose();
+                    analyser = UrlConverter.GetAnalyser(newURL);
+                    if (analyser != null) {
+                        analyser.BindVisualController(this);
+                        analyser.SetURLAsync(newURL).Wait();
+                    }
+                }
+                catch(Exception e) {
+                    Debug.WriteLine(e);
+                    continue;
+                }
+                finally {
+                    lastCheckURL = newURL;
+                }
+            }
         }
 
         private void SetVisualManagers()
@@ -123,30 +162,13 @@ namespace TX
                 {
                     string url = await UrlConverter.CheckClipBoardAsync();
                     if (url != string.Empty && !SubmitButton.IsEnabled)
-                    {
                         URLBox.Text = url;
-                        if (sender == null && e == null)
-                            URLBox_TextChanged(null, null);
-                    }
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }
-        }
-
-        private async void URLBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string url = URLBox.Text;
-            
-            analyser?.Dispose();
-            analyser = UrlConverter.GetAnalyser(url);
-            if (analyser == null) return;
-
-            controller.RegistAnalyser(null, analyser);
-            analyser.BindVisualController(controller);
-            await analyser.SetURLAsync(url);
         }
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -188,7 +210,7 @@ namespace TX
                     () => { URLBox.Text = URL; });
         }
 
-        private string currentFolderToken = Settings.DownloadsFolderToken;
+        private string currentFolderToken = Settings.Instance.DownloadsFolderToken;
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
         {
@@ -198,6 +220,90 @@ namespace TX
             if (folder == null) return;
             currentFolderToken = StorageApplicationPermissions.FutureAccessList.Add(folder);
             NowFolderTextBlock.Text = folder.Path;
+        }
+
+        private void ComboBox_SelectionChanged(object _, SelectionChangedEventArgs e) =>
+            comboBoxItemSelectedCallback?.Invoke(ComboBox.SelectedItem as ComboBoxData);
+
+        // methods for analyzer
+        public void UpdateMessage(string key, PlainTextMessage message)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (existMessages.ContainsKey(key))
+                {
+                    PlainTextMessage intermes = existMessages[key];
+                    if (intermes.Equals(message))
+                        return;
+                    for (int i = 0; i < linkAnalysisMessages.Count; ++i)
+                        if (linkAnalysisMessages[i].Equals(intermes))
+                        {
+                            linkAnalysisMessages.RemoveAt(i);
+                            linkAnalysisMessages.Insert(i, message);
+                            break;
+                        }
+                }
+                else linkAnalysisMessages.Add(message);
+                existMessages[key] = message;
+            }).AsTask().Wait();
+        }
+
+        public void RemoveMessage(string key)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (existMessages.ContainsKey(key))
+                {
+                    linkAnalysisMessages.Remove(existMessages[key]);
+                    existMessages.Remove(key);
+                }
+            }).AsTask().Wait();
+        }
+
+        public void SetThreadLayoutVisibility(bool visible)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (visible) ThreadLayoutVisibilityManager.Show();
+                else ThreadLayoutVisibilityManager.Hide();
+            }).AsTask().Wait();
+        }
+
+        public void SetComboBoxLayoutVisibility(bool visible)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (visible) ComboBoxLayoutVisibilityManager.Show();
+                else ComboBoxLayoutVisibilityManager.Hide();
+            }).AsTask().Wait();
+        }
+
+        public void SetSubmitButtonEnabled(bool enable)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                SubmitButton.IsEnabled = enable;
+            }).AsTask().Wait();
+        }
+
+        public void SetRecommendedName(string name, double opacity)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                RecommendedNameBlock.Text = name;
+                RecommendedNameBlock.Opacity = opacity;
+            }).AsTask().Wait();
+        }
+
+        public void SetVersionSelector(ComboBoxData[] items, Action<ComboBoxData> itemSelected)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                comboBoxItems.Clear();
+                foreach (var item in items)
+                    comboBoxItems.Add(item);
+                comboBoxItemSelectedCallback = itemSelected;
+            }).AsTask().Wait();
         }
     }
 }

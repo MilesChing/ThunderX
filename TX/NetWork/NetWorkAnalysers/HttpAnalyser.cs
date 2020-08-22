@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TX.Downloaders;
 using TX.Strings;
 using TX.Models;
+using Windows.UI.Core;
 
 namespace TX.NetWork.NetWorkAnalysers
 {
@@ -19,8 +20,11 @@ namespace TX.NetWork.NetWorkAnalysers
         private const string KEY_RECOMMENDED_TYPES = "RecommendedTypes";
 
         private HttpWebResponse _hresp_ = null;
+        private string recoName;
 
-        public override string GetRecommendedName()
+        public override string GetRecommendedName() => recoName;
+
+        private string InitRecommendedName()
         {
             if (_hresp_ == null) return null;
             //https://blog.csdn.net/ash292340644/article/details/52412674
@@ -50,8 +54,7 @@ namespace TX.NetWork.NetWorkAnalysers
                 if (rec_exts.Length != 0)
                 {
                     string message = AppResources.GetString("RecommendTypeMessage") + String.Join(" ", rec_exts);
-                    Controller?.UpdateMessage(this, KEY_RECOMMENDED_TYPES,
-                        new PlainTextMessage(message));
+                   Visual.UpdateMessage(KEY_RECOMMENDED_TYPES, new PlainTextMessage(message));
                 }
 
                 //没有和文件名相符的，判断文件名是否含后缀
@@ -83,13 +86,12 @@ namespace TX.NetWork.NetWorkAnalysers
 
         public override void Dispose()
         {
-            Controller?.RemoveMessage(this, KEY_LEGITIMACY);
-            Controller?.RemoveMessage(this, KEY_MULTITHREAD);
-            Controller?.RemoveMessage(this, KEY_RECOMMENDED_TYPES);
-            Controller?.SetSubmitButtonEnabled(this, false);
-            Controller?.SetThreadLayoutVisibility(this, false);
-            Controller?.SetRecommendedName(this, AppResources.GetString("Unknown"), 0.5);
-            Controller?.RemoveAnalyser(this);
+            Visual.RemoveMessage(KEY_LEGITIMACY);
+            Visual.RemoveMessage(KEY_MULTITHREAD);
+            Visual.RemoveMessage(KEY_RECOMMENDED_TYPES);
+            Visual.SetSubmitButtonEnabled(false);
+            Visual.SetThreadLayoutVisibility(false);
+            Visual.SetRecommendedName(AppResources.GetString("Unknown"), 0.5);
 
             _hresp_?.Dispose();
             _hresp_ = null;
@@ -113,6 +115,7 @@ namespace TX.NetWork.NetWorkAnalysers
                 if (Converters.UrlConverter.MaybeLegal(URL))
                 {
                     HttpWebRequest req = WebRequest.CreateHttp(URL);
+                    req.Method = "HEAD";
                     _hresp_ = (HttpWebResponse)await req.GetResponseAsync();
                 }
             }
@@ -127,33 +130,33 @@ namespace TX.NetWork.NetWorkAnalysers
         {
             URL = url;
 
-            Controller?.SetRecommendedName(this, Path.GetFileName(url), 0.5);
-            Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+            Visual.SetRecommendedName(Path.GetFileName(url), 0.5);
+            Visual.UpdateMessage(KEY_LEGITIMACY,
                 new PlainTextMessage(AppResources.GetString("Connecting")));
 
             await GetResponseAsync();
             if (_hresp_ == null)
-                Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+                Visual.UpdateMessage(KEY_LEGITIMACY,
                     new PlainTextMessage(AppResources.GetString("UnableToConnect")));
             else
             {
-                Controller?.UpdateMessage(this, KEY_LEGITIMACY,
+                Visual.UpdateMessage(KEY_LEGITIMACY,
                     new PlainTextMessage(AppResources.GetString("SuccessfullyConnected")));
-                Controller?.SetSubmitButtonEnabled(this, true);
+                Visual.SetSubmitButtonEnabled(true);
 
                 if (GetStreamSize() > 0)
                 {
-                    Controller?.SetThreadLayoutVisibility(this, true);
-                    Controller?.UpdateMessage(this, KEY_MULTITHREAD,
+                    Visual.SetThreadLayoutVisibility(true);
+                    Visual.UpdateMessage(KEY_MULTITHREAD,
                         new PlainTextMessage(AppResources.GetString("Multithread")));
                 }
                 else
                 {
-                    Controller?.SetThreadLayoutVisibility(this, false);
-                    Controller?.RemoveMessage(this, KEY_MULTITHREAD);
+                    Visual.SetThreadLayoutVisibility(false);
+                    Visual.RemoveMessage(KEY_MULTITHREAD);
                 }
 
-                Controller?.SetRecommendedName(this, GetRecommendedName(), 1);
+                Visual.SetRecommendedName(recoName = InitRecommendedName(), 1);
             }
         }
     }

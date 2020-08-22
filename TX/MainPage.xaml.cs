@@ -38,7 +38,7 @@ namespace TX
         public MainPage()
         {
             Current = this;
-            this.RequestedTheme = Settings.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
+            this.RequestedTheme = Settings.Instance.DarkMode ? ElementTheme.Dark : ElementTheme.Light;
             ResetTitleBar();//设置标题栏颜色
             SetThemeChangedListener();
             ApplicationView.GetForCurrentView().Consolidated += MainPage_Consolidated;
@@ -64,7 +64,7 @@ namespace TX
                 }
             }
 
-            if(Settings.DownloadsFolderToken == null)
+            if(Settings.Instance.DownloadsFolderToken == null)
             {
                 var contentDialog = new ContentDialog()
                 {
@@ -82,7 +82,7 @@ namespace TX
                     StorageFolder folder = null;
                     folder = await folderPicker.PickSingleFolderAsync();
                     if (folder == null) App.Current.Exit();
-                    else Settings.DownloadsFolderToken = StorageApplicationPermissions
+                    else Settings.Instance.DownloadsFolderToken = StorageApplicationPermissions
                         .MostRecentlyUsedList.Add(folder);
                 };
 
@@ -180,7 +180,7 @@ namespace TX
         private void ResetTitleBar()
         {
             var TB = ApplicationView.GetForCurrentView().TitleBar;
-            byte co = (byte)(Settings.DarkMode ? 0x11 : 0xee);
+            byte co = (byte)(Settings.Instance.DarkMode ? 0x11 : 0xee);
             byte fr = (byte)(0xff - co);
             TB.BackgroundColor = Color.FromArgb(0xcc,co,co,co);
             TB.ButtonBackgroundColor = Color.FromArgb(0xcc, co, co, co);

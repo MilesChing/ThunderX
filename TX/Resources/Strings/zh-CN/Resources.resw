@@ -396,4 +396,16 @@
   <data name="Select" xml:space="preserve">
     <value>选择</value>
   </data>
+  <data name="SetPage_GuideText_URLAnalyzer.Text" xml:space="preserve">
+    <value>Thunder X 在创建新任务时会自动识别某些特殊类型的 URL 并提取用户可能需要下载的特殊资源。关闭对相应类型的 URL 的支持后，您仍可以通过 HTTP/HTTPS 协议下载（原始 WEB 页面）。</value>
+  </data>
+  <data name="SetPage_Subtitle_URLAnalyzer.Text" xml:space="preserve">
+    <value>多协议支持</value>
+  </data>
+  <data name="SetPage_Checkbox_ThunderProxy.Content" xml:space="preserve">
+    <value>"thunder://" 协议</value>
+  </data>
+  <data name="SetPage_Checkbox_YouTubeVideos.Content" xml:space="preserve">
+    <value>YouTube 视频</value>
+  </data>
 </root>

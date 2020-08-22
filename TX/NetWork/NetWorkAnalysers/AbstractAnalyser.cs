@@ -13,7 +13,7 @@ namespace TX.NetWork.NetWorkAnalysers
         /// <summary>
         /// 视觉控制器，用于与界面进行交互
         /// </summary>
-        protected NewTaskPageVisualController Controller { get; private set; }
+        protected NewTaskPage Visual { get; private set; }
 
         public string URL { get; protected set; }
 
@@ -50,9 +50,9 @@ namespace TX.NetWork.NetWorkAnalysers
         /// <summary>
         /// 绑定界面控制器，用于与页面进行信息交换
         /// </summary>
-        public void BindVisualController(NewTaskPageVisualController controller)
+        public void BindVisualController(NewTaskPage visual)
         {
-            Controller = controller;
+            Visual = visual;
         }
     }
 }
