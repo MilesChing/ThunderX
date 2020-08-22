@@ -20,24 +20,24 @@ namespace TX.Downloaders
         //locks
         private object threadLock = new object();
         private object downloadSizeLock = new object();
-        private object speedHelperLock = new object();
+        private object speedCalculatorLock = new object();
 
         private readonly Progress _prog_ = new Progress();
-        private SpeedCalculator speedHelper = new SpeedCalculator();
+        private SpeedCalculator speedCalculator = SharedSpeedCalculatorFactory.NewSpeedCalculator();
         public override event Action<Progress> DownloadProgressChanged;
         public override event Action<DownloaderMessage> DownloadComplete;
         public override event Action<Exception> DownloadError;
 
         public HttpDownloader()
         {
-            speedHelper.Updated += (h) =>
+            speedCalculator.Updated += (h) =>
             {
                 if (State != DownloadState.Downloading) return;
-                lock (speedHelper)
+                lock (speedCalculatorLock)
                 {
-                    _prog_.AverageSpeed = speedHelper.AverageSpeed;
-                    _prog_.CurrentValue = speedHelper.CurrentValue;
-                    _prog_.Speed = speedHelper.Speed;
+                    _prog_.AverageSpeed = speedCalculator.AverageSpeed;
+                    _prog_.CurrentValue = speedCalculator.CurrentValue;
+                    _prog_.Speed = speedCalculator.Speed;
                     _prog_.TargetValue = Message.FileSize;
                 }
                 DownloadProgressChanged(_prog_);
@@ -79,7 +79,7 @@ namespace TX.Downloaders
         {
             if (State != DownloadState.Downloading) return;
             DisposeThreads();
-            speedHelper.IsEnabled = false;
+            speedCalculator.IsEnabled = false;
             State = DownloadState.Pause;
         }
 
@@ -94,7 +94,7 @@ namespace TX.Downloaders
             if (State != DownloadState.Prepared
                 && State != DownloadState.Pause) return;
             State = DownloadState.Downloading;
-            speedHelper.IsEnabled = true;
+            speedCalculator.IsEnabled = true;
             _ = SetThreadsAsync(CurrentOperationCode);
             Debug.WriteLine("Start end");
         }
@@ -106,7 +106,7 @@ namespace TX.Downloaders
             if (State != DownloadState.Uninitialized) return;
             //触发事件指示控件加载已完成
             Message = mes;
-            speedHelper.LastValue = speedHelper.CurrentValue = mes.DownloadSize;
+            speedCalculator.CurrentValue = mes.DownloadSize;
             State = DownloadState.Prepared;
             if (Message.IsDone)
             {
@@ -222,9 +222,9 @@ namespace TX.Downloaders
 
                     Message.Threads.ThreadSize[threadIndex] += pieceLength;
                     lock (downloadSizeLock) Message.DownloadSize += pieceLength;
-                    lock (speedHelperLock) { 
-                        if (speedHelper != null)
-                            speedHelper.CurrentValue += pieceLength; 
+                    lock (speedCalculatorLock) { 
+                        if (speedCalculator != null)
+                            speedCalculator.CurrentValue += pieceLength; 
                     }
                 }
 
@@ -323,12 +323,12 @@ namespace TX.Downloaders
 
         private void DisposeSpeedHelper()
         {
-            if (speedHelper == null) return;
-            lock (speedHelperLock)
+            if (speedCalculator == null) return;
+            lock (speedCalculatorLock)
             {
-                speedHelper.IsEnabled = false;
-                speedHelper.Dispose();
-                speedHelper = null;
+                speedCalculator.IsEnabled = false;
+                speedCalculator.Dispose();
+                speedCalculator = null;
             }
         }
 

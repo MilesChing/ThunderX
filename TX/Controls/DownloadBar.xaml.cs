@@ -39,7 +39,7 @@ namespace TX.Controls
             DownloaderStateChanged(dw.State);
         }
 
-        private async void DownloaderDownloadProgressChanged(Models.Progress progress)
+        private void DownloaderDownloadProgressChanged(Models.Progress progress)
         {
             //在后台运行（挂起或最小化）不更新UI
             if (((App)App.Current).InBackground) return;
@@ -47,7 +47,7 @@ namespace TX.Controls
             int per = (int)((progress.TargetValue == null) ? 0
                 : (100f * progress.CurrentValue / progress.TargetValue));
             //更新所有进度显示
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
                     ProgressBlock.Text = (progress.TargetValue == null) ? "-%" : (per + "%");
@@ -106,11 +106,11 @@ namespace TX.Controls
             //播放一个通知
             if (Settings.Instance.IsNotificationShownWhenTaskCompleted)
                 Toasts.ToastManager.ShowDownloadCompleteToastAsync(Strings.AppResources.GetString("DownloadCompleted"), message.FileName + " - " +
-                    Converters.StringConverter.GetPrintSize((long)message.FileSize), 
+                    StringConverter.GetPrintSize((long)message.FileSize), 
                     Path.Combine(folder.Path, message.FileName + message.Extention), 
                     folder.Path);
 
-            await MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            _ = MainPage.Current.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () => {
                     MainPage.Current.DownloadBarManager.Invoke(
                         (collection) =>

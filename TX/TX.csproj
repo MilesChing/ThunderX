@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Controls\DownloadBarManager.cs" />
     <Compile Include="Models\URLMessage.cs" />
+    <Compile Include="NetWork\SharedSpeedCalculatorFactory.cs" />
     <Compile Include="StorageTools\TXDataFileIO.cs" />
     <Compile Include="TXPage.cs" />
     <Compile Include="VisualManager\ApplicationWindowControl.cs" />
@@ -139,7 +140,6 @@
     <Compile Include="NetWork\NetWorkAnalysers\AbstractAnalyser.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\ThunderAnalyser.cs" />
     <Compile Include="NetWork\NetWorkAnalysers\YouTubeAnalyser.cs" />
-    <Compile Include="NetWork\SpeedCalculator.cs" />
     <Compile Include="Converters\UrlConverter.cs" />
     <Compile Include="NewTaskPage.xaml.cs">
       <DependentUpon>NewTaskPage.xaml</DependentUpon>

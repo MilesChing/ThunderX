@@ -27,7 +27,7 @@ namespace TX.Downloaders
         public override event Action<Exception> DownloadError;
 
         private WebClient client = null;
-        private SpeedCalculator speedHelper;
+        private SpeedCalculator speedCalculator;
 
         public override void Dispose()
         {
@@ -49,10 +49,11 @@ namespace TX.Downloaders
                 client = null;
             }
             
-            if(speedHelper != null)
+            if(speedCalculator != null)
             {
-                speedHelper.Dispose();
-                speedHelper = null;
+                speedCalculator.IsEnabled = false;
+                speedCalculator.Dispose();
+                speedCalculator = null;
             }
 
             _prog_.AverageSpeed = _prog_.Speed = _prog_.CurrentValue = 0;
@@ -105,8 +106,8 @@ namespace TX.Downloaders
             //每次重新开始
             
             Message.TempFilePath = ApplicationData.Current.LocalCacheFolder.Path + @"\" + StorageTools.StorageManager.GetTemporaryName() + ".tmp";
-            speedHelper = new SpeedCalculator();
-            speedHelper.IsEnabled = true;
+            speedCalculator = SharedSpeedCalculatorFactory.NewSpeedCalculator();
+            speedCalculator.IsEnabled = true;
 
             client = new WebClient();
             client.Credentials = CredentialCache.DefaultCredentials;
@@ -114,11 +115,11 @@ namespace TX.Downloaders
             client.DownloadProgressChanged += (o,e) => 
             {
                 if (o != client) return;
-                speedHelper.CurrentValue = e.BytesReceived;
-                _prog_.Speed = speedHelper.Speed;
-                _prog_.AverageSpeed = speedHelper.AverageSpeed;
+                speedCalculator.CurrentValue = e.BytesReceived;
+                _prog_.Speed = speedCalculator.Speed;
+                _prog_.AverageSpeed = speedCalculator.AverageSpeed;
                 _prog_.TargetValue = null;
-                _prog_.CurrentValue = speedHelper.CurrentValue;
+                _prog_.CurrentValue = speedCalculator.CurrentValue;
                 DownloadProgressChanged?.Invoke(_prog_);
             };
             client.DownloadFileAsync(new Uri(Message.URL), Message.TempFilePath);
