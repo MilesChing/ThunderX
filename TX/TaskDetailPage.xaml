@@ -1,0 +1,176 @@
+﻿<Page
+    x:Class="TX.TaskDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    NavigationCacheMode="Enabled"
+    Background="{ThemeResource SystemChromeLowColor}" 
+    mc:Ignorable="d">
+    <ScrollViewer
+        HorizontalScrollMode="Disabled"
+        VerticalScrollMode="Auto"
+        VerticalScrollBarVisibility="Hidden">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DownloaderStatusGroup">
+                <VisualState x:Name="Unbind">
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Completed">
+                    <VisualState.Setters>
+                        <Setter Target="MainProgressBar.Foreground" Value="Green"/>
+                        <Setter Target="MainProgressBar.Value" Value="100"/>
+                        <Setter Target="SpeedTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="SizeTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="RuntimeTextBlock.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pending"/>
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Target="MainProgressBar.Foreground" 
+                                Value="{StaticResource WarningYellow}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Ready"/>
+                <VisualState x:Name="Running">
+                    <VisualState.Setters>
+                        <Setter Target="MainProgressBar.Foreground" 
+                                Value="{ThemeResource SystemAccentColor}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <StackPanel
+            Orientation="Vertical"
+            Padding="8">
+            <StackPanel.Resources>
+                <Style TargetType="StackPanel" x:Key="InnerStackPanelStyle">
+                    <Setter Property="Margin" Value="0 0 0 8"/>
+                    <Setter Property="Background" Value="{ThemeResource SystemAltHighColor}"/>
+                    <Setter Property="CornerRadius" Value="4"/>
+                    <Setter Property="Padding" Value="16 8 16 16"/>
+                    <Setter Property="BorderBrush" Value="{ThemeResource SystemChromeMediumColor}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Style>
+                <DataTemplate x:Key="TaskDetailPageLabelDataTemplate"
+                              x:DataType="local:TaskDetailPageLabel">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource BaseTextBlockStyle}"
+                                   MinWidth="128" Text="{x:Bind Key}"/>
+                        <TextBlock Style="{StaticResource BodyTextBlockStyle}"
+                                   Text="{x:Bind Value}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </StackPanel.Resources>
+
+            <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
+            
+            <StackPanel Style="{StaticResource InnerStackPanelStyle}">
+                <TextBlock x:Name="TaskNameTextBlock"
+                           Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock x:Name="StatusTextBlock" Margin="0 4 0 0"
+                           FontStyle="Italic"
+                           Style="{StaticResource BaseTextBlockStyle}"/>
+                <HyperlinkButton>
+                    <TextBlock x:Name="TaskHyperlink" TextWrapping="Wrap" 
+                               TextDecorations="Underline" MaxLines="3"/>
+                </HyperlinkButton>
+                <ListView ItemsSource="{x:Bind BasicLabelCollection, Mode=OneWay}"
+                          SelectionMode="None" Margin="0 4 0 0"
+                          ItemTemplate="{StaticResource TaskDetailPageLabelDataTemplate}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0 0 0 0"/>
+                            <Setter Property="MinHeight" Value="24"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </StackPanel>
+            <StackPanel Style="{StaticResource InnerStackPanelStyle}"
+                        Padding="8">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="AppBarButton" BasedOn="{StaticResource AppBarButtonRevealStyle}">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="LabelPosition" Value="Collapsed"/>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="1" BorderThickness="1 0 1 0"
+                            Margin="0 8 0 8" BorderBrush="{ThemeResource SystemBaseLowColor}"/>
+                    <AppBarButton x:Name="StartButton" Grid.Column="0" Icon="Play" 
+                                  IsEnabled="False" Click="StartButton_Click"/>
+                    <AppBarButton x:Name="CancelButton" Grid.Column="1" Icon="Pause" 
+                                  IsEnabled="False" Click="CancelButton_Click"/>
+                    <AppBarButton x:Name="DisposeButton" Grid.Column="2" Icon="Delete" 
+                                  Foreground="Red" Click="DisposeButton_Click"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Style="{StaticResource InnerStackPanelStyle}">
+                <Grid>
+                    <ProgressBar x:Name="MainProgressBar"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 Margin="-16 -8 -16 -16"
+                                 Background="Transparent"
+                                 Foreground="{ThemeResource SystemBaseMediumColor}"
+                                 Opacity="0.2"/>
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock"
+                                   BasedOn="{StaticResource CaptionTextBlockStyle}">
+                                <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumColor}"/>
+                                <Setter Property="LineHeight" Value="20"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <TextBlock x:Name="DownloadTimeTextBlock"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="SpeedTextBlock" Margin="0 4 0 0"/>
+                        <TextBlock x:Name="SizeTextBlock"/>
+                        <TextBlock x:Name="RuntimeTextBlock"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            <StackPanel Style="{StaticResource InnerStackPanelStyle}"
+                        x:Name="ErrorStackPanel" Visibility="Collapsed">
+                <Grid x:Name="ErrorIcon">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <FontIcon Foreground="{ThemeResource SystemBaseHighColor}"
+                              FontSize="24" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF139;" Margin="0 2 0 0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"/>
+                    <FontIcon Foreground="{StaticResource WarningYellow}"
+                              FontSize="24" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF13A;" Margin="0 2 0 0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"/>
+                    <FontIcon Foreground="{ThemeResource SystemBaseHighColor}"
+                              FontSize="24" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF13B;" Margin="0 2 0 0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"/>
+
+                    <TextBlock x:Name="ErrorTextBlock" Grid.Column="1"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                </Grid>
+                <TextBlock x:Name="ErrorDetailTextBlock"
+                           Foreground="{ThemeResource SystemBaseMediumColor}"
+                           Margin="0 8 0 0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

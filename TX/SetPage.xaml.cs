@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using TX.StorageTools;
+using TX.Core.Providers;
+using TX.Core.Utils;
+using TX.Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Services.Store;
-using Windows.Storage;
 using Windows.Storage.AccessCache;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,67 +24,64 @@ namespace TX
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SetPage : TXPage
+    public sealed partial class SetPage : Page
     {
+        private readonly Settings SettingEntries = new Settings();
+        private readonly long[] MemoryLimits = new long[] 
+        { 
+            1024 * 1024 * 32,
+            1024 * 1024 * 64,
+            1024 * 1024 * 128,
+            1024 * 1024 * 256,
+            1024 * 1024 * 512,
+        };
+
+        private bool IsApplicationVersionNotTrail => !((App)App.Current).AppLicense.IsTrial;
+
+        private Visibility ApplicationTrailVersionMessageVisibility =>
+            IsApplicationVersionNotTrail ? Visibility.Collapsed : Visibility.Visible;
+
         public SetPage()
         {
             this.InitializeComponent();
-            DarkModeSwitch.Toggled += (sender, e) =>
-                ((App)App.Current).CallThemeUpdate(DarkModeSwitch.IsOn ? 
-                ElementTheme.Dark : ElementTheme.Light);
-            StartLoadDownloadFolderPath();
-            LicenseChanged(((App)App.Current).AppLicense);
+            SetDownloadFolder();
+            MemoryUpperboundComboBox.ItemsSource = MemoryLimits.Select(m => m.SizedString()).ToArray();
+            MemoryUpperboundComboBox.SelectedIndex = Math.Max(Array.IndexOf(
+                MemoryLimits, SettingEntries.MemoryLimit
+            ), 0);
         }
 
-        private Settings SettingsInstance => Settings.Instance;
-
-        public async void StartLoadDownloadFolderPath()
+        public async void SetDownloadFolder()
         {
-            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.Instance.DownloadsFolderToken) ?
-                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.Instance.DownloadsFolderToken)).Path : 
-                Strings.AppResources.GetString("FolderNotExist");
+            DefaultDownloadFolderPathTextBlock.Text = (await LocalFolderManager
+                .GetOrCreateDownloadFolderAsync()).Path;
         }
 
-        protected override void LicenseChanged(StoreAppLicense license)
+        private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            base.LicenseChanged(license);
-            if (license == null) return;
-            if (license.IsActive)
+            if (sender is ToggleSwitch tw)
             {
-                if (license.IsTrial)
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
-                    ThreadNumSlider.IsEnabled = false;
-                }
-                else
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
-                    ThreadNumSlider.IsEnabled = true;
-                }
+                MainPage.Current.RequestedTheme = tw.IsOn ?
+                    ElementTheme.Dark : ElementTheme.Default;
             }
         }
 
-        private async void SelectFolderButton_Click(object sender, RoutedEventArgs e)
+        private async void DefaultDownloadFolderButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.FileTypeFilter.Add(".");
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            Settings.Instance.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
-            System.Diagnostics.Debug.WriteLine(nameof(Settings.Instance.DownloadsFolderToken) + ": " + Settings.Instance.DownloadsFolderToken);
-            NowFolderTextBlock.Text = folder.Path;
+            SettingEntries.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
+            DefaultDownloadFolderPathTextBlock.Text = folder.Path;
         }
 
-        private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        private void MemoryUpperboundComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (sender is ComboBox cb)
             {
-                await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(NowFolderTextBlock.Text));
-            }
-            catch (Exception)
-            {
-                Toasts.ToastManager.ShowSimpleToast(Strings.AppResources.GetString("SomethingWrong"),
-                    Strings.AppResources.GetString("CheckDownloadFolder"));
+                SettingEntries.MemoryLimit = MemoryLimits[cb.SelectedIndex];
             }
         }
     }

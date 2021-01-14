@@ -4,32 +4,28 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{EAF8570C-800D-4EF1-AC49-03B50ED6918A}</ProjectGuid>
+    <ProjectGuid>{07042608-4358-414C-A162-639A1CCA63FF}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TX</RootNamespace>
     <AssemblyName>TX</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>
-    </PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>24FC011449C38315351A5E7AF470ABF2F3989CA9</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>3ECD610405A4A8091465B886364C307E1C40E58C</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
-    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +73,30 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -110,37 +130,51 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DownloadBarManager.cs" />
-    <Compile Include="Models\URLMessage.cs" />
-    <Compile Include="NetWork\SharedSpeedCalculatorFactory.cs" />
-    <Compile Include="StorageTools\TXDataFileIO.cs" />
-    <Compile Include="TXPage.cs" />
-    <Compile Include="VisualManager\ApplicationWindowControl.cs" />
-    <Compile Include="Controls\DownloadBar.xaml.cs">
-      <DependentUpon>DownloadBar.xaml</DependentUpon>
+    <Compile Include="Controls\DownloaderBar.xaml.cs">
+      <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\StringConverter.cs" />
-    <Compile Include="Converters\ExtentionConverter.cs" />
-    <Compile Include="Downloaders\AbstractDownloader.cs" />
-    <Compile Include="Enums\DownloaderType.cs" />
-    <Compile Include="Models\PlainTextMessage.cs" />
-    <Compile Include="Downloaders\HttpDownloader.cs" />
-    <Compile Include="Downloaders\HttpSystemDownloader.cs" />
-    <Compile Include="Enums\DownloadState.cs" />
+    <Compile Include="Controls\IDownloaderViewable.cs" />
+    <Compile Include="Core\Downloaders\AbstractDownloader.cs" />
+    <Compile Include="Core\Downloaders\HttpDownloader.cs" />
+    <Compile Include="Core\Downloaders\HttpParallelDownloader.cs" />
+    <Compile Include="Core\Interfaces\IBufferProvider.cs" />
+    <Compile Include="Core\Interfaces\ICacheFileProvider.cs" />
+    <Compile Include="Core\Interfaces\ICoveredLinq.cs" />
+    <Compile Include="Core\Interfaces\IFolderProvider.cs" />
+    <Compile Include="Core\Interfaces\IPersistable.cs" />
+    <Compile Include="Core\Models\Contexts\DownloadHistory.cs" />
+    <Compile Include="Core\Models\Contexts\DownloadTask.cs" />
+    <Compile Include="Core\Models\Progresses\AbstractMeasurableProgress.cs" />
+    <Compile Include="Core\Models\Progresses\AbstractProgress.cs" />
+    <Compile Include="Core\Models\Progresses\Range.cs" />
+    <Compile Include="Core\Models\Progresses\SharedSpeedCalculatorFactory.cs" />
+    <Compile Include="Core\Models\Sources\AbstractSource.cs" />
+    <Compile Include="Core\Models\Sources\HTTPSource.cs" />
+    <Compile Include="Core\Models\Sources\IMultiTargetsExtracted.cs" />
+    <Compile Include="Core\Models\Sources\ISingleSubsourceExtracted.cs" />
+    <Compile Include="Core\Models\Sources\ISingleTargetExtracted.cs" />
+    <Compile Include="Core\Models\Sources\ThunderSource.cs" />
+    <Compile Include="Core\Models\Sources\YouTubeSource.cs" />
+    <Compile Include="Core\Models\Targets\AbstractTarget.cs" />
+    <Compile Include="Core\Models\Targets\HTTPRangableTarget.cs" />
+    <Compile Include="Core\Models\Targets\HTTPTarget.cs" />
+    <Compile Include="Core\Models\Targets\ILengthSupported.cs" />
+    <Compile Include="Core\Models\Targets\IRangedStreamExtracted.cs" />
+    <Compile Include="Core\Models\Targets\IStreamExtracted.cs" />
+    <Compile Include="Core\Providers\LocalCacheManager.cs" />
+    <Compile Include="Core\Providers\LocalFolderManager.cs" />
+    <Compile Include="Core\Providers\SizeLimitedBufferProvider.cs" />
+    <Compile Include="Core\TXCoreManager.cs" />
+    <Compile Include="Core\Utils\RandomUtils.cs" />
+    <Compile Include="Core\Utils\StreamExtension.cs" />
+    <Compile Include="Core\Utils\StringConverters.cs" />
+    <Compile Include="Core\Utils\UrlConverters.cs" />
+    <Compile Include="HistoryListPage.xaml.cs">
+      <DependentUpon>HistoryListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\DownloaderMessage.cs" />
-    <Compile Include="Models\DownloaderSettings.cs" />
-    <Compile Include="Models\Progress.cs" />
-    <Compile Include="Models\ThreadMessage.cs" />
-    <Compile Include="Models\ComboBoxData.cs" />
-    <Compile Include="NetWork\HttpNetWorkMethods.cs" />
-    <Compile Include="NetWork\NetWorkAnalysers\HttpAnalyser.cs" />
-    <Compile Include="NetWork\NetWorkAnalysers\AbstractAnalyser.cs" />
-    <Compile Include="NetWork\NetWorkAnalysers\ThunderAnalyser.cs" />
-    <Compile Include="NetWork\NetWorkAnalysers\YouTubeAnalyser.cs" />
-    <Compile Include="Converters\UrlConverter.cs" />
     <Compile Include="NewTaskPage.xaml.cs">
       <DependentUpon>NewTaskPage.xaml</DependentUpon>
     </Compile>
@@ -148,23 +182,19 @@
     <Compile Include="SetPage.xaml.cs">
       <DependentUpon>SetPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StorageTools\JsonHelper.cs" />
-    <Compile Include="StorageTools\Settings.cs" />
-    <Compile Include="StorageTools\StorageManager.cs" />
-    <Compile Include="Resources\Strings\AppResources.cs" />
-    <Compile Include="Toasts\ToastManager.cs" />
-    <Compile Include="VisualManager\PropertyAnimationManager.cs" />
-    <Compile Include="VisualManager\VisibilityAnimationManager.cs" />
-    <Compile Include="WebBrowserPage.xaml.cs">
-      <DependentUpon>WebBrowserPage.xaml</DependentUpon>
+    <Compile Include="TaskDetailPage.xaml.cs">
+      <DependentUpon>TaskDetailPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TaskListPage.xaml.cs">
+      <DependentUpon>TaskListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\Settings.cs" />
+    <Compile Include="Utils\ToastManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <PRIResource Include="Resources\Strings\en-Us\Resources.resw" />
-    <PRIResource Include="Resources\Strings\zh-CN\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\BadgeLogo.scale-100.png" />
@@ -185,22 +215,23 @@
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />
     <Content Include="Assets\SplashScreen.scale-150.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Square150x150Logo.scale-100.png" />
     <Content Include="Assets\Square150x150Logo.scale-125.png" />
     <Content Include="Assets\Square150x150Logo.scale-150.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
-    <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-24.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
     <Content Include="Assets\Square44x44Logo.scale-100.png" />
     <Content Include="Assets\Square44x44Logo.scale-125.png" />
     <Content Include="Assets\Square44x44Logo.scale-150.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.scale-400.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-16.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24.png" />
@@ -215,14 +246,16 @@
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="Resources\HTMLs\EmptyHTML.html" />
-    <Content Include="Resources\XMLs\content_types_2_extentions.xml" />
     <Content Include="Resources\XMLs\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
-    <None Include="TX_TemporaryKey.pfx" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -230,71 +263,62 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="AboutPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\DownloadBar.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Controls\DownloaderBar.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="HistoryListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NewTaskPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\AcrylicBrushDictionary.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\BorderDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\ButtonStyleDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\ControlTemplateDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\SolidColorDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\VisualResources\TextBlockStyleDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SetPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="WebBrowserPage.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="TaskDetailPage.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TaskListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Ensure.That">
+      <Version>9.2.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.9</Version>
+      <Version>6.2.11</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>6.0.0</Version>
+      <Version>6.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="MimeTypesMap">
+      <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="YoutubeExplode">
-      <Version>5.1.4</Version>
+      <Version>5.1.9</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MultilingualResources\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

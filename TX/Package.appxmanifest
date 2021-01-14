@@ -1,39 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="22891MilesChing.370350C4C6787" Publisher="CN=E1889EC3-2063-4EAE-9DA8-1A44C430A0CE" Version="1.9.8.0" />
-  <mp:PhoneIdentity PhoneProductId="8d8f7235-3294-4b57-a6a7-f1bf7497f05b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  IgnorableNamespaces="uap mp">
+
+  <Identity
+    Name="22891MilesChing.370350C4C6787"
+    Publisher="CN=E1889EC3-2063-4EAE-9DA8-1A44C430A0CE"
+    Version="2.0.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="489d1c62-080d-4770-90e0-7537ec97cb0d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
   <Properties>
     <DisplayName>Thunder X</DisplayName>
     <PublisherDisplayName>MilesChing</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
+
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
+
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="x-generate"/>
   </Resources>
+
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="TX.App">
-      <uap:VisualElements DisplayName="Thunder X" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Thunder X is an application that provides multiple threads to download files. Users can quickly download the required files from a predefined URL and perform efficient file management. This software provides a rich and smooth animation and an easy-to-use interactive system."  BackgroundColor="transparent">
-        <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png" ShortName="Thunder X">
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="TX.App">
+      <uap:VisualElements
+        DisplayName="Thunder X"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Description="Thunder X is an application that provides multiple threads to download files. Users can quickly download the required files from a predefined URL and perform efficient file management. This software provides a rich and smooth animation and an easy-to-use interactive system."
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Thunder X" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo"/>
             <uap:ShowOn Tile="wide310x150Logo"/>
             <uap:ShowOn Tile="square310x310Logo"/>
           </uap:ShowNameOnTiles>
-        </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png"   BackgroundColor="black"/>
+        </uap:DefaultTile >
+        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#222222"/>
         <uap:InitialRotationPreference>
-          <uap:Rotation Preference="portrait" />
-          <uap:Rotation Preference="landscape" />
-          <uap:Rotation Preference="portraitFlipped" />
-          <uap:Rotation Preference="landscapeFlipped" />
-        </uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png"/>
       </uap:VisualElements>
     </Application>
   </Applications>
+
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>

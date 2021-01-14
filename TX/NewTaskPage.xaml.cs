@@ -1,309 +1,279 @@
-﻿using System;
+﻿using EnsureThat;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using TX.Converters;
-using TX.Downloaders;
-using TX.Models;
-using TX.NetWork;
-using TX.NetWork.NetWorkAnalysers;
-using TX.StorageTools;
-using TX.VisualManager;
-using Windows.Devices.PointOfService.Provider;
-using Windows.Services.Store;
-using Windows.Storage.AccessCache;
-using Windows.UI;
+using TX.Core.Models.Sources;
+using TX.Core.Models.Targets;
+using TX.Core.Providers;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+
+// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
 namespace TX
 {
-    public sealed partial class NewTaskPage : TXPage
+    /// <summary>
+    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// </summary>
+    public sealed partial class NewTaskPage : Page
     {
-        public static NewTaskPage Current;
-
-        private VisibilityAnimationManager ThreadLayoutVisibilityManager = null;
-        private VisibilityAnimationManager ComboBoxLayoutVisibilityManager = null;
-
-        private AbstractAnalyser analyser = null;
-
-        private ObservableCollection<PlainTextMessage> linkAnalysisMessages 
-            = new ObservableCollection<PlainTextMessage>();
-
-        private ObservableCollection<ComboBoxData> comboBoxItems
-            = new ObservableCollection<ComboBoxData>();
-
-        private Dictionary<string, PlainTextMessage> existMessages
-            = new Dictionary<string, PlainTextMessage>();
-
-        private Action<ComboBoxData> comboBoxItemSelectedCallback;
+        App CurrentApp => ((App)App.Current);
 
         public NewTaskPage()
         {
-            Current = this;
-
-            InitializeComponent();
-
-            SetVisualManagers();
-
-            RefreshUI();
-            LicenseChanged(((App)App.Current).AppLicense);
+            this.InitializeComponent();
         }
 
-        protected override void LicenseChanged(StoreAppLicense license)
+        private IStorageFolder TargetFolder
         {
-            base.LicenseChanged(license);
-            if (license == null) return;
-            if (license.IsActive)
+            get => targetFolder;
+            set
             {
-                if (license.IsTrial)
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Visible;
-                    ThreadNumSlider.IsEnabled = false;
-                }
-                else
-                {
-                    ThreadLayout_TrialMessage.Visibility = Visibility.Collapsed;
-                    ThreadNumSlider.IsEnabled = true;
-                }
+                targetFolder = value;
+                DestinationPathTextBlock.Text = targetFolder.Path;
+            }
+        }
+        private IStorageFolder targetFolder;
+
+        private string DestinationFileName 
+        {
+            get
+            {
+                if (CustomFilenameCheckBox.IsChecked == false ||
+                    CustomFilenameTextBox.Text.Equals(string.Empty))
+                    return SuggestedFilenameTextBox.Text;
+                else return CustomFilenameTextBox.Text;
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private AbstractTarget FinalTarget;
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            TargetFolder = await LocalFolderManager.GetOrCreateDownloadFolderAsync();
+            mainURITextBoxAnalyzingTaskCancellationTokenSource = new CancellationTokenSource();
+            _ = Task.Run(() => UrlAnalyzer(mainURITextBoxAnalyzingTaskCancellationTokenSource.Token));
             base.OnNavigatedTo(e);
-            Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
-            syncURLTokenSource?.Dispose();
-            syncURLTokenSource = new CancellationTokenSource();
-            var token = syncURLTokenSource.Token;
-            Task.Run(() => SyncURL(token));
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            mainURITextBoxAnalyzingTaskCancellationTokenSource?.Cancel();
+            mainURITextBoxAnalyzingTaskCancellationTokenSource = null;
             base.OnNavigatedFrom(e);
-            Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged -= Clipboard_ContentChanged;
-            syncURLTokenSource?.Cancel();
         }
 
-        public void RefreshUI()
-        {
-            //将UI恢复到初始值（窗口的循环利用机制）
-            StartLoadDownloadFolderPath();
-            URLBox.Text = string.Empty;
-            NeedRenameButton.IsChecked = false;
-            RenameBox.Text = Strings.AppResources.GetString("Unknown");
-            RecommendedNameBlock.Opacity = 0.5;
-            RecommendedNameBlock.Text = RenameBox.Text;
-            ThreadNumSlider.Value = Settings.Instance.ThreadNumber;
-            currentFolderToken = Settings.Instance.DownloadsFolderToken;
-            GC.Collect();
-        }
-
-        public async void StartLoadDownloadFolderPath()
-        {
-            NowFolderTextBlock.Text = StorageApplicationPermissions.MostRecentlyUsedList.ContainsItem(Settings.Instance.DownloadsFolderToken) ?
-                (await StorageApplicationPermissions.MostRecentlyUsedList.GetFolderAsync(Settings.Instance.DownloadsFolderToken)).Path :
-                Strings.AppResources.GetString("FolderNotExist");
-        }
-
-        private CancellationTokenSource syncURLTokenSource;
-        private void SyncURL(CancellationToken token)
-        {
-            string lastCheckURL = "";
-            while (!token.IsCancellationRequested)
-            {
-                string newURL = lastCheckURL;
-                try {
-                    Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        newURL = URLBox.Text).AsTask().Wait();
-
-                    if (newURL == lastCheckURL)
-                    {
-                        Thread.Sleep(50);
-                        continue;
-                    }
-                    analyser?.Dispose();
-                    analyser = UrlConverter.GetAnalyser(newURL);
-                    if (analyser != null) {
-                        analyser.BindVisualController(this);
-                        analyser.SetURLAsync(newURL).Wait();
-                    }
-                }
-                catch(Exception e) {
-                    Debug.WriteLine(e);
-                    continue;
-                }
-                finally {
-                    lastCheckURL = newURL;
-                }
-            }
-        }
-
-        private void SetVisualManagers()
-        {
-            //设置相关视觉控制器，在构造方法中调用
-            ThreadLayoutVisibilityManager = new VisibilityAnimationManager(ThreadLayout);
-            ComboBoxLayoutVisibilityManager = new VisibilityAnimationManager(ComboBoxLayout);
-        }
-
-        private async void Clipboard_ContentChanged(object sender, object e)
-        {
-            try
-            {
-                if (!SubmitButton.IsEnabled)
-                {
-                    string url = await UrlConverter.CheckClipBoardAsync();
-                    if (url != string.Empty && !SubmitButton.IsEnabled)
-                        URLBox.Text = url;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
-        }
-
-        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
-        {
-            SubmitButton.IsEnabled = false;
-            AbstractDownloader downloader = analyser.GetDownloader();
-
-            Debug.WriteLine(nameof(currentFolderToken) + ": " + currentFolderToken);
-
-            Models.DownloaderSettings settings = new Models.DownloaderSettings()
-            {
-                Url = analyser.URL,
-                FileName = (bool)(NeedRenameButton.IsChecked) ? RenameBox.Text : analyser.GetRecommendedName(),
-                Size = analyser.GetStreamSize() > 0 ? (long?)analyser.GetStreamSize() : null,
-                Threads = ThreadLayout.Visibility == Visibility.Visible ? (int?)ThreadNumSlider.Value : null,
-                FilePath = downloader.NeedTemporaryFilePath ? await StorageManager.GetTemporaryFileAsync() : null,
-                FolderToken = currentFolderToken
-            };
-            
-            downloader.SetDownloader(settings);
-            MainPage.Current.AddDownloadBar(downloader);
-            //由于软件的窗口管理机制要把控件的值重置以准备下次被打开
-            RefreshUI();
-            
-            await ApplicationViewSwitcher.SwitchAsync(MainPage.Current.ViewID);//拉起MainPage
-            await ApplicationView.GetForCurrentView().TryConsolidateAsync();//关闭窗口
-        }
-
-        private void NeedRenameButton_ValueChanged(object sender, RoutedEventArgs e)
-        {
-            bool isChecked = (bool)((CheckBox)sender).IsChecked;
-            RecommendedNameBlock.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
-            RenameBox.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        public async void ForciblySetURL(string URL)
-        {
-            await URLBox.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    () => { URLBox.Text = URL; });
-        }
-
-        private string currentFolderToken = Settings.Instance.DownloadsFolderToken;
-
-        private async void FolderButton_Click(object sender, RoutedEventArgs e)
+        private async void FolderSelectButton_Click(object sender, RoutedEventArgs e)
         {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.FileTypeFilter.Add(".");
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
             var folder = await folderPicker.PickSingleFolderAsync();
             if (folder == null) return;
-            currentFolderToken = StorageApplicationPermissions.FutureAccessList.Add(folder);
-            NowFolderTextBlock.Text = folder.Path;
+            TargetFolder = folder;
         }
 
-        private void ComboBox_SelectionChanged(object _, SelectionChangedEventArgs e) =>
-            comboBoxItemSelectedCallback?.Invoke(ComboBox.SelectedItem as ComboBoxData);
-
-        // methods for analyzer
-        public void UpdateMessage(string key, PlainTextMessage message)
+        private void CustomFilenameCheckBox_IsCheckedChanged(object sender, RoutedEventArgs e)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (sender is CheckBox cb)
             {
-                if (existMessages.ContainsKey(key))
+                if (cb.IsChecked == true)
                 {
-                    PlainTextMessage intermes = existMessages[key];
-                    if (intermes.Equals(message))
-                        return;
-                    for (int i = 0; i < linkAnalysisMessages.Count; ++i)
-                        if (linkAnalysisMessages[i].Equals(intermes))
+                    CustomFilenameTextBox.Visibility = Visibility.Visible;
+                    SuggestedFilenameTextBox.Opacity = 0.2;
+                }
+                else if (cb.IsChecked == false)
+                {
+                    CustomFilenameTextBox.Visibility = Visibility.Collapsed;
+                    SuggestedFilenameTextBox.Opacity = 1;
+                }
+            }
+        }
+
+        private CancellationTokenSource mainURITextBoxAnalyzingTaskCancellationTokenSource;
+
+        private void MainURITextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            lock (userOperationStatusLockObject) UriChanged = true;
+        }
+
+        private void StreamSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            lock (userOperationStatusLockObject) 
+                ComboBoxSelectionChanged = true;
+        }
+
+        private readonly object userOperationStatusLockObject = new object();
+        private bool ComboBoxSelectionChanged = false;
+        private bool UriChanged = false;
+        private bool UserOperated => ComboBoxSelectionChanged | UriChanged;
+
+        private async void UrlAnalyzer(CancellationToken token)
+        {
+            Task<AbstractTarget>[] targetEntries = Array.Empty<Task<AbstractTarget>>();
+            while (!token.IsCancellationRequested)
+            {
+                bool operated = false;
+                bool uriOperated = false;
+                bool selectionOperated = false;
+                lock (userOperationStatusLockObject)
+                {
+                    uriOperated = UriChanged;
+                    selectionOperated = ComboBoxSelectionChanged;
+                    operated = uriOperated | selectionOperated;
+                    if (operated) UriChanged = ComboBoxSelectionChanged = false;
+                }
+
+                if (!operated)
+                {
+                    await Task.Delay(200);
+                    continue;
+                }
+                
+                if (!uriOperated)
+                {
+                    if (selectionOperated)
+                    {
+                        int nowSelection = -1;
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                            nowSelection = StreamSelectionComboBox.SelectedIndex;
+                            UriAnalyzingProgressBar.IsIndeterminate = true;
+                            SuggestedFilenameTextBox.Text = "Unknown";
+                            AcceptButton.IsEnabled = false;
+                        });
+
+                        try
                         {
-                            linkAnalysisMessages.RemoveAt(i);
-                            linkAnalysisMessages.Insert(i, message);
-                            break;
+                            // check if selection legal
+                            Ensure.That(nowSelection).IsInRange(0, targetEntries.Length - 1);
+
+                            // handle new selection
+                            targetEntries[nowSelection].Start();
+                            await targetEntries[nowSelection];
+                            Ensure.That(UserOperated).IsFalse();
+
+                            var target = targetEntries[nowSelection].Result;
+                            FinalTarget = target;
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                SuggestedFilenameTextBox.Text = FinalTarget.SuggestedName;
+                                AcceptButton.IsEnabled = true;
+                            });
+                            Ensure.That(UserOperated).IsFalse();
                         }
+                        catch (Exception)
+                        {
+                            FinalTarget = null;
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                SuggestedFilenameTextBox.Text = "Unknown";
+                                AcceptButton.IsEnabled = false;
+                            });
+                        }
+                        finally
+                        {
+                            // end processing
+                            if (!UserOperated)
+                            {
+                                await UriAnalyzingProgressBar.Dispatcher.RunAsync(
+                                    CoreDispatcherPriority.Normal,
+                                    () => UriAnalyzingProgressBar.IsIndeterminate = false);
+                            }
+                        }
+                    }
                 }
-                else linkAnalysisMessages.Add(message);
-                existMessages[key] = message;
-            }).AsTask().Wait();
-        }
-
-        public void RemoveMessage(string key)
-        {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (existMessages.ContainsKey(key))
+                else
                 {
-                    linkAnalysisMessages.Remove(existMessages[key]);
-                    existMessages.Remove(key);
+                    string nowUri = string.Empty;
+                    targetEntries = Array.Empty<Task<AbstractTarget>>();
+
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                        nowUri = MainURITextBox.Text;
+                        UriAnalyzingProgressBar.IsIndeterminate = true;
+                        SuggestedFilenameTextBox.Text = "Unknown";
+                        StreamSelectionStackPanel.Visibility = Visibility.Collapsed;
+                        AcceptButton.IsEnabled = false;
+                    });
+
+                    try
+                    {
+                        var source = AbstractSource.ConstructSource(new Uri(nowUri));
+                        while (true)
+                        {
+                            Ensure.That(UserOperated).IsFalse();
+                            if (source is ISingleSubsourceExtracted singleSubsourceExtracted)
+                            {
+                                source = await singleSubsourceExtracted.GetSubsourceAsync();
+                                Ensure.That(UserOperated).IsFalse();
+                                continue;
+                            }
+                            else if (source is IMultiTargetsExtracted multiSubsourcesExtracted)
+                            {
+                                var subtargets = await multiSubsourcesExtracted.GetTargetsAsync();
+                                Ensure.That(UserOperated).IsFalse();
+                                targetEntries = subtargets.Select(kvp => kvp.Value).ToArray();
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                    StreamSelectionComboBox.ItemsSource =
+                                        subtargets.Select(kvp => kvp.Key).ToArray();
+                                    StreamSelectionStackPanel.Visibility = Visibility.Visible;
+                                });
+                                break;
+                            }
+                            else if (source is ISingleTargetExtracted singleTargetExtracted)
+                            {
+                                var target = await singleTargetExtracted.GetTargetAsync();
+                                Ensure.That(UserOperated).IsFalse();
+                                FinalTarget = target;
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                    SuggestedFilenameTextBox.Text = FinalTarget.SuggestedName;
+                                    AcceptButton.IsEnabled = true;
+                                });
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        FinalTarget = null;
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                            SuggestedFilenameTextBox.Text = "Unknown";
+                            AcceptButton.IsEnabled = false;
+                        });
+                    }
+                    finally
+                    {
+                        // end processing
+                        if (!UserOperated)
+                        {
+                            await UriAnalyzingProgressBar.Dispatcher.RunAsync(
+                                CoreDispatcherPriority.Normal,
+                                () => UriAnalyzingProgressBar.IsIndeterminate = false);
+                        }
+                    }
                 }
-            }).AsTask().Wait();
+            }
         }
 
-        public void SetThreadLayoutVisibility(bool visible)
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (FinalTarget != null && TargetFolder != null)
             {
-                if (visible) ThreadLayoutVisibilityManager.Show();
-                else ThreadLayoutVisibilityManager.Hide();
-            }).AsTask().Wait();
-        }
-
-        public void SetComboBoxLayoutVisibility(bool visible)
-        {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (visible) ComboBoxLayoutVisibilityManager.Show();
-                else ComboBoxLayoutVisibilityManager.Hide();
-            }).AsTask().Wait();
-        }
-
-        public void SetSubmitButtonEnabled(bool enable)
-        {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                SubmitButton.IsEnabled = enable;
-            }).AsTask().Wait();
-        }
-
-        public void SetRecommendedName(string name, double opacity)
-        {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                RecommendedNameBlock.Text = name;
-                RecommendedNameBlock.Opacity = opacity;
-            }).AsTask().Wait();
-        }
-
-        public void SetVersionSelector(ComboBoxData[] items, Action<ComboBoxData> itemSelected)
-        {
-            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                comboBoxItems.Clear();
-                foreach (var item in items)
-                    comboBoxItems.Add(item);
-                comboBoxItemSelectedCallback = itemSelected;
-            }).AsTask().Wait();
+                CurrentApp.Core.CreateTask(FinalTarget, TargetFolder, DestinationFileName);
+                MainPage.Current.NavigateEmptyPage();
+            }
         }
     }
 }
