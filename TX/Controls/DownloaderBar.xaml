@@ -1,0 +1,223 @@
+﻿<UserControl
+    x:Class="TX.Controls.DownloaderBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="80"
+    d:DesignWidth="400">
+    <RelativePanel x:Name="MainRelativePanel"
+                   Background="{ThemeResource SystemAltHighColor}"
+                   BorderThickness="1" CornerRadius="4"
+                   BorderBrush="{ThemeResource SystemChromeMediumColor}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DownloaderStates">
+                <VisualState x:Name="Pending">
+                    <VisualState.Setters>
+                        <Setter Target="PendingProgressRing.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Ready">
+                    <VisualState.Setters>
+                        <Setter Target="MainProgressBar.Foreground" Value="{ThemeResource SystemBaseMediumLowColor}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Running">
+                    <VisualState.Setters>
+                        <Setter Target="ActiveRedDot.Visibility" Value="Visible"/>
+                        <Setter Target="SpeedTextBlock.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Target="MainProgressBar.Foreground" Value="{StaticResource WarningYellow}"/>
+                        <Setter Target="ErrorIcon.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Completed">
+                    <VisualState.Setters>
+                        <Setter Target="CompletedIcon.Visibility" Value="Visible"/>
+                        <Setter Target="MainProgressBar.Visibility" Value="Collapsed"/>
+                        <Setter Target="ProgressTextBlock.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="DisposedStates">
+                <VisualState x:Name="Disposed"/>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="PointerStates">
+                <VisualState x:Name="PointerOver">
+                    <Storyboard x:Name="OperationPadEntering">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.8"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.8"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="Visible"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="PointerOut">
+                    <Storyboard x:Name="OperationPadLeaving">
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0.8">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseIn"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0.8">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseIn"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                            <EasingDoubleKeyFrame KeyTime="00:00:00.2000000" Value="0">
+                                <EasingDoubleKeyFrame.EasingFunction>
+                                    <CircleEase EasingMode="EaseIn"/>
+                                </EasingDoubleKeyFrame.EasingFunction>
+                            </EasingDoubleKeyFrame>
+                        </DoubleAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OperationPad" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <DiscreteObjectKeyFrame KeyTime="00:00:00.2000000" Value="Collapsed"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <TextBlock
+            x:Name="ProgressTextBlock"
+            FontSize="24px"
+            Margin="0 0 12 4"
+            RelativePanel.AlignVerticalCenterWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"/>
+        <StackPanel
+            Orientation="Vertical" Margin="12 0 0 4"
+            RelativePanel.AlignVerticalCenterWithPanel="True"
+            RelativePanel.AlignLeftWithPanel="True">
+            <StackPanel
+                Margin="0 0 0 4"
+                Orientation="Horizontal">
+                <Ellipse x:Name="ActiveRedDot"
+                         Height="6" Width="6" 
+                         Fill="{ThemeResource SystemAccentColor}"
+                         Visibility="Collapsed"
+                         Margin="0 2 12 0"/>
+                <muxc:ProgressRing x:Name="PendingProgressRing"
+                                   Height="8" Width="8"
+                                   IsActive="True"
+                                   Margin="0 2 6 0"
+                                   Visibility="Collapsed"/>
+                <FontIcon x:Name="CompletedIcon"
+                          Foreground="{ThemeResource SystemAccentColor}"
+                          Margin="0 2 6 0"
+                          FontSize="16" FontWeight="Bold"
+                          FontFamily="Segoe MDL2 Assets" 
+                          Glyph="&#xE930;"
+                          Visibility="Collapsed"/>
+                <Grid x:Name="ErrorIcon" Margin="0 2 6 0" Visibility="Collapsed">
+                    <FontIcon Foreground="{ThemeResource SystemBaseHighColor}"
+                              FontSize="16" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF139;"/>
+                    <FontIcon Foreground="{StaticResource WarningYellow}"
+                              FontSize="16" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF13A;"/>
+                    <FontIcon Foreground="{ThemeResource SystemBaseHighColor}"
+                              FontSize="16" FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xF13B;"/>
+                </Grid>
+                <TextBlock
+                    x:Name="FileNameTextBlock"
+                    FontSize="16px"
+                    MaxWidth="260"/>
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="SizeTextBlock"
+                    FontSize="10px"
+                    Opacity="0.6"
+                    Margin="0 0 8 0"/>
+                <TextBlock
+                    x:Name="SpeedTextBlock"
+                    FontSize="10px"
+                    Opacity="0.6"
+                    Visibility="Collapsed"/>
+            </StackPanel>
+        </StackPanel>
+        <Border x:Name="OperationPad" Opacity="0"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignBottomWithPanel="True"
+                RelativePanel.AlignTopWithPanel="True"
+                Padding="40 0 20 0" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <CompositeTransform ScaleX="0" ScaleY="0"/>
+            </Border.RenderTransform>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1.0 0.5" EndPoint="0.0 0.5">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0" Color="{ThemeResource SystemAltHighColor}"/>
+                        <GradientStop Offset="0.8" Color="{ThemeResource SystemAltHighColor}"/>
+                        <GradientStop Offset="1.0" Color="{ThemeResource ThemeTransparentColor}"/>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Border.Background>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <AppBarButton x:Name="StartButton" Icon="Play" LabelPosition="Collapsed" Width="40"
+                              Style="{StaticResource AppBarButtonRevealStyle}" Click="StartButton_Click"/>
+                <AppBarButton x:Name="CancelButton" Icon="Pause" LabelPosition="Collapsed" Width="40"
+                              Style="{StaticResource AppBarButtonRevealStyle}" Click="CancelButton_Click"/>
+                <AppBarButton x:Name="DisposeButton" Icon="Delete" LabelPosition="Collapsed" Width="40" Foreground="Red"
+                              Style="{StaticResource AppBarButtonRevealStyle}" Click="DisposeButton_Click"/>
+            </StackPanel>
+        </Border>
+        <ProgressBar 
+            x:Name="MainProgressBar"
+            Foreground="{ThemeResource SystemAccentColor}"
+            Background="Transparent"
+            CornerRadius="0"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignBottomWithPanel="True"/>
+        <Rectangle x:Name="TopShader"
+                   Fill="{ThemeResource SystemAccentColor}"
+                   Margin="-60 0 -60 0"
+                   RelativePanel.AlignBottomWithPanel="True"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignLeftWith="MainProgressBar"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RenderTransformOrigin="0,0.5">
+            <Rectangle.RenderTransform>
+                <CompositeTransform x:Name="compositeTransform" SkewX="-30" ScaleX="0"/>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+    </RelativePanel>
+</UserControl>

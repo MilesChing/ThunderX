@@ -8,7 +8,7 @@
     完全启用对 App1.MyClass 及其所有公共/私有成员的反射
     <Type Name="App1.MyClass" Dynamic="Required All"/>
 
-    通过 System.Int32 启用 AppClass<T> 的特定实例的动态创建
+    通过 System.Int32 启用 AppClass<T> 的特定实例化动态创建
     <TypeInstantiation Name="App1.AppClass" Arguments="System.Int32" Activate="Required Public" />
 
     使用 Namespace 指令将反射策略应用于特定命名空间中的所有类型
