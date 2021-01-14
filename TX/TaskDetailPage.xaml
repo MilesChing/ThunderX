@@ -121,7 +121,7 @@
                                  Margin="-16 -8 -16 -16"
                                  Background="Transparent"
                                  Foreground="{ThemeResource SystemBaseMediumColor}"
-                                 Opacity="0.2" CornerRadius="0"/>
+                                 Opacity="0.2"/>
                     <StackPanel>
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock"

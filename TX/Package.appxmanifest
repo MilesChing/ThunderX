@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="6ee862bf-35c9-427b-b391-896bc3a8adaa"
-    Publisher="CN=Qin Zhengrui"
-    Version="1.0.0.0" />
+    Name="22891MilesChing.370350C4C6787"
+    Publisher="CN=E1889EC3-2063-4EAE-9DA8-1A44C430A0CE"
+    Version="2.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="6ee862bf-35c9-427b-b391-896bc3a8adaa" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="489d1c62-080d-4770-90e0-7537ec97cb0d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Thunder X</DisplayName>
-    <PublisherDisplayName>Qin Zhengrui</PublisherDisplayName>
+    <PublisherDisplayName>MilesChing</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -40,8 +40,8 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Thunder X" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo"/>
-            <uap:ShowOn Tile="square310x310Logo"/>
             <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
           </uap:ShowNameOnTiles>
         </uap:DefaultTile >
         <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#222222"/>

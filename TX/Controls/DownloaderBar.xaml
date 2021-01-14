@@ -203,7 +203,6 @@
             x:Name="MainProgressBar"
             Foreground="{ThemeResource SystemAccentColor}"
             Background="Transparent"
-            CornerRadius="0"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True"
             RelativePanel.AlignBottomWithPanel="True"/>

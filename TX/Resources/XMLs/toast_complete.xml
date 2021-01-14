@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<toast launch="app-defined-string">
+	<visual>
+		<binding template="ToastGeneric">
+			<text></text>
+			<text></text>
+		</binding>
+	</visual>
+	<actions>
+		<action activationType="foreground" content="Open file" arguments="file" />
+		<action activationType="foreground" content="Show directory" arguments="directory" />
+	</actions>
+</toast>
