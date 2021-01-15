@@ -47,8 +47,8 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <muxc:NavigationView.MenuItems>
-            <muxc:NavigationViewItem x:Name="AddItem" Icon="Add" Content="Create New"/>
-            <muxc:NavigationViewItem x:Name="ListItem" Content="History">
+            <muxc:NavigationViewItem x:Name="AddItem" Icon="Add" x:Uid="MainPage_NavigationItem_Add"/>
+            <muxc:NavigationViewItem x:Name="ListItem" x:Uid="MainPage_NavigationItem_List">
                 <muxc:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE81C;"/>
                 </muxc:NavigationViewItem.Icon>
@@ -57,12 +57,12 @@
             <muxc:NavigationViewItem x:Name="DetailPage" Icon="NewWindow" Visibility="Collapsed"/>
         </muxc:NavigationView.MenuItems>
         <muxc:NavigationView.FooterMenuItems>
-            <muxc:NavigationViewItem x:Name="AboutItem" Content="About">
+            <muxc:NavigationViewItem x:Name="AboutItem" x:Uid="MainPage_NavigationItem_About">
                 <muxc:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
                 </muxc:NavigationViewItem.Icon>
             </muxc:NavigationViewItem>
-            <muxc:NavigationViewItem x:Name="SetItem" Content="Settings">
+            <muxc:NavigationViewItem x:Name="SetItem" x:Uid="MainPage_NavigationItem_Set">
                 <muxc:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
                 </muxc:NavigationViewItem.Icon>

@@ -99,12 +99,11 @@
                       FontSize="64" Foreground="{ThemeResource SystemBaseMediumLowColor}"
                       HorizontalAlignment="Center"/>
             <TextBlock HorizontalAlignment="Center" HorizontalTextAlignment="Center"
-                       Foreground="{ThemeResource SystemBaseMediumLowColor}">
-                <Run FontWeight="Light" FontSize="24" >Download History</Run>
-                <LineBreak/>
-                <Run FontSize="12">Right click to open previous downloaded</Run>
-                <LineBreak/>
-                <Run FontSize="12">or remove histories.</Run>
+                       Foreground="{ThemeResource SystemBaseMediumLowColor}"
+                       Width="240" TextWrapping="Wrap">
+                <!--Download History-->
+                <Run x:Uid="HistoryListPage_EmptyView_Title" FontWeight="Light" FontSize="24"/>
+                <LineBreak/><Run x:Uid="HistoryListPage_EmptyView_GuideText" FontSize="12"/>
             </TextBlock>
         </StackPanel>
         <Grid 
@@ -130,13 +129,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Rectangle Height="{StaticResource TXTitleBarHeight}" Grid.Row="0"/>
-            <TextBlock x:Name="TitleTextBlock" Grid.Row="1" Grid.Column="0"
-                       Style="{ThemeResource TXPageTitleTextBlockStyle}"
-                       Text="Download History" VerticalAlignment="Center"/>
+            <TextBlock x:Name="TitleTextBlock" x:Uid="HistoryListPage_Title"
+                       Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                       Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
             <TextBlock x:Name="SelectionCountTextBlock" Grid.Row="1" Grid.Column="0"
                        FontSize="16" FontWeight="SemiLight" VerticalAlignment="Center" Visibility="Collapsed">
                 <Run x:Name="SelectionCountText" Text="0" FontWeight="Bold"/> 
-                <Run Text=" Selected"/>
+                <!--Selected-->
+                <Run x:Uid="HistoryListPage_Selection_Selected"/>
             </TextBlock>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center"
                         Orientation="Horizontal" Margin="0 0 8 0" 

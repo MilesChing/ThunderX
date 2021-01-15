@@ -110,9 +110,11 @@
                         <AppBarButton.Flyout>
                             <Flyout x:Name="DeleteConfirmationFlyout">
                                 <StackPanel Width="300">
-                                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="The task together with its temporal file will be removed. Do you want to continue?" 
-                                           Margin="0,0,0,12" TextWrapping="Wrap"/>
-                                    <Button Click="DeleteConfirmation_Click" Content="Yes, dispose it" />
+                                    <TextBlock x:Uid="DeleteConfirmationFlyout_GuideText"
+                                               Style="{ThemeResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                    <Button x:Uid="DeleteConfirmationFlyout_ConfirmButton" 
+                                            Click="DeleteConfirmation_Click"/>
                                 </StackPanel>
                             </Flyout>
                         </AppBarButton.Flyout>
@@ -136,13 +138,20 @@
                                 <Setter Property="LineHeight" Value="20"/>
                             </Style>
                         </StackPanel.Resources>
-                        <TextBlock x:Name="DownloadTimeTextBlock"
+                        <TextBlock x:Name="DownloadTimeTextBlock" Margin="0 0 0 4"
                                    Style="{StaticResource TitleTextBlockStyle}"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Bottom"/>
-                        <TextBlock x:Name="SpeedTextBlock" Margin="0 4 0 0"/>
+                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        <TextBlock>
+                            <Run x:Uid="TaskDetailPage_SpeedText"/>
+                            <Run x:Name="SpeedTextBlock"/>/s
+                        </TextBlock>
                         <TextBlock x:Name="SizeTextBlock"/>
-                        <TextBlock x:Name="RuntimeTextBlock"/>
+                        <TextBlock>
+                            <Run x:Name="ErrorNumberTextBlock"/> 
+                            <Run x:Uid="TaskDetailPage_ErrorText"/>,
+                            <Run x:Name="RetryNumberTextBlock"/>
+                            <Run x:Uid="TaskDetailPage_RetryText"/>
+                        </TextBlock>
                     </StackPanel>
                     <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
                                HorizontalAlignment="Right" VerticalAlignment="Top"/>

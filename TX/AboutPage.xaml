@@ -28,8 +28,9 @@
                 <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
 
                 <Border Height="52" Margin="0 0 0 8">
-                    <TextBlock Text="About" VerticalAlignment="Center"
-                           Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
+                    <!--About-->
+                    <TextBlock x:Uid="AboutPage_Title" VerticalAlignment="Center"
+                               Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
                 </Border>
 
                 <Grid Margin="0 0 0 8">
@@ -44,25 +45,25 @@
                                    FontSize="20" FontWeight="SemiBold" Margin="0 0 0 4"
                                    Foreground="{ThemeResource SystemBaseHighColor}"/>
                         <TextBlock FontSize="12" Margin="0 0 0 4">
-                        <Run Text="Developed by " Foreground="{ThemeResource SystemBaseMediumColor}"/><Run 
-                             Text="{x:Bind package:Package.Current.PublisherDisplayName}"
-                             Foreground="{ThemeResource SystemAccentColor}"
-                             FontStyle="Italic" FontWeight="Bold"/>
+                            <!--Developed by-->
+                            <Run x:Uid="AboutPage_LogoText_DevelopedBy" 
+                                 Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                            <Run Text="{x:Bind package:Package.Current.PublisherDisplayName}"
+                                 Foreground="{ThemeResource SystemAccentColor}"
+                                 FontStyle="Italic" FontWeight="Bold"/>
                         </TextBlock>
                         <TextBlock FontSize="12" Margin="0 0 0 4">
-                        <Run Text="Package Version " Foreground="{ThemeResource SystemBaseMediumColor}"/><Run Text="{x:Bind VersionText}" Foreground="{ThemeResource SystemAccentColor}"/>
+                            <!--Package Version-->
+                            <Run x:Uid="AboutPage_LogoText_PackageVersion" 
+                                 Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                            <Run Text="{x:Bind VersionText}" 
+                                 Foreground="{ThemeResource SystemAccentColor}"/>
                         </TextBlock>
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Margin="0 0 0 8">
-                    The mission of Thunder X is to provide a simple, fast and transparent download experience.
-                </TextBlock>
-                <TextBlock Margin="0 0 0 20">
-                    Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols.
-                    Downloader core of Thunder X is well designed to run with high efficiency and low power consumption.
-                    All of this is presented to the user through a simple styled user interface.
-                </TextBlock>
+                <TextBlock x:Uid="AboutPage_AppDescription_1" Margin="0 0 0 8"/>
+                <TextBlock x:Uid="AboutPage_AppDescription_2" Margin="0 0 0 20"/>
 
                 <Grid Margin="0 0 0 20" Padding="16 12 16 16" CornerRadius="4"
                       Background="{ThemeResource SystemAltMediumColor}"
@@ -76,64 +77,47 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E3;" 
-                              VerticalAlignment="Center" 
-                              Grid.Row="0" Grid.Column="0"
+                              VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
                               Foreground="{ThemeResource TrailGreen}"/>
-                    <TextBlock Style="{ThemeResource TXPageSubtitleTextBlockStyle}"
-                               Grid.Row="0" Grid.Column="1"
-                               Foreground="{ThemeResource TrailGreen}"
-                               VerticalAlignment="Center" Margin="8 0 0 0"
-                               Text="Still using trial version?"/>
+                    <!--Still using trial version?-->
+                    <TextBlock x:Uid="AboutPage_TrailMessage_Title"
+                               Style="{ThemeResource TXPageSubtitleTextBlockStyle}"
+                               Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
+                               VerticalAlignment="Center" Margin="8 0 0 0"/>
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Margin="0 8 0 0">
-                            If satisfied with our application, pay to support development teams and to enjoy these features:
-                        </TextBlock>
-                        <TextBlock Margin="0 8 0 0">
-                            🔌 Downloader plug-ins, including YouTube link and Thunderbolt protocol extractor, etc.
-                        </TextBlock>
-                        <TextBlock Margin="0 8 0 0">
-                            🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
-                        </TextBlock>
-                        <TextBlock Margin="0 8 0 0">
-                            💾 Limit the memory footprint of whole application core.
-                        </TextBlock>
-                        <TextBlock Margin="0 8 0 0">
-                            🕹 Automatically retry the download when an error occurs.
-                        </TextBlock>
-                        <Button x:Name="BuyButton" Margin="0 16 0 0" 
+                        <TextBlock x:Uid="AboutPage_TrailMessage_GuideText" Margin="0 8 0 0"/>
+                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_1" Margin="0 8 0 0"/>
+                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_2" Margin="0 8 0 0"/>
+                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_3" Margin="0 8 0 0"/>
+                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_4" Margin="0 8 0 0"/>
+                        <!--Buy Now-->
+                        <Button x:Name="BuyButton" 
+                                x:Uid="AboutPage_TrailMessage_BuyButton"
+                                Margin="0 16 0 0" 
                                 Style="{ThemeResource ButtonRevealStyle}"
                                 Background="{ThemeResource TrailGreen}" 
                                 Foreground="{ThemeResource SystemAltHighColor}"
                                 Height="36" Width="160"
-                                Click="BuyButton_Click"
-                                Content="Buy Now"/>
+                                Click="BuyButton_Click"/>
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Margin="0 0 0 8" 
-                       Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
-                    <Run Text="Introducing Version "/><Run Text="{x:Bind VersionText}"/>
+                <TextBlock Margin="0 0 0 8" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
+                    <!--Introducing Version-->
+                    <Run x:Uid="AboutPage_VersionInfo_Title"/>
+                    <Run Text="{x:Bind VersionText}"/>
                 </TextBlock>
-                <TextBlock Margin="0 0 0 8">
-                In this version we have completely updated the entire application within its most components, including the user interface and the downloader kernel.
-                </TextBlock>
-                <TextBlock Margin="0 0 0 8">
-                    ⚙ Downloader kernel is refactored to become more stable with fewer resources consumption.
-                </TextBlock>
-                <TextBlock Margin="0 0 0 8">
-                    🎨 Redesigned UI: single-window navigation logic adopted. Pages added to display download task detailed information and history of downloaded files.
-                </TextBlock>
-                <TextBlock Margin="0 0 0 20">
-                    🩺 Enhanced URI analyzer with better extensibility and stability.
-                </TextBlock>
+                <TextBlock x:Uid="AboutPage_VersionInfo_GuideText" Margin="0 0 0 8"/>
+                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_1" Margin="0 0 0 8"/>
+                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_2" Margin="0 0 0 8"/>
+                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_3" Margin="0 0 0 20"/>
 
-                <TextBlock Text="Rating and Feedback" Margin="0 0 0 8"
-                       Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBlock Text="Showing us some love on the store helps us to continue to work on the app and make things even better!"
-                       TextWrapping="Wrap" Margin="0 0 0 8"/>
+                <!--Rating and Feedback-->
+                <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 8"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_1" Margin="0 0 0 8"/>
                 <RatingControl HorizontalAlignment="Left" PlaceholderValue="5" Tapped="RatingControl_Tapped"/>
-                <TextBlock Text="If you have found a bug within this application, please file an issue on our GitHub repository:"
-                       TextWrapping="Wrap"/>
+                <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_2"/>
                 <HyperlinkButton Content="MilesChing/ThunderX" NavigateUri="https://github.com/MilesChing/ThunderX"/>
             </StackPanel>
         </Grid>

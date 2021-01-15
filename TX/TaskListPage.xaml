@@ -67,17 +67,26 @@
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
             <Rectangle Height="{StaticResource TXTitleBarHeight}" Grid.Row="0"/>
-            <TextBlock Text="Tasks" VerticalAlignment="Center" Style="{ThemeResource TXPageTitleTextBlockStyle}"
+            <!--Tasks-->
+            <TextBlock x:Uid="TaskListPage_Title" VerticalAlignment="Center" 
+                       Style="{ThemeResource TXPageTitleTextBlockStyle}"
                        Margin="16 0 0 0" Grid.Row="1" Grid.Column="0"/>
-            <muxc:DropDownButton x:Name="SortDropDownButton" Margin="0 8 8 8" Height="36"
-                                 Grid.Row="1" Grid.Column="1" Content="Ordered"
+            <!--Ordered-->
+            <muxc:DropDownButton x:Name="SortDropDownButton" x:Uid="TaskListPage_SortDropDownButton"
+                                 Grid.Row="1" Grid.Column="1" Margin="0 8 8 8" Height="36"
                                  CornerRadius="4" HorizontalContentAlignment="Left"
                                  HorizontalAlignment="Stretch" Background="Transparent">
                 <muxc:DropDownButton.Flyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="Alphabetically" Click="SortAlphabetically_Click"/>
-                        <MenuFlyoutItem Text="By creation time" Click="SortByCreationTime_Click"/>
-                        <MenuFlyoutItem Text="By status" Click="SortByStatus_Click"/>
+                        <!--Alphabetically-->
+                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortAlphabetically" 
+                                        Click="SortAlphabetically_Click"/>
+                        <!--By creation time-->
+                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortByCreationTime" 
+                                        Click="SortByCreationTime_Click"/>
+                        <!--By status-->
+                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortByStatus"  
+                                        Click="SortByStatus_Click"/>
                     </MenuFlyout>
                 </muxc:DropDownButton.Flyout>
             </muxc:DropDownButton>
