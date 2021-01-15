@@ -56,18 +56,18 @@ namespace TX
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             Core.ObservableHistories.CollectionChanged -= CollectionChanged;
-            VMCollection.Clear();
-            GC.Collect();
             base.OnNavigatedFrom(e);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Core.ObservableHistories.CollectionChanged += CollectionChanged;
+            var nowHistories = VMCollection.Select(view => view.OriginalHistory);
+            var newItems = Core.Histories.Except(nowHistories).ToList();
+            var oldItems = nowHistories.Except(Core.Histories).ToList();
             CollectionChanged(Core.Histories,
                 new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Add,
-                    Core.Histories.ToList()));
+                    NotifyCollectionChangedAction.Replace, newItems, oldItems));
             base.OnNavigatedTo(e);
         }
 
