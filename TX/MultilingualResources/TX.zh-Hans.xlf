@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="zh-Hans" original="TX/RESOURCES/STRINGS/EN-US/RESOURCES.RESW" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6916.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="TX/RESOURCES/STRINGS/EN-US/RESOURCES.RESW" datatype="resx">
+        <trans-unit id="AboutPage_AppDescription_1.Text" translate="yes" xml:space="preserve">
+          <source>The mission of Thunder X is to provide a simple, fast and transparent download experience.</source>
+          <target state="translated">Thunder X 定位在于提供简单、快速、透明的文件下载体验。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_AppDescription_2.Text" translate="yes" xml:space="preserve">
+          <source>Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
+          <target state="translated">Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_FeedbackInfo_GuideText_1.Text" translate="yes" xml:space="preserve">
+          <source>Showing us some love on the store helps us to continue to work on the app and make things even better!</source>
+          <target state="translated">通过 Windows 商店评价此应用程序以助力开发！</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_FeedbackInfo_GuideText_2.Text" translate="yes" xml:space="preserve">
+          <source>If you have found a bug within this application, please file an issue on our GitHub repository:</source>
+          <target state="translated">提交 BUG 或参考源代码，请在我们的 Github 仓库中提交 issue ：</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_FeedbackInfo_Title.Text" translate="yes" xml:space="preserve">
+          <source>Rating and Feedback</source>
+          <target state="translated">评价</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_LogoText_DevelopedBy.Text" translate="yes" xml:space="preserve">
+          <source>Developed by</source>
+          <target state="translated">开发者</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_LogoText_PackageVersion.Text" translate="yes" xml:space="preserve">
+          <source>Package Version</source>
+          <target state="translated">版本号</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_Title.Text" translate="yes" xml:space="preserve">
+          <source>About</source>
+          <target state="translated">关于</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_BuyButton.Content" translate="yes" xml:space="preserve">
+          <source>Buy Now</source>
+          <target state="translated">立即入手</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Functionality_1.Text" translate="yes" xml:space="preserve">
+          <source>🔌 Downloader plug-ins, including YouTube link and Thunderbolt protocol extractor, etc.</source>
+          <target state="translated">🔌 解锁包含 YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Functionality_2.Text" translate="yes" xml:space="preserve">
+          <source>🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.</source>
+          <target state="translated">🛠 深度定制下载内核，设定任务的工作线程数。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Functionality_3.Text" translate="yes" xml:space="preserve">
+          <source>💾 Limit the memory footprint of whole application core.</source>
+          <target state="translated">💾 设定上限以限制应用程序的内存占用。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Functionality_4.Text" translate="yes" xml:space="preserve">
+          <source>🕹 Automatically retry the download when an error occurs.</source>
+          <target state="translated">🕹 下载失败时自动重传。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>If satisfied with our application, pay to support development teams and to enjoy these features:</source>
+          <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Title.Text" translate="yes" xml:space="preserve">
+          <source>Still using trial version?</source>
+          <target state="translated">仍使用试用版本？</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_Functionality_1.Text" translate="yes" xml:space="preserve">
+          <source>⚙ Downloader kernel is refactored to become more stable with fewer resources consumption.</source>
+          <target state="translated">⚙ 下载器核心稳定性和功耗提升。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_Functionality_2.Text" translate="yes" xml:space="preserve">
+          <source>🎨 Redesigned UI: single-window navigation logic adopted. Pages added to display download task detailed information and history of downloaded files.</source>
+          <target state="translated">🎨 重新设计的用户界面：使用单窗口的导航逻辑取代多窗口，新增下载详情页面并分离出历史记录页面。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_Functionality_3.Text" translate="yes" xml:space="preserve">
+          <source>🩺 Enhanced URI analyzer with better extensibility and stability.</source>
+          <target state="translated">🩺 更智能和易于扩展的 URI 分析器：我们将更快推出新的扩展功能。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>In this version we have completely updated the entire application within its most components, including the user interface and the downloader kernel.</source>
+          <target state="translated">在此版本中，我们优化了大多数组件（包括用户界面和下载器内核）并完全更新了整个应用程序。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_Title.Text" translate="yes" xml:space="preserve">
+          <source>Introducing Version</source>
+          <target state="translated">版本说明：</target>
+        </trans-unit>
+        <trans-unit id="CreationTime" translate="yes" xml:space="preserve">
+          <source>Creation Time</source>
+          <target state="translated">创建时间</target>
+        </trans-unit>
+        <trans-unit id="DeleteConfirmationFlyout_ConfirmButton.Content" translate="yes" xml:space="preserve">
+          <source>Yes, remove it</source>
+          <target state="translated">删除该任务</target>
+        </trans-unit>
+        <trans-unit id="DeleteConfirmationFlyout_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>The task together with its temporal file will be removed. Do you want to continue?</source>
+          <target state="translated">该任务的记录（包括未完成任务的临时文件）都将被删除。是否继续？</target>
+        </trans-unit>
+        <trans-unit id="DownloaderType" translate="yes" xml:space="preserve">
+          <source>Downloader Type</source>
+          <target state="translated">下载器类型</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_EmptyView_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Right click to open previous downloaded or remove histories.</source>
+          <target state="translated">在历史记录上右击或长按以打开
+或在文件夹中查看。</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_EmptyView_Title.Text" translate="yes" xml:space="preserve">
+          <source>Download History</source>
+          <target state="translated">历史记录</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_Selection_Selected.Text" translate="yes" xml:space="preserve">
+          <source>Selected</source>
+          <target state="translated">已选中</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">Example: 10 Selected</note>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_Title.Text" translate="yes" xml:space="preserve">
+          <source>Download History</source>
+          <target state="translated">历史记录</target>
+        </trans-unit>
+        <trans-unit id="MainPage_NavigationItem_About.Content" translate="yes" xml:space="preserve">
+          <source>About</source>
+          <target state="translated">关于</target>
+        </trans-unit>
+        <trans-unit id="MainPage_NavigationItem_Add.Content" translate="yes" xml:space="preserve">
+          <source>Create New</source>
+          <target state="translated">新任务</target>
+        </trans-unit>
+        <trans-unit id="MainPage_NavigationItem_List.Content" translate="yes" xml:space="preserve">
+          <source>History</source>
+          <target state="translated">历史记录</target>
+        </trans-unit>
+        <trans-unit id="MainPage_NavigationItem_Set.Content" translate="yes" xml:space="preserve">
+          <source>Settings</source>
+          <target state="translated">设置</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_AcceptButton.Content" translate="yes" xml:space="preserve">
+          <source>Create New</source>
+          <target state="translated">创建</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_DestinationFolder_Button.Content" translate="yes" xml:space="preserve">
+          <source>Select Folder</source>
+          <target state="translated">选取文件夹</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_DestinationFolder_Title.Text" translate="yes" xml:space="preserve">
+          <source>Destination Folder</source>
+          <target state="translated">目标文件夹</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_FileName_CheckBox.Content" translate="yes" xml:space="preserve">
+          <source>Custom filename</source>
+          <target state="translated">使用自定义的文件名</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_FileName_Title.Text" translate="yes" xml:space="preserve">
+          <source>File Name</source>
+          <target state="translated">文件名</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_Streams_Title.Text" translate="yes" xml:space="preserve">
+          <source>Streams</source>
+          <target state="translated">选择一个流</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_Title.Text" translate="yes" xml:space="preserve">
+          <source>Create new task</source>
+          <target state="translated">创建新任务</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_URL_Title.Text" translate="yes" xml:space="preserve">
+          <source>URL</source>
+          <target state="translated">链接</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Appearance_DarkModeToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Dark Mode</source>
+          <target state="translated">深色主题</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Appearance_Title.Text" translate="yes" xml:space="preserve">
+          <source>Appearance</source>
+          <target state="translated">个性化</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Downloader_MaxRetriesSlider.Header" translate="yes" xml:space="preserve">
+          <source>Maximum Retries</source>
+          <target state="translated">最大自动重试次数</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Downloader_MemorySlider.Header" translate="yes" xml:space="preserve">
+          <source>Memory Upperbound</source>
+          <target state="translated">内存占用上限</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Downloader_ThreadNumSlider.Header" translate="yes" xml:space="preserve">
+          <source>Number of Threads</source>
+          <target state="translated">工作线程数</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Downloader_Title.Text" translate="yes" xml:space="preserve">
+          <source>Downloader Configurations</source>
+          <target state="translated">下载器配置</target>
+        </trans-unit>
+        <trans-unit id="SetPage_DownloadFolder_Button.Content" translate="yes" xml:space="preserve">
+          <source>Select Folder</source>
+          <target state="translated">选取文件夹</target>
+        </trans-unit>
+        <trans-unit id="SetPage_DownloadFolder_Title.Text" translate="yes" xml:space="preserve">
+          <source>Default Download Folder</source>
+          <target state="translated">默认下载文件夹</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Application Suspended Notification</source>
+          <target state="translated">应用程序被挂起时发送通知</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Notifications_TaskCompletedToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Task Completion Notification</source>
+          <target state="translated">有任务完成时发送通知</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Notifications_TaskFailedToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Task Failed Notification</source>
+          <target state="translated">有任务失败时发送通知</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Notifications_Title.Text" translate="yes" xml:space="preserve">
+          <source>Notifications</source>
+          <target state="translated">通知</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Plugins_ThunderToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Thunder Proxy Extracter</source>
+          <target state="translated">Thunderbolt 协议解析</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Plugins_Title.Text" translate="yes" xml:space="preserve">
+          <source>Plugins</source>
+          <target state="translated">扩展功能</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Plugins_YouTubeToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>YouTube Downloader</source>
+          <target state="translated">YouTube 直链解析</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Title.Text" translate="yes" xml:space="preserve">
+          <source>Settings</source>
+          <target state="translated">设置</target>
+        </trans-unit>
+        <trans-unit id="SetPage_TrailMessage.Text" translate="yes" xml:space="preserve">
+          <source>Some features are not unsupported in trial version. Obtain full version to support us and unlock more functionalities!</source>
+          <target state="translated">一些功能在试用版本中不受支持。获取完整版以解锁全部特性！</target>
+        </trans-unit>
+        <trans-unit id="TargetType" translate="yes" xml:space="preserve">
+          <source>Target Type</source>
+          <target state="translated">源类型</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_ErrorText.Text" translate="yes" xml:space="preserve">
+          <source>Errors</source>
+          <target state="translated">错误</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_RetryText.Text" translate="yes" xml:space="preserve">
+          <source>Retries</source>
+          <target state="translated">重试</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_SpeedText.Text" translate="yes" xml:space="preserve">
+          <source>Speed</source>
+          <target state="translated">速度</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_SortDropDownButton.Content" translate="yes" xml:space="preserve">
+          <source>Ordered</source>
+          <target state="translated">排序</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_SortDropDownButton_SortAlphabetically.Text" translate="yes" xml:space="preserve">
+          <source>Alphabetically</source>
+          <target state="translated">按首字母</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_SortDropDownButton_SortByCreationTime.Text" translate="yes" xml:space="preserve">
+          <source>By creation time</source>
+          <target state="translated">按创建时间</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_SortDropDownButton_SortByStatus.Text" translate="yes" xml:space="preserve">
+          <source>By status</source>
+          <target state="translated">按状态</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_Title.Text" translate="yes" xml:space="preserve">
+          <source>Tasks</source>
+          <target state="translated">任务列表</target>
+        </trans-unit>
+        <trans-unit id="TotalSize" translate="yes" xml:space="preserve">
+          <source>Total Size</source>
+          <target state="translated">文件大小</target>
+        </trans-unit>
+        <trans-unit id="Unknown" translate="yes" xml:space="preserve">
+          <source>Unknown</source>
+          <target state="translated">未知</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_Flyout_Delete.Text" translate="yes" xml:space="preserve">
+          <source>Delete</source>
+          <target state="translated">删除</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_Flyout_OpenFile.Text" translate="yes" xml:space="preserve">
+          <source>Open File</source>
+          <target state="translated">打开文件</target>
+        </trans-unit>
+        <trans-unit id="HistoryListPage_Flyout_OpenFolder.Text" translate="yes" xml:space="preserve">
+          <source>Open Folder</source>
+          <target state="translated">打开文件夹</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_EmptyView_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Unfinished tasks will be displayed here.
+Create a task for downloading.</source>
+          <target state="translated">当前未完成任务将被显示在这里。
+创建任务以开始下载！</target>
+        </trans-unit>
+        <trans-unit id="TaskListPage_EmptyView_Title.Text" translate="yes" xml:space="preserve">
+          <source>Your Tasks Here</source>
+          <target state="translated">当前没有任务</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

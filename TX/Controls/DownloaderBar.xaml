@@ -128,9 +128,11 @@
                     <AppBarButton.Flyout>
                         <Flyout x:Name="DeleteConfirmationFlyout">
                             <StackPanel Width="300">
-                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="The task together with its temporal file will be removed. Do you want to continue?" 
-                                           Margin="0,0,0,12" TextWrapping="Wrap"/>
-                                <Button Click="DeleteConfirmation_Click" Content="Yes, dispose it" />
+                                <TextBlock x:Uid="DeleteConfirmationFlyout_GuideText"
+                                               Style="{ThemeResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                <Button x:Uid="DeleteConfirmationFlyout_ConfirmButton" 
+                                            Click="DeleteConfirmation_Click"/>
                             </StackPanel>
                         </Flyout>
                     </AppBarButton.Flyout>

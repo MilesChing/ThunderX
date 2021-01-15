@@ -20,41 +20,46 @@
                 <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
 
                 <Border Height="52" Margin="0 0 0 8">
-                    <TextBlock Text="Create new task" VerticalAlignment="Center"
+                    <!--Create new task-->
+                    <TextBlock x:Uid="NewTaskPage_Title" VerticalAlignment="Center"
                                Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
                 </Border>
                 
-                <TextBlock Text="URL" Margin="0 0 0 8"
+                <!--URL-->
+                <TextBlock x:Uid="NewTaskPage_URL_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBox x:Name="MainURITextBox"
-                         TextChanged="MainURITextBox_TextChanged"/>
+                <TextBox x:Name="MainURITextBox" TextChanged="MainURITextBox_TextChanged"/>
                 <muxc:ProgressBar x:Name="UriAnalyzingProgressBar" Margin="0 -4 0 20" Height="4"
                                   CornerRadius="4" Background="Transparent"/>
 
                 <StackPanel x:Name="StreamSelectionStackPanel" Visibility="Collapsed">
-                    <TextBlock Text="Streams" Margin="0 0 0 8"
+                    <!--Streams-->
+                    <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 8"
                                Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                     <ComboBox x:Name="StreamSelectionComboBox" MinWidth="200" 
                               Margin="0 0 0 20" PlaceholderText="Select to continue"
                               SelectionChanged="StreamSelectionComboBox_SelectionChanged"/>
                 </StackPanel>
 
-                <TextBlock Text="File Name" Margin="0 0 0 8"
+                <!--File Name-->
+                <TextBlock x:Uid="NewTaskPage_FileName_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBlock x:Name="SuggestedFilenameTextBox" Margin="0 0 0 8"
-                           Text="Unknown" FontSize="16" FontStyle="Italic" 
+                <TextBlock x:Name="SuggestedFilenameTextBox" Margin="0 0 0 8" 
+                           FontSize="16" FontStyle="Italic" Text="{x:Bind UnknownText, Mode=OneTime}"
                            Foreground="{ThemeResource SystemAccentColor}"/>
-                <CheckBox x:Name="CustomFilenameCheckBox" 
-                          Checked="CustomFilenameCheckBox_IsCheckedChanged"
-                          Unchecked="CustomFilenameCheckBox_IsCheckedChanged"
-                          Content="Custom filename" Margin="0 0 0 8"/>
+                <CheckBox x:Name="CustomFilenameCheckBox" x:Uid="NewTaskPage_FileName_CheckBox"
+                          Checked="CustomFilenameCheckBox_IsCheckedChanged" Margin="0 0 0 8"
+                          Unchecked="CustomFilenameCheckBox_IsCheckedChanged"/>
                 <TextBox x:Name="CustomFilenameTextBox" Visibility="Collapsed" Margin="0 0 0 8"/>
-
-                <TextBlock Text="Destination Folder" Margin="0 12 0 8"
+                
+                <!--Destination Folder-->
+                <TextBlock x:Uid="NewTaskPage_DestinationFolder_Title" Margin="0 12 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBlock x:Name="DestinationPathTextBlock" Text="Path of destination folder" Margin="0 4 0 16" 
-                           FontFamily="Consolas" TextWrapping="Wrap" Foreground="{ThemeResource SystemAccentColor}"/>
-                <Button Content="Select Folder" Height="36" Width="160"
+                <TextBlock x:Name="DestinationPathTextBlock" Margin="0 4 0 16" 
+                           FontFamily="Consolas" TextWrapping="Wrap" 
+                           Foreground="{ThemeResource SystemAccentColor}"/>
+                <!--Select Folder-->
+                <Button x:Uid="NewTaskPage_DestinationFolder_Button" Height="36" Width="160"
                         Style="{ThemeResource ButtonRevealStyle}" Click="FolderSelectButton_Click"/>
             </StackPanel>
         </ScrollViewer>
@@ -68,8 +73,10 @@
                     FallbackColor="{ThemeResource SystemChromeLowColor}"
                     TintColor="{ThemeResource SystemChromeLowColor}"/>
             </Grid.Background>
-            <Button x:Name="AcceptButton" Style="{ThemeResource AccentButtonStyle}"
-                    Content="Create New" Height="36" Width="160" Margin="16" IsEnabled="False"
+            <!--Create New-->
+            <Button x:Uid="NewTaskPage_AcceptButton" x:Name="AcceptButton" 
+                    Style="{ThemeResource AccentButtonStyle}"
+                    Height="36" Width="160" Margin="16" IsEnabled="False"
                     Click="AcceptButton_Click"/>
         </Grid>
     </RelativePanel>

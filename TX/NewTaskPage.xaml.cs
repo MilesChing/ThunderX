@@ -33,6 +33,8 @@ namespace TX
     public sealed partial class NewTaskPage : Page
     {
         App CurrentApp => ((App)App.Current);
+        private readonly string UnknownText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Unknown");
 
         public NewTaskPage()
         {
@@ -153,7 +155,7 @@ namespace TX
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                             nowSelection = StreamSelectionComboBox.SelectedIndex;
                             UriAnalyzingProgressBar.IsIndeterminate = true;
-                            SuggestedFilenameTextBox.Text = "Unknown";
+                            SuggestedFilenameTextBox.Text = UnknownText;
                             AcceptButton.IsEnabled = false;
                         });
 
@@ -179,7 +181,7 @@ namespace TX
                         {
                             FinalTarget = null;
                             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                                SuggestedFilenameTextBox.Text = "Unknown";
+                                SuggestedFilenameTextBox.Text = UnknownText;
                                 AcceptButton.IsEnabled = false;
                             });
                         }
@@ -203,7 +205,7 @@ namespace TX
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                         nowUri = MainURITextBox.Text;
                         UriAnalyzingProgressBar.IsIndeterminate = true;
-                        SuggestedFilenameTextBox.Text = "Unknown";
+                        SuggestedFilenameTextBox.Text = UnknownText;
                         StreamSelectionStackPanel.Visibility = Visibility.Collapsed;
                         AcceptButton.IsEnabled = false;
                     });
@@ -249,7 +251,7 @@ namespace TX
                     {
                         FinalTarget = null;
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                            SuggestedFilenameTextBox.Text = "Unknown";
+                            SuggestedFilenameTextBox.Text = UnknownText;
                             AcceptButton.IsEnabled = false;
                         });
                     }

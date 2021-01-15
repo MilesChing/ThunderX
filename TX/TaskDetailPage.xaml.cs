@@ -57,14 +57,19 @@ namespace TX
                     ProgressCollection.Add(false);
             }
 
-            BasicLabelCollection.Add(new TaskDetailPageLabel("Creation Time",
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+            BasicLabelCollection.Add(new TaskDetailPageLabel(
+                resourceLoader.GetString("CreationTime"),
                 downloader.DownloadTask.CreationTime.ToLocalTime().ToString("F")));
-            BasicLabelCollection.Add(new TaskDetailPageLabel("Target Type",
+            BasicLabelCollection.Add(new TaskDetailPageLabel(
+                resourceLoader.GetString("TargetType"),
                 downloader.DownloadTask.Target.GetType().Name));
-            BasicLabelCollection.Add(new TaskDetailPageLabel("Downloader Type",
+            BasicLabelCollection.Add(new TaskDetailPageLabel(
+                resourceLoader.GetString("DownloaderType"),
                 downloader.GetType().Name));
             if (downloader.Progress is AbstractMeasurableProgress progress)
-                BasicLabelCollection.Add(new TaskDetailPageLabel("Total Size",
+                BasicLabelCollection.Add(new TaskDetailPageLabel(
+                    resourceLoader.GetString("TotalSize"),
                     progress.TotalSize.SizedString()));
         }
 
@@ -99,7 +104,7 @@ namespace TX
                 {
                     if (sender is AbstractMeasurableProgress mprogress)
                     {
-                        SizeTextBlock.Text = "{0} of {1}".AsFormat(
+                        SizeTextBlock.Text = "{0} / {1}".AsFormat(
                             mprogress.DownloadedSize.SizedString(),
                             mprogress.TotalSize.SizedString());
                         MainProgressBar.Value = mprogress.Percentage * 100;
@@ -116,11 +121,11 @@ namespace TX
             () =>
             {
                 DownloadTimeTextBlock.Text = sender.RunningTime.ToString(@"hh\:mm\:ss");
-                SpeedTextBlock.Text = "Speed: " + ((long)sender.Speed).SizedString() + "/s";
+                SpeedTextBlock.Text = ((long)sender.Speed).SizedString();
                 if (Downloader != null)
                 {
-                    RuntimeTextBlock.Text = "{0} Errors, {1} Retries".AsFormat(
-                        Downloader.Errors.Count, Downloader.Retries);
+                    ErrorNumberTextBlock.Text = Downloader.Errors.Count.ToString();
+                    RetryNumberTextBlock.Text = Downloader.Retries.ToString();
                 }
             });
         }
@@ -143,7 +148,7 @@ namespace TX
                         if (exp != null)
                         {
                             ErrorStackPanel.Visibility = Visibility.Visible;
-                            ErrorTextBlock.Text = "Error {0}: {1}".AsFormat(
+                            ErrorTextBlock.Text = "{0}: {1}".AsFormat(
                                 exp.HResult, exp.GetType().Name);
                             ErrorDetailTextBlock.Text = exp.ToString();
                         }
