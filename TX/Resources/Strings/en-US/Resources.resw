@@ -195,6 +195,15 @@
   <data name="HistoryListPage_EmptyView_Title.Text" xml:space="preserve">
     <value>Download History</value>
   </data>
+  <data name="HistoryListPage_Flyout_Delete.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="HistoryListPage_Flyout_OpenFile.Text" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="HistoryListPage_Flyout_OpenFolder.Text" xml:space="preserve">
+    <value>Open Folder</value>
+  </data>
   <data name="HistoryListPage_Selection_Selected.Text" xml:space="preserve">
     <value>Selected</value>
     <comment>Example: 10 Selected</comment>
@@ -300,6 +309,13 @@
   </data>
   <data name="TaskDetailPage_SpeedText.Text" xml:space="preserve">
     <value>Speed</value>
+  </data>
+  <data name="TaskListPage_EmptyView_GuideText.Text" xml:space="preserve">
+    <value>Unfinished tasks will be displayed here.
+Create a task for downloading.</value>
+  </data>
+  <data name="TaskListPage_EmptyView_Title.Text" xml:space="preserve">
+    <value>Your Tasks Here</value>
   </data>
   <data name="TaskListPage_SortDropDownButton.Content" xml:space="preserve">
     <value>Ordered</value>

@@ -67,18 +67,24 @@
                                    Foreground="{ThemeResource SystemBaseMediumColor}"/>
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="Open File" Click="HistoryFileOpened_Click">
+                                <!--Open File-->
+                                <MenuFlyoutItem x:Uid="HistoryListPage_Flyout_OpenFile"
+                                                Click="HistoryFileOpened_Click">
                                     <MenuFlyoutItem.Icon>
                                         <SymbolIcon Symbol="OpenFile"/>
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
-                                <MenuFlyoutItem Text="Open Folder" Click="HistoryFolderOpened_Click">
+                                <!--Open Folder-->
+                                <MenuFlyoutItem x:Uid="HistoryListPage_Flyout_OpenFolder" 
+                                                Click="HistoryFolderOpened_Click">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED25;"/>
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                                 <MenuFlyoutSeparator/>
-                                <MenuFlyoutItem Text="Delete" Click="HistoryDeleted_Click">
+                                <!--Delete-->
+                                <MenuFlyoutItem x:Uid="HistoryListPage_Flyout_Delete" 
+                                                Click="HistoryDeleted_Click">
                                     <MenuFlyoutItem.Icon>
                                         <SymbolIcon Symbol="Delete" Foreground="Red"/>
                                     </MenuFlyoutItem.Icon>
@@ -100,7 +106,7 @@
                       HorizontalAlignment="Center"/>
             <TextBlock HorizontalAlignment="Center" HorizontalTextAlignment="Center"
                        Foreground="{ThemeResource SystemBaseMediumLowColor}"
-                       Width="240" TextWrapping="Wrap">
+                       Width="220" TextWrapping="Wrap">
                 <!--Download History-->
                 <Run x:Uid="HistoryListPage_EmptyView_Title" FontWeight="Light" FontSize="24"/>
                 <LineBreak/><Run x:Uid="HistoryListPage_EmptyView_GuideText" FontSize="12"/>

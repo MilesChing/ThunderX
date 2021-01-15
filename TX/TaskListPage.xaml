@@ -38,12 +38,10 @@
                       FontSize="64" Foreground="{ThemeResource SystemAccentColor}"
                       HorizontalAlignment="Center"/>
             <TextBlock HorizontalAlignment="Center" HorizontalTextAlignment="Center"
-                       Foreground="{ThemeResource SystemBaseMediumLowColor}">
-                <Run FontSize="24" FontWeight="Light">Your Tasks Here</Run>
-                <LineBreak/>
-                <Run FontSize="12">Unfinished tasks will be displayed here.</Run>
-                <LineBreak/>
-                <Run FontSize="12">Create a task for downloading.</Run>
+                       Foreground="{ThemeResource SystemBaseMediumLowColor}" Width="220">
+                <!--Your Tasks Here-->
+                <Run x:Uid="TaskListPage_EmptyView_Title" FontSize="24" FontWeight="Light"/>
+                <LineBreak/><Run x:Uid="TaskListPage_EmptyView_GuideText" FontSize="12"/>
             </TextBlock>
         </StackPanel>
         <Grid 
