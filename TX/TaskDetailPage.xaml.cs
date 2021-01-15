@@ -81,6 +81,7 @@ namespace TX
                 DisposeButton.IsEnabled = false;
             StatusTextBlock.Text = string.Empty;
 
+            ProgressTextBlock.Text = string.Empty;
             DownloadTimeTextBlock.Text = string.Empty;
             SpeedTextBlock.Text = string.Empty;
             SizeTextBlock.Text = string.Empty;
@@ -102,6 +103,7 @@ namespace TX
                             mprogress.DownloadedSize.SizedString(),
                             mprogress.TotalSize.SizedString());
                         MainProgressBar.Value = mprogress.Percentage * 100;
+                        ProgressTextBlock.Text = mprogress.Percentage.ToString("0%");
                     }
                     else SizeTextBlock.Text = 
                         sender.DownloadedSize.SizedString();
@@ -182,8 +184,11 @@ namespace TX
                 Downloader.Cancel();
         }
 
-        private void DisposeButton_Click(object sender, RoutedEventArgs e) =>
+        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
+        }
     }
 
     class TaskDetailPageLabel

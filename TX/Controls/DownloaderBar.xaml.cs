@@ -27,6 +27,22 @@ namespace TX.Controls
             CapturePointer();
         }
 
+        private void CapturePointer()
+        {
+            PointerEntered += (sender, e) =>
+            {
+                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse
+                    || e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Pen)
+                    VisualStateManager.GoToState(this, "PointerOver", false);
+            };
+            PointerExited += (sender, e) =>
+                VisualStateManager.GoToState(this, "PointerNormal", false);
+            PointerCaptureLost += (sender, e) =>
+                VisualStateManager.GoToState(this, "PointerNormal", false);
+            PointerCanceled += (sender, e) =>
+                VisualStateManager.GoToState(this, "PointerNormal", false);
+        }
+
         public AbstractDownloader Downloader { get; private set; } = null;
 
         public void BindDownloader(AbstractDownloader downloader)
@@ -70,23 +86,6 @@ namespace TX.Controls
             Downloader = null;
         }
 
-        private void CapturePointer()
-        {
-            PointerEntered += (sender, e) =>
-            {
-                if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse
-                    || e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Pen)
-                    VisualStateManager.GoToState(this, "PointerOver", false);
-
-            };
-            PointerExited += (sender, e) =>
-                VisualStateManager.GoToState(this, "PointerOut", false);
-            PointerCaptureLost += (sender, e) =>
-                VisualStateManager.GoToState(this, "PointerOut", false);
-            PointerCanceled += (sender, e) =>
-                VisualStateManager.GoToState(this, "PointerOut", false);
-        }
-
         private async void StatusChanged(
             AbstractDownloader downloader, DownloaderStatus status) =>
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
@@ -115,7 +114,6 @@ namespace TX.Controls
                         prog.DownloadedSize.SizedString(),
                         prog.TotalSize.SizedString());
                     MainProgressBar.Value = prog.Percentage * 100;
-                    ProgressTextBlock.Text = prog.Percentage.ToString("0%");
                 });
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -130,8 +128,9 @@ namespace TX.Controls
                 Downloader.Cancel();
         }
 
-        private void DisposeButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
+            DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
         }
     }

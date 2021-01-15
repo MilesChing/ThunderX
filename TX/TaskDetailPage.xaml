@@ -21,10 +21,6 @@
                 <VisualState x:Name="Completed">
                     <VisualState.Setters>
                         <Setter Target="MainProgressBar.Foreground" Value="Green"/>
-                        <Setter Target="MainProgressBar.Value" Value="100"/>
-                        <Setter Target="SpeedTextBlock.Visibility" Value="Collapsed"/>
-                        <Setter Target="SizeTextBlock.Visibility" Value="Collapsed"/>
-                        <Setter Target="RuntimeTextBlock.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pending"/>
@@ -110,7 +106,17 @@
                     <AppBarButton x:Name="CancelButton" Grid.Column="1" Icon="Pause" 
                                   IsEnabled="False" Click="CancelButton_Click"/>
                     <AppBarButton x:Name="DisposeButton" Grid.Column="2" Icon="Delete" 
-                                  Foreground="Red" Click="DisposeButton_Click"/>
+                                  Foreground="Red">
+                        <AppBarButton.Flyout>
+                            <Flyout x:Name="DeleteConfirmationFlyout">
+                                <StackPanel Width="300">
+                                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="The task together with its temporal file will be removed. Do you want to continue?" 
+                                           Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                    <Button Click="DeleteConfirmation_Click" Content="Yes, dispose it" />
+                                </StackPanel>
+                            </Flyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
@@ -138,6 +144,8 @@
                         <TextBlock x:Name="SizeTextBlock"/>
                         <TextBlock x:Name="RuntimeTextBlock"/>
                     </StackPanel>
+                    <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
+                               HorizontalAlignment="Right" VerticalAlignment="Top"/>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}"
