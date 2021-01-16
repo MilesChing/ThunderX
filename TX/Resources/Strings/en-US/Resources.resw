@@ -163,16 +163,19 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_1.Text" xml:space="preserve">
-    <value>⚙ Downloader kernel is refactored to become more stable with fewer resources consumption.</value>
+    <value>🀄 Simplified Chinese supported.</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_2.Text" xml:space="preserve">
-    <value>🎨 Redesigned UI: single-window navigation logic adopted. Pages added to display download task detailed information and history of downloaded files.</value>
+    <value>🎫 Simplified the interaction with the download bar, moved the progress display to detail page.</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_3.Text" xml:space="preserve">
-    <value>🩺 Enhanced URI analyzer with better extensibility and stability.</value>
+    <value>📚 New implementation of the history page to reduce the cost of the page navigation. Reentering the page will not require reloading the history list now.</value>
+  </data>
+  <data name="AboutPage_VersionInfo_Functionality_4.Text" xml:space="preserve">
+    <value>🚧 Display loading animation when the application starts to prevent user actions from causing errors.</value>
   </data>
   <data name="AboutPage_VersionInfo_GuideText.Text" xml:space="preserve">
-    <value>In this version we have completely updated the entire application within its most components, including the user interface and the downloader kernel.</value>
+    <value>In this release we bring simplified Chinese translation back, together with some fixes to version 2.0.0.0.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>

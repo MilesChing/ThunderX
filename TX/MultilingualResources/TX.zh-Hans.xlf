@@ -67,20 +67,20 @@
           <target state="translated">仍使用试用版本？</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_1.Text" translate="yes" xml:space="preserve">
-          <source>⚙ Downloader kernel is refactored to become more stable with fewer resources consumption.</source>
-          <target state="translated">⚙ 下载器核心稳定性和功耗提升。</target>
+          <source>🀄 Simplified Chinese supported.</source>
+          <target state="translated">🀄 简体中文已被重新支持。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_2.Text" translate="yes" xml:space="preserve">
-          <source>🎨 Redesigned UI: single-window navigation logic adopted. Pages added to display download task detailed information and history of downloaded files.</source>
-          <target state="translated">🎨 重新设计的用户界面：使用单窗口的导航逻辑取代多窗口，新增下载详情页面并分离出历史记录页面。</target>
+          <source>🎫 Simplified the interaction with the download bar, moved the progress display to detail page.</source>
+          <target state="translated">🎫 简化 Download Bar 的交互逻辑，直接显示控制按钮，进度值已被移到详情页。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_3.Text" translate="yes" xml:space="preserve">
-          <source>🩺 Enhanced URI analyzer with better extensibility and stability.</source>
-          <target state="translated">🩺 更智能和易于扩展的 URI 分析器：我们将更快推出新的扩展功能。</target>
+          <source>📚 New implementation of the history page to reduce the cost of the page navigation. Reentering the page will not require reloading the history list now.</source>
+          <target state="translated">📚 新的实现减少了导航开销：重复进入历史记录页面将无需再次加载历史记录列表。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>In this version we have completely updated the entire application within its most components, including the user interface and the downloader kernel.</source>
-          <target state="translated">在此版本中，我们优化了大多数组件（包括用户界面和下载器内核）并完全更新了整个应用程序。</target>
+          <source>In this release we bring simplified Chinese translation back, together with some fixes to version 2.0.0.0.</source>
+          <target state="translated">在此版本中，我们重新支持了简体中文，并对版本 2.0.0.0 中的一些问题进行了小规模修复。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Title.Text" translate="yes" xml:space="preserve">
           <source>Introducing Version</source>
@@ -301,6 +301,10 @@ Create a task for downloading.</source>
         <trans-unit id="TaskListPage_EmptyView_Title.Text" translate="yes" xml:space="preserve">
           <source>Your Tasks Here</source>
           <target state="translated">当前没有任务</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo_Functionality_4.Text" translate="yes" xml:space="preserve">
+          <source>🚧 Display loading animation when the application starts to prevent user actions from causing errors.</source>
+          <target state="translated">🚧 当应用程序启动时显示加载动画。</target>
         </trans-unit>
       </group>
     </body>

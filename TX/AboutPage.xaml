@@ -110,7 +110,8 @@
                 <TextBlock x:Uid="AboutPage_VersionInfo_GuideText" Margin="0 0 0 8"/>
                 <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_1" Margin="0 0 0 8"/>
                 <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_2" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_3" Margin="0 0 0 20"/>
+                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_3" Margin="0 0 0 8"/>
+                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_4" Margin="0 0 0 20"/>
 
                 <!--Rating and Feedback-->
                 <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 8"
