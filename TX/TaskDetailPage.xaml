@@ -21,10 +21,6 @@
                 <VisualState x:Name="Completed">
                     <VisualState.Setters>
                         <Setter Target="MainProgressBar.Foreground" Value="Green"/>
-                        <Setter Target="MainProgressBar.Value" Value="100"/>
-                        <Setter Target="SpeedTextBlock.Visibility" Value="Collapsed"/>
-                        <Setter Target="SizeTextBlock.Visibility" Value="Collapsed"/>
-                        <Setter Target="RuntimeTextBlock.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pending"/>
@@ -110,7 +106,19 @@
                     <AppBarButton x:Name="CancelButton" Grid.Column="1" Icon="Pause" 
                                   IsEnabled="False" Click="CancelButton_Click"/>
                     <AppBarButton x:Name="DisposeButton" Grid.Column="2" Icon="Delete" 
-                                  Foreground="Red" Click="DisposeButton_Click"/>
+                                  Foreground="Red">
+                        <AppBarButton.Flyout>
+                            <Flyout x:Name="DeleteConfirmationFlyout">
+                                <StackPanel Width="300">
+                                    <TextBlock x:Uid="DeleteConfirmationFlyout_GuideText"
+                                               Style="{ThemeResource BaseTextBlockStyle}"
+                                               Margin="0,0,0,12" TextWrapping="Wrap"/>
+                                    <Button x:Uid="DeleteConfirmationFlyout_ConfirmButton" 
+                                            Click="DeleteConfirmation_Click"/>
+                                </StackPanel>
+                            </Flyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
@@ -130,14 +138,23 @@
                                 <Setter Property="LineHeight" Value="20"/>
                             </Style>
                         </StackPanel.Resources>
-                        <TextBlock x:Name="DownloadTimeTextBlock"
+                        <TextBlock x:Name="DownloadTimeTextBlock" Margin="0 0 0 4"
                                    Style="{StaticResource TitleTextBlockStyle}"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Bottom"/>
-                        <TextBlock x:Name="SpeedTextBlock" Margin="0 4 0 0"/>
+                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        <TextBlock>
+                            <Run x:Uid="TaskDetailPage_SpeedText"/>
+                            <Run x:Name="SpeedTextBlock"/>/s
+                        </TextBlock>
                         <TextBlock x:Name="SizeTextBlock"/>
-                        <TextBlock x:Name="RuntimeTextBlock"/>
+                        <TextBlock>
+                            <Run x:Name="ErrorNumberTextBlock"/> 
+                            <Run x:Uid="TaskDetailPage_ErrorText"/>,
+                            <Run x:Name="RetryNumberTextBlock"/>
+                            <Run x:Uid="TaskDetailPage_RetryText"/>
+                        </TextBlock>
                     </StackPanel>
+                    <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
+                               HorizontalAlignment="Right" VerticalAlignment="Top"/>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}"

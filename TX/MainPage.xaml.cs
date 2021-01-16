@@ -8,6 +8,7 @@ using TX.Utils;
 using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using Windows.UI.Xaml.Navigation;
 
 namespace TX
 {
@@ -34,6 +35,13 @@ namespace TX
             UpdateTitleBar();
 
             LeftFrame.Navigate(typeof(TaskList));
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            await CurrentApp.WaitForInitializingAsync();
+            LoadingView.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateTitleBar()
