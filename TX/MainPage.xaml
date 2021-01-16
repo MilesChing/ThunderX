@@ -6,19 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       mc:Ignorable="d">
-    <muxc:NavigationView 
-        x:Name="MainNavigationView"
-        OpenPaneLength="300"
-        PaneDisplayMode="LeftCompact"
-        IsBackButtonVisible="Visible"
-        IsBackEnabled="False"
-        AlwaysShowHeader="True"
-        IsTitleBarAutoPaddingEnabled="False"
-        IsSettingsVisible="False"
-        PaneTitle="{x:Bind GetAppTitleFromSystem()}"
-        Background="{ThemeResource SystemChromeLowColor}" 
-        BackRequested="MainNavigationView_BackRequested"
-        ItemInvoked="MainNavigationView_ItemInvoked">
+    <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WidthNarrowMode">
                 <VisualState x:Name="WidthMode">
@@ -46,47 +34,65 @@
                 <VisualState x:Name="SinglePageMode"/>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <muxc:NavigationView.MenuItems>
-            <muxc:NavigationViewItem x:Name="AddItem" Icon="Add" x:Uid="MainPage_NavigationItem_Add"/>
-            <muxc:NavigationViewItem x:Name="ListItem" x:Uid="MainPage_NavigationItem_List">
-                <muxc:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE81C;"/>
-                </muxc:NavigationViewItem.Icon>
-            </muxc:NavigationViewItem>
-            <muxc:NavigationViewItemSeparator Visibility="{x:Bind DetailPage.Visibility, Mode=OneWay}"/>
-            <muxc:NavigationViewItem x:Name="DetailPage" Icon="NewWindow" Visibility="Collapsed"/>
-        </muxc:NavigationView.MenuItems>
-        <muxc:NavigationView.FooterMenuItems>
-            <muxc:NavigationViewItem x:Name="AboutItem" x:Uid="MainPage_NavigationItem_About">
-                <muxc:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
-                </muxc:NavigationViewItem.Icon>
-            </muxc:NavigationViewItem>
-            <muxc:NavigationViewItem x:Name="SetItem" x:Uid="MainPage_NavigationItem_Set">
-                <muxc:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
-                </muxc:NavigationViewItem.Icon>
-            </muxc:NavigationViewItem>
-        </muxc:NavigationView.FooterMenuItems>
-        <RelativePanel x:Name="NavigationViewContentRelativePanel">
-            <Grid 
-                x:Name="AppTitleBar" Background="Transparent"
-                Height="{ThemeResource TXTitleBarHeight}"
-                IsHitTestVisible="True" Canvas.ZIndex="1"
-                RelativePanel.AlignTopWithPanel="True"
-                RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True">
-            </Grid>
-            <Frame x:Name="LeftFrame" MinWidth="400" Canvas.ZIndex="0"
-                   RelativePanel.AlignTopWithPanel="True"
-                   RelativePanel.AlignBottomWithPanel="True"
-                   RelativePanel.AlignLeftWithPanel="True"
-                   RelativePanel.AlignRightWithPanel="True"/>
-            <Frame x:Name="RightFrame" Canvas.ZIndex="0"
-                   RelativePanel.AlignTopWithPanel="True"
-                   RelativePanel.AlignBottomWithPanel="True"
-                   RelativePanel.AlignRightWithPanel="True"
-                   RelativePanel.AlignLeftWithPanel="True"/>
-        </RelativePanel>
-    </muxc:NavigationView>
+        <muxc:NavigationView 
+            x:Name="MainNavigationView"
+            OpenPaneLength="300"
+            PaneDisplayMode="LeftCompact"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="False"
+            AlwaysShowHeader="True"
+            IsTitleBarAutoPaddingEnabled="False"
+            IsSettingsVisible="False"
+            PaneTitle="{x:Bind GetAppTitleFromSystem()}"
+            Background="{ThemeResource SystemChromeLowColor}" 
+            BackRequested="MainNavigationView_BackRequested"
+            ItemInvoked="MainNavigationView_ItemInvoked">
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem x:Name="AddItem" Icon="Add" x:Uid="MainPage_NavigationItem_Add"/>
+                <muxc:NavigationViewItem x:Name="ListItem" x:Uid="MainPage_NavigationItem_List">
+                    <muxc:NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE81C;"/>
+                    </muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItemSeparator Visibility="{x:Bind DetailPage.Visibility, Mode=OneWay}"/>
+                <muxc:NavigationViewItem x:Name="DetailPage" Icon="NewWindow" Visibility="Collapsed"/>
+            </muxc:NavigationView.MenuItems>
+            <muxc:NavigationView.FooterMenuItems>
+                <muxc:NavigationViewItem x:Name="AboutItem" x:Uid="MainPage_NavigationItem_About">
+                    <muxc:NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE946;"/>
+                    </muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+                <muxc:NavigationViewItem x:Name="SetItem" x:Uid="MainPage_NavigationItem_Set">
+                    <muxc:NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
+                    </muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+            </muxc:NavigationView.FooterMenuItems>
+            <RelativePanel x:Name="NavigationViewContentRelativePanel">
+                <Grid 
+                    x:Name="AppTitleBar" Background="Transparent"
+                    Height="{ThemeResource TXTitleBarHeight}"
+                    IsHitTestVisible="True" Canvas.ZIndex="1"
+                    RelativePanel.AlignTopWithPanel="True"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True">
+                </Grid>
+                <Frame x:Name="LeftFrame" MinWidth="400" Canvas.ZIndex="0"
+                       RelativePanel.AlignTopWithPanel="True"
+                       RelativePanel.AlignBottomWithPanel="True"
+                       RelativePanel.AlignLeftWithPanel="True"
+                       RelativePanel.AlignRightWithPanel="True"/>
+                <Frame x:Name="RightFrame" Canvas.ZIndex="0"
+                       RelativePanel.AlignTopWithPanel="True"
+                       RelativePanel.AlignBottomWithPanel="True"
+                       RelativePanel.AlignRightWithPanel="True"
+                       RelativePanel.AlignLeftWithPanel="True"/>
+            </RelativePanel>
+        </muxc:NavigationView>
+        <Border x:Name="LoadingView" Background="#222222">
+            <muxc:ProgressBar Width="200" IsIndeterminate="True"
+                              Background="Transparent"/>
+        </Border>
+    </Grid>
 </Page>
