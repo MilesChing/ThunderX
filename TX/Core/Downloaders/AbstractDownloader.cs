@@ -11,6 +11,7 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using TX.Core.Interfaces;
 using EnsureThat;
+using TX.Core.Models.Progresses.Interfaces;
 
 namespace TX.Core.Downloaders
 {
@@ -32,7 +33,7 @@ namespace TX.Core.Downloaders
         /// <summary>
         /// Progress of the downloader.
         /// </summary>
-        public AbstractProgress Progress { get; protected set; }
+        public IProgress Progress { get; protected set; }
 
         /// <summary>
         /// Speed of the downloader.

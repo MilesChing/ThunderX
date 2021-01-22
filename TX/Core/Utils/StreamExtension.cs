@@ -19,9 +19,8 @@ namespace TX.Core.Utils
             Stream ostream,
             IBufferProvider bufferProvider, 
             CancellationToken token,
-            Action<long> progressChanged)
+            Action<long> progressIncreased)
         {
-            long progress = 0;
             var buffer = await bufferProvider.AllocBufferAsync();
             try
             {
@@ -30,8 +29,7 @@ namespace TX.Core.Utils
                     int readLen = await istream.ReadAsync(buffer, 0, buffer.Length, token);
                     if (readLen <= 0) break;
                     await ostream.WriteAsync(buffer, 0, readLen, token);
-                    progress += readLen;
-                    progressChanged(progress);
+                    progressIncreased(readLen);
                 }
             }
             finally

@@ -10,6 +10,7 @@ using TX.Controls;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Progresses;
+using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Models.Targets;
 using TX.Core.Utils;
 using Windows.Foundation;
@@ -49,13 +50,7 @@ namespace TX
             Speed_Updated(downloader.Speed);
 
             Downloader.Progress.ProgressChanged += Progress_Changed;
-            Progress_Changed(downloader.Progress);
-
-            if (Downloader.Progress is AbstractMeasurableProgress mprogress)
-            {
-                for (int i = 0; i < 100; ++i)
-                    ProgressCollection.Add(false);
-            }
+            Progress_Changed(downloader.Progress, null);
 
             var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
             BasicLabelCollection.Add(new TaskDetailPageLabel(
@@ -67,7 +62,7 @@ namespace TX
             BasicLabelCollection.Add(new TaskDetailPageLabel(
                 resourceLoader.GetString("DownloaderType"),
                 downloader.GetType().Name));
-            if (downloader.Progress is AbstractMeasurableProgress progress)
+            if (downloader.Progress is IMeasurableProgress progress)
                 BasicLabelCollection.Add(new TaskDetailPageLabel(
                     resourceLoader.GetString("TotalSize"),
                     progress.TotalSize.SizedString()));
@@ -93,22 +88,21 @@ namespace TX
             MainProgressBar.Value = 0;
 
             BasicLabelCollection.Clear();
-            ProgressCollection.Clear();
             Downloader = null;
         }
 
-        private async void Progress_Changed(AbstractProgress sender)
+        private async void Progress_Changed(IProgress sender, IProgressChangedEventArg _)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    if (sender is AbstractMeasurableProgress mprogress)
+                    if (sender is IMeasurableProgress mprogress)
                     {
                         SizeTextBlock.Text = "{0} / {1}".AsFormat(
                             mprogress.DownloadedSize.SizedString(),
                             mprogress.TotalSize.SizedString());
-                        MainProgressBar.Value = mprogress.Percentage * 100;
-                        ProgressTextBlock.Text = mprogress.Percentage.ToString("0%");
+                        MainProgressBar.Value = mprogress.Progress * 100;
+                        ProgressTextBlock.Text = mprogress.Progress.ToString("0%");
                     }
                     else SizeTextBlock.Text = 
                         sender.DownloadedSize.SizedString();
@@ -161,8 +155,6 @@ namespace TX
 
         private readonly ObservableCollection<TaskDetailPageLabel> BasicLabelCollection
             = new ObservableCollection<TaskDetailPageLabel>();
-        private readonly ObservableCollection<bool> ProgressCollection
-            = new ObservableCollection<bool>();
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

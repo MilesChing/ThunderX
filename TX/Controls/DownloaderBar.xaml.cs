@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using TX.Core.Downloaders;
 using TX.Core.Models.Progresses;
+using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Utils;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -57,15 +58,15 @@ namespace TX.Controls
 
             FileNameTextBlock.Text = Downloader.DownloadTask.DestinationFileName;
 
-            if (Downloader.Progress is AbstractMeasurableProgress)
+            if (Downloader.Progress is IMeasurableProgress)
             {
                 Downloader.Progress.ProgressChanged += MeasurableProgressChanged;
-                MeasurableProgressChanged(Downloader.Progress);
+                MeasurableProgressChanged(Downloader.Progress, null);
             }
             else
             {
                 Downloader.Progress.ProgressChanged += ProgressChanged;
-                ProgressChanged(Downloader.Progress);
+                ProgressChanged(Downloader.Progress, null);
             }
 
             Downloader.Speed.Updated += SpeedUpdated;
@@ -79,7 +80,7 @@ namespace TX.Controls
             if (Downloader == null) return;
             Downloader.StatusChanged -= StatusChanged;
             Downloader.Speed.Updated -= SpeedUpdated;
-            if (Downloader.Progress is AbstractMeasurableProgress)
+            if (Downloader.Progress is IMeasurableProgress)
                 Downloader.Progress.ProgressChanged -= MeasurableProgressChanged;
             else
                 Downloader.Progress.ProgressChanged -= ProgressChanged;
@@ -100,20 +101,20 @@ namespace TX.Controls
                     SpeedTextBlock.Text = ((long)obj.Speed).SizedString() + "/s";
                 });
 
-        private async void ProgressChanged(AbstractProgress obj) =>
+        private async void ProgressChanged(IProgress prog, IProgressChangedEventArg _) =>
             await SizeTextBlock.Dispatcher.RunAsync(
                 CoreDispatcherPriority.Normal, () =>
-                    SizeTextBlock.Text = obj.DownloadedSize.SizedString()
+                    SizeTextBlock.Text = prog.DownloadedSize.SizedString()
                 );
 
-        private async void MeasurableProgressChanged(AbstractProgress obj) =>
+        private async void MeasurableProgressChanged(IProgress prog, IProgressChangedEventArg _) =>
             await Dispatcher.RunAsync(
                 CoreDispatcherPriority.Normal, () => {
-                    var prog = obj as AbstractMeasurableProgress;
+                    var mprog = prog as IMeasurableProgress;
                     SizeTextBlock.Text = "{0} of {1}".AsFormat(
-                        prog.DownloadedSize.SizedString(),
-                        prog.TotalSize.SizedString());
-                    MainProgressBar.Value = prog.Percentage * 100;
+                        mprog.DownloadedSize.SizedString(),
+                        mprog.TotalSize.SizedString());
+                    MainProgressBar.Value = mprog.Progress * 100;
                 });
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
