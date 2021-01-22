@@ -229,11 +229,9 @@ namespace TX.Core.Downloaders
                 Debug.WriteLine("{0} picked task [{1},{2}) , {3} remained in queue"
                     .AsFormat(prefix, task.Begin, task.End, taskQueue.Count));
 
-                lock (segmentProgressCreationLock)
-                    progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length);
-
                 var target = (DownloadTask.Target as HttpRangableTarget);
-                using (progress)
+
+                using (progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length))
                     using (var istream = await target.GetRangedStreamAsync(task.Begin, task.End))
                         using (var ostream = new FileStream(file.Path, FileMode.Open, FileAccess.Write, FileShare.Write))
                         {
@@ -303,7 +301,5 @@ namespace TX.Core.Downloaders
         private readonly IBufferProvider bufferProvider;
         private readonly int threadNum;
         private readonly long threadSegmentSize;
-
-        private readonly object segmentProgressCreationLock = new object();
     }
 }
