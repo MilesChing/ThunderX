@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TX.Core.Models.Progresses.Interfaces
 {
-    interface IMeasurableProgress : IProgress
+    public interface IMeasurableProgress : IProgress
     {
         /// <summary>
         /// Target size of the task or stream.

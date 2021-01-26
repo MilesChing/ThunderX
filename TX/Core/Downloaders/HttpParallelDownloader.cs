@@ -232,7 +232,9 @@ namespace TX.Core.Downloaders
                 var target = (DownloadTask.Target as HttpRangableTarget);
 
                 using (progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length))
+                {
                     using (var istream = await target.GetRangedStreamAsync(task.Begin, task.End))
+                    {
                         using (var ostream = new FileStream(file.Path, FileMode.Open, FileAccess.Write, FileShare.Write))
                         {
                             ostream.Seek(task.Begin, SeekOrigin.Begin);
@@ -243,15 +245,17 @@ namespace TX.Core.Downloaders
                                 size => progress.Increase(size)
                             );
                         }
+                    }
 
-                if (cancellationToken.IsCancellationRequested)
-                    Debug.WriteLine("{0} task canceled".AsFormat(prefix));
-                else if (progress.DownloadedSize == progress.TotalSize)
-                    Debug.WriteLine("{0} task completed".AsFormat(prefix));
-                else
-                {
-                    Debug.WriteLine("{0} task uncompleted".AsFormat(prefix));
-                    throw new Exception("{0} task uncompleted".AsFormat(prefix));
+                    if (cancellationToken.IsCancellationRequested)
+                        Debug.WriteLine("{0} task canceled".AsFormat(prefix));
+                    else if (progress.DownloadedSize == progress.TotalSize)
+                        Debug.WriteLine("{0} task completed".AsFormat(prefix));
+                    else
+                    {
+                        Debug.WriteLine("{0} task uncompleted".AsFormat(prefix));
+                        throw new Exception("{0} task uncompleted".AsFormat(prefix));
+                    }
                 }
             }
         }

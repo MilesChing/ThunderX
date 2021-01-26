@@ -82,13 +82,9 @@ namespace TX.Core.Models.Progresses
             get => downloadedSize;
             private set
             {
-                long oldV, newV;
-                lock (downloadedSizeLock)
-                {
-                    oldV = downloadedSize;
-                    newV = downloadedSize = value;
-                }
-                ProgressChanged?.Invoke(this, new BaseProgressChangedEventArg(oldV, newV));
+                long oldV = downloadedSize;
+                downloadedSize = value;
+                ProgressChanged?.Invoke(this, new BaseProgressChangedEventArg(oldV, value));
             }
         }
         private long downloadedSize;
@@ -166,8 +162,11 @@ namespace TX.Core.Models.Progresses
             DownloadedSize = 0;
         }
 
-        private void AnySegmentProgressChanged(IProgress _, IProgressChangedEventArg arg) =>
-            DownloadedSize += arg.Delta;
+        private void AnySegmentProgressChanged(IProgress _, IProgressChangedEventArg arg)
+        {
+            lock (downloadedSizeLock)
+                DownloadedSize += arg.Delta;
+        }
 
         private void AnySegmentProgressDisposed(SegmentProgress prog)
         {
