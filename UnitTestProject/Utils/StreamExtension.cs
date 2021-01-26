@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TXUnitTest.Utils
+namespace UnitTestProject.Utils
 {
     static class StreamExtension
     {

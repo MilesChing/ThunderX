@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TX.Core.Interfaces;
 
-namespace TXUnitTest.Utils
+namespace UnitTestProject.Utils
 {
     class FakeBufferProvider : IBufferProvider
     {

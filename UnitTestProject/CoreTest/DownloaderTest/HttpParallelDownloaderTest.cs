@@ -1,22 +1,21 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using UnitTestProject.Utils;
 using TX.Core.Downloaders;
 using TX.Core.Models.Contexts;
-using TX.Core.Models.Sources;
 using TX.Core.Models.Targets;
-using UnitTestProject.Utils;
-using Windows.Storage;
+using System.Threading;
+using System.IO;
+using TX.Core.Models.Progresses.Interfaces;
 
 namespace UnitTestProject.CoreTest.DownloaderTest
 {
     [TestClass]
-    public class HttpDownloaderTest
+    public class HttpParallelDownloaderTest
     {
         [TestMethod]
         public void Test100kB() => TestWithSize(100L * 1024L).Wait();
@@ -32,9 +31,8 @@ namespace UnitTestProject.CoreTest.DownloaderTest
 
         private async Task TestWithSize(long size)
         {
-            var rd = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
             var targetBytes = new byte[size];
-            rd.NextBytes(targetBytes);
+            random.NextBytes(targetBytes);
             int port = 8080;
 
             using (var server = new FakeHttpServer(port, targetBytes))
@@ -42,12 +40,13 @@ namespace UnitTestProject.CoreTest.DownloaderTest
                 var folderProvider = new FakeFolderProvider();
                 var cacheProvider = new FakeCacheProvider();
                 var bufferProvider = new FakeBufferProvider();
-                var downloader = new HttpDownloader(
+                var downloader = new HttpParallelDownloader(
                     new DownloadTask(
                         "test-task",
-                        new HttpTarget(
+                        new HttpRangableTarget(
                             new Uri($"http://localhost:{port}/"),
-                            "test-file"
+                            "test-file",
+                            size
                         ),
                         "test-destination-file",
                         "test-destination-folder",
@@ -91,13 +90,13 @@ namespace UnitTestProject.CoreTest.DownloaderTest
                     }
                 };
 
-                try 
-                { 
-                    await Task.Delay(TimeSpan.FromMinutes(5), completeTokenSource.Token); 
-                } 
+                try
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(5), completeTokenSource.Token);
+                }
                 catch (TaskCanceledException) { }
 
-                Assert.AreEqual(downloader.Status, DownloaderStatus.Completed);
+                Assert.AreEqual(DownloaderStatus.Completed, downloader.Status);
 
                 using (var istream = await downloader.Result.OpenReadAsync())
                 {
@@ -111,5 +110,7 @@ namespace UnitTestProject.CoreTest.DownloaderTest
                 downloader.Dispose();
             }
         }
+
+        private readonly Random random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
     }
 }

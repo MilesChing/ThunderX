@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace UnitTestProject.Utils
 {
@@ -27,24 +28,42 @@ namespace UnitTestProject.Utils
                     {
                         try
                         {
-                            WaitForRequest();
+                            var context = listener.GetContext();
+                            Task.Run(() => ProcessRequest(context));
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
-                            Debug.WriteLine(e);
+
                         }
                     }
                 }
             });
         }
 
-        private void WaitForRequest()
+        private void ProcessRequest(HttpListenerContext context)
         {
-            HttpListenerContext context = listener.GetContext();
+            long begin = 0, end = ResponseContent.Length;
+            var rangeString = context.Request.Headers["range"];
+            if (rangeString != null && rangeString != string.Empty)
+            {
+                var fromString = Regex.Replace(rangeString, "(bytes=)|(-[0-9]+)", "");
+                var toString = Regex.Replace(rangeString, "(bytes=)|([0-9]+-)", "");
+                if (long.TryParse(fromString, out long from) &&
+                    long.TryParse(toString, out long to))
+                {
+                    begin = from;
+                    end = to + 1;
+                }
+            }
+
             HttpListenerResponse response = context.Response;
             var output = response.OutputStream;
-            output.Write(ResponseContent, 0, ResponseContent.Length);
-            output.Close();
+            try
+            {
+                output.Write(ResponseContent, (int)begin, (int)(end - begin));
+            }
+            catch (Exception) { }
+            finally { output.Close(); }
         }
 
         public int Port { get; private set; }
