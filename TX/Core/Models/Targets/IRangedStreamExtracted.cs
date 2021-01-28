@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
-using TX.Core.Models.Progresses;
 
 namespace TX.Core.Models.Targets
 {
@@ -17,6 +12,6 @@ namespace TX.Core.Models.Targets
         /// Get a stream from the given range.
         /// </summary>
         /// <returns>Task extracting stream containing data in the given range.</returns>
-        Task<Stream> GetRangedStreamAsync(Range<long> range);
+        Task<Stream> GetRangedStreamAsync(long begin, long end);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EnsureThat;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace TX.Core.Models.Targets
         public HttpRangableTarget(Uri uri, string suggestedName, long dataLength) 
             : base(uri, suggestedName) 
         {
+            Ensure.That(dataLength).IsGt(0);
             DataLength = dataLength;
         }
 
@@ -30,21 +32,18 @@ namespace TX.Core.Models.Targets
 
         public long GetDataLength() => DataLength;
 
-        public async Task<Stream> GetRangedStreamAsync(Range<long> range)
+        public async Task<Stream> GetRangedStreamAsync(long begin, long end)
         {
             // check args
-            if (range.From < 0 || range.To > DataLength)
-                throw new ArgumentOutOfRangeException(
-                    string.Format("from = {0} , to = {1} is out of range considering data length {2}",
-                        range.From, range.To, DataLength));
+            Ensure.That(begin).IsInRange(0, DataLength - 1);
+            Ensure.That(end).IsInRange(1, DataLength);
             HttpWebRequest req = WebRequest.CreateHttp(Uri);
             req.Method = "GET";
             req.KeepAlive = false;
-            req.Headers["range"] = string.Format("bytes={0}-{1}", range.From, range.To - 1);
+            req.Headers["range"] = string.Format("bytes={0}-{1}", begin, end - 1);
             HttpWebResponse resp = (HttpWebResponse)(await req.GetResponseAsync());
             //abort the request
-            if (req != null)
-                req.Abort();
+            if (req != null) req.Abort();
             return resp.GetResponseStream();
         }
     }
