@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TX.Core.Interfaces;
 using Windows.Storage;
 
-namespace TXUnitTest.Utils
+namespace UnitTestProject.Utils
 {
     /// <summary>
     /// FakeCacheProvider provides cache files created in LocalCacheFolder.
