@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,6 +16,7 @@ using TX.Core.Models.Targets;
 using TX.Core.Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -66,10 +68,44 @@ namespace TX
                 BasicLabelCollection.Add(new TaskDetailPageLabel(
                     resourceLoader.GetString("TotalSize"),
                     progress.TotalSize.SizedString()));
+            
+            if (downloader.Progress is IVisibleProgress ipv)
+            {
+                ipv.VisibleRangeListChanged += BindedVisibleRangeListChanged;
+                SetVisibleRangeListViewItemsSource(ipv);
+            }
+        }
+
+        private void BindedVisibleRangeListChanged(IVisibleProgress sender)
+        {
+             VisibleRangeListView.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                    () => SetVisibleRangeListViewItemsSource(sender))
+             .AsTask().Wait();
+        }
+
+        private void SetVisibleRangeListViewItemsSource(IVisibleProgress progress)
+        {
+            if (VisibleRangeListView.ItemsSource is IEnumerable<TaskDetailVisibleRangeViewModel> vms)
+            {
+                foreach (var vm in vms)
+                    vm.Dispose();
+                VisibleRangeListView.ItemsSource = null;
+            }
+
+            if (progress != null)
+            {
+                VisibleRangeListView.ItemsSource = progress.VisibleRangeList.Select(
+                    range => new TaskDetailVisibleRangeViewModel(range, Dispatcher)).ToList();
+            }
         }
 
         public void ClearDownloaderBinding()
         {
+            if (Downloader.Progress is IVisibleProgress ipv)
+                ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
+            SetVisibleRangeListViewItemsSource(null);
+
             Downloader.StatusChanged -= StatusChanged;
             Downloader.Speed.Updated -= Speed_Updated;
             Downloader.Progress.ProgressChanged -= Progress_Changed;
@@ -85,7 +121,6 @@ namespace TX
             DownloadTimeTextBlock.Text = string.Empty;
             SpeedTextBlock.Text = string.Empty;
             SizeTextBlock.Text = string.Empty;
-            MainProgressBar.Value = 0;
 
             BasicLabelCollection.Clear();
             Downloader = null;
@@ -101,7 +136,6 @@ namespace TX
                         SizeTextBlock.Text = "{0} / {1}".AsFormat(
                             mprogress.DownloadedSize.SizedString(),
                             mprogress.TotalSize.SizedString());
-                        MainProgressBar.Value = mprogress.Progress * 100;
                         ProgressTextBlock.Text = mprogress.Progress.ToString("0%");
                     }
                     else SizeTextBlock.Text = 
@@ -199,5 +233,43 @@ namespace TX
         public readonly string Key;
 
         public readonly string Value;
+    }
+
+    class TaskDetailVisibleRangeViewModel : IVisibleRange, IDisposable
+    {
+        public TaskDetailVisibleRangeViewModel(IVisibleRange range, CoreDispatcher dispatcher)
+        {
+            ParentRange = range;
+            Dispatcher = dispatcher;
+            Progress = range.Progress * 100;
+            Total = range.Total * 400;
+            range.PropertyChanged += ParentRangePropertyChanged;
+        }
+
+        private async void ParentRangePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Progress = ParentRange.Progress * 100;
+            Total = ParentRange.Total * 400;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => PropertyChanged(this, e));
+        }
+
+        public float Progress { get; private set; }
+
+        public float Total { get; private set; }
+
+        public IVisibleRange ParentRange { get; private set; }
+
+        private readonly CoreDispatcher Dispatcher;
+
+        public void Dispose()
+        {
+            if (ParentRange != null)
+            {
+                ParentRange.PropertyChanged -= ParentRangePropertyChanged;
+                ParentRange = null;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

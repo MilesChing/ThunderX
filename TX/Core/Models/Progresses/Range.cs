@@ -30,6 +30,20 @@ namespace TX.Core.Models.Progresses
         public bool Equals(Range range)
             => (Begin == range.Begin) && (End == range.End);
 
+        public bool Contains(Range range) 
+            => (Begin <= range.Begin) && (End >= range.End);
+
+        public IEnumerable<Range> Except(Range range)
+        {
+            range = Intersect(range);
+            if (range.Length == 0) yield return this;
+            else
+            {
+                if (range.Begin > Begin) yield return new Range(Begin, range.Begin);
+                if (range.End < End) yield return new Range(range.End, End);
+            }
+        }
+
         public long Begin;
         public long End;
     }

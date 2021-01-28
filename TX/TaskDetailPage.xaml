@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interfaces="using:TX.Core.Interfaces"
     NavigationCacheMode="Enabled"
     Background="{ThemeResource SystemChromeLowColor}" 
     mc:Ignorable="d">
@@ -14,29 +14,12 @@
         VerticalScrollBarVisibility="Hidden">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="DownloaderStatusGroup">
-                <VisualState x:Name="Unbind">
-                    <VisualState.Setters>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Completed">
-                    <VisualState.Setters>
-                        <Setter Target="MainProgressBar.Foreground" Value="Green"/>
-                    </VisualState.Setters>
-                </VisualState>
+                <VisualState x:Name="Unbind"/>
+                <VisualState x:Name="Completed"/>
                 <VisualState x:Name="Pending"/>
-                <VisualState x:Name="Error">
-                    <VisualState.Setters>
-                        <Setter Target="MainProgressBar.Foreground" 
-                                Value="{StaticResource WarningYellow}"/>
-                    </VisualState.Setters>
-                </VisualState>
+                <VisualState x:Name="Error"/>
                 <VisualState x:Name="Ready"/>
-                <VisualState x:Name="Running">
-                    <VisualState.Setters>
-                        <Setter Target="MainProgressBar.Foreground" 
-                                Value="{ThemeResource SystemAccentColor}"/>
-                    </VisualState.Setters>
-                </VisualState>
+                <VisualState x:Name="Running"/>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <StackPanel
@@ -123,13 +106,6 @@
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
                 <Grid>
-                    <ProgressBar x:Name="MainProgressBar"
-                                 HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch"
-                                 Margin="-16 -8 -16 -16"
-                                 Background="Transparent"
-                                 Foreground="{ThemeResource SystemBaseMediumColor}"
-                                 Opacity="0.2"/>
                     <StackPanel>
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock"
@@ -156,6 +132,35 @@
                     <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
                                HorizontalAlignment="Right" VerticalAlignment="Top"/>
                 </Grid>
+                <ListView x:Name="VisibleRangeListView" SelectionMode="None"
+                          Margin="0 12 0 0" HorizontalAlignment="Left">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:TaskDetailVisibleRangeViewModel">
+                            <ProgressBar Width="{Binding Total}" Value="{Binding Progress}" 
+                                         CornerRadius="6" Height="12" 
+                                         Background="{ThemeResource SystemAltHighColor}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection/>
+                    </ListView.ItemContainerTransitions>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0 0 0 0"/>
+                            <Setter Property="MinHeight" Value="0"/>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="MinWidth" Value="0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" CornerRadius="6"
+                                        BorderBrush="{ThemeResource SystemListLowColor}"
+                                        BorderThickness="1"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+                
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}"
                         x:Name="ErrorStackPanel" Visibility="Collapsed">
