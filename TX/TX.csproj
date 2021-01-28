@@ -140,6 +140,7 @@
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
+    <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Core\Downloaders\AbstractDownloader.cs" />
     <Compile Include="Core\Downloaders\HttpDownloader.cs" />
     <Compile Include="Core\Downloaders\HttpParallelDownloader.cs" />

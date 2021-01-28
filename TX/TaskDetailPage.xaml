@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interfaces="using:TX.Core.Interfaces"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interfaces="using:TX.Core.Interfaces" xmlns:controls="using:TX.Controls"
     NavigationCacheMode="Enabled"
     Background="{ThemeResource SystemChromeLowColor}" 
     mc:Ignorable="d">
@@ -109,23 +109,23 @@
                     <StackPanel>
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock"
-                                   BasedOn="{StaticResource CaptionTextBlockStyle}">
-                                <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumColor}"/>
-                                <Setter Property="LineHeight" Value="20"/>
+                                   BasedOn="{StaticResource BodyTextBlockStyle}">
+                                <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumHighColor}"/>
+                                <Setter Property="LineHeight" Value="24"/>
                             </Style>
                         </StackPanel.Resources>
-                        <TextBlock x:Name="DownloadTimeTextBlock" Margin="0 0 0 4"
+                        <TextBlock x:Name="DownloadTimeTextBlock" Margin="0 0 0 8"
                                    Style="{StaticResource TitleTextBlockStyle}"
                                    HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                         <TextBlock>
                             <Run x:Uid="TaskDetailPage_SpeedText"/>
-                            <Run x:Name="SpeedTextBlock"/>/s
+                            <Run x:Name="SpeedTextBlock" FontWeight="Bold"/>/s
                         </TextBlock>
-                        <TextBlock x:Name="SizeTextBlock"/>
+                        <TextBlock x:Name="SizeTextBlock" FontWeight="Bold"/>
                         <TextBlock>
-                            <Run x:Name="ErrorNumberTextBlock"/> 
+                            <Run x:Name="ErrorNumberTextBlock" FontWeight="Bold"/> 
                             <Run x:Uid="TaskDetailPage_ErrorText"/>,
-                            <Run x:Name="RetryNumberTextBlock"/>
+                            <Run x:Name="RetryNumberTextBlock" FontWeight="Bold"/>
                             <Run x:Uid="TaskDetailPage_RetryText"/>
                         </TextBlock>
                     </StackPanel>
@@ -136,9 +136,8 @@
                           Margin="0 12 0 0" HorizontalAlignment="Left">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:TaskDetailVisibleRangeViewModel">
-                            <ProgressBar Width="{Binding Total}" Value="{Binding Progress}" 
-                                         CornerRadius="6" Height="12" 
-                                         Background="{ThemeResource SystemAltHighColor}"/>
+                            <ProgressBar Width="{Binding Total}" Value="{Binding Progress}"
+                                         CornerRadius="6" Height="12" Margin="0 0 2 8"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.ItemContainerTransitions>
@@ -154,9 +153,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" CornerRadius="6"
-                                        BorderBrush="{ThemeResource SystemListLowColor}"
-                                        BorderThickness="1"/>
+                            <controls:WrapStackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
                 </ListView>
