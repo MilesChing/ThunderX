@@ -73,7 +73,9 @@ namespace TX
             {
                 ipv.VisibleRangeListChanged += BindedVisibleRangeListChanged;
                 SetVisibleRangeListViewItemsSource(ipv);
+                VisibleRangePanel.Visibility = Visibility.Visible;
             }
+            else VisibleRangePanel.Visibility = Visibility.Collapsed;
         }
 
         private void BindedVisibleRangeListChanged(IVisibleProgress sender)
@@ -102,6 +104,7 @@ namespace TX
 
         public void ClearDownloaderBinding()
         {
+            VisibleRangePanel.Visibility = Visibility.Collapsed;
             if (Downloader.Progress is IVisibleProgress ipv)
                 ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
             SetVisibleRangeListViewItemsSource(null);
@@ -241,21 +244,27 @@ namespace TX
         {
             ParentRange = range;
             Dispatcher = dispatcher;
-            Progress = range.Progress * 100;
-            Total = range.Total * 400;
             range.PropertyChanged += ParentRangePropertyChanged;
         }
 
         private async void ParentRangePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Progress = ParentRange.Progress * 100;
-            Total = ParentRange.Total * 400;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => PropertyChanged(this, e));
         }
 
-        public float Progress { get; private set; }
+        public float Progress => ParentRange == null ? 0.0f : ParentRange.Progress * 100.0f;
 
-        public float Total { get; private set; }
+        public float Total
+        {
+            get
+            {
+                if (ParentRange == null) return 0.0f;
+                float total = ParentRange.Total;
+                total = Math.Max(total, 0.01f);
+                total = Math.Min(total, 0.2f);
+                return total * 2000.0f;
+            }
+        }
 
         public IVisibleRange ParentRange { get; private set; }
 

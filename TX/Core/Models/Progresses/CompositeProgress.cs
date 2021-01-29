@@ -43,6 +43,7 @@ namespace TX.Core.Models.Progresses
         {
             TotalSize = totalSize;
             DownloadedSize = 0;
+            InitializeIVisibleRangesCollection(Array.Empty<Range>());
         }
 
         public event Action<IProgress, IProgressChangedEventArg> ProgressChanged = (sender, arg) => { };

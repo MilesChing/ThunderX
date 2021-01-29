@@ -237,4 +237,7 @@
   <data name="AboutPage_VersionInfo_Functionality_4.Text" xml:space="preserve">
     <value>🚧 当应用程序启动时显示加载动画。</value>
   </data>
+  <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
+    <value>进程</value>
+  </data>
 </root>
