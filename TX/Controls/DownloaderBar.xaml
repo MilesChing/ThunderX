@@ -94,10 +94,7 @@
                               FontSize="16" FontFamily="Segoe MDL2 Assets" 
                               Glyph="&#xF13B;"/>
                 </Grid>
-                <TextBlock
-                    x:Name="FileNameTextBlock"
-                    FontSize="16px"
-                    MaxWidth="260"/>
+                <TextBlock x:Name="FileNameTextBlock" FontSize="16px" MaxWidth="220"/>
             </StackPanel>
             <StackPanel
                 Orientation="Horizontal">

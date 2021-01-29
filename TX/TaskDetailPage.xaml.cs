@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -10,10 +11,12 @@ using TX.Controls;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Progresses;
+using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Models.Targets;
 using TX.Core.Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -49,13 +52,7 @@ namespace TX
             Speed_Updated(downloader.Speed);
 
             Downloader.Progress.ProgressChanged += Progress_Changed;
-            Progress_Changed(downloader.Progress);
-
-            if (Downloader.Progress is AbstractMeasurableProgress mprogress)
-            {
-                for (int i = 0; i < 100; ++i)
-                    ProgressCollection.Add(false);
-            }
+            Progress_Changed(downloader.Progress, null);
 
             var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
             BasicLabelCollection.Add(new TaskDetailPageLabel(
@@ -67,14 +64,51 @@ namespace TX
             BasicLabelCollection.Add(new TaskDetailPageLabel(
                 resourceLoader.GetString("DownloaderType"),
                 downloader.GetType().Name));
-            if (downloader.Progress is AbstractMeasurableProgress progress)
+            if (downloader.Progress is IMeasurableProgress progress)
                 BasicLabelCollection.Add(new TaskDetailPageLabel(
                     resourceLoader.GetString("TotalSize"),
                     progress.TotalSize.SizedString()));
+            
+            if (downloader.Progress is IVisibleProgress ipv)
+            {
+                ipv.VisibleRangeListChanged += BindedVisibleRangeListChanged;
+                SetVisibleRangeListViewItemsSource(ipv);
+                VisibleRangePanel.Visibility = Visibility.Visible;
+            }
+            else VisibleRangePanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void BindedVisibleRangeListChanged(IVisibleProgress sender)
+        {
+             VisibleRangeListView.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                    () => SetVisibleRangeListViewItemsSource(sender))
+             .AsTask().Wait();
+        }
+
+        private void SetVisibleRangeListViewItemsSource(IVisibleProgress progress)
+        {
+            if (VisibleRangeListView.ItemsSource is IEnumerable<TaskDetailVisibleRangeViewModel> vms)
+            {
+                foreach (var vm in vms)
+                    vm.Dispose();
+                VisibleRangeListView.ItemsSource = null;
+            }
+
+            if (progress != null)
+            {
+                VisibleRangeListView.ItemsSource = progress.VisibleRangeList.Select(
+                    range => new TaskDetailVisibleRangeViewModel(range, Dispatcher)).ToList();
+            }
         }
 
         public void ClearDownloaderBinding()
         {
+            VisibleRangePanel.Visibility = Visibility.Collapsed;
+            if (Downloader.Progress is IVisibleProgress ipv)
+                ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
+            SetVisibleRangeListViewItemsSource(null);
+
             Downloader.StatusChanged -= StatusChanged;
             Downloader.Speed.Updated -= Speed_Updated;
             Downloader.Progress.ProgressChanged -= Progress_Changed;
@@ -90,25 +124,22 @@ namespace TX
             DownloadTimeTextBlock.Text = string.Empty;
             SpeedTextBlock.Text = string.Empty;
             SizeTextBlock.Text = string.Empty;
-            MainProgressBar.Value = 0;
 
             BasicLabelCollection.Clear();
-            ProgressCollection.Clear();
             Downloader = null;
         }
 
-        private async void Progress_Changed(AbstractProgress sender)
+        private async void Progress_Changed(IProgress sender, IProgressChangedEventArg _)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    if (sender is AbstractMeasurableProgress mprogress)
+                    if (sender is IMeasurableProgress mprogress)
                     {
                         SizeTextBlock.Text = "{0} / {1}".AsFormat(
                             mprogress.DownloadedSize.SizedString(),
                             mprogress.TotalSize.SizedString());
-                        MainProgressBar.Value = mprogress.Percentage * 100;
-                        ProgressTextBlock.Text = mprogress.Percentage.ToString("0%");
+                        ProgressTextBlock.Text = mprogress.Progress.ToString("0%");
                     }
                     else SizeTextBlock.Text = 
                         sender.DownloadedSize.SizedString();
@@ -161,8 +192,6 @@ namespace TX
 
         private readonly ObservableCollection<TaskDetailPageLabel> BasicLabelCollection
             = new ObservableCollection<TaskDetailPageLabel>();
-        private readonly ObservableCollection<bool> ProgressCollection
-            = new ObservableCollection<bool>();
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -207,5 +236,49 @@ namespace TX
         public readonly string Key;
 
         public readonly string Value;
+    }
+
+    class TaskDetailVisibleRangeViewModel : IVisibleRange, IDisposable
+    {
+        public TaskDetailVisibleRangeViewModel(IVisibleRange range, CoreDispatcher dispatcher)
+        {
+            ParentRange = range;
+            Dispatcher = dispatcher;
+            range.PropertyChanged += ParentRangePropertyChanged;
+        }
+
+        private async void ParentRangePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => PropertyChanged(this, e));
+        }
+
+        public float Progress => ParentRange == null ? 0.0f : ParentRange.Progress * 100.0f;
+
+        public float Total
+        {
+            get
+            {
+                if (ParentRange == null) return 0.0f;
+                float total = ParentRange.Total;
+                total = Math.Max(total, 0.01f);
+                total = Math.Min(total, 0.2f);
+                return total * 2000.0f;
+            }
+        }
+
+        public IVisibleRange ParentRange { get; private set; }
+
+        private readonly CoreDispatcher Dispatcher;
+
+        public void Dispose()
+        {
+            if (ParentRange != null)
+            {
+                ParentRange.PropertyChanged -= ParentRangePropertyChanged;
+                ParentRange = null;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

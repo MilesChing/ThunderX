@@ -65,13 +65,11 @@ namespace TX.Core.Downloaders
             this.threadNum = threadNum;
             this.threadSegmentSize = threadSegmentSize;
 
-            Progress = new InnerRangableProgress((task.Target as HttpRangableTarget).DataLength);
+            Progress = new CompositeProgress((task.Target as HttpRangableTarget).DataLength);
             Speed = SharedSpeedCalculatorFactory.NewSpeedCalculator();
-            Progress.ProgressChanged += (sender) =>
-                Speed.CurrentValue = Progress.DownloadedSize;
+            Progress.ProgressChanged += (sender, arg) => Speed.CurrentValue = Progress.DownloadedSize;
 
-            if (checkPoint != null)
-                ApplyCheckPoint(checkPoint);
+            if (checkPoint != null) ApplyCheckPoint(checkPoint);
         }
 
         public int WorkerCount { get; private set; }
@@ -94,20 +92,18 @@ namespace TX.Core.Downloaders
             Speed.IsEnabled = true;
 
             await ValidateCacheFileAsync();
-            ConcurrentQueue<Range<long>> workQueue = ArrangeSegments();
+            ConcurrentQueue<Range> workQueue = ArrangeSegments();
             TasksRemained = workQueue.Count;
             cancellationTokenSource = new CancellationTokenSource();
 
             int realThreadNum = Math.Min(workQueue.Count, threadNum);
             Debug.WriteLine("[{0} with task {1}] launching {2} workers".AsFormat(
-                nameof(HttpParallelDownloader),
-                DownloadTask.Key,
-                realThreadNum));
+                nameof(HttpParallelDownloader), DownloadTask.Key, realThreadNum));
+
             var workers = new Task[realThreadNum];
             WorkerCount = realThreadNum;
             for(int i = 0; i < workers.Length; ++i)
-                workers[i] = Worker(workQueue, cacheFile,
-                    cancellationTokenSource.Token, i);
+                workers[i] = Worker(workQueue, cacheFile, cancellationTokenSource.Token, i);
 
             downloadTask = Task.Run(async () =>
             {
@@ -134,7 +130,7 @@ namespace TX.Core.Downloaders
 
                 try
                 {
-                    var progress = Progress as InnerRangableProgress;
+                    var progress = Progress as CompositeProgress;
                     if (progress.DownloadedSize == progress.TotalSize)
                     {
                         // get destination folder
@@ -160,27 +156,24 @@ namespace TX.Core.Downloaders
         /// Progress.UncoveredRanges.
         /// </summary>
         /// <returns>Concurrent queue with segments.</returns>
-        private ConcurrentQueue<Range<long>> ArrangeSegments()
+        private ConcurrentQueue<Range> ArrangeSegments()
         {
-            ConcurrentQueue<Range<long>> workQueue =
-                new ConcurrentQueue<Range<long>>();
-            var progress = Progress as InnerRangableProgress;
+            ConcurrentQueue<Range> workQueue = new ConcurrentQueue<Range>();
+            var progress = Progress as CompositeProgress;
             long maxSegment = threadSegmentSize + threadSegmentSize / 2;
-            foreach (var task in progress.UncoveredRanges)
+            foreach (var task in progress.GetUncoveredRanges())
             {
-                if (task.To - task.From <= maxSegment)
-                    workQueue.Enqueue(task);
+                if (task.Length <= maxSegment) workQueue.Enqueue(task);
                 else
                 {
-                    long now = task.From;
-                    while(task.To - now > maxSegment)
+                    long now = task.Begin;
+                    while(task.End - now > maxSegment)
                     {
                         long to = now + threadSegmentSize;
-                        workQueue.Enqueue(new Range<long>(now, to));
+                        workQueue.Enqueue(new Range(now, to));
                         now = to;
                     }
-                    if (now < task.To)
-                        workQueue.Enqueue(new Range<long>(now, task.To));
+                    if (now < task.End) workQueue.Enqueue(new Range(now, task.End));
                 }
             }
             return workQueue;
@@ -200,7 +193,8 @@ namespace TX.Core.Downloaders
                 {
                     cacheFileToken = await cacheProvider.NewCacheFileAsync();
                     cacheFile = cacheProvider.GetCacheFileByToken(cacheFileToken);
-                    ((InnerRangableProgress)Progress).Initialize(Array.Empty<Range<long>>());
+                    ((CompositeProgress)Progress).Initialize(
+                        (DownloadTask.Target as HttpRangableTarget).DataLength);
                 }
                 else
                 {
@@ -209,66 +203,73 @@ namespace TX.Core.Downloaders
                     {
                         cacheFileToken = await cacheProvider.NewCacheFileAsync();
                         cacheFile = cacheProvider.GetCacheFileByToken(cacheFileToken);
-                        ((InnerRangableProgress)Progress).Initialize(Array.Empty<Range<long>>());
+                        ((CompositeProgress)Progress).Initialize(
+                            (DownloadTask.Target as HttpRangableTarget).DataLength);
                     }
                 }
             }
         }
 
         private async Task Worker(
-            ConcurrentQueue<Range<long>> taskQueue,
+            ConcurrentQueue<Range> taskQueue,
             IStorageFile file,
             CancellationToken cancellationToken,
             int workerId)
         {
             var prefix = "[{0} with task {1}] [worker {2}]".AsFormat(
                 nameof(HttpParallelDownloader), DownloadTask.Key, workerId);
+            SegmentProgress progress;
             Debug.WriteLine("{0} launched".AsFormat(prefix));
             while ((!cancellationToken.IsCancellationRequested)
                 && (!taskQueue.IsEmpty))
             {
-                bool succ = taskQueue.TryDequeue(out Range<long> task);
-                var progress = (Progress as InnerRangableProgress)
-                    .NewThreadProgress(task.From, task.To - task.From);
+                bool succ = taskQueue.TryDequeue(out Range task);
                 if (!succ) continue;
                 TasksRemained = taskQueue.Count;
-                Debug.WriteLine("{0} picked task [{1},{2}] , {3} remained in queue"
-                    .AsFormat(prefix, task.From, task.To, taskQueue.Count));
+                Debug.WriteLine("{0} picked task [{1},{2}) , {3} remained in queue"
+                    .AsFormat(prefix, task.Begin, task.End, taskQueue.Count));
+
                 var target = (DownloadTask.Target as HttpRangableTarget);
-                using (var istream = await target.GetRangedStreamAsync(task))
-                using (var ostream = new FileStream(file.Path,
-                    FileMode.Open, FileAccess.Write, FileShare.Write))
+
+                using (progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length))
                 {
-                    ostream.Seek(task.From, SeekOrigin.Begin);
-                    await istream.CopyToAsync(
-                        ostream,
-                        bufferProvider,
-                        cancellationToken,
-                        size => progress.ReportProgress(size)
-                    );
-                }
-                if (cancellationToken.IsCancellationRequested)
-                    Debug.WriteLine("{0} task canceled".AsFormat(prefix));
-                else if (progress.DownloadedSize == progress.TotalSize)
-                    Debug.WriteLine("{0} task completed".AsFormat(prefix));
-                else
-                {
-                    Debug.WriteLine("{0} task uncompleted".AsFormat(prefix));
-                    throw new Exception("{0} task uncompleted".AsFormat(prefix));
+                    using (var istream = await target.GetRangedStreamAsync(task.Begin, task.End))
+                    {
+                        using (var ostream = new FileStream(file.Path, FileMode.Open, FileAccess.Write, FileShare.Write))
+                        {
+                            ostream.Seek(task.Begin, SeekOrigin.Begin);
+                            await istream.CopyToAsync(
+                                ostream,
+                                bufferProvider,
+                                cancellationToken,
+                                size => progress.Increase(size)
+                            );
+                        }
+                    }
+
+                    if (cancellationToken.IsCancellationRequested)
+                        Debug.WriteLine("{0} task canceled".AsFormat(prefix));
+                    else if (progress.DownloadedSize == progress.TotalSize)
+                        Debug.WriteLine("{0} task completed".AsFormat(prefix));
+                    else
+                    {
+                        Debug.WriteLine("{0} task uncompleted".AsFormat(prefix));
+                        throw new Exception("{0} task uncompleted".AsFormat(prefix));
+                    }
                 }
             }
         }
 
         public byte[] ToPersistentByteArray()
         {
-            var progress = (InnerRangableProgress)Progress;
+            var progress = (CompositeProgress)Progress;
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     TaskKey = DownloadTask.Key,
                     TotalSize = progress.TotalSize,
                     CacheFileToken = cacheFileToken,
-                    CoveredRanges = progress.CoveredRanges.ToArray()
+                    CoveredRanges = progress.GetCoveredRanges().ToArray()
                 }
             ));
         }
@@ -277,14 +278,14 @@ namespace TX.Core.Downloaders
         {
             var checkPoint = JsonConvert.DeserializeObject<InnerCheckPoint>(
                 Encoding.ASCII.GetString(checkPointByteArray));
-            var progress = (InnerRangableProgress) Progress;
+            var progress = (CompositeProgress) Progress;
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey))
                 .IsEqualTo(DownloadTask.Key);
             Ensure.That(checkPoint.TotalSize, nameof(checkPoint.TotalSize))
                 .Is(((HttpRangableTarget)DownloadTask.Target).DataLength);
             
             cacheFileToken = checkPoint.CacheFileToken;
-            progress.Initialize(checkPoint.CoveredRanges);
+            progress.Initialize(checkPoint.TotalSize, checkPoint.CoveredRanges);
         }
 
         private class InnerCheckPoint
@@ -292,111 +293,7 @@ namespace TX.Core.Downloaders
             public string TaskKey;
             public long TotalSize;
             public string CacheFileToken;
-            public Range<long>[] CoveredRanges;
-        }
-
-        private class InnerRangableProgress : 
-            AbstractMeasurableProgress,
-            ICoveredLinq
-        {
-            public InnerRangableProgress(
-                long totalSize)
-            {
-                TotalSize = totalSize;
-            }
-
-            public void Initialize(IEnumerable<Range<long>> covered)
-            {
-                DownloadedSize = covered.Sum(r => r.To - r.From);
-                CoveredLinkedList.Clear();
-                foreach (var r in covered.OrderBy(o => o.From))
-                    CoveredLinkedList.AddLast(r);
-            }
-
-            public IEnumerable<Range<long>> UncoveredRanges
-            {
-                get
-                {
-                    long next = 0;
-                    foreach (var range in CoveredLinkedList)
-                    {
-                        if (next < range.From)
-                            yield return new Range<long>(next, range.From);
-                        next = range.To;
-                    }
-                    if (next < TotalSize)
-                        yield return new Range<long>(next, TotalSize);
-                }
-            }
-
-            public IEnumerable<Range<long>> CoveredRanges => 
-                CoveredLinkedList.Where(r => r.To != r.From);
-
-            public InnerThreadProgress NewThreadProgress(long offset, long totalSize)
-            {
-                lock (LockedObject)
-                {
-                    var target = new Range<long>(offset, offset);
-                    LinkedListNode<Range<long>> node = null;
-                    if (CoveredLinkedList.First == null)
-                        node = CoveredLinkedList.AddFirst(target);
-                    else
-                    {
-                        var f = CoveredLinkedList.First;
-                        while (f.Next != null && f.Next.Value.From < target.From)
-                            f = f.Next;
-                        node = CoveredLinkedList.AddAfter(f, target);
-                    }
-                    var res = new InnerThreadProgress(offset, totalSize, node);
-                    res.ProgressChanged += NodeProgressChanged;
-                    return res;
-                }
-            }
-
-            private void NodeProgressChanged(AbstractProgress sender)
-            {
-                if (sender is InnerThreadProgress prog)
-                {
-                    long oldSize = prog.Node.Value.To - prog.Node.Value.From;
-                    long delta = prog.DownloadedSize - oldSize;
-                    lock (LockedObject) DownloadedSize += delta;
-                    prog.Node.Value = new Range<long>(
-                        prog.Node.Value.From,
-                        prog.Node.Value.From + 
-                        prog.DownloadedSize);
-                }
-            }
-
-            public IEnumerable<KeyValuePair<Range<long>, bool>> GetRangeAndDownloadingStatus()
-                => CoveredRanges.Select(cr => new KeyValuePair<Range<long>, bool>(cr, true))
-                    .Concat(UncoveredRanges.Select(cr => new KeyValuePair<Range<long>, bool>(cr, true)));
-
-            private readonly LinkedList<Range<long>> CoveredLinkedList
-                = new LinkedList<Range<long>>();
-            private readonly object LockedObject = new object();
-        }
-
-        private class InnerThreadProgress : AbstractMeasurableProgress
-        {
-            public InnerThreadProgress(
-                long offset,
-                long totalSize, 
-                LinkedListNode<Range<long>> node)
-            {
-                DownloadedSize = 0;
-                Offset = offset;
-                TotalSize = totalSize;
-                Node = node;
-            }
-
-            public Range<long> TaskRange => new Range<long>(Offset, Offset + TotalSize);
-
-            public void ReportProgress(long size) =>
-                DownloadedSize = Math.Min(size, TotalSize);
-
-            public long Offset { get; }
-
-            public readonly LinkedListNode<Range<long>> Node;
+            public Range[] CoveredRanges;
         }
 
         private CancellationTokenSource cancellationTokenSource = null;

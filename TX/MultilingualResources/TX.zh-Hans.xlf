@@ -67,20 +67,20 @@
           <target state="translated">仍使用试用版本？</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_1.Text" translate="yes" xml:space="preserve">
-          <source>🀄 Simplified Chinese supported.</source>
-          <target state="translated">🀄 简体中文已被重新支持。</target>
+          <source>💎 Improved stability of HTTP basic and parallel downloader.</source>
+          <target state="translated">💎 HTTP 基础和并行下载器稳定性提升。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_2.Text" translate="yes" xml:space="preserve">
-          <source>🎫 Simplified the interaction with the download bar, moved the progress display to detail page.</source>
-          <target state="translated">🎫 简化 Download Bar 的交互逻辑，直接显示控制按钮，进度值已被移到详情页。</target>
+          <source>📃 Display downloading progress in detail (if supported by source) for parallel downloader in detailed task page.</source>
+          <target state="translated">📃 在详情页面中为可分段的下载源显示更详细的下载进程图像。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_3.Text" translate="yes" xml:space="preserve">
-          <source>📚 New implementation of the history page to reduce the cost of the page navigation. Reentering the page will not require reloading the history list now.</source>
-          <target state="translated">📚 新的实现减少了导航开销：重复进入历史记录页面将无需再次加载历史记录列表。</target>
+          <source>🎨 Other UI adjustments.</source>
+          <target state="translated">🎨 其他 UI 调整。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>In this release we bring simplified Chinese translation back, together with some fixes to version 2.0.0.0.</source>
-          <target state="translated">在此版本中，我们重新支持了简体中文，并对版本 2.0.0.0 中的一些问题进行了小规模修复。</target>
+          <source>In this release we improved the stability and enriched the content of the detailed task page.</source>
+          <target state="translated">在此版本中，我们提升了应用程序稳定性并丰富了任务详情页面的细节。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Title.Text" translate="yes" xml:space="preserve">
           <source>Introducing Version</source>
@@ -303,8 +303,12 @@ Create a task for downloading.</source>
           <target state="translated">当前没有任务</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Functionality_4.Text" translate="yes" xml:space="preserve">
-          <source>🚧 Display loading animation when the application starts to prevent user actions from causing errors.</source>
-          <target state="translated">🚧 当应用程序启动时显示加载动画。</target>
+          <source></source>
+          <target state="translated"></target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_Subtitle_Progress.Text" translate="yes" xml:space="preserve">
+          <source>Progress</source>
+          <target state="translated">进程</target>
         </trans-unit>
       </group>
     </body>

@@ -58,16 +58,16 @@
     <value>仍使用试用版本？</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_1.Text" xml:space="preserve">
-    <value>🀄 简体中文已被重新支持。</value>
+    <value>💎 HTTP 基础和并行下载器稳定性提升。</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_2.Text" xml:space="preserve">
-    <value>🎫 简化 Download Bar 的交互逻辑，直接显示控制按钮，进度值已被移到详情页。</value>
+    <value>📃 在详情页面中为可分段的下载源显示更详细的下载进程图像。</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_3.Text" xml:space="preserve">
-    <value>📚 新的实现减少了导航开销：重复进入历史记录页面将无需再次加载历史记录列表。</value>
+    <value>🎨 其他 UI 调整。</value>
   </data>
   <data name="AboutPage_VersionInfo_GuideText.Text" xml:space="preserve">
-    <value>在此版本中，我们重新支持了简体中文，并对版本 2.0.0.0 中的一些问题进行了小规模修复。</value>
+    <value>在此版本中，我们提升了应用程序稳定性并丰富了任务详情页面的细节。</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>版本说明：</value>
@@ -235,6 +235,9 @@
     <value>当前没有任务</value>
   </data>
   <data name="AboutPage_VersionInfo_Functionality_4.Text" xml:space="preserve">
-    <value>🚧 当应用程序启动时显示加载动画。</value>
+    <value></value>
+  </data>
+  <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
+    <value>进程</value>
   </data>
 </root>

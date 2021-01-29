@@ -54,10 +54,9 @@ namespace TX.Core.Downloaders
             this.cacheProvider = cacheProvider;
             this.bufferProvider = bufferProvider;
 
-            Progress = new InnerProgress();
+            Progress = new BaseProgress();
             Speed = SharedSpeedCalculatorFactory.NewSpeedCalculator();
-            Progress.ProgressChanged += (sender) =>
-                Speed.CurrentValue = Progress.DownloadedSize;
+            Progress.ProgressChanged += (sender, arg) => Speed.CurrentValue = Progress.DownloadedSize;
         }
 
         /// <summary>
@@ -71,13 +70,13 @@ namespace TX.Core.Downloaders
             cacheFile = cacheProvider.GetCacheFileByToken(
                 await cacheProvider.NewCacheFileAsync());
             var httpTarget = DownloadTask.Target as HttpTarget;
-            var progress = Progress as InnerProgress;
+            var progress = Progress as BaseProgress;
             // copy data from responsed stream to file stream
             using (var client = new HttpClient())
                 using (var ostream = await cacheFile.OpenStreamForWriteAsync())
                     using (var istream = await client.GetStreamAsync(httpTarget.Uri))
                         await istream.CopyToAsync(ostream, bufferProvider, token, 
-                            (size) => progress.UpdateDownloadedSize(size));
+                            (size) => progress.Increase(size));
             // if canceled, return null
             if (token.IsCancellationRequested) return null;
             // get destination folder
@@ -125,16 +124,10 @@ namespace TX.Core.Downloaders
                 if(cacheFile != null)
                     await cacheFile.DeleteAsync();
                 cacheFile = null;
-                ((InnerProgress)Progress).UpdateDownloadedSize(0);
+                ((BaseProgress)Progress).Reset();
             });
 
         protected override Task DisposeAsync() => CancelAsync();
-
-        private class InnerProgress : AbstractProgress
-        {
-            public void UpdateDownloadedSize(long size)
-                => DownloadedSize = size;
-        }
 
         private Task downloadTask;
         private IStorageFile cacheFile;
