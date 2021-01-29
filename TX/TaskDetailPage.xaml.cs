@@ -73,7 +73,9 @@ namespace TX
             {
                 ipv.VisibleRangeListChanged += BindedVisibleRangeListChanged;
                 SetVisibleRangeListViewItemsSource(ipv);
+                VisibleRangePanel.Visibility = Visibility.Visible;
             }
+            else VisibleRangePanel.Visibility = Visibility.Collapsed;
         }
 
         private void BindedVisibleRangeListChanged(IVisibleProgress sender)
@@ -102,6 +104,7 @@ namespace TX
 
         public void ClearDownloaderBinding()
         {
+            VisibleRangePanel.Visibility = Visibility.Collapsed;
             if (Downloader.Progress is IVisibleProgress ipv)
                 ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
             SetVisibleRangeListViewItemsSource(null);

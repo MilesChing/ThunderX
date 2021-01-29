@@ -105,7 +105,7 @@
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
-                <Grid>
+                <Grid Margin="0 0 0 16">
                     <StackPanel>
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock"
@@ -123,8 +123,8 @@
                         </TextBlock>
                         <TextBlock x:Name="SizeTextBlock" FontWeight="Bold"/>
                         <TextBlock>
-                            <Run x:Name="ErrorNumberTextBlock" FontWeight="Bold"/> 
-                            <Run x:Uid="TaskDetailPage_ErrorText"/>,
+                            <Run x:Name="ErrorNumberTextBlock" FontWeight="Bold" Foreground="{ThemeResource WarningYellow}"/> 
+                            <Run x:Uid="TaskDetailPage_ErrorText" Foreground="{ThemeResource WarningYellow}"/>,
                             <Run x:Name="RetryNumberTextBlock" FontWeight="Bold"/>
                             <Run x:Uid="TaskDetailPage_RetryText"/>
                         </TextBlock>
@@ -132,32 +132,33 @@
                     <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
                                HorizontalAlignment="Right" VerticalAlignment="Top"/>
                 </Grid>
-                <ListView x:Name="VisibleRangeListView" SelectionMode="None"
-                          Margin="0 12 0 0" HorizontalAlignment="Left">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="local:TaskDetailVisibleRangeViewModel">
-                            <ProgressBar Width="{Binding Total}" Value="{Binding Progress}"
-                                         CornerRadius="6" Height="12" Margin="0 0 2 8"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection/>
-                    </ListView.ItemContainerTransitions>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Padding" Value="0 0 0 0"/>
-                            <Setter Property="MinHeight" Value="0"/>
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="MinWidth" Value="0"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <controls:WrapStackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                </ListView>
-                
+                <StackPanel x:Name="VisibleRangePanel">
+                    <TextBlock x:Uid="TaskDetailPage_Subtitle_Progress" Margin="0 0 0 12" Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                    <ListView x:Name="VisibleRangeListView" SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:TaskDetailVisibleRangeViewModel">
+                                <ProgressBar Width="{Binding Total}" Value="{Binding Progress}"
+                                             CornerRadius="6" Height="12" Margin="0 0 2 8"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection/>
+                        </ListView.ItemContainerTransitions>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0 0 0 0"/>
+                                <Setter Property="MinHeight" Value="0"/>
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="MinWidth" Value="0"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls:WrapStackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
+                </StackPanel>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}"
                         x:Name="ErrorStackPanel" Visibility="Collapsed">

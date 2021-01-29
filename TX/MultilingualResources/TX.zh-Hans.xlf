@@ -306,6 +306,10 @@ Create a task for downloading.</source>
           <source>🚧 Display loading animation when the application starts to prevent user actions from causing errors.</source>
           <target state="translated">🚧 当应用程序启动时显示加载动画。</target>
         </trans-unit>
+        <trans-unit id="TaskDetailPage_Subtitle_Progress.Text" translate="yes" xml:space="preserve">
+          <source>Progress</source>
+          <target state="translated">进程</target>
+        </trans-unit>
       </group>
     </body>
   </file>
