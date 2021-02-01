@@ -34,13 +34,12 @@
 
                 <StackPanel x:Name="StreamSelectionStackPanel" Visibility="Collapsed">
                     <!--Streams-->
-                    <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 8"
+                    <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 12"
                                Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                    <ComboBox x:Name="StreamSelectionComboBox" MinWidth="200" 
-                              Margin="0 0 0 20" PlaceholderText="Select to continue"
-                              SelectionChanged="StreamSelectionComboBox_SelectionChanged"/>
+                    <ListView x:Name="StreamSelectionListView" MinWidth="200" Margin="0 0 0 20"
+                              MaxHeight="200" SelectionChanged="StreamSelectionListView_SelectionChanged"
+                              Background="{ThemeResource SystemChromeMediumColor}" CornerRadius="4"/>
                 </StackPanel>
-
                 <!--File Name-->
                 <TextBlock x:Uid="NewTaskPage_FileName_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>

@@ -114,9 +114,9 @@ namespace TX
             lock (userOperationStatusLockObject) UriChanged = true;
         }
 
-        private void StreamSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StreamSelectionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            lock (userOperationStatusLockObject) 
+            lock (userOperationStatusLockObject)
                 ComboBoxSelectionChanged = true;
         }
 
@@ -127,7 +127,9 @@ namespace TX
 
         private async void UrlAnalyzer(CancellationToken token)
         {
-            Task<AbstractTarget>[] targetEntries = Array.Empty<Task<AbstractTarget>>();
+            KeyValuePair<string, string>[] optionalKeyValues = 
+                Array.Empty<KeyValuePair<string, string>>();
+            IMultiTargetsExtracted multiTargetsExtractedSource = null;
             while (!token.IsCancellationRequested)
             {
                 bool operated = false;
@@ -151,9 +153,9 @@ namespace TX
                 {
                     if (selectionOperated)
                     {
-                        int nowSelection = -1;
+                        ItemIndexRange[] selectedRanges = null;
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                            nowSelection = StreamSelectionComboBox.SelectedIndex;
+                            selectedRanges = StreamSelectionListView.SelectedRanges.ToArray();
                             UriAnalyzingProgressBar.IsIndeterminate = true;
                             SuggestedFilenameTextBox.Text = UnknownText;
                             AcceptButton.IsEnabled = false;
@@ -162,14 +164,16 @@ namespace TX
                         try
                         {
                             // check if selection legal
-                            Ensure.That(nowSelection).IsInRange(0, targetEntries.Length - 1);
-
+                            Ensure.That(selectedRanges).IsNotNull();
+                            Ensure.That(multiTargetsExtractedSource).IsNotNull();
                             // handle new selection
-                            targetEntries[nowSelection].Start();
-                            await targetEntries[nowSelection];
+                            var keysList = new List<string>();
+                            foreach (var range in selectedRanges)
+                                for (int i = range.FirstIndex; i <= range.LastIndex; ++i)
+                                    keysList.Add(optionalKeyValues[i].Key);
                             Ensure.That(UserOperated).IsFalse();
-
-                            var target = targetEntries[nowSelection].Result;
+                            var target = await multiTargetsExtractedSource.GetTargetAsync(keysList);
+                            Ensure.That(UserOperated).IsFalse();
                             FinalTarget = target;
                             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                                 SuggestedFilenameTextBox.Text = FinalTarget.SuggestedName;
@@ -200,7 +204,8 @@ namespace TX
                 else
                 {
                     string nowUri = string.Empty;
-                    targetEntries = Array.Empty<Task<AbstractTarget>>();
+                    optionalKeyValues = Array.Empty<KeyValuePair<string, string>>();
+                    multiTargetsExtractedSource = null;
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                         nowUri = MainURITextBox.Text;
@@ -224,12 +229,16 @@ namespace TX
                             }
                             else if (source is IMultiTargetsExtracted multiSubsourcesExtracted)
                             {
-                                var subtargets = await multiSubsourcesExtracted.GetTargetsAsync();
+                                multiTargetsExtractedSource = multiSubsourcesExtracted;
+                                var infos = await multiSubsourcesExtracted.GetTargetInfosAsync();
                                 Ensure.That(UserOperated).IsFalse();
-                                targetEntries = subtargets.Select(kvp => kvp.Value).ToArray();
+                                optionalKeyValues = infos.ToArray();
                                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                                    StreamSelectionComboBox.ItemsSource =
-                                        subtargets.Select(kvp => kvp.Key).ToArray();
+                                    StreamSelectionListView.SelectionMode =
+                                        multiSubsourcesExtracted.IsMultiSelectionSupported ?
+                                        ListViewSelectionMode.Multiple : ListViewSelectionMode.Single;
+                                    StreamSelectionListView.ItemsSource = infos.Select(
+                                        kvp => kvp.Value).ToArray();
                                     StreamSelectionStackPanel.Visibility = Visibility.Visible;
                                 });
                                 break;
