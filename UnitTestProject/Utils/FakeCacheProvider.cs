@@ -11,7 +11,7 @@ namespace UnitTestProject.Utils
     /// <summary>
     /// FakeCacheProvider provides cache files created in LocalCacheFolder.
     /// </summary>
-    class FakeCacheProvider : ICacheFileProvider
+    class FakeCacheProvider : ICacheStorageProvider
     {
         public IStorageFile GetCacheFileByToken(string token)
         {

@@ -14,9 +14,9 @@ namespace TX.Core.Models.Contexts
         public string TaskKey { get; private set; }
 
         /// <summary>
-        /// Path of the destination file.
+        /// Path of the destination file or folder.
         /// </summary>
-        public string DestinationFilePath { get; private set; }
+        public string DestinationPath { get; private set; }
 
         /// <summary>
         /// Time of the creation of current history.
@@ -28,12 +28,12 @@ namespace TX.Core.Models.Contexts
         /// Initialize a DownloadHistory.
         /// </summary>
         /// <param name="taskKey">Key of the task of the history.</param>
-        /// <param name="destinationFilePath">Path of the destination file.</param>
+        /// <param name="destinationPath">Path of the destination file or folder.</param>
         /// <param name="creationTime">Time of the creation of current history.</param>
-        public DownloadHistory(string taskKey, string destinationFilePath, DateTime creationTime)
+        public DownloadHistory(string taskKey, string destinationPath, DateTime creationTime)
         {
             this.TaskKey = taskKey;
-            this.DestinationFilePath = destinationFilePath;
+            this.DestinationPath = destinationPath;
             this.CreationTime = creationTime;
         }
     }

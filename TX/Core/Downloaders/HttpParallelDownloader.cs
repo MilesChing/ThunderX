@@ -41,7 +41,7 @@ namespace TX.Core.Downloaders
         public HttpParallelDownloader(
             DownloadTask task,
             IFolderProvider folderProvider,
-            ICacheFileProvider cacheProvider,
+            ICacheStorageProvider cacheProvider,
             IBufferProvider bufferProvider,
             byte[] checkPoint = null,
             int threadNum = 8,
@@ -301,7 +301,7 @@ namespace TX.Core.Downloaders
         private string cacheFileToken = string.Empty;
         private IStorageFile cacheFile = null;
         private readonly IFolderProvider folderProvider;
-        private readonly ICacheFileProvider cacheProvider;
+        private readonly ICacheStorageProvider cacheProvider;
         private readonly IBufferProvider bufferProvider;
         private readonly int threadNum;
         private readonly long threadSegmentSize;

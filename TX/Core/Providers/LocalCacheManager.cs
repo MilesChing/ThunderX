@@ -18,24 +18,24 @@ namespace TX.Core.Providers
     {
         public void Initialize(byte[] persistentData)
         {
-            cacheFiles.Clear();
+            cacheItems.Clear();
             if (persistentData != null)
             {
                 string dataString = Encoding.ASCII.GetString(persistentData);
                 var cacheArr = JsonConvert.DeserializeObject<
-                    KeyValuePair<string, CacheFileInfo>[]>(dataString);
-                foreach (var kvp in cacheArr) cacheFiles.Add(kvp.Key, kvp.Value);
+                    KeyValuePair<string, CacheItemInfo>[]>(dataString);
+                foreach (var kvp in cacheArr) cacheItems.Add(kvp.Key, kvp.Value);
             }
         }
 
-        public ICacheFileProvider GetCacheProviderForTask(string taskKey)
+        public ICacheStorageProvider GetCacheProviderForTask(string taskKey)
             => new InnerProvider(this, taskKey);
 
         public byte[] ToPersistentByteArray()
         {
-            lock (cacheFiles)
+            lock (cacheItems)
             {
-                string dataString = JsonConvert.SerializeObject(cacheFiles.ToArray());
+                string dataString = JsonConvert.SerializeObject(cacheItems.ToArray());
                 return Encoding.ASCII.GetBytes(dataString);
             }
         }
@@ -47,32 +47,33 @@ namespace TX.Core.Providers
                 Debug.WriteLine("[{0}] cleaning cache folder".AsFormat(
                     nameof(LocalCacheManager)));
                 var cacheFolder = ApplicationData.Current.LocalCacheFolder;
-                var files = await cacheFolder.GetFilesAsync();
-                List<StorageFile> unused_files = null;
+                var items = await cacheFolder.GetItemsAsync();
+                List<IStorageItem> unused_items = null;
 
-                lock (cacheFiles)
+                lock (cacheItems)
                 {
-                    var unused_records = cacheFiles.Where(
+                    var unused_records = cacheItems.Where(
                         kvp =>
-                            (!files.Any(file => file.Path.Equals(kvp.Value.FilePath))) ||
+                            (!items.Any(item => item.Path.Equals(kvp.Value.FilePath))) ||
                             (!isTaskActive(kvp.Value.TaskKey))
                     ).ToList();
 
                     foreach (var record in unused_records)
-                        cacheFiles.Remove(record.Key);
+                        cacheItems.Remove(record.Key);
 
-                    unused_files = files.Where(
-                        file => !cacheFiles.Any(
-                            cacheFile => cacheFile.Value.FilePath.Equals(file.Path)
-                        )
-                    ).ToList();
+                    unused_items = items.Where(
+                        item => !cacheItems.Any(cacheItem => 
+                            cacheItem.Value.FilePath.Equals(item.Path))).ToList();
                 }
 
-                foreach (var file in unused_files)
+                foreach (var item in unused_items)
                 {
-                    Debug.WriteLine("[{0}] remove file <{1}>".AsFormat(
-                        nameof(LocalCacheManager), file.Path));
-                    await file.DeleteAsync();
+                    try
+                    {
+                        await item.DeleteAsync();
+                        Debug.WriteLine($"[{nameof(LocalCacheManager)}] remove storage item <{item.Path}>");
+                    }
+                    catch (Exception) { }
                 }
             }
             catch (Exception e)
@@ -82,26 +83,39 @@ namespace TX.Core.Providers
             }
         }
 
-        private async Task<string> NewCacheFileForTaskAsync(string taskKey)
+        private async Task<string> NewCacheStorageForTaskAsync(
+            string taskKey, bool isFolder)
         {
             try
             {
                 string ext = RandomUtils.String(4);
-                var fileName = "{0}-{1}".AsFormat(taskKey, ext);
-                var file = await ApplicationData.Current.LocalCacheFolder.
-                    CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
-                fileName = file.Name;
+                var randomName = "{0}-{1}".AsFormat(taskKey, ext);
+                string path = string.Empty;
+                if (isFolder)
+                {
+                    var folder = await ApplicationData.Current
+                        .LocalCacheFolder.CreateFolderAsync(
+                        randomName, CreationCollisionOption.GenerateUniqueName);
+                    path = folder.Path;
+                }
+                else
+                {
+                    var file = await ApplicationData.Current
+                        .LocalCacheFolder.CreateFileAsync(
+                        randomName, CreationCollisionOption.GenerateUniqueName);
+                    path = file.Path;
+                }
 
-                lock (cacheFiles)
+                lock (cacheItems)
                 {
                     string token = RandomUtils.String(16);
-                    while (cacheFiles.ContainsKey(token)) 
+                    while (cacheItems.ContainsKey(token)) 
                         token = RandomUtils.String(16);
-                    cacheFiles[token] = new CacheFileInfo()
+                    cacheItems[token] = new CacheItemInfo()
                     {
                         Token = token,
                         TaskKey = taskKey,
-                        FilePath = file.Path,
+                        FilePath = path,
                     };
                     return token;
                 }
@@ -115,11 +129,11 @@ namespace TX.Core.Providers
         private IStorageFile GetCacheFileForTask(
             string token, string taskKey)
         {
-            lock (cacheFiles)
+            lock (cacheItems)
             {
                 try
                 {
-                    if (cacheFiles.TryGetValue(token, out CacheFileInfo info))
+                    if (cacheItems.TryGetValue(token, out CacheItemInfo info))
                     {
                         if (info.TaskKey != taskKey)
                             return null;
@@ -136,7 +150,31 @@ namespace TX.Core.Providers
             }
         }
 
-        private class InnerProvider : ICacheFileProvider
+        private IStorageFolder GetCacheFolderForTask(
+            string token, string taskKey)
+        {
+            lock (cacheItems)
+            {
+                try
+                {
+                    if (cacheItems.TryGetValue(token, out CacheItemInfo info))
+                    {
+                        if (info.TaskKey != taskKey)
+                            return null;
+                        var linqTask = StorageFolder.GetFolderFromPathAsync(info.FilePath).AsTask();
+                        linqTask.Wait();
+                        return linqTask.Result;
+                    }
+                    else return null;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+
+        private class InnerProvider : ICacheStorageProvider
         {
             public InnerProvider(LocalCacheManager manager, string key)
             {
@@ -147,21 +185,27 @@ namespace TX.Core.Providers
             public IStorageFile GetCacheFileByToken(string token)
                 => manager.GetCacheFileForTask(token, key);
 
+            public IStorageFolder GetCacheFolderByToken(string token)
+                => manager.GetCacheFolderForTask(token, key);
+
             public Task<string> NewCacheFileAsync()
-                => manager.NewCacheFileForTaskAsync(key);
+                => manager.NewCacheStorageForTaskAsync(key, false);
+
+            public Task<string> NewCacheFolderAsync()
+                => manager.NewCacheStorageForTaskAsync(key, true);
 
             private readonly LocalCacheManager manager;
             private readonly string key;
         }
 
-        private class CacheFileInfo
+        private class CacheItemInfo
         {
             public string Token;
             public string TaskKey;
             public string FilePath;
         }
 
-        private readonly Dictionary<string, CacheFileInfo> cacheFiles = 
-            new Dictionary<string, CacheFileInfo>();
+        private readonly Dictionary<string, CacheItemInfo> cacheItems = 
+            new Dictionary<string, CacheItemInfo>();
     }
 }

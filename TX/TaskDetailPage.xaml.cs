@@ -41,8 +41,10 @@ namespace TX
             if (downloader == null) return;
 
             TaskNameTextBlock.Text = downloader.DownloadTask.DestinationFileName;
-            if (downloader.DownloadTask.Target is HttpTarget target)
-                TaskHyperlink.Text = target.Uri.ToString();
+            if (downloader.DownloadTask.Target is HttpTarget httpTarget)
+                TaskHyperlink.Text = httpTarget.Uri.ToString();
+            else if (downloader.DownloadTask.Target is TorrentTarget torrentTarget)
+                TaskHyperlink.Text = torrentTarget.TorrentFileUri.ToString();
 
             DisposeButton.IsEnabled = true;
             Downloader.StatusChanged += StatusChanged;

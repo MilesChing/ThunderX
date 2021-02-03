@@ -10,9 +10,12 @@ using System.Threading.Tasks;
 using TX.Core.Models.Sources;
 using TX.Core.Models.Targets;
 using TX.Core.Providers;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -120,6 +123,25 @@ namespace TX
                 ComboBoxSelectionChanged = true;
         }
 
+        private async void ClipboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            DataPackageView con = Clipboard.GetContent();
+            if (con.Contains(StandardDataFormats.Text))
+                MainURITextBox.Text = await con.GetTextAsync();
+        }
+
+        private async void FileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var filePicker = new FileOpenPicker();
+            filePicker.FileTypeFilter.Add("*");
+            var file = await filePicker.PickSingleFileAsync();
+            if (file != null)
+            {
+                StorageApplicationPermissions.FutureAccessList.Add(file);
+                MainURITextBox.Text = file.Path;
+            }
+        }
+
         private readonly object userOperationStatusLockObject = new object();
         private bool ComboBoxSelectionChanged = false;
         private bool UriChanged = false;
@@ -165,6 +187,7 @@ namespace TX
                         {
                             // check if selection legal
                             Ensure.That(selectedRanges).IsNotNull();
+                            Ensure.That(selectedRanges.Length).IsGt(0);
                             Ensure.That(multiTargetsExtractedSource).IsNotNull();
                             // handle new selection
                             var keysList = new List<string>();

@@ -19,6 +19,10 @@ using Windows.System;
 using TX.Utils;
 using Windows.ApplicationModel.Core;
 using Windows.Services.Store;
+using MonoTorrent.Client;
+using Windows.Storage.Pickers;
+using Windows.Storage.AccessCache;
+using MonoTorrent;
 
 namespace TX
 {
@@ -48,19 +52,21 @@ namespace TX
 
         private async Task InitializeAsync()
         {
+            var storeContext = StoreContext.GetDefault();
+            AppLicense = await storeContext.GetAppLicenseAsync();
+
+            byte[] buffer = null;
             try
             {
-                var storeContext = StoreContext.GetDefault();
-                AppLicense = await storeContext.GetAppLicenseAsync();
-
                 var cacheFile = await GetCacheFileAsync();
-                var buffer = await FileIO.ReadBufferAsync(cacheFile);
-                Core.Initialize(buffer.ToArray());
+                buffer = (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Cache file reading failed: " + e.Message);
             }
+
+            await Core.InitializeAsync(buffer);
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -107,36 +113,20 @@ namespace TX
 
         protected override async void OnActivated(IActivatedEventArgs args)
         {
-            base.OnActivated(args);
             if (args.Kind == ActivationKind.ToastNotification)
             {
                 string message = (args as ToastNotificationActivatedEventArgs).Argument;
                 string[] arguments = message.Split('$');
-                if (arguments.Length == 2 && arguments[0] == "file")
+                try
                 {
-                    StorageFile target;
-                    try { target = await StorageFile.GetFileFromPathAsync(arguments[1]); }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-                    if (target != null) await Launcher.LaunchFileAsync(target);
+                    await Launcher.LaunchUriAsync(new Uri(arguments[1]));
                 }
-                else if (arguments.Length == 2 && arguments[0] == "folder")
-                {
-                    StorageFolder target;
-                    try { target = await StorageFolder.GetFolderFromPathAsync(arguments[1]); }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-                    if (target != null) 
-                        await Launcher.LaunchFolderAsync(target);
-                }
+                catch (Exception) { }
 
                 if (args.PreviousExecutionState != ApplicationExecutionState.Running)
                     Current.Exit();
             }
+            base.OnActivated(args);
         }
 
         /// <summary>
