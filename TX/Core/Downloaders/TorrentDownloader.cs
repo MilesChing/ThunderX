@@ -27,22 +27,54 @@ namespace TX.Core.Downloaders
     /// </summary>
     public class TorrentDownloader : AbstractDownloader, IPersistable
     {
+        /// <summary>
+        /// Construct a TorrentDownloader.
+        /// </summary>
+        /// <param name="task">Download task, must with HttpRangedTarget.</param>
+        /// <param name="engine">Client engine of MonoTorrent which provides torrent and magnet downloading.</param>
+        /// <param name="folderProvider">Folder provider must not be null.</param>
+        /// <param name="cacheProvider">Cache provider must not be null.</param>
+        /// <param name="checkPoint">Set the downloader to start at given checkPoint.</param>
+        /// <param name="maximumConnections">
+        /// The maximum number of concurrent open connections for this torrent. 
+        /// Defaults to 60.</param>
+        /// <param name="maximumDownloadSpeed">
+        /// The maximum download speed, in bytes per second, for this torrent. 
+        /// A value of 0 means unlimited. Defaults to 0.</param>
+        /// <param name="maximumUploadSpeed">
+        /// The maximum upload speed, in bytes per second, for this torrent. 
+        /// A value of 0 means unlimited. defaults to 0.</param>
+        /// <param name="uploadSlots">
+        /// The number of peers which can be uploaded to concurrently for this torrent. 
+        /// A value of 0 means unlimited. defaults to 8.</param>
         public TorrentDownloader(
             DownloadTask task,
             ClientEngine engine,
             IFolderProvider folderProvider,
             ICacheStorageProvider cacheProvider,
-            byte[] checkPoint = null
+            byte[] checkPoint = null,
+            int maximumConnections = 60,
+            int maximumDownloadSpeed = 0,
+            int maximumUploadSpeed = 0,
+            int uploadSlots = 8
         ) : base (task)
         {
             Ensure.That(task.Target is TorrentTarget || task.Target is MagnetTarget).IsTrue();
             Ensure.That(cacheProvider, nameof(cacheFolder)).IsNotNull();
             Ensure.That(folderProvider, nameof(folderProvider)).IsNotNull();
             Ensure.That(engine, nameof(engine)).IsNotNull();
+            Ensure.That(maximumConnections).IsGt(0);
+            Ensure.That(maximumDownloadSpeed).IsGte(0);
+            Ensure.That(maximumUploadSpeed).IsGte(0);
+            Ensure.That(uploadSlots).IsGt(0);
 
             this.engine = engine;
             this.cacheProvider = cacheProvider;
             this.folderProvider = folderProvider;
+            this.maximumConnections = maximumConnections;
+            this.maximumDownloadSpeed = maximumDownloadSpeed;
+            this.maximumUploadSpeed = maximumUploadSpeed;
+            this.uploadSlots = uploadSlots;
 
             long? totalSize = 0;
             if (task.Target is TorrentTarget tt)
@@ -118,12 +150,22 @@ namespace TX.Core.Downloaders
 
             if (manager == null)
             {
+                TorrentSettings settings = new TorrentSettings()
+                {
+                    MaximumConnections = maximumConnections,
+                    MaximumDownloadSpeed = maximumDownloadSpeed,
+                    MaximumUploadSpeed = maximumUploadSpeed,
+                    UploadSlots = uploadSlots,
+                };
                 if (DownloadTask.Target is TorrentTarget tt)
-                    manager = new TorrentManager(tt.Torrent, cacheFolder.Path);
+                    manager = new TorrentManager(
+                        tt.Torrent, 
+                        cacheFolder.Path,
+                        settings);
                 if (DownloadTask.Target is MagnetTarget mt)
                     manager = new TorrentManager(mt.Link,
                         cacheFolder.Path,
-                        new TorrentSettings(), 
+                        settings, 
                         // using local cache folder to save torrent
                         ApplicationData.Current.LocalCacheFolder.Path);
                 if (fastResume != null) manager.LoadFastResume(fastResume);
@@ -293,6 +335,10 @@ namespace TX.Core.Downloaders
         private CancellationTokenSource cancellationTokenSource = null;
         private Task downloadTask = null;
 
+        private readonly int maximumConnections = 60;
+        private readonly int maximumDownloadSpeed = 0;
+        private readonly int maximumUploadSpeed = 0;
+        private readonly int uploadSlots = 8;
         private static TimeSpan ProgressUpdateInterval = TimeSpan.FromSeconds(0.2);
     }
 }
