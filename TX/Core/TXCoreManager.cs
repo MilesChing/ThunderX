@@ -196,6 +196,8 @@ namespace TX.Core
         {
             Debug.WriteLine("[{0}] disposing".AsFormat(nameof(TXCoreManager)));
 
+            CleanTasks();
+
             Task.Run(async () => 
                 await coreCacheManager.CleanCacheFolderAsync(
                     taskKey =>
@@ -207,6 +209,15 @@ namespace TX.Core
                 downloader.Cancel();
 
             Debug.WriteLine("[{0}] disposed".AsFormat(nameof(TXCoreManager)));
+        }
+
+        private void CleanTasks()
+        {
+            var toBeDeleted = tasks.Select(task => task.Key).Where(
+                key => downloaders.Any(downloader =>
+                    downloader.DownloadTask.Key.Equals(key))).ToArray();
+            foreach (var key in toBeDeleted)
+                tasks.Remove(key);
         }
 
         private async Task InitializeDhtEngineAsync()
