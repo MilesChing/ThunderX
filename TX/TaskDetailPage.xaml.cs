@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using TX.Controls;
@@ -50,11 +51,11 @@ namespace TX
             Downloader.StatusChanged += StatusChanged;
             StatusChanged(downloader, downloader.Status);
 
-            Downloader.Speed.Updated += Speed_Updated;
-            Speed_Updated(downloader.Speed);
-
             Downloader.Progress.ProgressChanged += Progress_Changed;
             Progress_Changed(downloader.Progress, null);
+
+            Downloader.Speed.Updated += Speed_Updated;
+            Speed_Updated(downloader.Speed);
 
             var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
             BasicLabelCollection.Add(new TaskDetailPageLabel(
@@ -124,10 +125,9 @@ namespace TX
 
             ProgressTextBlock.Text = string.Empty;
             DownloadTimeTextBlock.Text = string.Empty;
-            SpeedTextBlock.Text = string.Empty;
-            SizeTextBlock.Text = string.Empty;
 
             BasicLabelCollection.Clear();
+            DynamicLabelCollection.Clear();
             Downloader = null;
         }
 
@@ -138,34 +138,40 @@ namespace TX
                 {
                     if (sender is IMeasurableProgress mprogress)
                     {
-                        SizeTextBlock.Text = "{0} / {1}".AsFormat(
-                            mprogress.DownloadedSize.SizedString(),
-                            mprogress.TotalSize.SizedString());
+                        UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                            ProgressText, 
+                            $"{mprogress.DownloadedSize.SizedString()} / " +
+                            $"{mprogress.TotalSize.SizedString()}"));
                         ProgressTextBlock.Text = mprogress.Progress.ToString("0%");
                     }
-                    else SizeTextBlock.Text = 
-                        sender.DownloadedSize.SizedString();
+                    else
+                        UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                            ProgressText, sender.DownloadedSize.SizedString()));
                 });
         }
 
         private async void Speed_Updated(SpeedCalculator sender)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-            () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 DownloadTimeTextBlock.Text = sender.RunningTime.ToString(@"hh\:mm\:ss");
-                SpeedTextBlock.Text = ((long)sender.Speed).SizedString();
+                UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                    SpeedText, $"{((long)sender.Speed).SizedString()} / s"));
                 if (Downloader != null)
+                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                        $"{ErrorsText} / {RetriesText}", $"{Downloader.Errors.Count} / {Downloader.Retries}"));
+                if (Downloader is TorrentDownloader td)
                 {
-                    ErrorNumberTextBlock.Text = Downloader.Errors.Count.ToString();
-                    RetryNumberTextBlock.Text = Downloader.Retries.ToString();
+                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                        OpenConnectionsText, td.OpenConnections.ToString()));
+                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
+                        AvailablePeersText, $"{td.Peers?.Available ?? 0}"));
                 }
             });
         }
 
         private async void StatusChanged(AbstractDownloader sender, DownloaderStatus status)
-            => await Dispatcher.RunAsync(
-                Windows.UI.Core.CoreDispatcherPriority.Normal,
+            => await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () => {
                     VisualStateManager.GoToState(this, status.ToString(), true);
                     StartButton.IsEnabled = sender.CanStart;
@@ -192,7 +198,16 @@ namespace TX
                     }
                 });
 
+        private void UpdateIntoDynamicLabelCollection(TaskDetailPageLabel label)
+        {
+            var res = DynamicLabelCollection.FirstOrDefault(lab => lab.Key.Equals(label.Key));
+            if (res == null) DynamicLabelCollection.Add(label);
+            else res.Value = label.Value;
+        }
+
         private readonly ObservableCollection<TaskDetailPageLabel> BasicLabelCollection
+            = new ObservableCollection<TaskDetailPageLabel>();
+        private readonly ObservableCollection<TaskDetailPageLabel> DynamicLabelCollection
             = new ObservableCollection<TaskDetailPageLabel>();
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -225,9 +240,22 @@ namespace TX
             DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
         }
+
+        private static readonly string ProgressText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Progress");
+        private static readonly string SpeedText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Speed");
+        private static readonly string ErrorsText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Errors");
+        private static readonly string RetriesText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Retries");
+        private static readonly string OpenConnectionsText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("OpenConnections");
+        private static readonly string AvailablePeersText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("AvailablePeers");
     }
 
-    class TaskDetailPageLabel
+    class TaskDetailPageLabel : INotifyPropertyChanged
     {
         public TaskDetailPageLabel(string key, string value)
         {
@@ -235,9 +263,32 @@ namespace TX
             Value = value;
         }
 
-        public readonly string Key;
+        public string Key
+        {
+            get => key;
+            set
+            {
+                key = value;
+                OnPropertyChanged();
+            }
+        }
+        private string key;
 
-        public readonly string Value;
+        public string Value 
+        {
+            get => val;
+            set
+            {
+                val = value;
+                OnPropertyChanged();
+            }
+        }
+        private string val;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
     }
 
     class TaskDetailVisibleRangeViewModel : IVisibleRange, IDisposable

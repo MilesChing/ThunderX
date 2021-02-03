@@ -188,15 +188,6 @@
   <data name="TargetType" xml:space="preserve">
     <value>源类型</value>
   </data>
-  <data name="TaskDetailPage_ErrorText.Text" xml:space="preserve">
-    <value>错误</value>
-  </data>
-  <data name="TaskDetailPage_RetryText.Text" xml:space="preserve">
-    <value>重试</value>
-  </data>
-  <data name="TaskDetailPage_SpeedText.Text" xml:space="preserve">
-    <value>速度</value>
-  </data>
   <data name="TaskListPage_SortDropDownButton.Content" xml:space="preserve">
     <value>排序</value>
   </data>
@@ -239,5 +230,23 @@
   </data>
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>进程</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>错误数</value>
+  </data>
+  <data name="Retries" xml:space="preserve">
+    <value>重试数</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>下载速度</value>
+  </data>
+  <data name="AvailablePeers" xml:space="preserve">
+    <value>可用 Peers</value>
+  </data>
+  <data name="OpenConnections" xml:space="preserve">
+    <value>开启连接数</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>进度</value>
   </data>
 </root>

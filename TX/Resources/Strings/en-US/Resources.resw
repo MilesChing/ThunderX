@@ -180,6 +180,9 @@
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
   </data>
+  <data name="AvailablePeers" xml:space="preserve">
+    <value>Available Peers</value>
+  </data>
   <data name="CreationTime" xml:space="preserve">
     <value>Creation Time</value>
   </data>
@@ -191,6 +194,9 @@
   </data>
   <data name="DownloaderType" xml:space="preserve">
     <value>Downloader Type</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
   </data>
   <data name="HistoryListPage_EmptyView_GuideText.Text" xml:space="preserve">
     <value>Right click to open previous downloaded or remove histories.</value>
@@ -250,6 +256,15 @@
   <data name="NewTaskPage_URL_Title.Text" xml:space="preserve">
     <value>URL</value>
   </data>
+  <data name="OpenConnections" xml:space="preserve">
+    <value>Open Connections</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="Retries" xml:space="preserve">
+    <value>Retries</value>
+  </data>
   <data name="SetPage_Appearance_DarkModeToggleSwitch.Header" xml:space="preserve">
     <value>Dark Mode</value>
   </data>
@@ -301,17 +316,11 @@
   <data name="SetPage_TrailMessage.Text" xml:space="preserve">
     <value>Some features are not unsupported in trial version. Obtain full version to support us and unlock more functionalities!</value>
   </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
   <data name="TargetType" xml:space="preserve">
     <value>Target Type</value>
-  </data>
-  <data name="TaskDetailPage_ErrorText.Text" xml:space="preserve">
-    <value>Errors</value>
-  </data>
-  <data name="TaskDetailPage_RetryText.Text" xml:space="preserve">
-    <value>Retries</value>
-  </data>
-  <data name="TaskDetailPage_SpeedText.Text" xml:space="preserve">
-    <value>Speed</value>
   </data>
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>Progress</value>

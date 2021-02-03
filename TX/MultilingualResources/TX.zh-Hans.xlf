@@ -240,18 +240,6 @@
           <source>Target Type</source>
           <target state="translated">源类型</target>
         </trans-unit>
-        <trans-unit id="TaskDetailPage_ErrorText.Text" translate="yes" xml:space="preserve">
-          <source>Errors</source>
-          <target state="translated">错误</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_RetryText.Text" translate="yes" xml:space="preserve">
-          <source>Retries</source>
-          <target state="translated">重试</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_SpeedText.Text" translate="yes" xml:space="preserve">
-          <source>Speed</source>
-          <target state="translated">速度</target>
-        </trans-unit>
         <trans-unit id="TaskListPage_SortDropDownButton.Content" translate="yes" xml:space="preserve">
           <source>Ordered</source>
           <target state="translated">排序</target>
@@ -309,6 +297,30 @@ Create a task for downloading.</source>
         <trans-unit id="TaskDetailPage_Subtitle_Progress.Text" translate="yes" xml:space="preserve">
           <source>Progress</source>
           <target state="translated">进程</target>
+        </trans-unit>
+        <trans-unit id="Errors" translate="yes" xml:space="preserve">
+          <source>Errors</source>
+          <target state="translated">错误数</target>
+        </trans-unit>
+        <trans-unit id="Retries" translate="yes" xml:space="preserve">
+          <source>Retries</source>
+          <target state="translated">重试数</target>
+        </trans-unit>
+        <trans-unit id="Speed" translate="yes" xml:space="preserve">
+          <source>Speed</source>
+          <target state="translated">下载速度</target>
+        </trans-unit>
+        <trans-unit id="AvailablePeers" translate="yes" xml:space="preserve">
+          <source>Available Peers</source>
+          <target state="translated">可用 Peers</target>
+        </trans-unit>
+        <trans-unit id="OpenConnections" translate="yes" xml:space="preserve">
+          <source>Open Connections</source>
+          <target state="translated">开启连接数</target>
+        </trans-unit>
+        <trans-unit id="Progress" translate="yes" xml:space="preserve">
+          <source>Progress</source>
+          <target state="translated">进度</target>
         </trans-unit>
       </group>
     </body>
