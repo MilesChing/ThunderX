@@ -116,7 +116,10 @@ namespace TX.Core
                     downloader = new TorrentDownloader(
                         task, torrentEngine, coreFolderManager,
                         coreCacheManager.GetCacheProviderForTask(token),
-                        checkPoint);
+                        checkPoint,
+                        SettingEntries.MaximumConnections,
+                        SettingEntries.MaximumDownloadSpeed,
+                        SettingEntries.MaximumUploadSpeed);
                 else if (task.Target is MagnetTarget magnetTarget)
                     downloader = new TorrentDownloader(
                         task, torrentEngine, coreFolderManager,

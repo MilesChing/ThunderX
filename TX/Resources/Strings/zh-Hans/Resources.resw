@@ -170,15 +170,6 @@
   <data name="SetPage_Notifications_Title.Text" xml:space="preserve">
     <value>通知</value>
   </data>
-  <data name="SetPage_Plugins_ThunderToggleSwitch.Header" xml:space="preserve">
-    <value>Thunderbolt 协议解析</value>
-  </data>
-  <data name="SetPage_Plugins_Title.Text" xml:space="preserve">
-    <value>扩展功能</value>
-  </data>
-  <data name="SetPage_Plugins_YouTubeToggleSwitch.Header" xml:space="preserve">
-    <value>YouTube 直链解析</value>
-  </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>
   </data>
@@ -248,5 +239,29 @@
   </data>
   <data name="Progress" xml:space="preserve">
     <value>进度</value>
+  </data>
+  <data name="TaskDetailPage_CopyItem.Text" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="SetPage_Thunderbolt_Title.Text" xml:space="preserve">
+    <value>Thunderbolt 链接分析</value>
+  </data>
+  <data name="SetPage_Torrent_MaximumConnectionsSlider.Header" xml:space="preserve">
+    <value>最大连接数</value>
+  </data>
+  <data name="SetPage_Torrent_Title.Text" xml:space="preserve">
+    <value>Torrent 下载</value>
+  </data>
+  <data name="SetPage_YouTube_Title.Text" xml:space="preserve">
+    <value>YouTube 链接提取</value>
+  </data>
+  <data name="SetPage_Thunderbolt_ToggleSwitch.Header" xml:space="preserve">
+    <value>启用该功能</value>
+  </data>
+  <data name="SetPage_Torrent_ToggleSwitch.Header" xml:space="preserve">
+    <value>启用该功能</value>
+  </data>
+  <data name="SetPage_YouTube_ToggleSwitch.Header" xml:space="preserve">
+    <value>启用该功能</value>
   </data>
 </root>

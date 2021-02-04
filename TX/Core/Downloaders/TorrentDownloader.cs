@@ -135,13 +135,16 @@ namespace TX.Core.Downloaders
         }
 
         protected override Task DisposeAsync()
-            => Task.Run(() =>
+            => Task.Run(async () =>
             {
                 if (manager != null)
-                    manager.TorrentStateChanged -= 
-                        ManagerTorrentStateChanged;
-                manager?.Dispose();
-                manager = null;
+                {
+                    manager.TorrentStateChanged -= ManagerTorrentStateChanged;
+                    await manager.StopAsync();
+                    manager.Dispose();
+                    await engine.Unregister(manager);
+                    manager = null;
+                }
             });
 
         protected override async Task StartAsync()
@@ -192,20 +195,24 @@ namespace TX.Core.Downloaders
                             file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
                     while (!token.IsCancellationRequested)
                     {
-                        Task.Delay(ProgressUpdateInterval).Wait();
-
-                        long nowVal = manager.Monitor.DataBytesDownloaded;
-                        if (totalSize.HasValue)
-                            nowVal = (long)(manager.PartialProgress / 100.0 * totalSize);
-                        if (mprog != null)
-                            nowVal = Math.Min(nowVal, mprog.TotalSize);
-                        long delta = nowVal - prog.DownloadedSize;
-                        if (delta < 0)
+                        try
                         {
-                            delta = nowVal;
-                            prog.Reset();
+                            Task.Delay(ProgressUpdateInterval).Wait();
+
+                            long nowVal = manager.Monitor.DataBytesDownloaded;
+                            if (totalSize.HasValue)
+                                nowVal = (long)(manager.PartialProgress / 100.0 * totalSize);
+                            if (mprog != null)
+                                nowVal = Math.Min(nowVal, mprog.TotalSize);
+                            long delta = nowVal - prog.DownloadedSize;
+                            if (delta < 0)
+                            {
+                                delta = nowVal;
+                                prog.Reset();
+                            }
+                            prog.Increase(delta);
                         }
-                        prog.Increase(delta);
+                        catch (Exception) { }
                     }
                 }
                 finally
