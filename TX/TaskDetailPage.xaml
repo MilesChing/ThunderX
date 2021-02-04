@@ -56,6 +56,14 @@
                            FontStyle="Italic"
                            Style="{StaticResource BaseTextBlockStyle}"/>
                 <HyperlinkButton>
+                    <HyperlinkButton.ContextFlyout>
+                        <MenuFlyout>
+                            <!--Copy Link-->
+                            <MenuFlyoutItem x:Name="CopyItem" Icon="Copy" 
+                                            x:Uid="TaskDetailPage_CopyItem"
+                                            Click="CopyItem_Click"/>
+                        </MenuFlyout>
+                    </HyperlinkButton.ContextFlyout>
                     <TextBlock x:Name="TaskHyperlink" TextWrapping="Wrap" 
                                TextDecorations="Underline" MaxLines="3"/>
                 </HyperlinkButton>
@@ -114,8 +122,9 @@
                     </Grid.RowDefinitions>
                     <TextBlock x:Name="DownloadTimeTextBlock" Style="{StaticResource TitleTextBlockStyle}"
                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource TitleTextBlockStyle}"
-                               HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
+                               HorizontalAlignment="Right" VerticalAlignment="Top"
+                               Grid.Row="0" Grid.RowSpan="2"/>
                     <ListView ItemsSource="{x:Bind DynamicLabelCollection, Mode=OneWay}"
                               SelectionMode="None" Margin="0 8 0 0" Grid.Row="1"
                               HorizontalAlignment="Left"

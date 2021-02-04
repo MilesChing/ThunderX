@@ -15,6 +15,7 @@ using TX.Core.Models.Progresses;
 using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Models.Targets;
 using TX.Core.Utils;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -239,6 +240,13 @@ namespace TX
         {
             DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
+        }
+
+        private void CopyItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(TaskHyperlink.Text);
+            Clipboard.SetContent(dataPackage);
         }
 
         private static readonly string ProgressText = Windows.ApplicationModel.Resources
