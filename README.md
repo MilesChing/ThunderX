@@ -4,9 +4,7 @@ Thunder X is a multi-threaded download tool that provides excellent interface an
 
 This software runs on universal windows platform.
 
-![Thunder X](https://s2.ax1x.com/2019/05/10/E2Orz4.png)
-
-[Instructions of Thunder X (Zh-CN)](https://milesching.github.io/2019/07/ThunderX_en_us.html)
+![Thunder X](https://i.loli.net/2021/02/04/dJ5oHpnqa4gBryt.png)
 
 ## Branches
 
@@ -14,4 +12,4 @@ This project has two branches. `master` represents the latest stable release. `d
 
 ## Privacy Policy
 
-Visit [PRIVACY_POLICY](https://github.com/MilesChing/ThunderX/blob/develop/PRIVACY_POLICY.md) to learn about our privacy policy.
+Visit [PRIVACY_POLICY](https://github.com/MilesChing/ThunderX/blob/master/PRIVACY_POLICY.md) to learn about our privacy policy.

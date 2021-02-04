@@ -12,115 +12,110 @@
                   VerticalScrollMode="Auto"
                   VerticalScrollBarVisibility="Hidden"
                   HorizontalAlignment="Stretch">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MaxWidth="440"/>
-                <ColumnDefinition Width="0*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Padding="16 0 16 44">
-                <StackPanel.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping" Value="Wrap"/>
-                        <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumColor}"/>
-                    </Style>
-                </StackPanel.Resources>
+        <StackPanel Orientation="Vertical" Padding="16 0 16 44">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="MaxWidth" Value="440"/>
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="LineHeight" Value="24"/>
+                    <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumHighColor}"/>
+                </Style>
+            </StackPanel.Resources>
 
-                <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
+            <Grid Margin="-16 0 -16 0">
+                <Image Source="/Assets/ThunderXHero.png" MaxHeight="200"
+                       Stretch="UniformToFill"/>
+                <Rectangle>
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0.5 1" EndPoint="0.5 0">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="{ThemeResource SystemChromeLowColor}" Offset="0"/>
+                                <GradientStop Color="{ThemeResource ThemeTransparentColor}" Offset="1"/>
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Grid>
 
-                <Border Height="52" Margin="0 0 0 8">
-                    <!--About-->
-                    <TextBlock x:Uid="AboutPage_Title" VerticalAlignment="Center"
-                               Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
-                </Border>
-
-                <Grid Margin="0 0 0 8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Image Width="80" Height="80" Grid.Column="0"
+            <Grid Margin="0 0 0 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Image Width="80" Height="80" Grid.Column="0"
                        Source="/Assets/Square44x44Logo.targetsize-256.png" />
-                    <StackPanel Orientation="Vertical" Grid.Column="1" Margin="8 0 0 0">
-                        <TextBlock Text="{x:Bind package:Package.Current.DisplayName}" 
-                                   FontSize="20" FontWeight="SemiBold" Margin="0 0 0 4"
-                                   Foreground="{ThemeResource SystemBaseHighColor}"/>
-                        <TextBlock FontSize="12" Margin="0 0 0 4">
-                            <!--Developed by-->
-                            <Run x:Uid="AboutPage_LogoText_DevelopedBy" 
-                                 Foreground="{ThemeResource SystemBaseMediumColor}"/>
-                            <Run Text="{x:Bind package:Package.Current.PublisherDisplayName}"
-                                 Foreground="{ThemeResource SystemAccentColor}"
-                                 FontStyle="Italic" FontWeight="Bold"/>
-                        </TextBlock>
-                        <TextBlock FontSize="12" Margin="0 0 0 4">
-                            <!--Package Version-->
-                            <Run x:Uid="AboutPage_LogoText_PackageVersion" 
-                                 Foreground="{ThemeResource SystemBaseMediumColor}"/>
-                            <Run Text="{x:Bind VersionText}" 
-                                 Foreground="{ThemeResource SystemAccentColor}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </Grid>
+                <StackPanel Orientation="Vertical" Grid.Column="1" Margin="8 0 0 0">
+                    <TextBlock Text="{x:Bind package:Package.Current.DisplayName}" 
+                               FontSize="20" FontWeight="SemiBold" Margin="0 0 0 4"
+                               Foreground="{ThemeResource SystemBaseHighColor}"/>
+                    <TextBlock FontSize="12" Margin="0 0 0 4" LineHeight="12">
+                        <!--Developed by-->
+                        <Run x:Uid="AboutPage_LogoText_DevelopedBy"
+                             Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                        <Run Text="{x:Bind package:Package.Current.PublisherDisplayName}"
+                             Foreground="{ThemeResource SystemAccentColor}"
+                             FontStyle="Italic"/>
+                    </TextBlock>
+                    <TextBlock FontSize="12" Margin="0 0 0 4">
+                        <!--Package Version-->
+                        <Run x:Uid="AboutPage_LogoText_PackageVersion" 
+                             Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                        <Run Text="{x:Bind VersionText}" 
+                             Foreground="{ThemeResource SystemAccentColor}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
 
-                <TextBlock x:Uid="AboutPage_AppDescription_1" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_AppDescription_2" Margin="0 0 0 20"/>
+            <TextBlock x:Uid="AboutPage_AppDescription" Margin="0 0 0 20"/>
 
-                <Grid Margin="0 0 0 20" Padding="16 12 16 16" CornerRadius="4"
-                      Background="{ThemeResource SystemAltMediumColor}"
-                      Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E3;" 
-                              VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
-                              Foreground="{ThemeResource TrailGreen}"/>
-                    <!--Still using trial version?-->
-                    <TextBlock x:Uid="AboutPage_TrailMessage_Title"
-                               Style="{ThemeResource TXPageSubtitleTextBlockStyle}"
-                               Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
-                               VerticalAlignment="Center" Margin="8 0 0 0"/>
-                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock x:Uid="AboutPage_TrailMessage_GuideText" Margin="0 8 0 0"/>
-                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_1" Margin="0 8 0 0"/>
-                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_2" Margin="0 8 0 0"/>
-                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_3" Margin="0 8 0 0"/>
-                        <TextBlock x:Uid="AboutPage_TrailMessage_Functionality_4" Margin="0 8 0 0"/>
-                        <!--Buy Now-->
-                        <Button x:Name="BuyButton" 
-                                x:Uid="AboutPage_TrailMessage_BuyButton"
-                                Margin="0 16 0 0" 
-                                Style="{ThemeResource ButtonRevealStyle}"
-                                Background="{ThemeResource TrailGreen}" 
-                                Foreground="{ThemeResource SystemAltHighColor}"
-                                Height="36" Width="160"
-                                Click="BuyButton_Click"/>
-                    </StackPanel>
-                </Grid>
+            <Grid Margin="0 0 0 20" Padding="16 12 16 16" CornerRadius="4"
+                  Background="{ThemeResource SystemAltMediumColor}"
+                  Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E3;" 
+                          VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
+                          Foreground="{ThemeResource TrailGreen}"/>
+                <!--Still using trial version?-->
+                <TextBlock x:Uid="AboutPage_TrailMessage_Title"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"
+                           Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
+                           VerticalAlignment="Center" Margin="8 0 0 0"/>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                    <TextBlock x:Uid="AboutPage_TrailMessage" Margin="0 8 0 0"/>
+                    <!--Buy Now-->
+                    <Button x:Name="BuyButton" 
+                            x:Uid="AboutPage_TrailMessage_BuyButton"
+                            Margin="0 16 0 0" 
+                            Style="{ThemeResource ButtonRevealStyle}"
+                            Background="{ThemeResource TrailGreen}" 
+                            Foreground="{ThemeResource SystemAltHighColor}"
+                            Height="36" Width="160"
+                            Click="BuyButton_Click"/>
+                </StackPanel>
+            </Grid>
 
-                <TextBlock Margin="0 0 0 8" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
-                    <!--Introducing Version-->
-                    <Run x:Uid="AboutPage_VersionInfo_Title"/>
-                    <Run Text="{x:Bind VersionText}"/>
-                </TextBlock>
-                <TextBlock x:Uid="AboutPage_VersionInfo_GuideText" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_1" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_2" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_3" Margin="0 0 0 8"/>
-                <TextBlock x:Uid="AboutPage_VersionInfo_Functionality_4" Margin="0 0 0 20"/>
+            <TextBlock Margin="0 0 0 8" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
+                <!--Introducing Version-->
+                <Run x:Uid="AboutPage_VersionInfo_Title"/>
+                <Run Text="{x:Bind VersionText}"/>
+            </TextBlock>
+            <TextBlock x:Uid="AboutPage_VersionInfo" Margin="0 0 0 20"/>
 
-                <!--Rating and Feedback-->
-                <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 8"
-                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_1" Margin="0 0 0 8"/>
-                <RatingControl HorizontalAlignment="Left" PlaceholderValue="5" Tapped="RatingControl_Tapped"/>
-                <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_2"/>
-                <HyperlinkButton Content="MilesChing/ThunderX" NavigateUri="https://github.com/MilesChing/ThunderX"/>
-            </StackPanel>
-        </Grid>
+            <!--Rating and Feedback-->
+            <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 8"
+                       Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+            <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_1"/>
+            <RatingControl HorizontalAlignment="Left" PlaceholderValue="5" Tapped="RatingControl_Tapped"/>
+            <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_2"/>
+            <HyperlinkButton Content="MilesChing/ThunderX" NavigateUri="https://github.com/MilesChing/ThunderX"/>
+        </StackPanel>
     </ScrollViewer>
 </Page>
