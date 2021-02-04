@@ -320,6 +320,9 @@
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>Progress</value>
   </data>
+  <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
+    <value>Progress</value>
+  </data>
   <data name="TaskListPage_EmptyView_GuideText.Text" xml:space="preserve">
     <value>Unfinished tasks will be displayed here.
 Create a task for downloading.</value>

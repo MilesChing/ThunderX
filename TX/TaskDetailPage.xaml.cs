@@ -342,4 +342,48 @@ namespace TX
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
+
+    class TaskDetailVisibleRangeViewModel : IVisibleRange, IDisposable
+    {
+        public TaskDetailVisibleRangeViewModel(IVisibleRange range, CoreDispatcher dispatcher)
+        {
+            ParentRange = range;
+            Dispatcher = dispatcher;
+            range.PropertyChanged += ParentRangePropertyChanged;
+        }
+
+        private async void ParentRangePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => PropertyChanged(this, e));
+        }
+
+        public float Progress => ParentRange == null ? 0.0f : ParentRange.Progress * 100.0f;
+
+        public float Total
+        {
+            get
+            {
+                if (ParentRange == null) return 0.0f;
+                float total = ParentRange.Total;
+                total = Math.Max(total, 0.01f);
+                total = Math.Min(total, 0.2f);
+                return total * 2000.0f;
+            }
+        }
+
+        public IVisibleRange ParentRange { get; private set; }
+
+        private readonly CoreDispatcher Dispatcher;
+
+        public void Dispose()
+        {
+            if (ParentRange != null)
+            {
+                ParentRange.PropertyChanged -= ParentRangePropertyChanged;
+                ParentRange = null;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+    }
 }
