@@ -256,7 +256,8 @@ namespace TX
                                 var infos = await multiSubsourcesExtracted.GetTargetInfosAsync();
                                 Ensure.That(UserOperated).IsFalse();
                                 optionalKeyValues = infos.ToArray();
-                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                {
                                     StreamSelectionListView.SelectionMode =
                                         multiSubsourcesExtracted.IsMultiSelectionSupported ?
                                         ListViewSelectionMode.Multiple : ListViewSelectionMode.Single;
@@ -271,12 +272,14 @@ namespace TX
                                 var target = await singleTargetExtracted.GetTargetAsync();
                                 Ensure.That(UserOperated).IsFalse();
                                 FinalTarget = target;
-                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                {
                                     SuggestedFilenameTextBox.Text = FinalTarget.SuggestedName;
                                     AcceptButton.IsEnabled = true;
                                 });
                                 break;
                             }
+                            else break;
                         }
                     }
                     catch (Exception)
