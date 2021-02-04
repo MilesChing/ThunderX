@@ -36,5 +36,30 @@ namespace TX.Core.Utils
             return await rootFolder.GetItemAsync(
                 Path.GetRelativePath(rootFolder.Path, path));
         }
+
+        public static async Task<long> GetSizeAsync(this IStorageItem now)
+        {
+            if (now is IStorageFolder folder)
+            {
+                var items = await folder.GetItemsAsync();
+                if (items.Count == 0) return 0L;
+                var subTasks = new Task<long>[items.Count];
+                for (int i = 0; i < items.Count; ++i)
+                    subTasks[i] = items[i].GetSizeAsync();
+                long res = 0;
+                foreach (var subTask in subTasks)
+                {
+                    await subTask;
+                    res += subTask.Result;
+                }
+                return res;
+            }
+            else if (now is IStorageFile file)
+            {
+                var props = await file.GetBasicPropertiesAsync();
+                return (long) props.Size;
+            }
+            else return 0L;
+        }
     }
 }

@@ -109,7 +109,7 @@ namespace TX
                 if (item.IsOfType(StorageItemTypes.File))
                 {
                     var file = item as StorageFile;
-                    var props = await file.GetBasicPropertiesAsync();
+                    var size = await file.GetSizeAsync();
                     var source = new BitmapImage();
                     using (var thumbnail = await file.GetThumbnailAsync(
                         Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
@@ -118,7 +118,7 @@ namespace TX
                     {
                         TaskKey = task.Key,
                         HistoryFileName = file.Name,
-                        HistoryFileSizeString = ((long)props.Size).SizedString(),
+                        HistoryFileSizeString = size.SizedString(),
                         Source = source,
                         OriginalHistory = history,
                     };
@@ -127,7 +127,7 @@ namespace TX
                 if (item.IsOfType(StorageItemTypes.Folder))
                 {
                     var folder = item as StorageFolder;
-                    var props = await folder.GetBasicPropertiesAsync();
+                    var size = await folder.GetSizeAsync();
                     var source = new BitmapImage();
                     using (var thumbnail = await folder.GetThumbnailAsync(
                         Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
@@ -136,7 +136,7 @@ namespace TX
                     {
                         TaskKey = task.Key,
                         HistoryFileName = folder.Name,
-                        HistoryFileSizeString = ((long)props.Size).SizedString(),
+                        HistoryFileSizeString = size.SizedString(),
                         Source = source,
                         OriginalHistory = history,
                     };
