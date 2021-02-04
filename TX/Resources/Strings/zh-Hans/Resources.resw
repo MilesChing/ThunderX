@@ -12,12 +12,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutPage_AppDescription_1.Text" xml:space="preserve">
-    <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。</value>
-  </data>
-  <data name="AboutPage_AppDescription_2.Text" xml:space="preserve">
-    <value>Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
-  </data>
   <data name="AboutPage_FeedbackInfo_GuideText_1.Text" xml:space="preserve">
     <value>通过 Windows 商店评价此应用程序以助力开发！</value>
   </data>
@@ -39,35 +33,8 @@
   <data name="AboutPage_TrailMessage_BuyButton.Content" xml:space="preserve">
     <value>立即入手</value>
   </data>
-  <data name="AboutPage_TrailMessage_Functionality_1.Text" xml:space="preserve">
-    <value>🔌 解锁包含 YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_2.Text" xml:space="preserve">
-    <value>🛠 深度定制下载内核，设定任务的工作线程数。</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_3.Text" xml:space="preserve">
-    <value>💾 设定上限以限制应用程序的内存占用。</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_4.Text" xml:space="preserve">
-    <value>🕹 下载失败时自动重传。</value>
-  </data>
-  <data name="AboutPage_TrailMessage_GuideText.Text" xml:space="preserve">
-    <value>如果对应用程序试用版满意，入手正式版本以解锁全部特性：</value>
-  </data>
   <data name="AboutPage_TrailMessage_Title.Text" xml:space="preserve">
     <value>仍使用试用版本？</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_1.Text" xml:space="preserve">
-    <value>💎 HTTP 基础和并行下载器稳定性提升。</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_2.Text" xml:space="preserve">
-    <value>📃 在详情页面中为可分段的下载源显示更详细的下载进程图像。</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_3.Text" xml:space="preserve">
-    <value>🎨 其他 UI 调整。</value>
-  </data>
-  <data name="AboutPage_VersionInfo_GuideText.Text" xml:space="preserve">
-    <value>在此版本中，我们提升了应用程序稳定性并丰富了任务详情页面的细节。</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>版本说明：</value>
@@ -216,9 +183,6 @@
   <data name="TaskListPage_EmptyView_Title.Text" xml:space="preserve">
     <value>当前没有任务</value>
   </data>
-  <data name="AboutPage_VersionInfo_Functionality_4.Text" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>进程</value>
   </data>
@@ -243,6 +207,9 @@
   <data name="TaskDetailPage_CopyItem.Text" xml:space="preserve">
     <value>复制</value>
   </data>
+  <data name="SetPage_HTTP_Title.Text" xml:space="preserve">
+    <value>HTTP/HTTPS</value>
+  </data>
   <data name="SetPage_Thunderbolt_Title.Text" xml:space="preserve">
     <value>Thunderbolt 链接分析</value>
   </data>
@@ -263,5 +230,17 @@
   </data>
   <data name="SetPage_YouTube_ToggleSwitch.Header" xml:space="preserve">
     <value>启用该功能</value>
+  </data>
+  <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
+    <value>在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</value>
+  </data>
+  <data name="AboutPage_AppDescription.Text" xml:space="preserve">
+    <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
+  </data>
+  <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
+    <value>如果对应用程序试用版满意，入手正式版本以解锁全部特性：
+🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
+🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
+🕹 下载失败时设定自动重传。</value>
   </data>
 </root>

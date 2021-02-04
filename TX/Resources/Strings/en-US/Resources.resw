@@ -117,11 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutPage_AppDescription_1.Text" xml:space="preserve">
-    <value>The mission of Thunder X is to provide a simple, fast and transparent download experience.</value>
-  </data>
-  <data name="AboutPage_AppDescription_2.Text" xml:space="preserve">
-    <value>Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</value>
+  <data name="AboutPage_AppDescription.Text" xml:space="preserve">
+    <value>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</value>
   </data>
   <data name="AboutPage_FeedbackInfo_GuideText_1.Text" xml:space="preserve">
     <value>Showing us some love on the store helps us to continue to work on the app and make things even better!</value>
@@ -141,41 +138,21 @@
   <data name="AboutPage_Title.Text" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
+    <value>If satisfied with our application, pay to support development teams and to enjoy these features:
+🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
+💾 Limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.</value>
+  </data>
   <data name="AboutPage_TrailMessage_BuyButton.Content" xml:space="preserve">
     <value>Buy Now</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_1.Text" xml:space="preserve">
-    <value>🔌 Downloader plug-ins, including YouTube link and Thunderbolt protocol extractor, etc.</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_2.Text" xml:space="preserve">
-    <value>🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_3.Text" xml:space="preserve">
-    <value>💾 Limit the memory footprint of whole application core.</value>
-  </data>
-  <data name="AboutPage_TrailMessage_Functionality_4.Text" xml:space="preserve">
-    <value>🕹 Automatically retry the download when an error occurs.</value>
-  </data>
-  <data name="AboutPage_TrailMessage_GuideText.Text" xml:space="preserve">
-    <value>If satisfied with our application, pay to support development teams and to enjoy these features:</value>
   </data>
   <data name="AboutPage_TrailMessage_Title.Text" xml:space="preserve">
     <value>Still using trial version?</value>
   </data>
-  <data name="AboutPage_VersionInfo_Functionality_1.Text" xml:space="preserve">
-    <value>💎 Improved stability of HTTP basic and parallel downloader.</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_2.Text" xml:space="preserve">
-    <value>📃 Display downloading progress in detail (if supported by source) for parallel downloader in detailed task page.</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_3.Text" xml:space="preserve">
-    <value>🎨 Other UI adjustments.</value>
-  </data>
-  <data name="AboutPage_VersionInfo_Functionality_4.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="AboutPage_VersionInfo_GuideText.Text" xml:space="preserve">
-    <value>In this release we improved the stability and enriched the content of the detailed task page.</value>
+  <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
+    <value>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
