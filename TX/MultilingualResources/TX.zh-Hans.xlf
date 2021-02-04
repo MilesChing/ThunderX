@@ -216,18 +216,6 @@
           <source>Notifications</source>
           <target state="translated">通知</target>
         </trans-unit>
-        <trans-unit id="SetPage_Plugins_ThunderToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>Thunder Proxy Extracter</source>
-          <target state="translated">Thunderbolt 协议解析</target>
-        </trans-unit>
-        <trans-unit id="SetPage_Plugins_Title.Text" translate="yes" xml:space="preserve">
-          <source>Plugins</source>
-          <target state="translated">扩展功能</target>
-        </trans-unit>
-        <trans-unit id="SetPage_Plugins_YouTubeToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>YouTube Downloader</source>
-          <target state="translated">YouTube 直链解析</target>
-        </trans-unit>
         <trans-unit id="SetPage_Title.Text" translate="yes" xml:space="preserve">
           <source>Settings</source>
           <target state="translated">设置</target>
@@ -239,18 +227,6 @@
         <trans-unit id="TargetType" translate="yes" xml:space="preserve">
           <source>Target Type</source>
           <target state="translated">源类型</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_ErrorText.Text" translate="yes" xml:space="preserve">
-          <source>Errors</source>
-          <target state="translated">错误</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_RetryText.Text" translate="yes" xml:space="preserve">
-          <source>Retries</source>
-          <target state="translated">重试</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_SpeedText.Text" translate="yes" xml:space="preserve">
-          <source>Speed</source>
-          <target state="translated">速度</target>
         </trans-unit>
         <trans-unit id="TaskListPage_SortDropDownButton.Content" translate="yes" xml:space="preserve">
           <source>Ordered</source>
@@ -309,6 +285,66 @@ Create a task for downloading.</source>
         <trans-unit id="TaskDetailPage_Subtitle_Progress.Text" translate="yes" xml:space="preserve">
           <source>Progress</source>
           <target state="translated">进程</target>
+        </trans-unit>
+        <trans-unit id="Errors" translate="yes" xml:space="preserve">
+          <source>Errors</source>
+          <target state="translated">错误数</target>
+        </trans-unit>
+        <trans-unit id="Retries" translate="yes" xml:space="preserve">
+          <source>Retries</source>
+          <target state="translated">重试数</target>
+        </trans-unit>
+        <trans-unit id="Speed" translate="yes" xml:space="preserve">
+          <source>Speed</source>
+          <target state="translated">下载速度</target>
+        </trans-unit>
+        <trans-unit id="AvailablePeers" translate="yes" xml:space="preserve">
+          <source>Available Peers</source>
+          <target state="translated">可用 Peers</target>
+        </trans-unit>
+        <trans-unit id="OpenConnections" translate="yes" xml:space="preserve">
+          <source>Open Connections</source>
+          <target state="translated">开启连接数</target>
+        </trans-unit>
+        <trans-unit id="Progress" translate="yes" xml:space="preserve">
+          <source>Progress</source>
+          <target state="translated">进度</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_CopyItem.Text" translate="yes" xml:space="preserve">
+          <source>Copy</source>
+          <target state="translated">复制</target>
+        </trans-unit>
+        <trans-unit id="SetPage_HTTP_Title.Text" translate="yes" xml:space="preserve">
+          <source>HTTP/HTTPS</source>
+          <target state="new">HTTP/HTTPS</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Thunderbolt_Title.Text" translate="yes" xml:space="preserve">
+          <source>Thunderbolt Analyzer</source>
+          <target state="translated">Thunderbolt 链接分析</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_MaximumConnectionsSlider.Header" translate="yes" xml:space="preserve">
+          <source>Maximum Connections</source>
+          <target state="translated">最大连接数</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_Title.Text" translate="yes" xml:space="preserve">
+          <source>Torrent Downloader</source>
+          <target state="translated">Torrent 下载</target>
+        </trans-unit>
+        <trans-unit id="SetPage_YouTube_Title.Text" translate="yes" xml:space="preserve">
+          <source>YouTube Analyzer</source>
+          <target state="translated">YouTube 链接提取</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Thunderbolt_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
+        </trans-unit>
+        <trans-unit id="SetPage_YouTube_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
         </trans-unit>
       </group>
     </body>

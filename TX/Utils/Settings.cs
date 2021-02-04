@@ -9,33 +9,20 @@ namespace TX.Utils
 {
     class Settings
     {
-        /// <summary>
-        /// Try to access the setting item.
-        /// Returns default value if failed.
-        /// </summary>
-        /// <typeparam name="T">type of the setting item</typeparam>
-        /// <param name="key">key of the setting item</param>
-        /// <param name="defaultValue">default value of the setting item</param>
-        private T TryGetValue<T>(string key, T defaultValue)
-        {
-            object value;
-            if (ApplicationData.Current.LocalSettings.Values
-                .TryGetValue(key, out value) && value is T)
-                return (T)value;
-            else return defaultValue;
-        }
+        #region Appearance Settings
 
         /// <summary>
-        /// Set value for setting item.
+        /// Is dark mode enabled.
         /// </summary>
-        /// <typeparam name="T">type of the setting item</typeparam>
-        /// <param name="key">key of the setting item</param>
-        /// <param name="value">new value of the setting item</param>
-        private void SetValue<T>(string key, T value)
+        public bool IsDarkModeEnabled
         {
-            ApplicationData.Current
-                .LocalSettings.Values[key] = value;
+            get { return TryGetValue(nameof(IsDarkModeEnabled), false); }
+            set { SetValue(nameof(IsDarkModeEnabled), value); }
         }
+
+        #endregion
+
+        #region Downloads Folder
 
         /// <summary>
         /// Token of the download folder.
@@ -46,27 +33,9 @@ namespace TX.Utils
             set { SetValue(nameof(DownloadsFolderToken), value); }
         }
 
-        /// <summary>
-        /// Maximum thread used by single task.
-        /// </summary>
-        public int ThreadNumber
-        {
-            get
-            {
-                if (IsApplicationVersionTrail) return 1;
-                return TryGetValue(nameof(ThreadNumber), 1); 
-            }
-            set { SetValue(nameof(ThreadNumber), value); }
-        }
+        #endregion
 
-        /// <summary>
-        /// Is dark mode enabled.
-        /// </summary>
-        public bool IsDarkModeEnabled
-        {
-            get { return TryGetValue(nameof(IsDarkModeEnabled), false); }
-            set { SetValue(nameof(IsDarkModeEnabled), value); }
-        }
+        #region Downloader Settings
 
         /// <summary>
         /// Maximum retries after single task failed.
@@ -80,6 +49,122 @@ namespace TX.Utils
             }
             set { SetValue(nameof(MaximumRetries), value); }
         }
+
+        /// <summary>
+        /// Maximum memory occupied by whole application.
+        /// </summary>
+        public long MemoryLimit
+        {
+            get
+            {
+                return TryGetValue(nameof(MemoryLimit), 256L * 1024L * 1024L);
+            }
+            set
+            {
+                SetValue(nameof(MemoryLimit), value);
+            }
+        }
+
+        #endregion
+
+        #region HTTP/HTTPS Settings
+
+        /// <summary>
+        /// Maximum thread used by single task.
+        /// </summary>
+        public int ThreadNumber
+        {
+            get
+            {
+                if (IsApplicationVersionTrail) return 1;
+                return TryGetValue(nameof(ThreadNumber), 1);
+            }
+            set { SetValue(nameof(ThreadNumber), value); }
+        }
+
+        #endregion
+
+        #region YouTube Settings
+
+        /// <summary>
+        /// Analyze YouTube URL automatically when creating new task.
+        /// </summary>
+        public bool IsYouTubeURLEnabled
+        {
+            get
+            {
+                if (IsApplicationVersionTrail) return false;
+                return TryGetValue(nameof(IsYouTubeURLEnabled), true);
+            }
+            set { SetValue(nameof(IsYouTubeURLEnabled), value); }
+        }
+
+        #endregion
+
+        #region Thunderbolt Settings
+
+        /// <summary>
+        /// Analyze Thunder URL automatically when creating new task.
+        /// </summary>
+        public bool IsThunderURLEnabled
+        {
+            get
+            {
+                if (IsApplicationVersionTrail) return false;
+                return TryGetValue(nameof(IsThunderURLEnabled), true);
+            }
+            set { SetValue(nameof(IsThunderURLEnabled), value); }
+        }
+
+        #endregion
+
+        #region Torrent Settings
+
+        /// <summary>
+        /// Is torrent downloader enabled.
+        /// </summary>
+        public bool IsTorrentEnabled
+        {
+            get
+            {
+                if (IsApplicationVersionTrail) return false;
+                return TryGetValue(nameof(IsTorrentEnabled), true);
+            }
+            set { SetValue(nameof(IsTorrentEnabled), value); }
+        }
+
+        /// <summary>
+        /// The maximum number of concurrent open connections for each torrent.
+        /// </summary>
+        public int MaximumConnections
+        {
+            get => TryGetValue(nameof(MaximumConnections), 60);
+            set => SetValue(nameof(MaximumConnections), value);
+        }
+
+        /// <summary>
+        /// The maximum download speed, in bytes per second, for each torrent. 
+        /// A value of 0 means unlimited.
+        /// </summary>
+        public int MaximumDownloadSpeed
+        {
+            get => TryGetValue(nameof(MaximumDownloadSpeed), 0);
+            set => SetValue(nameof(MaximumDownloadSpeed), value);
+        }
+
+        /// <summary>
+        /// The maximum upload speed, in bytes per second, for each torrent. 
+        /// A value of 0 means unlimited.
+        /// </summary>
+        public int MaximumUploadSpeed
+        {
+            get => TryGetValue(nameof(MaximumUploadSpeed), 0);
+            set => SetValue(nameof(MaximumUploadSpeed), value);
+        }
+
+        #endregion
+
+        #region Notification Settings
 
         /// <summary>
         /// Is notification enabled when any task is completed.
@@ -108,45 +193,39 @@ namespace TX.Utils
             set { SetValue(nameof(IsNotificationEnabledWhenApplicationSuspended), value); }
         }
 
+        #endregion
+
+        #region Tools
+
         /// <summary>
-        /// Maximum memory occupied by whole application.
+        /// Try to access the setting item.
+        /// Returns default value if failed.
         /// </summary>
-        public long MemoryLimit
+        /// <typeparam name="T">type of the setting item</typeparam>
+        /// <param name="key">key of the setting item</param>
+        /// <param name="defaultValue">default value of the setting item</param>
+        private T TryGetValue<T>(string key, T defaultValue)
         {
-            get {
-                return TryGetValue(nameof(MemoryLimit), 256L * 1024L * 1024L);
-            }
-            set {
-                SetValue(nameof(MemoryLimit), value);
-            }
+            object value;
+            if (ApplicationData.Current.LocalSettings.Values
+                .TryGetValue(key, out value) && value is T)
+                return (T)value;
+            else return defaultValue;
         }
 
         /// <summary>
-        /// Analyze YouTube URL automatically when creating new task.
+        /// Set value for setting item.
         /// </summary>
-        public bool IsYouTubeURLEnabled
+        /// <typeparam name="T">type of the setting item</typeparam>
+        /// <param name="key">key of the setting item</param>
+        /// <param name="value">new value of the setting item</param>
+        private void SetValue<T>(string key, T value)
         {
-            get 
-            {
-                if (IsApplicationVersionTrail) return false;
-                return TryGetValue(nameof(IsYouTubeURLEnabled), true); 
-            }
-            set { SetValue(nameof(IsYouTubeURLEnabled), value); }
-        }
-
-        /// <summary>
-        /// Analyze Thunder URL automatically when creating new task.
-        /// </summary>
-        public bool IsThunderURLEnabled
-        {
-            get
-            {
-                if (IsApplicationVersionTrail) return false;
-                return TryGetValue(nameof(IsThunderURLEnabled), true); 
-            }
-            set { SetValue(nameof(IsThunderURLEnabled), value); }
+            ApplicationData.Current
+                .LocalSettings.Values[key] = value;
         }
 
         private bool IsApplicationVersionTrail => ((App)App.Current).AppLicense.IsTrial;
+        #endregion
     }
 }

@@ -37,7 +37,7 @@ namespace TX.Core.Downloaders
         public HttpDownloader(
             DownloadTask task, 
             IFolderProvider folderProvider,
-            ICacheFileProvider cacheProvider,
+            ICacheStorageProvider cacheProvider,
             IBufferProvider bufferProvider
         ) : base(task) 
         {
@@ -133,7 +133,7 @@ namespace TX.Core.Downloaders
         private IStorageFile cacheFile;
         private CancellationTokenSource cancellationTokenSource;
         private readonly IFolderProvider folderProvider;
-        private readonly ICacheFileProvider cacheProvider;
+        private readonly ICacheStorageProvider cacheProvider;
         private readonly IBufferProvider bufferProvider;
     }
 }

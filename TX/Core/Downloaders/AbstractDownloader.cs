@@ -297,7 +297,7 @@ namespace TX.Core.Downloaders
         /// ReportCompleted should be called when downloading completed.
         /// </summary>
         /// <param name="file">Downloaded file.</param>
-        protected void ReportCompleted(IStorageFile file)
+        protected void ReportCompleted(IStorageItem file)
         {
             lock (statusLockObject)
                 if (Status != DownloaderStatus.Pending &&
@@ -329,7 +329,7 @@ namespace TX.Core.Downloaders
         /// <summary>
         /// Result file downloaded, only valid when status is completed. 
         /// </summary>
-        public IStorageFile Result { get; private set; } = null;
+        public IStorageItem Result { get; private set; } = null;
 
         /// <summary>
         /// Errors occured since the downloader was initialized.

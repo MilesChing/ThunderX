@@ -47,7 +47,7 @@
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <ToggleSwitch x:Name="DarkModeToggleSwitch" Header="Dark Mode"
                               x:Uid="SetPage_Appearance_DarkModeToggleSwitch"
-                              Margin="0 0 0 20" Toggled="DarkModeToggleSwitch_Toggled"
+                              Margin="0 0 0 28" Toggled="DarkModeToggleSwitch_Toggled"
                               IsOn="{x:Bind SettingEntries.IsDarkModeEnabled, Mode=TwoWay}"/>
 
                 <!--Default Download Folder-->
@@ -59,16 +59,11 @@
                 <!--Select Folder-->
                 <Button x:Name="DefaultDownloadFolderButton" x:Uid="SetPage_DownloadFolder_Button"
                         Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
-                        Margin="0 0 0 20" Click="DefaultDownloadFolderButton_Click"/>
+                        Margin="0 0 0 28" Click="DefaultDownloadFolderButton_Click"/>
 
                 <!--Downloader Configurations-->
                 <TextBlock x:Uid="SetPage_Downloader_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <!--Number of Threads-->
-                <Slider x:Name="ThreadNumberSlider" x:Uid="SetPage_Downloader_ThreadNumSlider"
-                        Minimum="1" Maximum="16" TickFrequency="4" TickPlacement="Outside"  
-                        Value="{x:Bind SettingEntries.ThreadNumber, Mode=TwoWay}"
-                        IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8"/>
                 <!--Maximum Retries-->
                 <Slider x:Name="MaximumRetriesSlider" x:Uid="SetPage_Downloader_MaxRetriesSlider"
                         Minimum="0" Maximum="32" TickFrequency="4" TickPlacement="Outside" 
@@ -76,8 +71,42 @@
                         IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8" />
                 <!--Memory Upperbound-->
                 <ComboBox x:Name="MemoryUpperboundComboBox" x:Uid="SetPage_Downloader_MemorySlider"
-                          Margin="0 0 0 20" Width="200" 
+                          Margin="0 0 0 28" Width="200" 
                           SelectionChanged="MemoryUpperboundComboBox_SelectionChanged"/>
+
+                <!--HTTP/HTTPS-->
+                <TextBlock x:Uid="SetPage_HTTP_Title" Margin="0 0 0 16"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <!--Number of Threads-->
+                <Slider x:Name="ThreadNumberSlider" x:Uid="SetPage_Downloader_ThreadNumSlider"
+                        Minimum="1" Maximum="16" TickFrequency="4" TickPlacement="Outside"  
+                        Value="{x:Bind SettingEntries.ThreadNumber, Mode=TwoWay}"
+                        IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 28"/>
+
+                <!--YouTube Analyzer-->
+                <TextBlock x:Uid="SetPage_YouTube_Title" Margin="0 0 0 16"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <ToggleSwitch x:Name="YouTubeToggleSwitch" x:Uid="SetPage_YouTube_ToggleSwitch"
+                              IsOn="{x:Bind SettingEntries.IsYouTubeURLEnabled, Mode=TwoWay}"
+                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 28"/>
+
+                <!--Thunderbolt Analyzer-->
+                <TextBlock x:Uid="SetPage_Thunderbolt_Title" Margin="0 0 0 16"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <ToggleSwitch x:Name="ThunderToggleSwitch" x:Uid="SetPage_Thunderbolt_ToggleSwitch"
+                              IsOn="{x:Bind SettingEntries.IsThunderURLEnabled, Mode=TwoWay}"
+                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 28"/>
+
+                <!--Torrent Downloader-->
+                <TextBlock x:Uid="SetPage_Torrent_Title" Margin="0 0 0 16"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <ToggleSwitch x:Name="TorrentToggleSwitch" x:Uid="SetPage_Torrent_ToggleSwitch"
+                              IsOn="{x:Bind SettingEntries.IsTorrentEnabled, Mode=TwoWay}"
+                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8"/>
+                <Slider x:Name="MaximumConnectionsSlider" x:Uid="SetPage_Torrent_MaximumConnectionsSlider"
+                        Minimum="10" Maximum="100" TickFrequency="10" TickPlacement="Outside"  
+                        Value="{x:Bind SettingEntries.MaximumConnections, Mode=TwoWay}"
+                        IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 28"/>
 
                 <!--Notifications-->
                 <TextBlock x:Uid="SetPage_Notifications_Title" Margin="0 0 0 16"
@@ -92,20 +121,9 @@
                               IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenFailed, Mode=TwoWay}"/>
                 <!--Application Suspended Notification-->
                 <ToggleSwitch x:Name="ApplicationSuspendedToggleSwitch" 
-                              x:Uid="SetPage_Notifications_ApplicationSuspendedToggleSwitch" Margin="0 0 0 8"
+                              x:Uid="SetPage_Notifications_ApplicationSuspendedToggleSwitch" Margin="0 0 0 28"
                               IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenApplicationSuspended, Mode=TwoWay}"/>
 
-                <!--Plugins-->
-                <TextBlock x:Uid="SetPage_Plugins_Title" Margin="0 0 0 16"
-                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <!--YouTube Downloader-->
-                <ToggleSwitch x:Name="YouTubeToggleSwitch" x:Uid="SetPage_Plugins_YouTubeToggleSwitch" 
-                              IsOn="{x:Bind SettingEntries.IsYouTubeURLEnabled, Mode=TwoWay}"
-                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8"/>
-                <!--Thunder Proxy Extracter-->
-                <ToggleSwitch x:Name="ThunderToggleSwitch" x:Uid="SetPage_Plugins_ThunderToggleSwitch"
-                              IsOn="{x:Bind SettingEntries.IsThunderURLEnabled, Mode=TwoWay}"
-                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

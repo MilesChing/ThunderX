@@ -15,34 +15,27 @@ namespace TX.Core.Models.Sources
     {
         public YouTubeSource(Uri uri) : base(uri) { }
 
-        public async Task<IEnumerable<KeyValuePair<string, Task<AbstractTarget>>>> GetTargetsAsync()
+        public async Task<IEnumerable<KeyValuePair<string, string>>> GetTargetInfosAsync()
         {
             var video = await client.Videos.GetAsync(Uri.OriginalString);
             var manifests = await client.Videos.Streams.GetManifestAsync(video.Id);
             Ensure.That(manifests.Streams.Count, nameof(manifests.Streams.Count)).IsGt(0);
-            var resList = new List<KeyValuePair<string, Task<AbstractTarget>>>();
-            foreach (var infoItr in manifests.Streams)
-            {
-                var info = infoItr;
-                string displayedName = FormatText(info);
-                var source = AbstractSource.ConstructSource(new Uri(info.Url));
-                if (source is HttpSource httpSource)
-                {
-                    resList.Add(
-                        new KeyValuePair<string, Task<AbstractTarget>>(
-                            displayedName,
-                            new Task<AbstractTarget>(() =>
-                            {
-                                var task = httpSource.GetTargetAsync();
-                                task.Wait();
-                                return task.Result;
-                            })
-                        )
-                    );
-                }
-            }
+            var resList = new List<KeyValuePair<string, string>>();
+            foreach (var info in manifests.Streams)
+                resList.Add(new KeyValuePair<string, string>(
+                    info.Url, FormatText(info)));
             return resList;
         }
+
+        public async Task<AbstractTarget> GetTargetAsync(IEnumerable<string> keys)
+        {
+            Ensure.That(keys.Count()).Is(1);
+            var source = ConstructSource(new Uri(keys.First())) as ISingleTargetExtracted;
+            Ensure.That(source).IsNotNull();
+            return await source.GetTargetAsync();
+        }
+
+        public bool IsMultiSelectionSupported => false;
 
         private string FormatText(IStreamInfo info)
         {

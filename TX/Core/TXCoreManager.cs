@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Extensions;
+using MonoTorrent.Dht;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Core.Downloaders;
@@ -28,19 +30,25 @@ namespace TX.Core
                 SettingEntries.MemoryLimit, 512L * 1024L);
         }
 
-        public void Initialize(byte[] checkPoint = null)
+        public async Task InitializeAsync(byte[] checkPoint = null)
         {
             try
             {
-                if (checkPoint == null) return;
-                var json = Encoding.ASCII.GetString(checkPoint); 
-                var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
-                    new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
-                foreach (var kvp in checkPointObject.Tasks) tasks.Add(kvp.Key, kvp.Value);
-                coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
-                foreach (var kvp in checkPointObject.Downloaders) CreateDownloader(kvp.Key, kvp.Value);
-                foreach (var hist in checkPointObject.Histories) histories.Add(hist);
-                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                await InitializeDhtEngineAsync();
+
+                if (checkPoint != null)
+                {
+                    var json = Encoding.ASCII.GetString(checkPoint);
+                    var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
+                        new JsonSerializerSettings() { 
+                            TypeNameHandling = TypeNameHandling.All
+                        });
+                    foreach (var kvp in checkPointObject.Tasks) tasks.Add(kvp.Key, kvp.Value);
+                    coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
+                    foreach (var kvp in checkPointObject.Downloaders) CreateDownloader(kvp.Key, kvp.Value);
+                    foreach (var hist in checkPointObject.Histories) histories.Add(hist);
+                    Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                }
             }
             catch (Exception e)
             {
@@ -86,21 +94,38 @@ namespace TX.Core
         private void CreateDownloader(string token, byte[] checkPoint = null)
         {
             if (!tasks.TryGetValue(token, out DownloadTask task)) return;
+            
             AbstractDownloader downloader = null;
 
-            if (task.Target is HttpRangableTarget httpRangableTarget)
-                downloader = new HttpParallelDownloader(
-                    task, 
-                    coreFolderManager, 
-                    coreCacheManager.GetCacheProviderForTask(token), 
-                    coreBufferProvider,
-                    checkPoint,
-                    SettingEntries.ThreadNumber);
-            else if (task.Target is HttpTarget httpTarget)
-                downloader = new HttpDownloader(
-                    task, coreFolderManager,
-                    coreCacheManager.GetCacheProviderForTask(token),
-                    coreBufferProvider);
+            try
+            {
+                if (task.Target is HttpRangableTarget httpRangableTarget)
+                    downloader = new HttpParallelDownloader(
+                        task,
+                        coreFolderManager,
+                        coreCacheManager.GetCacheProviderForTask(token),
+                        coreBufferProvider,
+                        checkPoint,
+                        SettingEntries.ThreadNumber);
+                else if (task.Target is HttpTarget httpTarget)
+                    downloader = new HttpDownloader(
+                        task, coreFolderManager,
+                        coreCacheManager.GetCacheProviderForTask(token),
+                        coreBufferProvider);
+                else if (task.Target is TorrentTarget torrentTarget)
+                    downloader = new TorrentDownloader(
+                        task, torrentEngine, coreFolderManager,
+                        coreCacheManager.GetCacheProviderForTask(token),
+                        checkPoint,
+                        SettingEntries.MaximumConnections,
+                        SettingEntries.MaximumDownloadSpeed,
+                        SettingEntries.MaximumUploadSpeed);
+                else if (task.Target is MagnetTarget magnetTarget)
+                    downloader = new TorrentDownloader(
+                        task, torrentEngine, coreFolderManager,
+                        coreCacheManager.GetCacheProviderForTask(token));
+            } catch (Exception) { }
+
             if (downloader != null)
             {
                 downloader.MaximumRetries = SettingEntries.MaximumRetries;
@@ -174,6 +199,8 @@ namespace TX.Core
         {
             Debug.WriteLine("[{0}] disposing".AsFormat(nameof(TXCoreManager)));
 
+            CleanTasks();
+
             Task.Run(async () => 
                 await coreCacheManager.CleanCacheFolderAsync(
                     taskKey =>
@@ -187,12 +214,29 @@ namespace TX.Core
             Debug.WriteLine("[{0}] disposed".AsFormat(nameof(TXCoreManager)));
         }
 
+        private void CleanTasks()
+        {
+            var toBeDeleted = tasks.Select(task => task.Key).Where(
+                key => downloaders.Any(downloader =>
+                    downloader.DownloadTask.Key.Equals(key))).ToArray();
+            foreach (var key in toBeDeleted)
+                tasks.Remove(key);
+        }
+
+        private async Task InitializeDhtEngineAsync()
+        {
+            var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
+            await torrentEngine.RegisterDhtAsync(dhtEngine);
+            await torrentEngine.DhtEngine.StartAsync();
+        }
+
         private readonly Settings SettingEntries = new Settings();
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
         private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
+        private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
 
         private class InnerCheckPoint

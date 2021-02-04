@@ -4,7 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interfaces="using:TX.Core.Interfaces" xmlns:controls="using:TX.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:interfaces="using:TX.Core.Interfaces" 
+    xmlns:controls="using:TX.Controls"
     NavigationCacheMode="Enabled"
     Background="{ThemeResource SystemChromeLowColor}" 
     mc:Ignorable="d">
@@ -38,9 +40,9 @@
                               x:DataType="local:TaskDetailPageLabel">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource BaseTextBlockStyle}"
-                                   MinWidth="128" Text="{x:Bind Key}"/>
+                                   MinWidth="140" Text="{x:Bind Key}"/>
                         <TextBlock Style="{StaticResource BodyTextBlockStyle}"
-                                   Text="{x:Bind Value}"/>
+                                   Text="{x:Bind Value, Mode=OneWay}"/>
                     </StackPanel>
                 </DataTemplate>
             </StackPanel.Resources>
@@ -54,6 +56,14 @@
                            FontStyle="Italic"
                            Style="{StaticResource BaseTextBlockStyle}"/>
                 <HyperlinkButton>
+                    <HyperlinkButton.ContextFlyout>
+                        <MenuFlyout>
+                            <!--Copy Link-->
+                            <MenuFlyoutItem x:Name="CopyItem" Icon="Copy" 
+                                            x:Uid="TaskDetailPage_CopyItem"
+                                            Click="CopyItem_Click"/>
+                        </MenuFlyout>
+                    </HyperlinkButton.ContextFlyout>
                     <TextBlock x:Name="TaskHyperlink" TextWrapping="Wrap" 
                                TextDecorations="Underline" MaxLines="3"/>
                 </HyperlinkButton>
@@ -105,40 +115,39 @@
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
-                <Grid Margin="0 0 0 16">
-                    <StackPanel>
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock"
-                                   BasedOn="{StaticResource BodyTextBlockStyle}">
-                                <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumHighColor}"/>
-                                <Setter Property="LineHeight" Value="24"/>
-                            </Style>
-                        </StackPanel.Resources>
-                        <TextBlock x:Name="DownloadTimeTextBlock" Margin="0 0 0 8"
-                                   Style="{StaticResource TitleTextBlockStyle}"
-                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-                        <TextBlock>
-                            <Run x:Uid="TaskDetailPage_SpeedText"/>
-                            <Run x:Name="SpeedTextBlock" FontWeight="Bold"/>/s
-                        </TextBlock>
-                        <TextBlock x:Name="SizeTextBlock" FontWeight="Bold"/>
-                        <TextBlock>
-                            <Run x:Name="ErrorNumberTextBlock" FontWeight="Bold" Foreground="{ThemeResource WarningYellow}"/> 
-                            <Run x:Uid="TaskDetailPage_ErrorText" Foreground="{ThemeResource WarningYellow}"/>,
-                            <Run x:Name="RetryNumberTextBlock" FontWeight="Bold"/>
-                            <Run x:Uid="TaskDetailPage_RetryText"/>
-                        </TextBlock>
-                    </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="DownloadTimeTextBlock" Style="{StaticResource TitleTextBlockStyle}"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <TextBlock x:Name="ProgressTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"
-                               HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                               HorizontalAlignment="Right" VerticalAlignment="Top"
+                               Grid.Row="0" Grid.RowSpan="2"/>
+                    <ListView ItemsSource="{x:Bind DynamicLabelCollection, Mode=OneWay}"
+                              SelectionMode="None" Margin="0 8 0 0" Grid.Row="1"
+                              HorizontalAlignment="Left"
+                              ItemTemplate="{StaticResource TaskDetailPageLabelDataTemplate}">
+                        <ListView.Transitions>
+                            <TransitionCollection/>
+                        </ListView.Transitions>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0 0 0 0"/>
+                                <Setter Property="MinHeight" Value="24"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
                 </Grid>
-                <StackPanel x:Name="VisibleRangePanel">
+                <StackPanel x:Name="VisibleRangePanel" Margin="0 16 0 0">
                     <TextBlock x:Uid="TaskDetailPage_Subtitle_Progress" Margin="0 0 0 12" Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                     <ListView x:Name="VisibleRangeListView" SelectionMode="None">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:TaskDetailVisibleRangeViewModel">
                                 <ProgressBar Width="{Binding Total}" Value="{Binding Progress}"
-                                             CornerRadius="6" Height="12" Margin="0 0 2 8"/>
+                                             CornerRadius="6" Height="12" Margin="0 0 2 8"
+                                             Background="{ThemeResource SystemChromeLowColor}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.ItemContainerTransitions>
