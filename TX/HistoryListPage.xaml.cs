@@ -103,20 +103,46 @@ namespace TX
             {
                 if (!Core.Tasks.TryGetValue(history.TaskKey, out DownloadTask task))
                     return null;
-                var file = await StorageFile.GetFileFromPathAsync(history.DestinationFilePath);
-                var props = await file.GetBasicPropertiesAsync();
-                var source = new BitmapImage();
-                using (var thumbnail = await file.GetThumbnailAsync(
-                    Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
-                    await source.SetSourceAsync(thumbnail);
-                return new DownloadHistoryViewModel()
+
+                var item = await StorageUtils.GetStorageItemAsync(history.DestinationPath);
+
+                if (item.IsOfType(StorageItemTypes.File))
                 {
-                    TaskKey = task.Key,
-                    HistoryFileName = file.Name,
-                    HistoryFileSizeString = ((long)props.Size).SizedString(),
-                    Source = source,
-                    OriginalHistory = history,
-                };
+                    var file = item as StorageFile;
+                    var size = await file.GetSizeAsync();
+                    var source = new BitmapImage();
+                    using (var thumbnail = await file.GetThumbnailAsync(
+                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                        await source.SetSourceAsync(thumbnail);
+                    return new DownloadHistoryViewModel()
+                    {
+                        TaskKey = task.Key,
+                        HistoryFileName = file.Name,
+                        HistoryFileSizeString = size.SizedString(),
+                        Source = source,
+                        OriginalHistory = history,
+                    };
+                }
+
+                if (item.IsOfType(StorageItemTypes.Folder))
+                {
+                    var folder = item as StorageFolder;
+                    var size = await folder.GetSizeAsync();
+                    var source = new BitmapImage();
+                    using (var thumbnail = await folder.GetThumbnailAsync(
+                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                        await source.SetSourceAsync(thumbnail);
+                    return new DownloadHistoryViewModel()
+                    {
+                        TaskKey = task.Key,
+                        HistoryFileName = folder.Name,
+                        HistoryFileSizeString = size.SizedString(),
+                        Source = source,
+                        OriginalHistory = history,
+                    };
+                }
+
+                return null;
             }
             catch (Exception)
             {
@@ -147,13 +173,14 @@ namespace TX
             {
                 try
                 {
-                    var file = await StorageFile.GetFileFromPathAsync(vm.OriginalHistory.DestinationFilePath);
-                    await Launcher.LaunchFileAsync(file);
+                    var item = await StorageUtils.GetStorageItemAsync(
+                        vm.OriginalHistory.DestinationPath);
+                    if (item is StorageFolder folder)
+                        await Launcher.LaunchFolderAsync(folder);
+                    if (item is StorageFile file)
+                        await Launcher.LaunchFileAsync(file);
                 }
-                catch (Exception)
-                {
-                    return;
-                }
+                catch (Exception) { }
             }
         }
 
@@ -164,14 +191,10 @@ namespace TX
             {
                 try
                 {
-                    var folder = await StorageFolder.GetFolderFromPathAsync(
-                        Path.GetDirectoryName(vm.OriginalHistory.DestinationFilePath));
-                    await Launcher.LaunchFolderAsync(folder);
+                    await Launcher.LaunchFolderPathAsync(
+                        Path.GetDirectoryName(vm.OriginalHistory.DestinationPath));
                 }
-                catch (Exception)
-                {
-                    return;
-                }
+                catch (Exception) { }
             }
         }
 

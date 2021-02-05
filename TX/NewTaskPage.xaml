@@ -5,7 +5,7 @@
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:controls="using:TX.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource SystemChromeLowColor}" >
     <RelativePanel>
@@ -29,18 +29,38 @@
                 <TextBlock x:Uid="NewTaskPage_URL_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <TextBox x:Name="MainURITextBox" TextChanged="MainURITextBox_TextChanged"/>
-                <muxc:ProgressBar x:Name="UriAnalyzingProgressBar" Margin="0 -4 0 20" Height="4"
+                <muxc:ProgressBar x:Name="UriAnalyzingProgressBar" Margin="0 -4 0 0" Height="4"
                                   CornerRadius="4" Background="Transparent"/>
+                <controls:WrapStackPanel Margin="0 0 0 20" Orientation="Horizontal">
+                    <controls:WrapStackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+                            <Setter Property="Background" Value="{ThemeResource SystemAccentColor}"/>
+                            <Setter Property="Foreground" Value="{ThemeResource SystemAltHighColor}"/>
+                            <Setter Property="Margin" Value="0 0 8 0"/>
+                        </Style>
+                    </controls:WrapStackPanel.Resources>
+                    <Button x:Name="ClipboardButton" Click="ClipboardButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon FontSize="12" FontFamily="Segoe MDL2 Assets" Glyph="&#xE77F;"/>
+                            <TextBlock Margin="8 0 0 0" FontSize="12">Insert from clipboard</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="FileButton" Click="FileButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon FontSize="12" FontFamily="Segoe MDL2 Assets" Glyph="&#xE8E5;"/>
+                            <TextBlock Margin="8 0 0 0" FontSize="12">Pick file to start</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </controls:WrapStackPanel>
 
                 <StackPanel x:Name="StreamSelectionStackPanel" Visibility="Collapsed">
                     <!--Streams-->
-                    <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 8"
+                    <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 12"
                                Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                    <ComboBox x:Name="StreamSelectionComboBox" MinWidth="200" 
-                              Margin="0 0 0 20" PlaceholderText="Select to continue"
-                              SelectionChanged="StreamSelectionComboBox_SelectionChanged"/>
+                    <ListView x:Name="StreamSelectionListView" MinWidth="200" Margin="0 0 0 20"
+                              MaxHeight="200" SelectionChanged="StreamSelectionListView_SelectionChanged"
+                              Background="{ThemeResource SystemChromeMediumColor}" CornerRadius="4"/>
                 </StackPanel>
-
                 <!--File Name-->
                 <TextBlock x:Uid="NewTaskPage_FileName_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>

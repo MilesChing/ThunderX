@@ -6,14 +6,6 @@
     </header>
     <body>
       <group id="TX/RESOURCES/STRINGS/EN-US/RESOURCES.RESW" datatype="resx">
-        <trans-unit id="AboutPage_AppDescription_1.Text" translate="yes" xml:space="preserve">
-          <source>The mission of Thunder X is to provide a simple, fast and transparent download experience.</source>
-          <target state="translated">Thunder X 定位在于提供简单、快速、透明的文件下载体验。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_AppDescription_2.Text" translate="yes" xml:space="preserve">
-          <source>Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
-          <target state="translated">Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</target>
-        </trans-unit>
         <trans-unit id="AboutPage_FeedbackInfo_GuideText_1.Text" translate="yes" xml:space="preserve">
           <source>Showing us some love on the store helps us to continue to work on the app and make things even better!</source>
           <target state="translated">通过 Windows 商店评价此应用程序以助力开发！</target>
@@ -42,45 +34,9 @@
           <source>Buy Now</source>
           <target state="translated">立即入手</target>
         </trans-unit>
-        <trans-unit id="AboutPage_TrailMessage_Functionality_1.Text" translate="yes" xml:space="preserve">
-          <source>🔌 Downloader plug-ins, including YouTube link and Thunderbolt protocol extractor, etc.</source>
-          <target state="translated">🔌 解锁包含 YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_TrailMessage_Functionality_2.Text" translate="yes" xml:space="preserve">
-          <source>🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.</source>
-          <target state="translated">🛠 深度定制下载内核，设定任务的工作线程数。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_TrailMessage_Functionality_3.Text" translate="yes" xml:space="preserve">
-          <source>💾 Limit the memory footprint of whole application core.</source>
-          <target state="translated">💾 设定上限以限制应用程序的内存占用。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_TrailMessage_Functionality_4.Text" translate="yes" xml:space="preserve">
-          <source>🕹 Automatically retry the download when an error occurs.</source>
-          <target state="translated">🕹 下载失败时自动重传。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_TrailMessage_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>If satisfied with our application, pay to support development teams and to enjoy these features:</source>
-          <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：</target>
-        </trans-unit>
         <trans-unit id="AboutPage_TrailMessage_Title.Text" translate="yes" xml:space="preserve">
           <source>Still using trial version?</source>
           <target state="translated">仍使用试用版本？</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo_Functionality_1.Text" translate="yes" xml:space="preserve">
-          <source>💎 Improved stability of HTTP basic and parallel downloader.</source>
-          <target state="translated">💎 HTTP 基础和并行下载器稳定性提升。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo_Functionality_2.Text" translate="yes" xml:space="preserve">
-          <source>📃 Display downloading progress in detail (if supported by source) for parallel downloader in detailed task page.</source>
-          <target state="translated">📃 在详情页面中为可分段的下载源显示更详细的下载进程图像。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo_Functionality_3.Text" translate="yes" xml:space="preserve">
-          <source>🎨 Other UI adjustments.</source>
-          <target state="translated">🎨 其他 UI 调整。</target>
-        </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>In this release we improved the stability and enriched the content of the detailed task page.</source>
-          <target state="translated">在此版本中，我们提升了应用程序稳定性并丰富了任务详情页面的细节。</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Title.Text" translate="yes" xml:space="preserve">
           <source>Introducing Version</source>
@@ -216,18 +172,6 @@
           <source>Notifications</source>
           <target state="translated">通知</target>
         </trans-unit>
-        <trans-unit id="SetPage_Plugins_ThunderToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>Thunder Proxy Extracter</source>
-          <target state="translated">Thunderbolt 协议解析</target>
-        </trans-unit>
-        <trans-unit id="SetPage_Plugins_Title.Text" translate="yes" xml:space="preserve">
-          <source>Plugins</source>
-          <target state="translated">扩展功能</target>
-        </trans-unit>
-        <trans-unit id="SetPage_Plugins_YouTubeToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>YouTube Downloader</source>
-          <target state="translated">YouTube 直链解析</target>
-        </trans-unit>
         <trans-unit id="SetPage_Title.Text" translate="yes" xml:space="preserve">
           <source>Settings</source>
           <target state="translated">设置</target>
@@ -239,18 +183,6 @@
         <trans-unit id="TargetType" translate="yes" xml:space="preserve">
           <source>Target Type</source>
           <target state="translated">源类型</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_ErrorText.Text" translate="yes" xml:space="preserve">
-          <source>Errors</source>
-          <target state="translated">错误</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_RetryText.Text" translate="yes" xml:space="preserve">
-          <source>Retries</source>
-          <target state="translated">重试</target>
-        </trans-unit>
-        <trans-unit id="TaskDetailPage_SpeedText.Text" translate="yes" xml:space="preserve">
-          <source>Speed</source>
-          <target state="translated">速度</target>
         </trans-unit>
         <trans-unit id="TaskListPage_SortDropDownButton.Content" translate="yes" xml:space="preserve">
           <source>Ordered</source>
@@ -302,13 +234,88 @@ Create a task for downloading.</source>
           <source>Your Tasks Here</source>
           <target state="translated">当前没有任务</target>
         </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo_Functionality_4.Text" translate="yes" xml:space="preserve">
-          <source></source>
-          <target state="translated"></target>
-        </trans-unit>
         <trans-unit id="TaskDetailPage_Subtitle_Progress.Text" translate="yes" xml:space="preserve">
           <source>Progress</source>
           <target state="translated">进程</target>
+        </trans-unit>
+        <trans-unit id="Errors" translate="yes" xml:space="preserve">
+          <source>Errors</source>
+          <target state="translated">错误数</target>
+        </trans-unit>
+        <trans-unit id="Retries" translate="yes" xml:space="preserve">
+          <source>Retries</source>
+          <target state="translated">重试数</target>
+        </trans-unit>
+        <trans-unit id="Speed" translate="yes" xml:space="preserve">
+          <source>Speed</source>
+          <target state="translated">下载速度</target>
+        </trans-unit>
+        <trans-unit id="AvailablePeers" translate="yes" xml:space="preserve">
+          <source>Available Peers</source>
+          <target state="translated">可用 Peers</target>
+        </trans-unit>
+        <trans-unit id="OpenConnections" translate="yes" xml:space="preserve">
+          <source>Open Connections</source>
+          <target state="translated">开启连接数</target>
+        </trans-unit>
+        <trans-unit id="Progress" translate="yes" xml:space="preserve">
+          <source>Progress</source>
+          <target state="translated">进度</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_CopyItem.Text" translate="yes" xml:space="preserve">
+          <source>Copy</source>
+          <target state="translated">复制</target>
+        </trans-unit>
+        <trans-unit id="SetPage_HTTP_Title.Text" translate="yes" xml:space="preserve">
+          <source>HTTP/HTTPS</source>
+          <target state="final">HTTP/HTTPS</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Thunderbolt_Title.Text" translate="yes" xml:space="preserve">
+          <source>Thunderbolt Analyzer</source>
+          <target state="translated">Thunderbolt 链接分析</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_MaximumConnectionsSlider.Header" translate="yes" xml:space="preserve">
+          <source>Maximum Connections</source>
+          <target state="translated">最大连接数</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_Title.Text" translate="yes" xml:space="preserve">
+          <source>Torrent Downloader</source>
+          <target state="translated">Torrent 下载</target>
+        </trans-unit>
+        <trans-unit id="SetPage_YouTube_Title.Text" translate="yes" xml:space="preserve">
+          <source>YouTube Analyzer</source>
+          <target state="translated">YouTube 链接提取</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Thunderbolt_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
+        </trans-unit>
+        <trans-unit id="SetPage_YouTube_ToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Plugin Enabled</source>
+          <target state="translated">启用该功能</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
+          <source>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</source>
+          <target state="translated">在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
+          <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
+          <target state="translated">Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage.Text" translate="yes" xml:space="preserve">
+          <source>If satisfied with our application, pay to support development teams and to enjoy these features:
+🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
+💾 Limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.</source>
+          <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：
+🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
+🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
+🕹 下载失败时设定自动重传。</target>
         </trans-unit>
       </group>
     </body>

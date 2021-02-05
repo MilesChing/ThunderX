@@ -11,7 +11,7 @@ namespace UnitTestProject.Utils
     /// <summary>
     /// FakeCacheProvider provides cache files created in LocalCacheFolder.
     /// </summary>
-    class FakeCacheProvider : ICacheFileProvider
+    class FakeCacheProvider : ICacheStorageProvider
     {
         public IStorageFile GetCacheFileByToken(string token)
         {
@@ -29,6 +29,23 @@ namespace UnitTestProject.Utils
             return index.ToString();
         }
 
+        public async Task<string> NewCacheFolderAsync()
+        {
+            int index = cacheFolders.Count;
+            cacheFolders.Add(await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(
+                index.ToString(), CreationCollisionOption.GenerateUniqueName));
+            return index.ToString();
+        }
+
+        public IStorageFolder GetCacheFolderByToken(string token)
+        {
+            if (int.TryParse(token, out int index) &&
+                index >= 0 && index < cacheFolders.Count)
+                return cacheFolders[index];
+            else return null;
+        }
+
         private readonly List<StorageFile> cacheFiles = new List<StorageFile>();
+        private readonly List<StorageFolder> cacheFolders = new List<StorageFolder>();
     }
 }

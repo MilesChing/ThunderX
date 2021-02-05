@@ -99,11 +99,14 @@ namespace UnitTestProject.CoreTest.DownloaderTest
 
                 Assert.AreEqual(downloader.Status, DownloaderStatus.Completed);
 
-                using (var istream = await downloader.Result.OpenReadAsync())
+                if (downloader.Result is StorageFile file)
                 {
-                    using (var ostream = new MemoryStream(targetBytes))
+                    using (var istream = await file.OpenReadAsync())
                     {
-                        Assert.IsTrue(istream.AsStream().Compare(ostream));
+                        using (var ostream = new MemoryStream(targetBytes))
+                        {
+                            Assert.IsTrue(istream.AsStream().Compare(ostream));
+                        }
                     }
                 }
 
