@@ -8,6 +8,7 @@ using TX.Core.Utils;
 using TX.Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -57,6 +58,12 @@ namespace TX
                 .GetOrCreateDownloadFolderAsync()).Path;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            RefreshStorageSize();
+        }
+
         private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleSwitch tw)
@@ -83,6 +90,31 @@ namespace TX
             {
                 SettingEntries.MemoryLimit = MemoryLimits[cb.SelectedIndex];
             }
+        }
+
+        private async void RefreshStorageSize()
+        {
+            CacheFileSizeTextBlock.Opacity = 0.4;
+            try
+            {
+                var cacheSize = await ApplicationData.Current.LocalCacheFolder.GetSizeAsync();
+                CacheFileSizeTextBlock.Text = cacheSize.SizedString();
+            }
+            catch (Exception) 
+            {
+                CacheFileSizeTextBlock.Text = Windows.ApplicationModel.Resources
+                    .ResourceLoader.GetForCurrentView().GetString("Unknown");
+            }
+            finally
+            {
+                CacheFileSizeTextBlock.Opacity = 1.0;
+            }
+        }
+
+        private async void CleanUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ((App)App.Current).Core.CleanCacheFolderAsync();
+            RefreshStorageSize();
         }
     }
 }
