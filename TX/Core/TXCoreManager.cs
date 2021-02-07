@@ -217,7 +217,7 @@ namespace TX.Core
         private void CleanTasks()
         {
             var toBeDeleted = tasks.Select(task => task.Key).Where(
-                key => downloaders.Any(downloader =>
+                key => !downloaders.Any(downloader =>
                     downloader.DownloadTask.Key.Equals(key))).ToArray();
             foreach (var key in toBeDeleted)
                 tasks.Remove(key);
