@@ -239,6 +239,9 @@
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
   </data>
+  <data name="RemainingTime" xml:space="preserve">
+    <value>Remaining Time</value>
+  </data>
   <data name="Retries" xml:space="preserve">
     <value>Retries</value>
   </data>
@@ -247,6 +250,15 @@
   </data>
   <data name="SetPage_Appearance_Title.Text" xml:space="preserve">
     <value>Appearance</value>
+  </data>
+  <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
+    <value>Clean Up</value>
+  </data>
+  <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
+    <value>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</value>
+  </data>
+  <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
+    <value>Storage Cache Size</value>
   </data>
   <data name="SetPage_Downloader_MaxRetriesSlider.Header" xml:space="preserve">
     <value>Maximum Retries</value>

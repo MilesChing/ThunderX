@@ -37,6 +37,8 @@ namespace TX
 
         public void BindDownloader(AbstractDownloader downloader)
         {
+            if (downloader == Downloader)
+                return;
             if (Downloader != null)
                 ClearDownloaderBinding();
             Downloader = downloader;
@@ -139,15 +141,13 @@ namespace TX
                 {
                     if (sender is IMeasurableProgress mprogress)
                     {
-                        UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                            ProgressText, 
-                            $"{mprogress.DownloadedSize.SizedString()} / " +
-                            $"{mprogress.TotalSize.SizedString()}"));
+                        UpdateIntoDynamicLabelCollection(ProgressText, 
+                            $"{mprogress.DownloadedSize.SizedString()} / {mprogress.TotalSize.SizedString()}");
                         ProgressTextBlock.Text = mprogress.Progress.ToString("0%");
                     }
                     else
-                        UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                            ProgressText, sender.DownloadedSize.SizedString()));
+                        UpdateIntoDynamicLabelCollection(ProgressText, 
+                            sender.DownloadedSize.SizedString());
                 });
         }
 
@@ -156,17 +156,34 @@ namespace TX
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 DownloadTimeTextBlock.Text = sender.RunningTime.ToString(@"hh\:mm\:ss");
-                UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                    SpeedText, $"{((long)sender.Speed).SizedString()} / s"));
+                UpdateIntoDynamicLabelCollection(SpeedText, 
+                    $"{((long)sender.Speed).SizedString()} / s");
+
                 if (Downloader != null)
-                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                        $"{ErrorsText} / {RetriesText}", $"{Downloader.Errors.Count} / {Downloader.Retries}"));
-                if (Downloader is TorrentDownloader td)
                 {
-                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                        OpenConnectionsText, td.OpenConnections.ToString()));
-                    UpdateIntoDynamicLabelCollection(new TaskDetailPageLabel(
-                        AvailablePeersText, $"{td.Peers?.Available ?? 0}"));
+                    UpdateIntoDynamicLabelCollection(
+                        $"{ErrorsText} / {RetriesText}", 
+                        $"{Downloader.Errors.Count} / {Downloader.Retries}");
+
+                    if (Downloader.Progress is IMeasurableProgress mprogress)
+                    {
+                        double averageSpeed = sender.AverageSpeed;
+                        if (averageSpeed > 0.0)
+                        {
+                            double remainBytes = (mprogress.TotalSize - mprogress.DownloadedSize);
+                            double secondsPrediction = remainBytes / averageSpeed;
+                            UpdateIntoDynamicLabelCollection(RemainingTimeText,
+                                $"{TimeSpan.FromSeconds(secondsPrediction):hh\\:mm\\:ss}");
+                        }
+                    }
+
+                    if (Downloader is TorrentDownloader td)
+                    {
+                        UpdateIntoDynamicLabelCollection(OpenConnectionsText, 
+                            td.OpenConnections.ToString());
+                        UpdateIntoDynamicLabelCollection(AvailablePeersText, 
+                            $"{td.Peers?.Available ?? 0}");
+                    }
                 }
             });
         }
@@ -199,11 +216,11 @@ namespace TX
                     }
                 });
 
-        private void UpdateIntoDynamicLabelCollection(TaskDetailPageLabel label)
+        private void UpdateIntoDynamicLabelCollection(string key, string value)
         {
-            var res = DynamicLabelCollection.FirstOrDefault(lab => lab.Key.Equals(label.Key));
-            if (res == null) DynamicLabelCollection.Add(label);
-            else res.Value = label.Value;
+            var res = DynamicLabelCollection.FirstOrDefault(lab => lab.Key.Equals(key));
+            if (res == null) DynamicLabelCollection.Add(new TaskDetailPageLabel(key, value));
+            else res.Value = value;
         }
 
         private readonly ObservableCollection<TaskDetailPageLabel> BasicLabelCollection
@@ -261,6 +278,8 @@ namespace TX
             .ResourceLoader.GetForCurrentView().GetString("OpenConnections");
         private static readonly string AvailablePeersText = Windows.ApplicationModel.Resources
             .ResourceLoader.GetForCurrentView().GetString("AvailablePeers");
+        private static readonly string RemainingTimeText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("RemainingTime");
     }
 
     class TaskDetailPageLabel : INotifyPropertyChanged

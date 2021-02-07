@@ -317,6 +317,22 @@ Create a task for downloading.</source>
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
 🕹 下载失败时设定自动重传。</target>
         </trans-unit>
+        <trans-unit id="RemainingTime" translate="yes" xml:space="preserve">
+          <source>Remaining Time</source>
+          <target state="translated">预计剩余</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_Button.Content" translate="yes" xml:space="preserve">
+          <source>Clean Up</source>
+          <target state="translated">清理</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
+          <target state="translated">*失效的缓存文件将在应用程序关闭前被自动清除。手动清理一般是不必要的。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_Title.Text" translate="yes" xml:space="preserve">
+          <source>Storage Cache Size</source>
+          <target state="translated">缓存文件大小</target>
+        </trans-unit>
       </group>
     </body>
   </file>
