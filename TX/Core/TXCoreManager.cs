@@ -201,12 +201,7 @@ namespace TX.Core
 
             CleanTasks();
 
-            Task.Run(async () => 
-                await coreCacheManager.CleanCacheFolderAsync(
-                    taskKey =>
-                        Downloaders.Any(downloader => downloader.DownloadTask.Key.Equals(taskKey))
-                )
-            ).Wait();
+            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
 
             foreach (var downloader in downloaders)
                 downloader.Cancel();
@@ -214,10 +209,21 @@ namespace TX.Core
             Debug.WriteLine("[{0}] disposed".AsFormat(nameof(TXCoreManager)));
         }
 
+        public async Task CleanCacheFolderAsync()
+        {
+            await coreCacheManager.CleanCacheFolderAsync(
+                taskKey => Downloaders.Any(
+                    downloader => 
+                        downloader.Status != DownloaderStatus.Completed &&
+                        downloader.Status != DownloaderStatus.Disposed &&
+                        downloader.DownloadTask.Key.Equals(taskKey))
+            );
+        }
+
         private void CleanTasks()
         {
             var toBeDeleted = tasks.Select(task => task.Key).Where(
-                key => downloaders.Any(downloader =>
+                key => !downloaders.Any(downloader =>
                     downloader.DownloadTask.Key.Equals(key))).ToArray();
             foreach (var key in toBeDeleted)
                 tasks.Remove(key);

@@ -124,6 +124,16 @@
                               x:Uid="SetPage_Notifications_ApplicationSuspendedToggleSwitch" Margin="0 0 0 28"
                               IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenApplicationSuspended, Mode=TwoWay}"/>
 
+                <!--Notifications-->
+                <TextBlock x:Uid="SetPage_CleanUp_Title" Margin="0 0 0 8"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <TextBlock x:Name="CacheFileSizeTextBlock" FontSize="24" FontWeight="Bold" 
+                           Margin="0 0 0 8" Foreground="{ThemeResource SystemAccentColor}"/>
+                <TextBlock x:Uid="SetPage_CleanUp_GuideText" Margin="0 0 0 16" FontSize="12"
+                           TextWrapping="Wrap" Foreground="{ThemeResource SystemBaseMediumLowColor}"/>
+                <Button x:Name="CleanUpButton" x:Uid="SetPage_CleanUp_Button"
+                        Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
+                        Margin="0 0 0 28" Click="CleanUpButton_Click"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>
