@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -116,5 +117,8 @@ namespace TX
             await ((App)App.Current).Core.CleanCacheFolderAsync();
             RefreshStorageSize();
         }
+
+        private async void OpenDownloadFolderButton_Click(object sender, RoutedEventArgs e) =>
+            await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
     }
 }
