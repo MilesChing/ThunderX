@@ -333,13 +333,41 @@ Create a task for downloading.</source>
           <source>Clean Up</source>
           <target state="translated">清理</target>
         </trans-unit>
-        <trans-unit id="SetPage_CleanUp_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
-          <target state="translated">*失效的缓存文件将在应用程序关闭前被自动清除。手动清理一般是不必要的。</target>
-        </trans-unit>
         <trans-unit id="SetPage_CleanUp_Title.Text" translate="yes" xml:space="preserve">
           <source>Storage Cache Size</source>
           <target state="translated">缓存文件大小</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
+          <target state="translated">*失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_DownloadFolder_OpenButton.Content" translate="yes" xml:space="preserve">
+          <source>Open Current</source>
+          <target state="translated">打开文件夹</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Enable Downloads in Background</source>
+          <target state="translated">启用后台下载</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>*Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Tasks will be activated in background after each freshness time has passed.</source>
+          <target state="translated">*后台任务启用后，将在应用已关闭时，每隔一段时间在后台继续下载任务（仅当任务本身允许在后台下载时）。后台任务将每隔“间隔时间”运行一次，每次运行下载大约三十秒时间，这一时间受到 Windows 对后台任务的资源限制，因此要以最高效率下载，建议您不要最小化 Thunder X ，以保证应用程序运行在前台。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Only when background cost is not High</source>
+          <target state="translated">仅当后台占用低时启用</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Only when User is not present</source>
+          <target state="translated">仅当设备不在使用时启用</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_Title.Text" translate="yes" xml:space="preserve">
+          <source>Background Task</source>
+          <target state="translated">后台任务</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_FreshnessTimeSlider.Header" translate="yes" xml:space="preserve">
+          <source>Freshness Time</source>
+          <target state="translated">后台间隔时间</target>
         </trans-unit>
       </group>
     </body>

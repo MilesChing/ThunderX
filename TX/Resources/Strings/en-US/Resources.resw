@@ -257,6 +257,24 @@
   <data name="SetPage_Appearance_Title.Text" xml:space="preserve">
     <value>Appearance</value>
   </data>
+  <data name="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Enable Downloads in Background</value>
+  </data>
+  <data name="SetPage_BackgroundTask_FreshnessTimeSlider.Header" xml:space="preserve">
+    <value>Freshness Time</value>
+  </data>
+  <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
+    <value>*Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Tasks will be activated in background after each freshness time has passed.</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
+    <value>Only when background cost is not High</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" xml:space="preserve">
+    <value>Only when User is not present</value>
+  </data>
+  <data name="SetPage_BackgroundTask_Title.Text" xml:space="preserve">
+    <value>Background Task</value>
+  </data>
   <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
     <value>Clean Up</value>
   </data>
@@ -280,6 +298,9 @@
   </data>
   <data name="SetPage_DownloadFolder_Button.Content" xml:space="preserve">
     <value>Select Folder</value>
+  </data>
+  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
+    <value>Open Current</value>
   </data>
   <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
     <value>Default Download Folder</value>

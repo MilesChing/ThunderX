@@ -255,10 +255,31 @@
   <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
     <value>清理</value>
   </data>
-  <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
-    <value>*失效的缓存文件将在应用程序关闭前被自动清除。手动清理一般是不必要的。</value>
-  </data>
   <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
     <value>缓存文件大小</value>
+  </data>
+  <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
+    <value>*失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</value>
+  </data>
+  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>启用后台下载</value>
+  </data>
+  <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
+    <value>*后台任务启用后，将在应用已关闭时，每隔一段时间在后台继续下载任务（仅当任务本身允许在后台下载时）。后台任务将每隔“间隔时间”运行一次，每次运行下载大约三十秒时间，这一时间受到 Windows 对后台任务的资源限制，因此要以最高效率下载，建议您不要最小化 Thunder X ，以保证应用程序运行在前台。</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
+    <value>仅当后台占用低时启用</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" xml:space="preserve">
+    <value>仅当设备不在使用时启用</value>
+  </data>
+  <data name="SetPage_BackgroundTask_Title.Text" xml:space="preserve">
+    <value>后台任务</value>
+  </data>
+  <data name="SetPage_BackgroundTask_FreshnessTimeSlider.Header" xml:space="preserve">
+    <value>后台间隔时间</value>
   </data>
 </root>
