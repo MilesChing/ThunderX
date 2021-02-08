@@ -52,6 +52,12 @@ namespace TX.Core.Models.Contexts
         public DateTime CreationTime { get; private set; }
 
         /// <summary>
+        /// Is this task allowed to be downloaded 
+        /// automatically by background task.
+        /// </summary>
+        public bool IsBackgroundDownloadAllowed { get; private set; }
+
+        /// <summary>
         /// Initialize a DownloadTask with a given key
         /// </summary>
         public DownloadTask(
@@ -59,13 +65,15 @@ namespace TX.Core.Models.Contexts
             AbstractTarget target, 
             string destinationFileName,
             string destinationFolderKey,
-            DateTime creationTime
+            DateTime creationTime,
+            bool isBackgroundDownloadAllowed
         ) { 
             Key = key;
             Target = target;
             DestinationFileName = destinationFileName;
             DestinationFolderKey = destinationFolderKey;
             CreationTime = creationTime;
+            IsBackgroundDownloadAllowed = isBackgroundDownloadAllowed;
         }
     }
 }

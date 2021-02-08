@@ -317,6 +317,14 @@ Create a task for downloading.</source>
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
 🕹 下载失败时设定自动重传。</target>
         </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Allow Downloaded in Background</source>
+          <target state="translated">允许后台下载</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_Title.Text" translate="yes" xml:space="preserve">
+          <source>Other Configurations</source>
+          <target state="translated">其他设置</target>
+        </trans-unit>
         <trans-unit id="RemainingTime" translate="yes" xml:space="preserve">
           <source>Remaining Time</source>
           <target state="translated">预计剩余</target>

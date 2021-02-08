@@ -9,16 +9,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTest
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|ARM.ActiveCfg = Debug|ARM
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|ARM.Build.0 = Debug|ARM
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -31,6 +34,7 @@ Global
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|x86.ActiveCfg = Debug|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|x86.Build.0 = Debug|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Debug|x86.Deploy.0 = Debug|x86
+		{07042608-4358-414C-A162-639A1CCA63FF}.Release|Any CPU.ActiveCfg = Release|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|ARM.ActiveCfg = Release|ARM
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|ARM.Build.0 = Release|ARM
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|ARM.Deploy.0 = Release|ARM
@@ -43,6 +47,7 @@ Global
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|x86.ActiveCfg = Release|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|x86.Build.0 = Release|x86
 		{07042608-4358-414C-A162-639A1CCA63FF}.Release|x86.Deploy.0 = Release|x86
+		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|ARM.ActiveCfg = Debug|ARM
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|ARM.Build.0 = Debug|ARM
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -55,6 +60,7 @@ Global
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|x86.ActiveCfg = Debug|x86
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|x86.Build.0 = Debug|x86
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Debug|x86.Deploy.0 = Debug|x86
+		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Release|Any CPU.ActiveCfg = Release|x86
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Release|ARM.ActiveCfg = Release|ARM
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Release|ARM.Build.0 = Release|ARM
 		{A1963CC9-6C76-48A4-A0E3-428D36F462C1}.Release|ARM.Deploy.0 = Release|ARM

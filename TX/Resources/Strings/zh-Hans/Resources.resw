@@ -243,6 +243,12 @@
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
 🕹 下载失败时设定自动重传。</value>
   </data>
+  <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
+    <value>允许后台下载</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
+    <value>其他设置</value>
+  </data>
   <data name="RemainingTime" xml:space="preserve">
     <value>预计剩余</value>
   </data>

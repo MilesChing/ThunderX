@@ -224,6 +224,12 @@
   <data name="NewTaskPage_FileName_Title.Text" xml:space="preserve">
     <value>File Name</value>
   </data>
+  <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
+    <value>Allow Downloaded in Background</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
+    <value>Other Configurations</value>
+  </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
     <value>Streams</value>
   </data>

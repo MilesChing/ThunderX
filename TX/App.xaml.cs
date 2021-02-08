@@ -23,6 +23,8 @@ using MonoTorrent.Client;
 using Windows.Storage.Pickers;
 using Windows.Storage.AccessCache;
 using MonoTorrent;
+using TX.Background;
+using Windows.ApplicationModel.Background;
 
 namespace TX
 {
@@ -32,6 +34,7 @@ namespace TX
     sealed partial class App : Application
     {
         public readonly TXCoreManager Core = new TXCoreManager();
+        private readonly Settings settingEntries = new Settings();
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -52,21 +55,49 @@ namespace TX
 
         private async Task InitializeAsync()
         {
-            var storeContext = StoreContext.GetDefault();
-            AppLicense = await storeContext.GetAppLicenseAsync();
+            await InitializeAppLicenceAsync();
+            await InitializeBackgroundTaskAsync();
+            await Core.InitializeAsync(await ReadLocalStorageAsync());
+        }
 
-            byte[] buffer = null;
+        private async Task<byte[]> ReadLocalStorageAsync()
+        {
             try
             {
                 var cacheFile = await GetCacheFileAsync();
-                buffer = (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
+                return (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Cache file reading failed: " + e.Message);
+                return null;
+            }
+        }
+
+        private async Task InitializeAppLicenceAsync()
+        {
+            var storeContext = StoreContext.GetDefault();
+            AppLicense = await storeContext.GetAppLicenseAsync();
+        }
+
+        private async Task InitializeBackgroundTaskAsync()
+        {
+            switch (BackgroundExecutionManager.GetAccessStatus())
+            {
+                case BackgroundAccessStatus.AllowedSubjectToSystemPolicy:
+                case BackgroundAccessStatus.AlwaysAllowed:
+                    break;
+                default:
+                    BackgroundExecutionManager.RemoveAccess();
+                    await BackgroundExecutionManager.RequestAccessAsync();
+                    break;
             }
 
-            await Core.InitializeAsync(buffer);
+            CoreBackgroundTask.RefreshBackgroundTask(
+                settingEntries.IsBackgroundTaskEnabled,
+                settingEntries.BackgroundTaskFreshnessTime,
+                settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
+                settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -109,6 +140,12 @@ namespace TX
             {
                 deferral.Complete();
             }
+        }
+
+        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+            CoreBackgroundTask.Run(args.TaskInstance);
         }
 
         protected override async void OnActivated(IActivatedEventArgs args)

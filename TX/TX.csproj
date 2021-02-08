@@ -136,6 +136,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Background\CoreBackgroundTask.cs" />
     <Compile Include="Controls\DownloaderBar.xaml.cs">
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
@@ -348,6 +349,7 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\TX.zh-Hans.xlf" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
