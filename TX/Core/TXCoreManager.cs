@@ -73,6 +73,7 @@ namespace TX.Core
         public string CreateTask(
             AbstractTarget target,
             IStorageFolder destinationFolder,
+            bool isBackgroundDownloadAllowed,
             string customFileName = null)
         {
             string token = RandomUtils.String(8);
@@ -83,7 +84,8 @@ namespace TX.Core
                 token, target,
                 customFileName,
                 coreFolderManager.StoreFolder(destinationFolder),
-                DateTime.Now
+                DateTime.Now,
+                isBackgroundDownloadAllowed
             );
 
             CreateDownloader(token);

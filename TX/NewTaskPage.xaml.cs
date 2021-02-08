@@ -308,7 +308,11 @@ namespace TX
         {
             if (FinalTarget != null && TargetFolder != null)
             {
-                CurrentApp.Core.CreateTask(FinalTarget, TargetFolder, DestinationFileName);
+                CurrentApp.Core.CreateTask(
+                    FinalTarget, 
+                    TargetFolder, 
+                    BackgroundAllowedToggleSwitch.IsOn,
+                    DestinationFileName);
                 MainPage.Current.NavigateEmptyPage();
             }
         }

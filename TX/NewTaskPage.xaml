@@ -79,8 +79,13 @@
                            FontFamily="Consolas" TextWrapping="Wrap" 
                            Foreground="{ThemeResource SystemAccentColor}"/>
                 <!--Select Folder-->
-                <Button x:Uid="NewTaskPage_DestinationFolder_Button" Height="36" Width="160"
+                <Button x:Uid="NewTaskPage_DestinationFolder_Button" Height="36" Width="160" Margin="0 0 0 20"
                         Style="{ThemeResource ButtonRevealStyle}" Click="FolderSelectButton_Click"/>
+
+                <TextBlock x:Uid="NewTaskPage_OtherConfigs_Title" Margin="0 0 0 8"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <ToggleSwitch x:Name="BackgroundAllowedToggleSwitch" Margin="0 0 0 20" IsOn="True"
+                              x:Uid="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch"/>
             </StackPanel>
         </ScrollViewer>
         <Grid RelativePanel.AlignBottomWithPanel="True"
