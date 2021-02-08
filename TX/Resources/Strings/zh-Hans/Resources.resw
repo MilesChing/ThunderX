@@ -249,4 +249,16 @@
   <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
     <value>其他设置</value>
   </data>
+  <data name="RemainingTime" xml:space="preserve">
+    <value>预计剩余</value>
+  </data>
+  <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
+    <value>清理</value>
+  </data>
+  <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
+    <value>*失效的缓存文件将在应用程序关闭前被自动清除。手动清理一般是不必要的。</value>
+  </data>
+  <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
+    <value>缓存文件大小</value>
+  </data>
 </root>
