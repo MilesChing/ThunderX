@@ -59,6 +59,7 @@
                 <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumColor}"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="FontSize" Value="12"/>
+                <Setter Property="LineHeight" Value="20"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

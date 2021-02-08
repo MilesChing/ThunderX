@@ -264,7 +264,7 @@
     <value>Freshness Time</value>
   </data>
   <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
-    <value>*Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Tasks will be activated in background after each freshness time has passed.</value>
+    <value>Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Background tasks basically run in a transparent manner and are currently slow. For the best download efficiency keep applications running in the foreground on your PC and avoid minimizing Thunder X window.</value>
   </data>
   <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
     <value>Only when background cost is not High</value>
@@ -279,7 +279,7 @@
     <value>Clean Up</value>
   </data>
   <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
-    <value>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</value>
+    <value>Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</value>
   </data>
   <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
     <value>Storage Cache Size</value>

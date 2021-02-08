@@ -338,8 +338,8 @@ Create a task for downloading.</source>
           <target state="translated">缓存文件大小</target>
         </trans-unit>
         <trans-unit id="SetPage_CleanUp_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
-          <target state="translated">*失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</target>
+          <source>Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
+          <target state="translated">失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</target>
         </trans-unit>
         <trans-unit id="SetPage_DownloadFolder_OpenButton.Content" translate="yes" xml:space="preserve">
           <source>Open Current</source>
@@ -350,8 +350,8 @@ Create a task for downloading.</source>
           <target state="translated">启用后台下载</target>
         </trans-unit>
         <trans-unit id="SetPage_BackgroundTask_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>*Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Tasks will be activated in background after each freshness time has passed.</source>
-          <target state="translated">*后台任务启用后，将在应用已关闭时，每隔一段时间在后台继续下载任务（仅当任务本身允许在后台下载时）。后台任务将每隔“间隔时间”运行一次，每次运行下载大约三十秒时间，这一时间受到 Windows 对后台任务的资源限制，因此要以最高效率下载，建议您不要最小化 Thunder X ，以保证应用程序运行在前台。</target>
+          <source>Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Background tasks basically run in a transparent manner and are currently slow. For the best download efficiency keep applications running in the foreground on your PC and avoid minimizing Thunder X window.</source>
+          <target state="translated">后台任务启用后，将在应用已关闭时，每隔一段时间在后台继续下载任务（仅当任务本身允许在后台下载时）。后台任务将每隔“间隔时间”运行一次，每次运行下载只能维持大约三十秒时间，此时应用受到 Windows 对后台任务的资源限制。为了以最高效率下载，建议您不要最小化 Thunder X ，以保证应用程序运行在前台。</target>
         </trans-unit>
         <trans-unit id="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Only when background cost is not High</source>

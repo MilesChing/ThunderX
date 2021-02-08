@@ -14,6 +14,7 @@ namespace TX.Background
         public static async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
+            DateTime startTime = DateTime.Now;
             try
             {
                 var Current = ((App)App.Current);
@@ -25,12 +26,17 @@ namespace TX.Background
                 if (activeDownloaders.Length == 0)
                 {
                     taskInstance.Task.Unregister(false);
-                    Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] no downloader found. Unregister background task.");
+                    Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] no downloader found. Unregister background task");
                 }
-                else Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] {activeDownloaders.Length} downloader(s) activated");
+                else
+                {
+                    Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] {activeDownloaders.Length} downloader(s) activated");
+                    await Task.Delay(startTime + TimeSpan.FromSeconds(29) - DateTime.Now);
+                }
             }
             finally
             {
+                Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] finished");
                 deferral.Complete();
             }
         }
