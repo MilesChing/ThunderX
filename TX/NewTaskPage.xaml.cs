@@ -240,7 +240,7 @@ namespace TX
 
                     try
                     {
-                        var source = AbstractSource.ConstructSource(new Uri(nowUri));
+                        var source = AbstractSource.CreateSource(new Uri(nowUri));
                         while (true)
                         {
                             Ensure.That(UserOperated).IsFalse();

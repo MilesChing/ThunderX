@@ -30,7 +30,7 @@ namespace TX.Core.Models.Sources
         public async Task<AbstractTarget> GetTargetAsync(IEnumerable<string> keys)
         {
             Ensure.That(keys.Count()).Is(1);
-            var source = ConstructSource(new Uri(keys.First())) as ISingleTargetExtracted;
+            var source = CreateSource(new Uri(keys.First())) as ISingleTargetExtracted;
             Ensure.That(source).IsNotNull();
             return await source.GetTargetAsync();
         }
