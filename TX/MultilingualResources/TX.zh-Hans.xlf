@@ -350,8 +350,8 @@ Create a task for downloading.</source>
           <target state="translated">启用后台下载</target>
         </trans-unit>
         <trans-unit id="SetPage_BackgroundTask_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Background tasks basically run in a transparent manner and are currently slow. For the best download efficiency keep applications running in the foreground on your PC and avoid minimizing Thunder X window.</source>
-          <target state="translated">后台任务启用后，将在应用已关闭时，每隔一段时间在后台继续下载任务（仅当任务本身允许在后台下载时）。后台任务将每隔“间隔时间”运行一次，每次运行下载只能维持大约三十秒时间，此时应用受到 Windows 对后台任务的资源限制。为了以最高效率下载，建议您不要最小化 Thunder X ，以保证应用程序运行在前台。</target>
+          <source>If the device is plugged in, Background Task keeps downloading when Thunder X is suspended or closed. It is activated every freshness time and works for 10 minutes each time in background automatically and transparently.</source>
+          <target state="translated">在设备接通电源时，后台任务将在 Thunder X 已被休眠或关闭后仍以一定频率保持下载。后台任务将每隔一段间隔时间触发一次长约为十分钟的运行。</target>
         </trans-unit>
         <trans-unit id="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Only when background cost is not High</source>

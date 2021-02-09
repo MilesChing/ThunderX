@@ -20,7 +20,7 @@ namespace TX.Background
                 var Current = ((App)App.Current);
                 await Current.WaitForInitializingAsync();
                 var activeDownloaders = Current.Core.Downloaders.Where(
-                    d => d.DownloadTask.IsBackgroundDownloadAllowed).ToArray();
+                    d => d.DownloadTask.IsBackgroundDownloadAllowed && d.CanStart).ToArray();
                 foreach (var downloader in activeDownloaders)
                     downloader.Start();
                 if (activeDownloaders.Length == 0)
@@ -31,12 +31,12 @@ namespace TX.Background
                 else
                 {
                     Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] {activeDownloaders.Length} downloader(s) activated");
-                    await Task.Delay(startTime + TimeSpan.FromSeconds(29) - DateTime.Now);
+                    await Task.Delay(startTime + TimeSpan.FromSeconds(9 * 60 + 55) - DateTime.Now);
                 }
             }
             finally
             {
-                Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] finished");
+                Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] finished after {DateTime.Now - startTime}");
                 deferral.Complete();
             }
         }
@@ -56,7 +56,7 @@ namespace TX.Background
             {
                 var builder = new BackgroundTaskBuilder();
                 builder.Name = thisTaskName;
-                builder.SetTrigger(new TimeTrigger(backgroundTaskFreshnessTime, false));
+                builder.SetTrigger(new MaintenanceTrigger(backgroundTaskFreshnessTime, false));
                 builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 if (runOnlyWhenUserNotPresent)
                     builder.AddCondition(new SystemCondition(SystemConditionType.UserNotPresent));
