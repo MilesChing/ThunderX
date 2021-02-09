@@ -39,9 +39,8 @@ namespace TX.Core.Models.Sources
             if (settingEntries.IsTorrentEnabled && 
                 uri.IsFile && Path.GetExtension(uri.LocalPath).Equals(".torrent"))
                 return new TorrentSource(uri);
-            // Test of magnet source is not passed for now
-            // if (uri.Scheme.Equals("magnet"))
-            //     return new MagnetSource(uri);
+            if (uri.Scheme.Equals("magnet"))
+                return new MagnetSource(uri);
             if (lowerScheme.Equals("http") || lowerScheme.Equals("https"))
             {
                 if (settingEntries.IsYouTubeURLEnabled &&

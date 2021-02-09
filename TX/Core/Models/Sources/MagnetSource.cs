@@ -18,7 +18,7 @@ namespace TX.Core.Models.Sources
         }
 
         public Task<AbstractTarget> GetTargetAsync() =>
-            Task.Run<AbstractTarget>(() => new MagnetTarget(link));
+            Task.Run<AbstractTarget>(() => new MagnetTarget(Uri));
 
         private readonly MagnetLink link = null;
     }

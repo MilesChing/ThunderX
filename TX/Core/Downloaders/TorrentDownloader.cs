@@ -239,17 +239,12 @@ namespace TX.Core.Downloaders
             
             // Every time a piece is hashed, this is fired.
             manager.PieceHashed += delegate (object o, PieceHashedEventArgs e) {
-                D($"Piece Hashed: {e.PieceIndex} - {(e.HashPassed ? "Pass" : "Fail")}");
-            };
-
-            // Every time the state changes (Stopped -> Seeding -> Downloading -> Hashing) this is fired
-            manager.TorrentStateChanged += delegate (object o, TorrentStateChangedEventArgs e) {
-                D($"OldState: {e.OldState} NewState: {e.NewState}");
+                D($"Piece hashed: {e.PieceIndex} - {(e.HashPassed ? "Pass" : "Fail")}");
             };
 
             // Every time the tracker's state changes, this is fired
             manager.TrackerManager.AnnounceComplete += (sender, e) =>
-                D($"{e.Successful}: {e.Tracker}");
+                D($"{(e.Successful ? "Tracker connected" : "Tracker connection failed")}: {e.Tracker}");
         }
 
         private async void ManagerTorrentStateChanged(object sender, TorrentStateChangedEventArgs e)
@@ -328,7 +323,7 @@ namespace TX.Core.Downloaders
             cacheFolderToken = checkPoint.CacheFolderToken;
         }
 
-        private void D(string text) => Debug.WriteLine($"[{nameof(TorrentDownloader)} with task {DownloadTask.Key}] {text}");
+        private void D(string text) => Debug.WriteLine($"[{GetType().Name} with task {DownloadTask.Key}] {text}");
 
         private class InnerCheckPoint
         {
