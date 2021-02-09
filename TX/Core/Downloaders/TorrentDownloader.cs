@@ -1,4 +1,5 @@
 ﻿using EnsureThat;
+using MonoTorrent;
 using MonoTorrent.BEncoding;
 using MonoTorrent.Client;
 using Newtonsoft.Json;
@@ -47,6 +48,7 @@ namespace TX.Core.Downloaders
         /// <param name="uploadSlots">
         /// The number of peers which can be uploaded to concurrently for this torrent. 
         /// A value of 0 means unlimited. defaults to 8.</param>
+        /// <param name="customAnnounceUrls">Custom announce URLs.</param>
         public TorrentDownloader(
             DownloadTask task,
             ClientEngine engine,
@@ -56,10 +58,11 @@ namespace TX.Core.Downloaders
             int maximumConnections = 60,
             int maximumDownloadSpeed = 0,
             int maximumUploadSpeed = 0,
-            int uploadSlots = 8
+            int uploadSlots = 8,
+            IEnumerable<string> customAnnounceUrls = null
         ) : base (task)
         {
-            Ensure.That(task.Target is TorrentTarget || task.Target is MagnetTarget).IsTrue();
+            Ensure.That(task.Target is TorrentTarget).IsTrue();
             Ensure.That(cacheProvider, nameof(cacheFolder)).IsNotNull();
             Ensure.That(folderProvider, nameof(folderProvider)).IsNotNull();
             Ensure.That(engine, nameof(engine)).IsNotNull();
@@ -75,18 +78,13 @@ namespace TX.Core.Downloaders
             this.maximumDownloadSpeed = maximumDownloadSpeed;
             this.maximumUploadSpeed = maximumUploadSpeed;
             this.uploadSlots = uploadSlots;
+            this.customAnnounceUrls = customAnnounceUrls;
 
-            long? totalSize = 0;
-            if (task.Target is TorrentTarget tt)
-                totalSize = tt.Torrent.Files.Sum(file =>
-                    file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
-            else if (task.Target is MagnetTarget mt)
-                totalSize = mt.Link.Size;
+            TorrentTarget realTarget = (TorrentTarget)task.Target;
 
-            if (totalSize == null)
-                Progress = new BaseProgress();
-            else 
-                Progress = new BaseMeasurableProgress((long)totalSize);
+            Progress = new BaseMeasurableProgress(
+                realTarget.Torrent.Files.Sum(
+                    file => file.Priority == Priority.DoNotDownload ? 0 : file.Length));
 
             Speed = SharedSpeedCalculatorFactory.NewSpeedCalculator();
 
@@ -98,14 +96,10 @@ namespace TX.Core.Downloaders
 
         public byte[] ToPersistentByteArray()
         {
-            long? totalSize = null;
             byte[] fastResumeData = null;
 
             try
             {
-                if (manager?.Torrent != null)
-                    totalSize = manager.Torrent.Files.Sum(file =>
-                        file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
                 using (var stream = new MemoryStream())
                 {
                     manager?.SaveFastResume()?.Encode(stream);
@@ -121,7 +115,6 @@ namespace TX.Core.Downloaders
                     CacheFolderToken = cacheFolderToken,
                     DownloadedSize = Progress.DownloadedSize,
                     FastResumeData = fastResumeData,
-                    TotalSize = totalSize,
                 }
             ));
         }
@@ -168,17 +161,18 @@ namespace TX.Core.Downloaders
                     MaximumUploadSpeed = maximumUploadSpeed,
                     UploadSlots = uploadSlots,
                 };
-                if (DownloadTask.Target is TorrentTarget tt)
-                    manager = new TorrentManager(
-                        tt.Torrent, 
-                        cacheFolder.Path,
-                        settings);
-                if (DownloadTask.Target is MagnetTarget mt)
-                    manager = new TorrentManager(mt.Link,
-                        cacheFolder.Path,
-                        settings, 
-                        // using local cache folder to save torrent
-                        ApplicationData.Current.LocalCacheFolder.Path);
+
+                var realTarget = (TorrentTarget) DownloadTask.Target;
+                var torrent = realTarget.Torrent;
+
+                if (customAnnounceUrls != null && !torrent.AnnounceUrls.IsReadOnly)
+                    torrent.AnnounceUrls.Add(new RawTrackerTier(customAnnounceUrls));
+
+                manager = new TorrentManager(
+                    torrent,
+                    cacheFolder.Path,
+                    settings);
+
                 if (fastResume != null) manager.LoadFastResume(fastResume);
                 manager.TorrentStateChanged += ManagerTorrentStateChanged;
                 RegisterDebugMessages();
@@ -193,32 +187,23 @@ namespace TX.Core.Downloaders
             downloadTask = Task.Run(() =>
             {
                 Speed.IsEnabled = true;
+
                 try
                 {
-                    var prog = Progress as BaseProgress;
                     var mprog = Progress as BaseMeasurableProgress;
-                    long? totalSize = null;
-                    if (manager.Torrent != null)
-                        totalSize = manager.Torrent.Files.Sum(file =>
-                            file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
                     while (!token.IsCancellationRequested)
                     {
                         try
                         {
                             Task.Delay(ProgressUpdateInterval).Wait();
-
-                            long nowVal = manager.Monitor.DataBytesDownloaded;
-                            if (totalSize.HasValue)
-                                nowVal = (long)(manager.PartialProgress / 100.0 * totalSize);
-                            if (mprog != null)
-                                nowVal = Math.Min(nowVal, mprog.TotalSize);
-                            long delta = nowVal - prog.DownloadedSize;
+                            long nowVal = (long)(manager.PartialProgress / 100.0 * mprog.TotalSize);
+                            long delta = nowVal - mprog.DownloadedSize;
                             if (delta < 0)
                             {
                                 delta = nowVal;
-                                prog.Reset();
+                                mprog.Reset();
                             }
-                            prog.Increase(delta);
+                            mprog.Increase(delta);
                         }
                         catch (Exception) { }
                     }
@@ -311,12 +296,12 @@ namespace TX.Core.Downloaders
                 Encoding.ASCII.GetString(checkPointByteArray));
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey)).IsEqualTo(DownloadTask.Key);
 
-            fastResume = new FastResume(
-                BEncodedDictionary.Decode<BEncodedDictionary>(
-                    checkPoint.FastResumeData));
-
-            if (checkPoint.TotalSize.HasValue)
-                Progress = new BaseMeasurableProgress(checkPoint.TotalSize.Value);
+            if (checkPoint.FastResumeData != null)
+            {
+                fastResume = new FastResume(
+                    BEncodedValue.Decode<BEncodedDictionary>(
+                        checkPoint.FastResumeData));
+            }
 
             (Progress as BaseProgress).Reset();
             (Progress as BaseProgress).Increase(checkPoint.DownloadedSize);
@@ -331,7 +316,6 @@ namespace TX.Core.Downloaders
             public string CacheFolderToken;
             public byte[] FastResumeData;
             public long DownloadedSize;
-            public long? TotalSize;
         };
 
         private FastResume fastResume = null;
@@ -349,6 +333,8 @@ namespace TX.Core.Downloaders
         private readonly int maximumDownloadSpeed = 0;
         private readonly int maximumUploadSpeed = 0;
         private readonly int uploadSlots = 8;
-        private static TimeSpan ProgressUpdateInterval = TimeSpan.FromSeconds(0.2);
+        private readonly IEnumerable<string> customAnnounceUrls = null;
+
+        private readonly static TimeSpan ProgressUpdateInterval = TimeSpan.FromSeconds(0.2);
     }
 }
