@@ -175,16 +175,14 @@ namespace TX.Core
                 new InnerCheckPoint()
                 {
                     Tasks = Tasks.ToArray(),
-                    Downloaders = Downloaders.Where(
-                        downloader => 
-                            downloader.Status != DownloaderStatus.Completed &&
-                            downloader.Status != DownloaderStatus.Disposed)
-                    .Select(
-                        downloader =>
+                    Downloaders = Downloaders.Where(downloader => 
+                        downloader.Status != DownloaderStatus.Completed &&
+                        downloader.Status != DownloaderStatus.Disposed)
+                        .Select(downloader =>
                         {
                             byte[] val = null;
                             if (downloader is IPersistable per)
-                                val = per.ToPersistentByteArray();
+                                try { val = per.ToPersistentByteArray(); } catch (Exception) { }
                             return new KeyValuePair<string, byte[]>(
                                 downloader.DownloadTask.Key, val);
                         }).ToArray(),

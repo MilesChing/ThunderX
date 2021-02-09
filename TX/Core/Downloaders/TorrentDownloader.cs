@@ -99,23 +99,31 @@ namespace TX.Core.Downloaders
         public byte[] ToPersistentByteArray()
         {
             long? totalSize = null;
-            if (manager?.Torrent != null)
-                totalSize = manager.Torrent.Files.Sum(file =>
-                    file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
-            using (var stream = new MemoryStream())
+            byte[] fastResumeData = null;
+
+            try
             {
-                manager?.SaveFastResume()?.Encode(stream);
-                return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
-                           new InnerCheckPoint()
-                           {
-                               TaskKey = DownloadTask.Key,
-                               CacheFolderToken = cacheFolderToken,
-                               DownloadedSize = Progress.DownloadedSize,
-                               FastResumeData = stream.ToArray(),
-                               TotalSize = totalSize,
-                           }
-                       ));
+                if (manager?.Torrent != null)
+                    totalSize = manager.Torrent.Files.Sum(file =>
+                        file.Priority == MonoTorrent.Priority.DoNotDownload ? 0 : file.Length);
+                using (var stream = new MemoryStream())
+                {
+                    manager?.SaveFastResume()?.Encode(stream);
+                    fastResumeData = stream.ToArray();
+                }
             }
+            catch (Exception) { }
+
+            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+                new InnerCheckPoint()
+                {
+                    TaskKey = DownloadTask.Key,
+                    CacheFolderToken = cacheFolderToken,
+                    DownloadedSize = Progress.DownloadedSize,
+                    FastResumeData = fastResumeData,
+                    TotalSize = totalSize,
+                }
+            ));
         }
 
         public PeerManager Peers => manager?.Peers;
