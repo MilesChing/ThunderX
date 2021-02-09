@@ -27,13 +27,14 @@ namespace TX.Core
         public TXCoreManager()
         {
             coreBufferProvider = new SizeLimitedBufferProvider(
-                SettingEntries.MemoryLimit, 512L * 1024L);
+                settingEntries.MemoryLimit, 512L * 1024L);
         }
 
         public async Task InitializeAsync(byte[] checkPoint = null)
         {
             try
             {
+                await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
 
                 if (checkPoint != null)
@@ -66,6 +67,10 @@ namespace TX.Core
         public IReadOnlyCollection<DownloadHistory> Histories => histories;
 
         public INotifyCollectionChanged ObservableHistories => histories;
+
+        public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
+
+        public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
 
         public void RemoveHistory(DownloadHistory history) =>
             histories.Remove(history);
@@ -108,7 +113,7 @@ namespace TX.Core
                         coreCacheManager.GetCacheProviderForTask(token),
                         coreBufferProvider,
                         checkPoint,
-                        SettingEntries.ThreadNumber);
+                        settingEntries.ThreadNumber);
                 else if (task.Target is HttpTarget httpTarget)
                     downloader = new HttpDownloader(
                         task, coreFolderManager,
@@ -118,19 +123,21 @@ namespace TX.Core
                     downloader = new TorrentDownloader(
                         task, torrentEngine, coreFolderManager,
                         coreCacheManager.GetCacheProviderForTask(token),
-                        checkPoint,
-                        SettingEntries.MaximumConnections,
-                        SettingEntries.MaximumDownloadSpeed,
-                        SettingEntries.MaximumUploadSpeed);
-                else if (task.Target is MagnetTarget magnetTarget)
-                    downloader = new TorrentDownloader(
-                        task, torrentEngine, coreFolderManager,
-                        coreCacheManager.GetCacheProviderForTask(token));
-            } catch (Exception) { }
+                        checkPoint: checkPoint,
+                        maximumConnections: settingEntries.MaximumConnections,
+                        maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
+                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
+                        customAnnounceUrls: customAnnounceUrls);
+            } 
+            catch (Exception e) 
+            {
+                D($"Downloader with task {token} creation failed, {e.Message}");
+            }
 
             if (downloader != null)
             {
-                downloader.MaximumRetries = SettingEntries.MaximumRetries;
+                D($"Downloader with task {token} created");
+                downloader.MaximumRetries = settingEntries.MaximumRetries;
                 downloader.StatusChanged += AnyDownloader_StatusChanged;
                 downloaders.Add(downloader);
             }
@@ -146,7 +153,7 @@ namespace TX.Core
                     sender.DownloadTask.Key,
                     sender.Result.Path,
                     DateTime.Now));
-                if (SettingEntries.IsNotificationEnabledWhenTaskCompleted)
+                if (settingEntries.IsNotificationEnabledWhenTaskCompleted)
                 {
                     ToastManager.ShowDownloadCompleteToastAsync(
                         "Task Completed", sender.DownloadTask.DestinationFileName,
@@ -155,7 +162,7 @@ namespace TX.Core
             }
             else if (status == DownloaderStatus.Error)
             {
-                if (SettingEntries.IsNotificationEnabledWhenFailed)
+                if (settingEntries.IsNotificationEnabledWhenFailed)
                 {
                     ToastManager.ShowSimpleToast(
                         "Task Failed: " + sender.DownloadTask.DestinationFileName,
@@ -171,6 +178,7 @@ namespace TX.Core
 
         public byte[] ToPersistentByteArray()
         {
+            D("Generating persistent byte array");
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
@@ -197,16 +205,18 @@ namespace TX.Core
 
         public void Dispose()
         {
-            Debug.WriteLine("[{0}] disposing".AsFormat(nameof(TXCoreManager)));
+            D("Disposing");
 
             CleanTasks();
 
             Task.Run(async () => await CleanCacheFolderAsync()).Wait();
 
+            D("Cancelling downloaders");
+
             foreach (var downloader in downloaders)
                 downloader.Cancel();
 
-            Debug.WriteLine("[{0}] disposed".AsFormat(nameof(TXCoreManager)));
+            D("Disposed");
         }
 
         public async Task CleanCacheFolderAsync()
@@ -226,17 +236,45 @@ namespace TX.Core
                 key => !downloaders.Any(downloader =>
                     downloader.DownloadTask.Key.Equals(key))).ToArray();
             foreach (var key in toBeDeleted)
+            {
+                D($"Unused task {key} deleted");
                 tasks.Remove(key);
+            }
         }
 
         private async Task InitializeDhtEngineAsync()
         {
-            var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
-            await torrentEngine.RegisterDhtAsync(dhtEngine);
-            await torrentEngine.DhtEngine.StartAsync();
+            try
+            {
+                var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
+                await torrentEngine.RegisterDhtAsync(dhtEngine);
+                await torrentEngine.DhtEngine.StartAsync();
+                D("DhtEngine initialized");
+            } catch (Exception e) 
+            {
+                D($"DhtEngine initialization failed: {e.Message}");
+            }
         }
 
-        private readonly Settings SettingEntries = new Settings();
+        private async Task LoadAnnounceUrlsAsync()
+        {
+            try
+            {
+                customAnnounceUrls.AddRange(
+                    (await FileIO.ReadLinesAsync(
+                        await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
+                        Windows.Storage.Streams.UnicodeEncoding.Utf8
+                    )).Where(url => url.Length > 0)
+                );
+                D($"Custom announce URLs loaded, {customAnnounceUrls.Count} in total");
+            }
+            catch (Exception e)
+            {
+                D($"Custom announce URLs loading failed, {e.Message}");
+            }
+        }
+
+        private readonly Settings settingEntries = new Settings();
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
@@ -244,6 +282,9 @@ namespace TX.Core
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
+        private readonly List<string> customAnnounceUrls = new List<string>();
+
+        private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
         private class InnerCheckPoint
         {
