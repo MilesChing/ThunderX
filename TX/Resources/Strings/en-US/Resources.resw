@@ -264,7 +264,7 @@
     <value>Freshness Time</value>
   </data>
   <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
-    <value>Background task starts every task which has been permitted to be automatically downloaded (for about 30 seconds each time) in background once activated. Background tasks basically run in a transparent manner and are currently slow. For the best download efficiency keep applications running in the foreground on your PC and avoid minimizing Thunder X window.</value>
+    <value>If the device is plugged in, Background Task keeps downloading when Thunder X is suspended or closed. It is activated every freshness time and works for 10 minutes each time in background automatically and transparently.</value>
   </data>
   <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
     <value>Only when background cost is not High</value>
