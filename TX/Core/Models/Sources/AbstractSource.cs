@@ -27,21 +27,21 @@ namespace TX.Core.Models.Sources
         /// </summary>
         public Uri Uri { get; private set; }
 
-        /// <summary>
-        /// Construct download source from given URI.
-        /// </summary>
-        /// <param name="uri">URI.</param>
-        /// <returns>Download source constructed.</returns>
-        public static AbstractSource ConstructSource(Uri uri)
+        public static AbstractSource CreateSource(Uri uri)
         {
+            var core = ((App)App.Current).Core;
             var settingEntries = new Settings();
-            string lowerScheme = uri.Scheme;
-            if (settingEntries.IsTorrentEnabled && 
+
+            if (settingEntries.IsTorrentEnabled &&
                 uri.IsFile && Path.GetExtension(uri.LocalPath).Equals(".torrent"))
                 return new TorrentSource(uri);
+
             if (uri.Scheme.Equals("magnet"))
-                return new MagnetSource(uri);
-            if (lowerScheme.Equals("http") || lowerScheme.Equals("https"))
+                return new MagnetSource(uri, 
+                    core.TorrentEngine, 
+                    core.CustomAnnounceURLs);
+
+            if (uri.Scheme.Equals("http") || uri.Scheme.Equals("https"))
             {
                 if (settingEntries.IsYouTubeURLEnabled &&
                     uri.Host.Equals("www.youtube.com") &&
@@ -49,10 +49,13 @@ namespace TX.Core.Models.Sources
                     return new YouTubeSource(uri);
                 return new HttpSource(uri);
             }
+
             if (settingEntries.IsThunderURLEnabled &&
-                (lowerScheme.Equals("thunder")))
+                (uri.Scheme.Equals("thunder")))
                 return new ThunderSource(uri);
+
             return null;
         }
+
     }
 }
