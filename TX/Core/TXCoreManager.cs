@@ -98,6 +98,25 @@ namespace TX.Core
             return token;
         }
 
+        public async Task LoadAnnounceUrlsAsync()
+        {
+            try
+            {
+                customAnnounceUrls.Clear();
+                customAnnounceUrls.AddRange(
+                    (await FileIO.ReadLinesAsync(
+                        await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
+                        Windows.Storage.Streams.UnicodeEncoding.Utf8
+                    )).Where(url => url.Length > 0)
+                );
+                D($"Custom announce URLs loaded, {customAnnounceUrls.Count} in total");
+            }
+            catch (Exception e)
+            {
+                D($"Custom announce URLs loading failed, {e.Message}");
+            }
+        }
+
         private void CreateDownloader(string token, byte[] checkPoint = null)
         {
             if (!tasks.TryGetValue(token, out DownloadTask task)) return;
@@ -253,24 +272,6 @@ namespace TX.Core
             } catch (Exception e) 
             {
                 D($"DhtEngine initialization failed: {e.Message}");
-            }
-        }
-
-        private async Task LoadAnnounceUrlsAsync()
-        {
-            try
-            {
-                customAnnounceUrls.AddRange(
-                    (await FileIO.ReadLinesAsync(
-                        await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
-                        Windows.Storage.Streams.UnicodeEncoding.Utf8
-                    )).Where(url => url.Length > 0)
-                );
-                D($"Custom announce URLs loaded, {customAnnounceUrls.Count} in total");
-            }
-            catch (Exception e)
-            {
-                D($"Custom announce URLs loading failed, {e.Message}");
             }
         }
 

@@ -329,6 +329,18 @@
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" xml:space="preserve">
+    <value>Edit File</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" xml:space="preserve">
+    <value>Both original trackers embedded in the torrent file and custom trackers imported from custom tracker list file are used by Thunder X torrent downloader. Each line in the file represents an announce URL, edit and reload it to apply your own tracker list.</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_Header.Text" xml:space="preserve">
+    <value>Custom Tacker List</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" xml:space="preserve">
+    <value>Reload Tracker List</value>
+  </data>
   <data name="SetPage_Torrent_MaximumConnectionsSlider.Header" xml:space="preserve">
     <value>Maximum Connections</value>
   </data>

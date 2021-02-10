@@ -282,4 +282,16 @@
   <data name="SetPage_BackgroundTask_FreshnessTimeSlider.Header" xml:space="preserve">
     <value>后台间隔时间</value>
   </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_Header.Text" xml:space="preserve">
+    <value>自定义 Tracker 列表</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" xml:space="preserve">
+    <value>Thunder X Torrent 下载器同时使用 .torrent 文件中指定的 Tracker 服务器（优先）和从自定义 Tracker 列表文件种读取到的 Tracker 服务器。直接修改自定义 Tracker 列表文件（每行写入一个 Announce URL）并重新加载以增加下载时使用的 Tracker 服务器。</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" xml:space="preserve">
+    <value>编辑列表文件</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" xml:space="preserve">
+    <value>重新加载 Tracker 列表</value>
+  </data>
 </root>
