@@ -298,9 +298,13 @@ namespace TX.Core.Downloaders
 
             if (checkPoint.FastResumeData != null)
             {
-                fastResume = new FastResume(
-                    BEncodedValue.Decode<BEncodedDictionary>(
-                        checkPoint.FastResumeData));
+                try
+                {
+                    fastResume = new FastResume(
+                        BEncodedValue.Decode<BEncodedDictionary>(
+                            checkPoint.FastResumeData));
+                }
+                catch (Exception) { }
             }
 
             (Progress as BaseProgress).Reset();

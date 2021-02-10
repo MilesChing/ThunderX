@@ -369,6 +369,22 @@ Create a task for downloading.</source>
           <source>Freshness Time</source>
           <target state="translated">后台间隔时间</target>
         </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_Header.Text" translate="yes" xml:space="preserve">
+          <source>Custom Tacker List</source>
+          <target state="translated">自定义 Tracker 列表</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Both original trackers embedded in the torrent file and custom trackers imported from custom tracker list file are used by Thunder X torrent downloader. Each line in the file represents an announce URL, edit and reload it to apply your own tracker list.</source>
+          <target state="translated">Thunder X Torrent 下载器同时使用 .torrent 文件中指定的 Tracker 服务器（优先）和从自定义 Tracker 列表文件种读取到的 Tracker 服务器。直接修改自定义 Tracker 列表文件（每行写入一个 Announce URL）并重新加载以增加下载时使用的 Tracker 服务器。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" translate="yes" xml:space="preserve">
+          <source>Edit File</source>
+          <target state="translated">编辑列表文件</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" translate="yes" xml:space="preserve">
+          <source>Reload Tracker List</source>
+          <target state="translated">重新加载 Tracker 列表</target>
+        </trans-unit>
       </group>
     </body>
   </file>

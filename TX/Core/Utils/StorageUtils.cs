@@ -66,14 +66,14 @@ namespace TX.Core.Utils
         {
             string announceUrlsFileName = "TXAnnounceUrlList.txt";
             var item = await ApplicationData.Current
-                .LocalCacheFolder.TryGetItemAsync(announceUrlsFileName);
+                .LocalFolder.TryGetItemAsync(announceUrlsFileName);
             if (item != null && item is IStorageFile file) return file;
             else
             {
                 if (item != null) await item.DeleteAsync();
                 var template = await StorageFile.GetFileFromApplicationUriAsync(
                     new Uri("ms-appx:///Resources/ConfigTemplates/AnnounceUrlListTemplate.txt"));
-                return await template.CopyAsync(ApplicationData.Current.LocalCacheFolder, announceUrlsFileName);
+                return await template.CopyAsync(ApplicationData.Current.LocalFolder, announceUrlsFileName);
             }
         }
     }
