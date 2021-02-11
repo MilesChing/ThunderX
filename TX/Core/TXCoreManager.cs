@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Contexts;
@@ -28,6 +29,9 @@ namespace TX.Core
         {
             coreBufferProvider = new SizeLimitedBufferProvider(
                 settingEntries.MemoryLimit, 512L * 1024L);
+            schedulerTimer.Interval = TimeSpan.FromMinutes(5).TotalMilliseconds;
+            schedulerTimer.AutoReset = true;
+            schedulerTimer.Elapsed += (sender, e) => CheckSchedulerList();
         }
 
         public async Task InitializeAsync(byte[] checkPoint = null)
@@ -36,6 +40,7 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
+                schedulerTimer.Start();
 
                 if (checkPoint != null)
                 {
@@ -44,12 +49,22 @@ namespace TX.Core
                         new JsonSerializerSettings() { 
                             TypeNameHandling = TypeNameHandling.All
                         });
-                    foreach (var kvp in checkPointObject.Tasks) tasks.Add(kvp.Key, kvp.Value);
+                    if (checkPointObject.Tasks != null)
+                        foreach (var kvp in checkPointObject.Tasks) 
+                            tasks.Add(kvp.Key, kvp.Value);
                     coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
-                    foreach (var kvp in checkPointObject.Downloaders) CreateDownloader(kvp.Key, kvp.Value);
-                    foreach (var hist in checkPointObject.Histories) histories.Add(hist);
-                    Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                    if (checkPointObject.Downloaders != null)
+                        foreach (var kvp in checkPointObject.Downloaders) 
+                            CreateDownloader(kvp.Key, kvp.Value);
+                    if (checkPointObject.Histories != null)
+                        foreach (var hist in checkPointObject.Histories) 
+                            histories.Add(hist);
+                    if (checkPointObject.Schedules != null)
+                        foreach (var kvp in checkPointObject.Schedules) 
+                            schedulerList.Add(kvp.Key, kvp.Value);
                 }
+
+                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
             }
             catch (Exception e)
             {
@@ -97,6 +112,8 @@ namespace TX.Core
 
             return token;
         }
+
+        public void ScheduleTask(string key, DateTime startTime) => schedulerList.Add(startTime, key);
 
         public async Task LoadAnnounceUrlsAsync()
         {
@@ -197,7 +214,7 @@ namespace TX.Core
 
         public byte[] ToPersistentByteArray()
         {
-            D("Generating persistent byte array");
+            D("Generating persistent byte array...");
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
@@ -215,6 +232,7 @@ namespace TX.Core
                         }).ToArray(),
                     Histories = Histories.ToArray(),
                     CacheManagerCheckPoint = coreCacheManager.ToPersistentByteArray(),
+                    Schedules = schedulerList.ToArray(),
                 }, 
                 new JsonSerializerSettings()
                 {
@@ -222,20 +240,34 @@ namespace TX.Core
                 }));
         }
 
+        public void Suspend()
+        {
+            D("Suspending core...");
+            CleanTasks();
+            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
+            D("Cancelling downloaders...");
+            foreach (var downloader in downloaders)
+                if (downloader.Status == DownloaderStatus.Running)
+                {
+                    ScheduleTask(downloader.DownloadTask.Key, DateTime.MinValue);
+                    downloader.Cancel();
+                }
+            D("Stop scheduler timer");
+            schedulerTimer.Stop();
+            D("Suspended");
+        }
+
+        public void Resume()
+        {
+            D("Resuming...");
+            schedulerTimer.Start();
+            D("Resumed");
+        }
+
         public void Dispose()
         {
-            D("Disposing");
-
-            CleanTasks();
-
-            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
-
-            D("Cancelling downloaders");
-
-            foreach (var downloader in downloaders)
-                downloader.Cancel();
-
-            D("Disposed");
+            torrentEngine.Dispose();
+            schedulerTimer.Dispose();
         }
 
         public async Task CleanCacheFolderAsync()
@@ -275,6 +307,27 @@ namespace TX.Core
             }
         }
 
+        private void CheckSchedulerList()
+        {
+            D("Checking scheduler list...");
+            var now = DateTime.Now;
+            while (schedulerList.Count > 0)
+            {
+                var f = schedulerList.First();
+                if (f.Key <= now)
+                {
+                    foreach (var downloader in downloaders.Where(
+                        down => down.DownloadTask.Key.Equals(f.Value)))
+                    {
+                        downloader.Start();
+                        D($"Start {downloader.GetType().Name} with task {f.Value} at {now}, scheduled time: {f.Key}");
+                    }
+                    schedulerList.Remove(f.Key);
+                }
+                else break;
+            }
+        }
+
         private readonly Settings settingEntries = new Settings();
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
@@ -284,6 +337,8 @@ namespace TX.Core
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
         private readonly List<string> customAnnounceUrls = new List<string>();
+        private readonly SortedList<DateTime, string> schedulerList = new SortedList<DateTime, string>();
+        private readonly Timer schedulerTimer = new Timer();
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
@@ -296,6 +351,8 @@ namespace TX.Core
             public DownloadHistory[] Histories;
 
             public byte[] CacheManagerCheckPoint;
+
+            public KeyValuePair<DateTime, string>[] Schedules;
         }
     }
 }

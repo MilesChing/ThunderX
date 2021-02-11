@@ -248,15 +248,6 @@ namespace TX.Utils
             set { SetValue(nameof(IsNotificationEnabledWhenFailed), value); }
         }
 
-        /// <summary>
-        /// Is notification enabled when application is suspended.
-        /// </summary>
-        public bool IsNotificationEnabledWhenApplicationSuspended
-        {
-            get { return TryGetValue(nameof(IsNotificationEnabledWhenApplicationSuspended), false); }
-            set { SetValue(nameof(IsNotificationEnabledWhenApplicationSuspended), value); }
-        }
-
         #endregion
 
         #region Tools

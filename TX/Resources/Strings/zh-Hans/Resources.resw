@@ -125,9 +125,6 @@
   <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
     <value>默认下载文件夹</value>
   </data>
-  <data name="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" xml:space="preserve">
-    <value>应用程序被挂起时发送通知</value>
-  </data>
   <data name="SetPage_Notifications_TaskCompletedToggleSwitch.Header" xml:space="preserve">
     <value>有任务完成时发送通知</value>
   </data>
