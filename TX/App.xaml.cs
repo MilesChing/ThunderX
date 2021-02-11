@@ -44,9 +44,10 @@ namespace TX
         {
             this.InitializeComponent(); 
             this.Suspending += OnSuspending;
+            this.Resuming += OnResuming;
             initializingTask = InitializeAsync();
         }
-        
+
         public StoreAppLicense AppLicense { get; private set; } = null;
 
         public async Task WaitForInitializingAsync() => await initializingTask;
@@ -92,12 +93,8 @@ namespace TX
                     await BackgroundExecutionManager.RequestAccessAsync();
                     break;
             }
-
-            CoreBackgroundTask.RefreshBackgroundTask(
-                settingEntries.IsBackgroundTaskEnabled,
-                settingEntries.BackgroundTaskFreshnessTime,
-                settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
-                settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
+            
+            CoreBackgroundTask.UnregisterBackgroundTask();
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -131,16 +128,22 @@ namespace TX
                     Debug.WriteLine("[App] database writing failed: " + e.Message);
                 }
 
-                Core.Dispose();
+                Core.Suspend();
 
-                if (new Settings().IsNotificationEnabledWhenApplicationSuspended)
-                    ToastManager.ShowSimpleToast("Thunder X Suspended", "Running tasks have been temporarily cancelled.");
+                CoreBackgroundTask.UnregisterBackgroundTask();
+                if (settingEntries.IsBackgroundTaskEnabled && Core.Downloaders.Count > 0)
+                    CoreBackgroundTask.RegisterBackgroundTask(
+                        settingEntries.BackgroundTaskFreshnessTime,
+                        settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
+                        settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
             }
             finally
             {
                 deferral.Complete();
             }
         }
+
+        private void OnResuming(object sender, object e) => Core.Resume();
 
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {

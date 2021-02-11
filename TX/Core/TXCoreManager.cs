@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Contexts;
@@ -44,12 +45,19 @@ namespace TX.Core
                         new JsonSerializerSettings() { 
                             TypeNameHandling = TypeNameHandling.All
                         });
-                    foreach (var kvp in checkPointObject.Tasks) tasks.Add(kvp.Key, kvp.Value);
+                    if (checkPointObject.Tasks != null)
+                        foreach (var kvp in checkPointObject.Tasks) 
+                            tasks.Add(kvp.Key, kvp.Value);
                     coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
-                    foreach (var kvp in checkPointObject.Downloaders) CreateDownloader(kvp.Key, kvp.Value);
-                    foreach (var hist in checkPointObject.Histories) histories.Add(hist);
-                    Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                    if (checkPointObject.Downloaders != null)
+                        foreach (var kvp in checkPointObject.Downloaders) 
+                            CreateDownloader(kvp.Key, kvp.Value);
+                    if (checkPointObject.Histories != null)
+                        foreach (var hist in checkPointObject.Histories) 
+                            histories.Add(hist);
                 }
+
+                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
             }
             catch (Exception e)
             {
@@ -197,7 +205,7 @@ namespace TX.Core
 
         public byte[] ToPersistentByteArray()
         {
-            D("Generating persistent byte array");
+            D("Generating persistent byte array...");
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
@@ -222,20 +230,27 @@ namespace TX.Core
                 }));
         }
 
+        public void Suspend()
+        {
+            D("Suspending core...");
+            CleanTasks();
+            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
+            D("Cancelling downloaders...");
+            foreach (var downloader in downloaders)
+                if (downloader.Status == DownloaderStatus.Running)
+                    downloader.Cancel();
+            D("Suspended");
+        }
+
+        public void Resume()
+        {
+            D("Resuming...");
+            D("Resumed");
+        }
+
         public void Dispose()
         {
-            D("Disposing");
-
-            CleanTasks();
-
-            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
-
-            D("Cancelling downloaders");
-
-            foreach (var downloader in downloaders)
-                downloader.Cancel();
-
-            D("Disposed");
+            torrentEngine.Dispose();
         }
 
         public async Task CleanCacheFolderAsync()

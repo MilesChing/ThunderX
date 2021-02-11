@@ -308,9 +308,6 @@
   <data name="SetPage_HTTP_Title.Text" xml:space="preserve">
     <value>HTTP/HTTPS</value>
   </data>
-  <data name="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" xml:space="preserve">
-    <value>Application Suspended Notification</value>
-  </data>
   <data name="SetPage_Notifications_TaskCompletedToggleSwitch.Header" xml:space="preserve">
     <value>Task Completion Notification</value>
   </data>

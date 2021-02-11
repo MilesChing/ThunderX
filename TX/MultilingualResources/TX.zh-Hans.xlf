@@ -156,10 +156,6 @@
           <source>Default Download Folder</source>
           <target state="translated">默认下载文件夹</target>
         </trans-unit>
-        <trans-unit id="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>Application Suspended Notification</source>
-          <target state="translated">应用程序被挂起时发送通知</target>
-        </trans-unit>
         <trans-unit id="SetPage_Notifications_TaskCompletedToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Task Completion Notification</source>
           <target state="translated">有任务完成时发送通知</target>

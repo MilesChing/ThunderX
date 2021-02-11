@@ -41,29 +41,29 @@ namespace TX.Background
             }
         }
 
-        public static void RefreshBackgroundTask(
-            bool backgroundTaskEnabled = true,
+        public static void RegisterBackgroundTask(
             uint backgroundTaskFreshnessTime = 15,
             bool runOnlyWhenUserNotPresent = false,
             bool runOnlyWhenBackgroundWorkCostNotHigh = false)
         {
             var thisTaskName = nameof(CoreBackgroundTask);
+            var builder = new BackgroundTaskBuilder();
+            builder.Name = thisTaskName;
+            builder.SetTrigger(new MaintenanceTrigger(backgroundTaskFreshnessTime, true));
+            builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+            if (runOnlyWhenUserNotPresent)
+                builder.AddCondition(new SystemCondition(SystemConditionType.UserNotPresent));
+            if (runOnlyWhenBackgroundWorkCostNotHigh)
+                builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
+            builder.Register();
+        }
+
+        public static void UnregisterBackgroundTask()
+        {
+            var thisTaskName = nameof(CoreBackgroundTask);
             var exists = BackgroundTaskRegistration.AllTasks.FirstOrDefault(
                 task => task.Value.Name.Equals(thisTaskName));
             exists.Value?.Unregister(false);
-
-            if (backgroundTaskEnabled)
-            {
-                var builder = new BackgroundTaskBuilder();
-                builder.Name = thisTaskName;
-                builder.SetTrigger(new MaintenanceTrigger(backgroundTaskFreshnessTime, false));
-                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-                if (runOnlyWhenUserNotPresent)
-                    builder.AddCondition(new SystemCondition(SystemConditionType.UserNotPresent));
-                if (runOnlyWhenBackgroundWorkCostNotHigh)
-                    builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
-                builder.Register();
-            }
         }
     }
 }

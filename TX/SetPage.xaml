@@ -199,12 +199,8 @@
                               IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenTaskCompleted, Mode=TwoWay}"/>
                 <!--Task Failed Notification-->
                 <ToggleSwitch x:Name="TaskFailedToggleSwitch"
-                              x:Uid="SetPage_Notifications_TaskFailedToggleSwitch" Margin="0 0 0 8"
+                              x:Uid="SetPage_Notifications_TaskFailedToggleSwitch" Margin="0 0 0 20"
                               IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenFailed, Mode=TwoWay}"/>
-                <!--Application Suspended Notification-->
-                <ToggleSwitch x:Name="ApplicationSuspendedToggleSwitch" 
-                              x:Uid="SetPage_Notifications_ApplicationSuspendedToggleSwitch" Margin="0 0 0 20"
-                              IsOn="{x:Bind SettingEntries.IsNotificationEnabledWhenApplicationSuspended, Mode=TwoWay}"/>
 
                 <!--Clean Up-->
                 <TextBlock x:Uid="SetPage_CleanUp_Title" Margin="0 0 0 16"
