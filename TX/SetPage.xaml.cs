@@ -71,7 +71,6 @@ namespace TX
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             RefreshStorageSize();
-
             base.OnNavigatedTo(e);
         }
 
@@ -127,7 +126,7 @@ namespace TX
             await ((App)App.Current).Core.CleanCacheFolderAsync();
             RefreshStorageSize();
         }
-
+        
         private async void OpenDownloadFolderButton_Click(object sender, RoutedEventArgs e) =>
             await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
 
