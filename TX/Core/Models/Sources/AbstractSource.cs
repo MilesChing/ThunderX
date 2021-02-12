@@ -36,7 +36,7 @@ namespace TX.Core.Models.Sources
                 uri.IsFile && Path.GetExtension(uri.LocalPath).Equals(".torrent"))
                 return new TorrentSource(uri);
 
-            if (uri.Scheme.Equals("magnet"))
+            if (settingEntries.IsTorrentEnabled && uri.Scheme.Equals("magnet"))
                 return new MagnetSource(uri, 
                     core.TorrentEngine, 
                     core.CustomAnnounceURLs);

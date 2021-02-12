@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using TX.Controls;
 using TX.Core.Models.Sources;
 using TX.Core.Models.Targets;
 using TX.Core.Providers;
@@ -73,6 +74,7 @@ namespace TX
             TargetFolder = await LocalFolderManager.GetOrCreateDownloadFolderAsync();
             mainURITextBoxAnalyzingTaskCancellationTokenSource = new CancellationTokenSource();
             _ = Task.Run(() => UrlAnalyzer(mainURITextBoxAnalyzingTaskCancellationTokenSource.Token));
+
             base.OnNavigatedTo(e);
         }
 
@@ -110,8 +112,6 @@ namespace TX
             }
         }
 
-        private CancellationTokenSource mainURITextBoxAnalyzingTaskCancellationTokenSource;
-
         private void MainURITextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             lock (userOperationStatusLockObject) UriChanged = true;
@@ -142,6 +142,20 @@ namespace TX
             }
         }
 
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (FinalTarget != null && TargetFolder != null)
+            {
+                CurrentApp.Core.CreateTask(
+                    FinalTarget,
+                    TargetFolder,
+                    BackgroundAllowedToggleSwitch.IsOn,
+                    DestinationFileName);
+                MainPage.Current.NavigateEmptyPage();
+            }
+        }
+
+        private CancellationTokenSource mainURITextBoxAnalyzingTaskCancellationTokenSource;
         private readonly object userOperationStatusLockObject = new object();
         private bool ComboBoxSelectionChanged = false;
         private bool UriChanged = false;
@@ -301,19 +315,6 @@ namespace TX
                         }
                     }
                 }
-            }
-        }
-
-        private void AcceptButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (FinalTarget != null && TargetFolder != null)
-            {
-                CurrentApp.Core.CreateTask(
-                    FinalTarget, 
-                    TargetFolder, 
-                    BackgroundAllowedToggleSwitch.IsOn,
-                    DestinationFileName);
-                MainPage.Current.NavigateEmptyPage();
             }
         }
     }

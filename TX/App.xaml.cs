@@ -34,6 +34,7 @@ namespace TX
     sealed partial class App : Application
     {
         public readonly TXCoreManager Core = new TXCoreManager();
+        public readonly OneOffActionManager OOAManager = new OneOffActionManager();
         private readonly Settings settingEntries = new Settings();
 
         /// <summary>
@@ -129,6 +130,7 @@ namespace TX
                 }
 
                 Core.Suspend();
+                OOAManager.SaveToStorage();
 
                 CoreBackgroundTask.UnregisterBackgroundTask();
                 if (settingEntries.IsBackgroundTaskEnabled && Core.Downloaders.Count > 0)

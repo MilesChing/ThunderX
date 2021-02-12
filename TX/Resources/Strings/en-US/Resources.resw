@@ -141,9 +141,9 @@
   <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
     <value>If satisfied with our application, pay to support development teams and to enjoy these features:
 🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
-💾 Limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.</value>
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.
+🚀 Keep downloading in background after Thunder X closed or suspended.</value>
   </data>
   <data name="AboutPage_TrailMessage_BuyButton.Content" xml:space="preserve">
     <value>Buy Now</value>
@@ -152,7 +152,8 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</value>
+    <value>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
+🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>

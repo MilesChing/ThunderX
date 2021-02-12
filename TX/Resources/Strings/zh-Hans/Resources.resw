@@ -229,7 +229,8 @@
     <value>启用该功能</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</value>
+    <value>🌎 这一版本完整推出了基于 BitTorrent 协议的下载。以本地 torrent 文件或 magnet 链接的形式均可创建任务，在我们的下载器中追加自定义的 Tracker 服务器列表也受支持。
+🚀 后台任务已被引入，以在 Thunder X 处于挂起或被关闭状态下仍能在后台进行一定时间的下载。后台任务打开后将在设备连接电源时生效。</value>
   </data>
   <data name="AboutPage_AppDescription.Text" xml:space="preserve">
     <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
@@ -238,7 +239,8 @@
     <value>如果对应用程序试用版满意，入手正式版本以解锁全部特性：
 🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。</value>
+🕹 下载失败时设定自动重传。
+🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</value>
   </data>
   <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
     <value>允许后台下载</value>

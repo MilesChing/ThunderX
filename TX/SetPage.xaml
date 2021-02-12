@@ -21,7 +21,8 @@
             <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}"/>
         </Style>
     </Page.Resources>
-    <ScrollViewer HorizontalScrollMode="Disabled"
+    <ScrollViewer x:Name="MainScrollViewer"
+                  HorizontalScrollMode="Disabled"
                   VerticalScrollMode="Auto"
                   VerticalScrollBarVisibility="Hidden"
                   HorizontalAlignment="Stretch">

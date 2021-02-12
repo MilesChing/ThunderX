@@ -5,7 +5,8 @@
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:controls="using:TX.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:controls="using:TX.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource SystemChromeLowColor}" >
     <RelativePanel>
@@ -16,7 +17,7 @@
                       RelativePanel.AlignTopWithPanel="True"
                       RelativePanel.AlignBottomWithPanel="True">
             <StackPanel Orientation="Vertical" Padding="16 0 16 44" Width="400">
-
+                
                 <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
 
                 <Border Height="52" Margin="0 0 0 8">

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using TX.Core;
 using TX.Core.Providers;
 using TX.Core.Utils;
@@ -30,6 +31,7 @@ namespace TX
     /// </summary>
     public sealed partial class SetPage : Page
     {
+        App CurrentApp => ((App)App.Current);
         private readonly Settings SettingEntries = new Settings();
         private readonly long[] MemoryLimits = new long[] 
         { 
@@ -68,8 +70,9 @@ namespace TX
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
             RefreshStorageSize();
+
+            base.OnNavigatedTo(e);
         }
 
         private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)

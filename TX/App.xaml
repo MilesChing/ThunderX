@@ -1,6 +1,7 @@
 ﻿<Application x:Class="TX.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
              RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
@@ -67,6 +68,10 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="LineHeight" Value="20"/>
+            </Style>
+
+            <Style TargetType="muxc:TeachingTip">
+                <Setter Property="IsLightDismissEnabled" Value="True"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>
