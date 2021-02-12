@@ -12,6 +12,6 @@ namespace TX.Core.Models.Sources
         public ThunderSource(Uri uri) : base(uri) { }
 
         public Task<AbstractSource> GetSubsourceAsync() =>
-            Task.Run(() => { return ConstructSource(Uri.DecodeThunderUri()); });
+            Task.Run(() =>  CreateSource(Uri.DecodeThunderUri()));
     }
 }

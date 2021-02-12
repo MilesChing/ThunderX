@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Contexts;
@@ -27,13 +28,14 @@ namespace TX.Core
         public TXCoreManager()
         {
             coreBufferProvider = new SizeLimitedBufferProvider(
-                SettingEntries.MemoryLimit, 512L * 1024L);
+                settingEntries.MemoryLimit, 512L * 1024L);
         }
 
         public async Task InitializeAsync(byte[] checkPoint = null)
         {
             try
             {
+                await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
 
                 if (checkPoint != null)
@@ -43,12 +45,19 @@ namespace TX.Core
                         new JsonSerializerSettings() { 
                             TypeNameHandling = TypeNameHandling.All
                         });
-                    foreach (var kvp in checkPointObject.Tasks) tasks.Add(kvp.Key, kvp.Value);
+                    if (checkPointObject.Tasks != null)
+                        foreach (var kvp in checkPointObject.Tasks) 
+                            tasks.Add(kvp.Key, kvp.Value);
                     coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
-                    foreach (var kvp in checkPointObject.Downloaders) CreateDownloader(kvp.Key, kvp.Value);
-                    foreach (var hist in checkPointObject.Histories) histories.Add(hist);
-                    Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                    if (checkPointObject.Downloaders != null)
+                        foreach (var kvp in checkPointObject.Downloaders) 
+                            CreateDownloader(kvp.Key, kvp.Value);
+                    if (checkPointObject.Histories != null)
+                        foreach (var hist in checkPointObject.Histories) 
+                            histories.Add(hist);
                 }
+
+                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
             }
             catch (Exception e)
             {
@@ -67,12 +76,17 @@ namespace TX.Core
 
         public INotifyCollectionChanged ObservableHistories => histories;
 
+        public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
+
+        public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
+
         public void RemoveHistory(DownloadHistory history) =>
             histories.Remove(history);
 
         public string CreateTask(
             AbstractTarget target,
             IStorageFolder destinationFolder,
+            bool isBackgroundDownloadAllowed,
             string customFileName = null)
         {
             string token = RandomUtils.String(8);
@@ -83,12 +97,32 @@ namespace TX.Core
                 token, target,
                 customFileName,
                 coreFolderManager.StoreFolder(destinationFolder),
-                DateTime.Now
+                DateTime.Now,
+                isBackgroundDownloadAllowed
             );
 
             CreateDownloader(token);
 
             return token;
+        }
+
+        public async Task LoadAnnounceUrlsAsync()
+        {
+            try
+            {
+                customAnnounceUrls.Clear();
+                customAnnounceUrls.AddRange(
+                    (await FileIO.ReadLinesAsync(
+                        await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
+                        Windows.Storage.Streams.UnicodeEncoding.Utf8
+                    )).Where(url => url.Length > 0)
+                );
+                D($"Custom announce URLs loaded, {customAnnounceUrls.Count} in total");
+            }
+            catch (Exception e)
+            {
+                D($"Custom announce URLs loading failed, {e.Message}");
+            }
         }
 
         private void CreateDownloader(string token, byte[] checkPoint = null)
@@ -106,7 +140,7 @@ namespace TX.Core
                         coreCacheManager.GetCacheProviderForTask(token),
                         coreBufferProvider,
                         checkPoint,
-                        SettingEntries.ThreadNumber);
+                        settingEntries.ThreadNumber);
                 else if (task.Target is HttpTarget httpTarget)
                     downloader = new HttpDownloader(
                         task, coreFolderManager,
@@ -116,19 +150,21 @@ namespace TX.Core
                     downloader = new TorrentDownloader(
                         task, torrentEngine, coreFolderManager,
                         coreCacheManager.GetCacheProviderForTask(token),
-                        checkPoint,
-                        SettingEntries.MaximumConnections,
-                        SettingEntries.MaximumDownloadSpeed,
-                        SettingEntries.MaximumUploadSpeed);
-                else if (task.Target is MagnetTarget magnetTarget)
-                    downloader = new TorrentDownloader(
-                        task, torrentEngine, coreFolderManager,
-                        coreCacheManager.GetCacheProviderForTask(token));
-            } catch (Exception) { }
+                        checkPoint: checkPoint,
+                        maximumConnections: settingEntries.MaximumConnections,
+                        maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
+                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
+                        customAnnounceUrls: customAnnounceUrls);
+            } 
+            catch (Exception e) 
+            {
+                D($"Downloader with task {token} creation failed, {e.Message}");
+            }
 
             if (downloader != null)
             {
-                downloader.MaximumRetries = SettingEntries.MaximumRetries;
+                D($"Downloader with task {token} created");
+                downloader.MaximumRetries = settingEntries.MaximumRetries;
                 downloader.StatusChanged += AnyDownloader_StatusChanged;
                 downloaders.Add(downloader);
             }
@@ -144,7 +180,7 @@ namespace TX.Core
                     sender.DownloadTask.Key,
                     sender.Result.Path,
                     DateTime.Now));
-                if (SettingEntries.IsNotificationEnabledWhenTaskCompleted)
+                if (settingEntries.IsNotificationEnabledWhenTaskCompleted)
                 {
                     ToastManager.ShowDownloadCompleteToastAsync(
                         "Task Completed", sender.DownloadTask.DestinationFileName,
@@ -153,7 +189,7 @@ namespace TX.Core
             }
             else if (status == DownloaderStatus.Error)
             {
-                if (SettingEntries.IsNotificationEnabledWhenFailed)
+                if (settingEntries.IsNotificationEnabledWhenFailed)
                 {
                     ToastManager.ShowSimpleToast(
                         "Task Failed: " + sender.DownloadTask.DestinationFileName,
@@ -169,20 +205,19 @@ namespace TX.Core
 
         public byte[] ToPersistentByteArray()
         {
+            D("Generating persistent byte array...");
             return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     Tasks = Tasks.ToArray(),
-                    Downloaders = Downloaders.Where(
-                        downloader => 
-                            downloader.Status != DownloaderStatus.Completed &&
-                            downloader.Status != DownloaderStatus.Disposed)
-                    .Select(
-                        downloader =>
+                    Downloaders = Downloaders.Where(downloader => 
+                        downloader.Status != DownloaderStatus.Completed &&
+                        downloader.Status != DownloaderStatus.Disposed)
+                        .Select(downloader =>
                         {
                             byte[] val = null;
                             if (downloader is IPersistable per)
-                                val = per.ToPersistentByteArray();
+                                try { val = per.ToPersistentByteArray(); } catch (Exception) { }
                             return new KeyValuePair<string, byte[]>(
                                 downloader.DownloadTask.Key, val);
                         }).ToArray(),
@@ -195,18 +230,38 @@ namespace TX.Core
                 }));
         }
 
+        public void Suspend()
+        {
+            D("Suspending core...");
+            CleanTasks();
+            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
+            D("Cancelling downloaders...");
+            foreach (var downloader in downloaders)
+                if (downloader.Status == DownloaderStatus.Running)
+                    downloader.Cancel();
+            D("Suspended");
+        }
+
+        public void Resume()
+        {
+            D("Resuming...");
+            D("Resumed");
+        }
+
         public void Dispose()
         {
-            Debug.WriteLine("[{0}] disposing".AsFormat(nameof(TXCoreManager)));
+            torrentEngine.Dispose();
+        }
 
-            CleanTasks();
-
-            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
-
-            foreach (var downloader in downloaders)
-                downloader.Cancel();
-
-            Debug.WriteLine("[{0}] disposed".AsFormat(nameof(TXCoreManager)));
+        public async Task CleanCacheFolderAsync()
+        {
+            await coreCacheManager.CleanCacheFolderAsync(
+                taskKey => Downloaders.Any(
+                    downloader => 
+                        downloader.Status != DownloaderStatus.Completed &&
+                        downloader.Status != DownloaderStatus.Disposed &&
+                        downloader.DownloadTask.Key.Equals(taskKey))
+            );
         }
 
         public async Task CleanCacheFolderAsync()
@@ -226,17 +281,27 @@ namespace TX.Core
                 key => !downloaders.Any(downloader =>
                     downloader.DownloadTask.Key.Equals(key))).ToArray();
             foreach (var key in toBeDeleted)
+            {
+                D($"Unused task {key} deleted");
                 tasks.Remove(key);
+            }
         }
 
         private async Task InitializeDhtEngineAsync()
         {
-            var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
-            await torrentEngine.RegisterDhtAsync(dhtEngine);
-            await torrentEngine.DhtEngine.StartAsync();
+            try
+            {
+                var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
+                await torrentEngine.RegisterDhtAsync(dhtEngine);
+                await torrentEngine.DhtEngine.StartAsync();
+                D("DhtEngine initialized");
+            } catch (Exception e) 
+            {
+                D($"DhtEngine initialization failed: {e.Message}");
+            }
         }
 
-        private readonly Settings SettingEntries = new Settings();
+        private readonly Settings settingEntries = new Settings();
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
@@ -244,6 +309,9 @@ namespace TX.Core
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
+        private readonly List<string> customAnnounceUrls = new List<string>();
+
+        private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
         private class InnerCheckPoint
         {

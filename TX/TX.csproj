@@ -136,10 +136,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Background\CoreBackgroundTask.cs" />
     <Compile Include="Controls\DownloaderBar.xaml.cs">
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
+    <Compile Include="Utils\OneOffActionManager.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Core\Downloaders\AbstractDownloader.cs" />
     <Compile Include="Core\Downloaders\HttpDownloader.cs" />
@@ -177,7 +179,6 @@
     <Compile Include="Core\Models\Targets\ILengthSupported.cs" />
     <Compile Include="Core\Models\Targets\IRangedStreamExtracted.cs" />
     <Compile Include="Core\Models\Targets\IStreamExtracted.cs" />
-    <Compile Include="Core\Models\Targets\MagnetTarget.cs" />
     <Compile Include="Core\Models\Targets\TorrentTarget.cs" />
     <Compile Include="Core\Providers\LocalCacheManager.cs" />
     <Compile Include="Core\Providers\LocalFolderManager.cs" />
@@ -267,6 +268,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="Resources\ConfigTemplates\AnnounceUrlListTemplate.txt" />
     <Content Include="Resources\XMLs\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
@@ -348,6 +350,7 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\TX.zh-Hans.xlf" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

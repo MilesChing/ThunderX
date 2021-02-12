@@ -164,7 +164,71 @@ namespace TX.Utils
 
         #endregion
 
-        #region Notification Settings
+        #region Background Task
+
+        // Background task will be activated in a minimum
+        // freshness time of 15 minutes. 
+        // Background task starts every task which has 
+        // been permitted to be automatically downloaded 
+        // in background once activated.
+
+        /// <summary>
+        /// Is background task enabled.
+        /// </summary>
+        public bool IsBackgroundTaskEnabled
+        {
+            get
+            {
+                if (IsApplicationVersionTrail) return false;
+                return TryGetValue(nameof(IsBackgroundTaskEnabled), true);
+            }
+            set { SetValue(nameof(IsBackgroundTaskEnabled), value); }
+        }
+
+        /// <summary>
+        /// The number of minutes between each running of 
+        /// background task. Task will be activated within 
+        /// 15 minutes after the BackgroundTaskFreshnessTime 
+        /// has passed.
+        /// </summary>
+        public uint BackgroundTaskFreshnessTime
+        {
+            get
+            {
+                return TryGetValue(nameof(BackgroundTaskFreshnessTime), 15u);
+            }
+            set { SetValue(nameof(BackgroundTaskFreshnessTime), value); }
+        }
+
+        /// <summary>
+        /// Controls if download task will only be activated
+        /// when user is not present.
+        /// </summary>
+        public bool RunBackgroundTaskOnlyWhenUserNotPresent
+        {
+            get
+            {
+                return TryGetValue(nameof(RunBackgroundTaskOnlyWhenUserNotPresent), false);
+            }
+            set { SetValue(nameof(RunBackgroundTaskOnlyWhenUserNotPresent), value); }
+        }
+
+        /// <summary>
+        /// Controls if download task will only be activated
+        /// when background work cost is not high.
+        /// </summary>
+        public bool RunOnlyWhenBackgroundWorkCostNotHigh
+        {
+            get
+            {
+                return TryGetValue(nameof(RunOnlyWhenBackgroundWorkCostNotHigh), false);
+            }
+            set { SetValue(nameof(RunOnlyWhenBackgroundWorkCostNotHigh), value); }
+        }
+
+        #endregion
+
+        #region Notifications
 
         /// <summary>
         /// Is notification enabled when any task is completed.
@@ -182,15 +246,6 @@ namespace TX.Utils
         {
             get { return TryGetValue(nameof(IsNotificationEnabledWhenFailed), true); }
             set { SetValue(nameof(IsNotificationEnabledWhenFailed), value); }
-        }
-
-        /// <summary>
-        /// Is notification enabled when application is suspended.
-        /// </summary>
-        public bool IsNotificationEnabledWhenApplicationSuspended
-        {
-            get { return TryGetValue(nameof(IsNotificationEnabledWhenApplicationSuspended), false); }
-            set { SetValue(nameof(IsNotificationEnabledWhenApplicationSuspended), value); }
         }
 
         #endregion

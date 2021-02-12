@@ -156,10 +156,6 @@
           <source>Default Download Folder</source>
           <target state="translated">默认下载文件夹</target>
         </trans-unit>
-        <trans-unit id="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" translate="yes" xml:space="preserve">
-          <source>Application Suspended Notification</source>
-          <target state="translated">应用程序被挂起时发送通知</target>
-        </trans-unit>
         <trans-unit id="SetPage_Notifications_TaskCompletedToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Task Completion Notification</source>
           <target state="translated">有任务完成时发送通知</target>
@@ -299,8 +295,10 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</source>
-          <target state="translated">在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</target>
+          <source>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
+🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</source>
+          <target state="translated">🌎 这一版本完整推出了基于 BitTorrent 协议的下载。以本地 torrent 文件或 magnet 链接的形式均可创建任务，在我们的下载器中追加自定义的 Tracker 服务器列表也受支持。
+🚀 后台任务已被引入，以在 Thunder X 处于挂起或被关闭状态下仍能在后台进行一定时间的下载。后台任务打开后将在设备连接电源时生效。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
@@ -309,13 +307,82 @@ Create a task for downloading.</source>
         <trans-unit id="AboutPage_TrailMessage.Text" translate="yes" xml:space="preserve">
           <source>If satisfied with our application, pay to support development teams and to enjoy these features:
 🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
-💾 Limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.</source>
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.
+🚀 Keep downloading in background after Thunder X closed or suspended.</source>
           <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：
 🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。</target>
+🕹 下载失败时设定自动重传。
+🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Allow Downloaded in Background</source>
+          <target state="translated">允许后台下载</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_Title.Text" translate="yes" xml:space="preserve">
+          <source>Other Configurations</source>
+          <target state="translated">其他设置</target>
+        </trans-unit>
+        <trans-unit id="RemainingTime" translate="yes" xml:space="preserve">
+          <source>Remaining Time</source>
+          <target state="translated">预计剩余</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_Button.Content" translate="yes" xml:space="preserve">
+          <source>Clean Up</source>
+          <target state="translated">清理</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_Title.Text" translate="yes" xml:space="preserve">
+          <source>Storage Cache Size</source>
+          <target state="translated">缓存文件大小</target>
+        </trans-unit>
+        <trans-unit id="SetPage_CleanUp_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
+          <target state="translated">失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_DownloadFolder_OpenButton.Content" translate="yes" xml:space="preserve">
+          <source>Open Current</source>
+          <target state="translated">打开文件夹</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Enable Downloads in Background</source>
+          <target state="translated">启用后台下载</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>If the device is plugged in, Background Task keeps downloading when Thunder X is suspended or closed. It is activated every freshness time and works for 10 minutes each time in background automatically and transparently.</source>
+          <target state="translated">在设备接通电源时，后台任务将在 Thunder X 已被休眠或关闭后仍以一定频率保持下载。后台任务将每隔一段间隔时间触发一次长约为十分钟的运行。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Only when background cost is not High</source>
+          <target state="translated">仅当后台占用低时启用</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Only when User is not present</source>
+          <target state="translated">仅当设备不在使用时启用</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_Title.Text" translate="yes" xml:space="preserve">
+          <source>Background Task</source>
+          <target state="translated">后台任务</target>
+        </trans-unit>
+        <trans-unit id="SetPage_BackgroundTask_FreshnessTimeSlider.Header" translate="yes" xml:space="preserve">
+          <source>Freshness Time</source>
+          <target state="translated">后台间隔时间</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_Header.Text" translate="yes" xml:space="preserve">
+          <source>Custom Tacker List</source>
+          <target state="translated">自定义 Tracker 列表</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Both original trackers embedded in the torrent file and custom trackers imported from custom tracker list file are used by Thunder X torrent downloader. Each line in the file represents an announce URL, edit and reload it to apply your own tracker list.</source>
+          <target state="translated">Thunder X Torrent 下载器同时使用 .torrent 文件中指定的 Tracker 服务器（优先）和从自定义 Tracker 列表文件种读取到的 Tracker 服务器。直接修改自定义 Tracker 列表文件（每行写入一个 Announce URL）并重新加载以增加下载时使用的 Tracker 服务器。</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" translate="yes" xml:space="preserve">
+          <source>Edit File</source>
+          <target state="translated">编辑列表文件</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" translate="yes" xml:space="preserve">
+          <source>Reload Tracker List</source>
+          <target state="translated">重新加载 Tracker 列表</target>
         </trans-unit>
         <trans-unit id="RemainingTime" translate="yes" xml:space="preserve">
           <source>Remaining Time</source>

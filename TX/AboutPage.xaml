@@ -14,12 +14,10 @@
                   HorizontalAlignment="Stretch">
         <StackPanel Orientation="Vertical" Padding="16 0 16 44">
             <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Style TargetType="TextBlock" 
+                       BasedOn="{StaticResource TXPagePlainTextBlockStyle}">
                     <Setter Property="MaxWidth" Value="440"/>
-                    <Setter Property="TextWrapping" Value="Wrap"/>
-                    <Setter Property="LineHeight" Value="24"/>
-                    <Setter Property="Foreground" Value="{ThemeResource SystemBaseMediumHighColor}"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
                 </Style>
             </StackPanel.Resources>
 
@@ -69,7 +67,7 @@
 
             <TextBlock x:Uid="AboutPage_AppDescription" Margin="0 0 0 20"/>
 
-            <Grid Margin="0 0 0 20" Padding="16 12 16 16" CornerRadius="4"
+            <Grid Margin="-16 0 -16 20" Padding="16 12 16 16"
                   Background="{ThemeResource SystemAltMediumColor}"
                   Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
                 <Grid.ColumnDefinitions>
@@ -89,7 +87,7 @@
                            Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
                            VerticalAlignment="Center" Margin="8 0 0 0"/>
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock x:Uid="AboutPage_TrailMessage" Margin="0 8 0 0"/>
+                    <TextBlock x:Uid="AboutPage_TrailMessage" Margin="0 16 0 0"/>
                     <!--Buy Now-->
                     <Button x:Name="BuyButton" 
                             x:Uid="AboutPage_TrailMessage_BuyButton"
@@ -102,7 +100,7 @@
                 </StackPanel>
             </Grid>
 
-            <TextBlock Margin="0 0 0 8" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
+            <TextBlock Margin="0 0 0 16" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
                 <!--Introducing Version-->
                 <Run x:Uid="AboutPage_VersionInfo_Title"/>
                 <Run Text="{x:Bind VersionText}"/>
@@ -110,7 +108,7 @@
             <TextBlock x:Uid="AboutPage_VersionInfo" Margin="0 0 0 20"/>
 
             <!--Rating and Feedback-->
-            <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 8"
+            <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 16"
                        Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
             <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_1"/>
             <RatingControl HorizontalAlignment="Left" PlaceholderValue="5" Tapped="RatingControl_Tapped"/>

@@ -141,9 +141,9 @@
   <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
     <value>If satisfied with our application, pay to support development teams and to enjoy these features:
 🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
-💾 Limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.</value>
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.
+🚀 Keep downloading in background after Thunder X closed or suspended.</value>
   </data>
   <data name="AboutPage_TrailMessage_BuyButton.Content" xml:space="preserve">
     <value>Buy Now</value>
@@ -152,7 +152,8 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</value>
+    <value>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
+🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
@@ -224,6 +225,12 @@
   <data name="NewTaskPage_FileName_Title.Text" xml:space="preserve">
     <value>File Name</value>
   </data>
+  <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
+    <value>Allow Downloaded in Background</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
+    <value>Other Configurations</value>
+  </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
     <value>Streams</value>
   </data>
@@ -251,11 +258,29 @@
   <data name="SetPage_Appearance_Title.Text" xml:space="preserve">
     <value>Appearance</value>
   </data>
+  <data name="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>Enable Downloads in Background</value>
+  </data>
+  <data name="SetPage_BackgroundTask_FreshnessTimeSlider.Header" xml:space="preserve">
+    <value>Freshness Time</value>
+  </data>
+  <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
+    <value>If the device is plugged in, Background Task keeps downloading when Thunder X is suspended or closed. It is activated every freshness time and works for 10 minutes each time in background automatically and transparently.</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
+    <value>Only when background cost is not High</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" xml:space="preserve">
+    <value>Only when User is not present</value>
+  </data>
+  <data name="SetPage_BackgroundTask_Title.Text" xml:space="preserve">
+    <value>Background Task</value>
+  </data>
   <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
     <value>Clean Up</value>
   </data>
   <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
-    <value>*Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</value>
+    <value>Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</value>
   </data>
   <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
     <value>Storage Cache Size</value>
@@ -275,14 +300,14 @@
   <data name="SetPage_DownloadFolder_Button.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
+  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
+    <value>Open Current</value>
+  </data>
   <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
     <value>Default Download Folder</value>
   </data>
   <data name="SetPage_HTTP_Title.Text" xml:space="preserve">
     <value>HTTP/HTTPS</value>
-  </data>
-  <data name="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" xml:space="preserve">
-    <value>Application Suspended Notification</value>
   </data>
   <data name="SetPage_Notifications_TaskCompletedToggleSwitch.Header" xml:space="preserve">
     <value>Task Completion Notification</value>
@@ -301,6 +326,18 @@
   </data>
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" xml:space="preserve">
+    <value>Edit File</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" xml:space="preserve">
+    <value>Both original trackers embedded in the torrent file and custom trackers imported from custom tracker list file are used by Thunder X torrent downloader. Each line in the file represents an announce URL, edit and reload it to apply your own tracker list.</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_Header.Text" xml:space="preserve">
+    <value>Custom Tacker List</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" xml:space="preserve">
+    <value>Reload Tracker List</value>
   </data>
   <data name="SetPage_Torrent_MaximumConnectionsSlider.Header" xml:space="preserve">
     <value>Maximum Connections</value>

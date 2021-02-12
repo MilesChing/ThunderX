@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using TX.Core;
 using TX.Core.Providers;
 using TX.Core.Utils;
 using TX.Utils;
@@ -10,6 +13,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,6 +31,7 @@ namespace TX
     /// </summary>
     public sealed partial class SetPage : Page
     {
+        App CurrentApp => ((App)App.Current);
         private readonly Settings SettingEntries = new Settings();
         private readonly long[] MemoryLimits = new long[] 
         { 
@@ -39,8 +44,12 @@ namespace TX
 
         private bool IsApplicationVersionNotTrail => !((App)App.Current).AppLicense.IsTrial;
 
+        private readonly TXCoreManager Core = ((App)App.Current).Core;
+
         private Visibility ApplicationTrailVersionMessageVisibility =>
             IsApplicationVersionNotTrail ? Visibility.Collapsed : Visibility.Visible;
+
+        private readonly ObservableCollection<string> AnnounceUrlsCollection = new ObservableCollection<string>();
 
         public SetPage()
         {
@@ -50,6 +59,7 @@ namespace TX
             MemoryUpperboundComboBox.SelectedIndex = Math.Max(Array.IndexOf(
                 MemoryLimits, SettingEntries.MemoryLimit
             ), 0);
+            ReloadAnnounceUrls();
         }
 
         public async void SetDownloadFolder()
@@ -60,8 +70,8 @@ namespace TX
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
             RefreshStorageSize();
+            base.OnNavigatedTo(e);
         }
 
         private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -115,6 +125,28 @@ namespace TX
         {
             await ((App)App.Current).Core.CleanCacheFolderAsync();
             RefreshStorageSize();
+        }
+        
+        private async void OpenDownloadFolderButton_Click(object sender, RoutedEventArgs e) =>
+            await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
+
+        private async void EditFileItem_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchFileAsync(
+                await StorageUtils.GetOrCreateAnnounceUrlsFileAsync());
+        }
+
+        private async void ReloadItem_Click(object sender, RoutedEventArgs e)
+        {
+            await Core.LoadAnnounceUrlsAsync();
+            ReloadAnnounceUrls();
+        }
+
+        private void ReloadAnnounceUrls()
+        {
+            AnnounceUrlsCollection.Clear();
+            foreach (var url in Core.CustomAnnounceURLs)
+                AnnounceUrlsCollection.Add(url);
         }
     }
 }

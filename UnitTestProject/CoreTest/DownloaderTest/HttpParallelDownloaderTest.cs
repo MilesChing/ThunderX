@@ -51,7 +51,8 @@ namespace UnitTestProject.CoreTest.DownloaderTest
                         ),
                         "test-destination-file",
                         "test-destination-folder",
-                        DateTime.Now
+                        DateTime.Now,
+                        false
                     ),
                     folderProvider,
                     cacheProvider,

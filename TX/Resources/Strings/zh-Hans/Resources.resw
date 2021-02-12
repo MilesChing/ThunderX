@@ -125,9 +125,6 @@
   <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
     <value>默认下载文件夹</value>
   </data>
-  <data name="SetPage_Notifications_ApplicationSuspendedToggleSwitch.Header" xml:space="preserve">
-    <value>应用程序被挂起时发送通知</value>
-  </data>
   <data name="SetPage_Notifications_TaskCompletedToggleSwitch.Header" xml:space="preserve">
     <value>有任务完成时发送通知</value>
   </data>
@@ -232,7 +229,8 @@
     <value>启用该功能</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</value>
+    <value>🌎 这一版本完整推出了基于 BitTorrent 协议的下载。以本地 torrent 文件或 magnet 链接的形式均可创建任务，在我们的下载器中追加自定义的 Tracker 服务器列表也受支持。
+🚀 后台任务已被引入，以在 Thunder X 处于挂起或被关闭状态下仍能在后台进行一定时间的下载。后台任务打开后将在设备连接电源时生效。</value>
   </data>
   <data name="AboutPage_AppDescription.Text" xml:space="preserve">
     <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
@@ -241,7 +239,59 @@
     <value>如果对应用程序试用版满意，入手正式版本以解锁全部特性：
 🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。</value>
+🕹 下载失败时设定自动重传。
+🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
+    <value>允许后台下载</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
+    <value>其他设置</value>
+  </data>
+  <data name="RemainingTime" xml:space="preserve">
+    <value>预计剩余</value>
+  </data>
+  <data name="SetPage_CleanUp_Button.Content" xml:space="preserve">
+    <value>清理</value>
+  </data>
+  <data name="SetPage_CleanUp_Title.Text" xml:space="preserve">
+    <value>缓存文件大小</value>
+  </data>
+  <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
+    <value>失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</value>
+  </data>
+  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" xml:space="preserve">
+    <value>启用后台下载</value>
+  </data>
+  <data name="SetPage_BackgroundTask_GuideText.Text" xml:space="preserve">
+    <value>在设备接通电源时，后台任务将在 Thunder X 已被休眠或关闭后仍以一定频率保持下载。后台任务将每隔一段间隔时间触发一次长约为十分钟的运行。</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenBackgroundWorkCostNotHighToggleSwitch.Header" xml:space="preserve">
+    <value>仅当后台占用低时启用</value>
+  </data>
+  <data name="SetPage_BackgroundTask_OnlyWhenUserNotPresentToggleSwitch.Header" xml:space="preserve">
+    <value>仅当设备不在使用时启用</value>
+  </data>
+  <data name="SetPage_BackgroundTask_Title.Text" xml:space="preserve">
+    <value>后台任务</value>
+  </data>
+  <data name="SetPage_BackgroundTask_FreshnessTimeSlider.Header" xml:space="preserve">
+    <value>后台间隔时间</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_Header.Text" xml:space="preserve">
+    <value>自定义 Tracker 列表</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_GuideText.Text" xml:space="preserve">
+    <value>Thunder X Torrent 下载器同时使用 .torrent 文件中指定的 Tracker 服务器（优先）和从自定义 Tracker 列表文件种读取到的 Tracker 服务器。直接修改自定义 Tracker 列表文件（每行写入一个 Announce URL）并重新加载以增加下载时使用的 Tracker 服务器。</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_EditFileItem.Text" xml:space="preserve">
+    <value>编辑列表文件</value>
+  </data>
+  <data name="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" xml:space="preserve">
+    <value>重新加载 Tracker 列表</value>
   </data>
   <data name="RemainingTime" xml:space="preserve">
     <value>预计剩余</value>

@@ -41,6 +41,7 @@ namespace TX
         {
             base.OnNavigatedTo(e);
             await CurrentApp.WaitForInitializingAsync();
+            InvokeRightFrame(typeof(AboutPage), null);
             LoadingView.Visibility = Visibility.Collapsed;
         }
 

@@ -23,6 +23,8 @@ using MonoTorrent.Client;
 using Windows.Storage.Pickers;
 using Windows.Storage.AccessCache;
 using MonoTorrent;
+using TX.Background;
+using Windows.ApplicationModel.Background;
 
 namespace TX
 {
@@ -32,6 +34,8 @@ namespace TX
     sealed partial class App : Application
     {
         public readonly TXCoreManager Core = new TXCoreManager();
+        public readonly OneOffActionManager OOAManager = new OneOffActionManager();
+        private readonly Settings settingEntries = new Settings();
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -41,9 +45,10 @@ namespace TX
         {
             this.InitializeComponent(); 
             this.Suspending += OnSuspending;
+            this.Resuming += OnResuming;
             initializingTask = InitializeAsync();
         }
-        
+
         public StoreAppLicense AppLicense { get; private set; } = null;
 
         public async Task WaitForInitializingAsync() => await initializingTask;
@@ -52,21 +57,45 @@ namespace TX
 
         private async Task InitializeAsync()
         {
-            var storeContext = StoreContext.GetDefault();
-            AppLicense = await storeContext.GetAppLicenseAsync();
+            await InitializeAppLicenceAsync();
+            await InitializeBackgroundTaskAsync();
+            await Core.InitializeAsync(await ReadLocalStorageAsync());
+        }
 
-            byte[] buffer = null;
+        private async Task<byte[]> ReadLocalStorageAsync()
+        {
             try
             {
                 var cacheFile = await GetCacheFileAsync();
-                buffer = (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
+                return (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Cache file reading failed: " + e.Message);
+                return null;
             }
+        }
 
-            await Core.InitializeAsync(buffer);
+        private async Task InitializeAppLicenceAsync()
+        {
+            var storeContext = StoreContext.GetDefault();
+            AppLicense = await storeContext.GetAppLicenseAsync();
+        }
+
+        private async Task InitializeBackgroundTaskAsync()
+        {
+            switch (BackgroundExecutionManager.GetAccessStatus())
+            {
+                case BackgroundAccessStatus.AllowedSubjectToSystemPolicy:
+                case BackgroundAccessStatus.AlwaysAllowed:
+                    break;
+                default:
+                    BackgroundExecutionManager.RemoveAccess();
+                    await BackgroundExecutionManager.RequestAccessAsync();
+                    break;
+            }
+            
+            CoreBackgroundTask.UnregisterBackgroundTask();
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -100,15 +129,28 @@ namespace TX
                     Debug.WriteLine("[App] database writing failed: " + e.Message);
                 }
 
-                Core.Dispose();
+                Core.Suspend();
+                OOAManager.SaveToStorage();
 
-                if (new Settings().IsNotificationEnabledWhenApplicationSuspended)
-                    ToastManager.ShowSimpleToast("Thunder X Suspended", "Running tasks have been temporarily cancelled.");
+                CoreBackgroundTask.UnregisterBackgroundTask();
+                if (settingEntries.IsBackgroundTaskEnabled && Core.Downloaders.Count > 0)
+                    CoreBackgroundTask.RegisterBackgroundTask(
+                        settingEntries.BackgroundTaskFreshnessTime,
+                        settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
+                        settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
             }
             finally
             {
                 deferral.Complete();
             }
+        }
+
+        private void OnResuming(object sender, object e) => Core.Resume();
+
+        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+            CoreBackgroundTask.Run(args.TaskInstance);
         }
 
         protected override async void OnActivated(IActivatedEventArgs args)
