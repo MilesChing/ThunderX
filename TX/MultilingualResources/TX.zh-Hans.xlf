@@ -295,8 +295,10 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>This release brings the ability to download based on the BitTorrent protocol. We will conduct public testing with this release to ensure the stability of the newly implemented downloader. Magnet link will be supported later, since there's still some final work to be done.</source>
-          <target state="translated">在这一版本我们正逐步推进基于 BitTorrent 协议的下载器实现，目前通过本地的 Torrent 文件进行下载的功能已经可用。我们会通过这个版本来进行公开测试一段时间确保该下载器的稳定性。Magnet 链接随后将被支持，仍有最后的一些工作需要被完成。</target>
+          <source>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
+🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</source>
+          <target state="translated">🌎 这一版本完整推出了基于 BitTorrent 协议的下载。以本地 torrent 文件或 magnet 链接的形式均可创建任务，在我们的下载器中追加自定义的 Tracker 服务器列表也受支持。
+🚀 后台任务已被引入，以在 Thunder X 处于挂起或被关闭状态下仍能在后台进行一定时间的下载。后台任务打开后将在设备连接电源时生效。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
@@ -305,13 +307,14 @@ Create a task for downloading.</source>
         <trans-unit id="AboutPage_TrailMessage.Text" translate="yes" xml:space="preserve">
           <source>If satisfied with our application, pay to support development teams and to enjoy these features:
 🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed.
-💾 Limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.</source>
+🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
+🕹 Automatically retry the download when an error occurs.
+🚀 Keep downloading in background after Thunder X closed or suspended.</source>
           <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：
 🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
 🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。</target>
+🕹 下载失败时设定自动重传。
+🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Allow Downloaded in Background</source>

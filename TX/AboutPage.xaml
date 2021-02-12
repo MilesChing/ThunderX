@@ -15,7 +15,10 @@
         <StackPanel Orientation="Vertical" Padding="16 0 16 44">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock" 
-                       BasedOn="{StaticResource TXPagePlainTextBlockStyle}"/>
+                       BasedOn="{StaticResource TXPagePlainTextBlockStyle}">
+                    <Setter Property="MaxWidth" Value="440"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                </Style>
             </StackPanel.Resources>
 
             <Grid Margin="-16 0 -16 0">
