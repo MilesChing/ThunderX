@@ -264,17 +264,6 @@ namespace TX.Core
             );
         }
 
-        public async Task CleanCacheFolderAsync()
-        {
-            await coreCacheManager.CleanCacheFolderAsync(
-                taskKey => Downloaders.Any(
-                    downloader => 
-                        downloader.Status != DownloaderStatus.Completed &&
-                        downloader.Status != DownloaderStatus.Disposed &&
-                        downloader.DownloadTask.Key.Equals(taskKey))
-            );
-        }
-
         private void CleanTasks()
         {
             var toBeDeleted = tasks.Select(task => task.Key).Where(
