@@ -42,18 +42,19 @@ namespace TX.Core
                 {
                     var json = Encoding.ASCII.GetString(checkPoint);
                     var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
-                        new JsonSerializerSettings() { 
+                        new JsonSerializerSettings()
+                        {
                             TypeNameHandling = TypeNameHandling.All
                         });
                     if (checkPointObject.Tasks != null)
-                        foreach (var kvp in checkPointObject.Tasks) 
+                        foreach (var kvp in checkPointObject.Tasks)
                             tasks.Add(kvp.Key, kvp.Value);
                     coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
                     if (checkPointObject.Downloaders != null)
-                        foreach (var kvp in checkPointObject.Downloaders) 
+                        foreach (var kvp in checkPointObject.Downloaders)
                             CreateDownloader(kvp.Key, kvp.Value);
                     if (checkPointObject.Histories != null)
-                        foreach (var hist in checkPointObject.Histories) 
+                        foreach (var hist in checkPointObject.Histories)
                             histories.Add(hist);
                 }
 
@@ -128,7 +129,7 @@ namespace TX.Core
         private void CreateDownloader(string token, byte[] checkPoint = null)
         {
             if (!tasks.TryGetValue(token, out DownloadTask task)) return;
-            
+
             AbstractDownloader downloader = null;
 
             try
@@ -155,8 +156,8 @@ namespace TX.Core
                         maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
                         maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
                         customAnnounceUrls: customAnnounceUrls);
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 D($"Downloader with task {token} creation failed, {e.Message}");
             }
@@ -171,7 +172,7 @@ namespace TX.Core
         }
 
         private void AnyDownloader_StatusChanged(
-            AbstractDownloader sender, 
+            AbstractDownloader sender,
             DownloaderStatus status)
         {
             if (status == DownloaderStatus.Completed)
@@ -210,7 +211,7 @@ namespace TX.Core
                 new InnerCheckPoint()
                 {
                     Tasks = Tasks.ToArray(),
-                    Downloaders = Downloaders.Where(downloader => 
+                    Downloaders = Downloaders.Where(downloader =>
                         downloader.Status != DownloaderStatus.Completed &&
                         downloader.Status != DownloaderStatus.Disposed)
                         .Select(downloader =>
@@ -223,7 +224,7 @@ namespace TX.Core
                         }).ToArray(),
                     Histories = Histories.ToArray(),
                     CacheManagerCheckPoint = coreCacheManager.ToPersistentByteArray(),
-                }, 
+                },
                 new JsonSerializerSettings()
                 {
                     TypeNameHandling = TypeNameHandling.All
@@ -257,18 +258,7 @@ namespace TX.Core
         {
             await coreCacheManager.CleanCacheFolderAsync(
                 taskKey => Downloaders.Any(
-                    downloader => 
-                        downloader.Status != DownloaderStatus.Completed &&
-                        downloader.Status != DownloaderStatus.Disposed &&
-                        downloader.DownloadTask.Key.Equals(taskKey))
-            );
-        }
-
-        public async Task CleanCacheFolderAsync()
-        {
-            await coreCacheManager.CleanCacheFolderAsync(
-                taskKey => Downloaders.Any(
-                    downloader => 
+                    downloader =>
                         downloader.Status != DownloaderStatus.Completed &&
                         downloader.Status != DownloaderStatus.Disposed &&
                         downloader.DownloadTask.Key.Equals(taskKey))
@@ -295,7 +285,8 @@ namespace TX.Core
                 await torrentEngine.RegisterDhtAsync(dhtEngine);
                 await torrentEngine.DhtEngine.StartAsync();
                 D("DhtEngine initialized");
-            } catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 D($"DhtEngine initialization failed: {e.Message}");
             }

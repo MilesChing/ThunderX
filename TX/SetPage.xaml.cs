@@ -33,8 +33,8 @@ namespace TX
     {
         App CurrentApp => ((App)App.Current);
         private readonly Settings SettingEntries = new Settings();
-        private readonly long[] MemoryLimits = new long[] 
-        { 
+        private readonly long[] MemoryLimits = new long[]
+        {
             1024 * 1024 * 32,
             1024 * 1024 * 64,
             1024 * 1024 * 128,
@@ -71,6 +71,7 @@ namespace TX
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             RefreshStorageSize();
+
             base.OnNavigatedTo(e);
         }
 
@@ -110,7 +111,7 @@ namespace TX
                 var cacheSize = await ApplicationData.Current.LocalCacheFolder.GetSizeAsync();
                 CacheFileSizeTextBlock.Text = cacheSize.SizedString();
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 CacheFileSizeTextBlock.Text = Windows.ApplicationModel.Resources
                     .ResourceLoader.GetForCurrentView().GetString("Unknown");
@@ -126,7 +127,7 @@ namespace TX
             await ((App)App.Current).Core.CleanCacheFolderAsync();
             RefreshStorageSize();
         }
-        
+
         private async void OpenDownloadFolderButton_Click(object sender, RoutedEventArgs e) =>
             await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
 
