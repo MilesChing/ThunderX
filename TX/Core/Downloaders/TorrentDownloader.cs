@@ -85,13 +85,10 @@ namespace TX.Core.Downloaders
             Progress = new BaseMeasurableProgress(
                 realTarget.Torrent.Files.Sum(
                     file => file.Priority == Priority.DoNotDownload ? 0 : file.Length));
-
             Speed = SharedSpeedCalculatorFactory.NewSpeedCalculator();
-
-            if (checkPoint != null)
-                ApplyCheckPoint(checkPoint);
-
             Progress.ProgressChanged += (sender, arg) => Speed.CurrentValue = Progress.DownloadedSize;
+
+            if (checkPoint != null) ApplyCheckPoint(checkPoint);
         }
 
         public byte[] ToPersistentByteArray()
@@ -244,25 +241,30 @@ namespace TX.Core.Downloaders
                 case TorrentState.Seeding:
                     cancellationTokenSource?.Cancel();
                     cancellationTokenSource = null;
-
-                    await Task.Delay(5000);
-                    
                     downloadTask?.Wait();
                     downloadTask = null;
-                    
                     await manager.StopAsync();
-
-                    try
+                    break;
+                case TorrentState.Stopped:
+                    if (((BaseMeasurableProgress)Progress).IsCompleted)
                     {
-                        var folder = await folderProvider.GetFolderFromTokenAsync(DownloadTask.DestinationFolderKey);
-                        var targetFolder = await folder.CreateFolderAsync(
-                            DownloadTask.DestinationFileName, 
-                            CreationCollisionOption.GenerateUniqueName);
-                        await cacheFolder.MoveContentToAsync(targetFolder);
-                        cacheFolder = null;
-                        ReportCompleted(targetFolder);
+                        try
+                        {
+                            D("Downloading completed, creating destination folder...");
+                            var folder = await folderProvider.GetFolderFromTokenAsync(DownloadTask.DestinationFolderKey);
+                            var targetFolder = await folder.CreateFolderAsync(
+                                DownloadTask.DestinationFileName,
+                                CreationCollisionOption.GenerateUniqueName);
+                            D($"Destination folder created <{targetFolder.Path}>");
+                            D("Coping files from cache folder to destination folder...");
+                            await cacheFolder.CopyContentToAsync(targetFolder);
+                            D("Deleting cache folder...");
+                            await cacheFolder.DeleteAsync();
+                            cacheFolder = null;
+                            ReportCompleted(targetFolder);
+                        }
+                        catch (Exception ex) { ReportError(ex, true); }
                     }
-                    catch (Exception ex) { ReportError(ex, true); }
                     break;
             }
         }
@@ -283,7 +285,7 @@ namespace TX.Core.Downloaders
                     if (cacheFolder == null)
                     {
                         cacheFolderToken = await cacheProvider.NewCacheFolderAsync();
-                        cacheFolder = (IStorageFolder)cacheProvider.GetCacheFolderByToken(cacheFolderToken);
+                        cacheFolder = cacheProvider.GetCacheFolderByToken(cacheFolderToken);
                         ((BaseProgress)Progress).Reset();
                     }
                 }

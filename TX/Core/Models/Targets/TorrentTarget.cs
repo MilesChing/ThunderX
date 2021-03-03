@@ -15,13 +15,13 @@ namespace TX.Core.Models.Targets
 {
     public class TorrentTarget : AbstractTarget
     {
-        public TorrentTarget(byte[] torrentBytes, Uri torrentFileUri, string[] selectedFilePaths)
+        public TorrentTarget(byte[] torrentBytes, Uri displayedUri, string[] selectedFilePaths)
         {
             Ensure.That(torrentBytes, nameof(torrentBytes)).IsNotNull();
             Ensure.That(selectedFilePaths, nameof(selectedFilePaths)).IsNotNull();
-            Ensure.That(torrentFileUri, nameof(torrentFileUri)).IsNotNull();
+            Ensure.That(displayedUri, nameof(displayedUri)).IsNotNull();
 
-            TorrentFileUri = torrentFileUri;
+            DisplayedUri = displayedUri;
             Torrent = Torrent.Load(torrentBytes);
 
             this.torrentBytes = torrentBytes;
@@ -35,7 +35,7 @@ namespace TX.Core.Models.Targets
         [JsonIgnore]
         public Torrent Torrent { get; private set; }
 
-        public Uri TorrentFileUri { get; private set; }
+        public Uri DisplayedUri { get; private set; }
 
         protected override string GetSuggestedName() => Torrent.Name;
 

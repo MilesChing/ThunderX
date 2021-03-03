@@ -10,7 +10,7 @@ namespace TX.Core.Utils
 {
     public static class StorageUtils
     {
-        public static async Task MoveContentToAsync(this IStorageFolder now, IStorageFolder destination)
+        public static async Task CopyContentToAsync(this IStorageFolder now, IStorageFolder destination)
         {
             var files = await now.GetFilesAsync();
             foreach (var file in files)
@@ -23,10 +23,8 @@ namespace TX.Core.Utils
             {
                 var nowDes = await destination.CreateFolderAsync(folder.Name, 
                     CreationCollisionOption.GenerateUniqueName);
-                await now.MoveContentToAsync(nowDes);
+                await folder.CopyContentToAsync(nowDes);
             }
-
-            await now.DeleteAsync();
         }
 
         public static async Task<IStorageItem> GetStorageItemAsync(string path)

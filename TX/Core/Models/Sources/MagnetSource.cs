@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace TX.Core.Models.Sources
 {
-    class MagnetSource : AbstractSource, ISingleTargetExtracted
+    class MagnetSource : AbstractSource, ISingleSubsourceExtracted
     {
         public MagnetSource(Uri uri, ClientEngine engine, IEnumerable<string> announceUrls) : base(uri)
         {
@@ -23,16 +23,14 @@ namespace TX.Core.Models.Sources
             link = MagnetLink.FromUri(Uri);
         }
 
-        public async Task<AbstractTarget> GetTargetAsync()
+        public async Task<AbstractSource> GetSubsourceAsync()
         {
             if (!link.AnnounceUrls.IsReadOnly)
                 foreach (var url in announceUrls)
                     link.AnnounceUrls.Add(url);
             CancellationTokenSource ctk = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             var metaData = await engine.DownloadMetadataAsync(link, ctk.Token);
-            var torrent = Torrent.Load(metaData);
-            return new TorrentTarget(metaData, Uri, 
-                torrent.Files.Select(file => file.Path).ToArray());
+            return new TorrentSource(Uri, metaData);
         }
 
         private readonly MagnetLink link = null;

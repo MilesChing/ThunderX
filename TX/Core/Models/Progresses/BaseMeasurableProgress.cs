@@ -39,5 +39,10 @@ namespace TX.Core.Models.Progresses
         public long TotalSize { get; private set; }
 
         public float Progress => ((float)DownloadedSize) / TotalSize;
+
+        /// <summary>
+        /// If the downloading is completed.
+        /// </summary>
+        public bool IsCompleted => DownloadedSize.Equals(TotalSize);
     }
 }

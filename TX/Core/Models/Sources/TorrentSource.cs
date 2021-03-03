@@ -21,6 +21,12 @@ namespace TX.Core.Models.Sources
             Ensure.That(Path.GetExtension(uri.LocalPath)).Is(".torrent");
         }
 
+        public TorrentSource(Uri uri, byte[] torrentBytes) : base(uri)
+        {
+            Ensure.That(torrentBytes).IsNotNull();
+            this.torrentBytes = torrentBytes;
+        }
+
         public bool IsMultiSelectionSupported => true;
 
         public Task<AbstractTarget> GetTargetAsync(IEnumerable<string> keys)
@@ -34,10 +40,13 @@ namespace TX.Core.Models.Sources
 
         public async Task<IEnumerable<KeyValuePair<string, string>>> GetTargetInfosAsync()
         {      
-            var file = await StorageFile.GetFileFromPathAsync(Uri.AbsoluteUri);
-            torrentBytes = (await FileIO.ReadBufferAsync(file)).ToArray();
+            if (torrentBytes == null)
+            {
+                var file = await StorageFile.GetFileFromPathAsync(Uri.AbsoluteUri);
+                torrentBytes = (await FileIO.ReadBufferAsync(file)).ToArray();
+            }
+
             torrent = await Torrent.LoadAsync(torrentBytes);
-            torrent.Source = Uri.LocalPath;
             var list = new List<KeyValuePair<string, string>>();
             foreach (var f in torrent.Files)
                 list.Add(new KeyValuePair<string, string>(f.Path, FormatText(f)));
