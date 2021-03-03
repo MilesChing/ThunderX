@@ -119,6 +119,8 @@ namespace TX
 
         private void StreamSelectionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var listView = sender as ListView;
+            SelectAllStreamsCheckBox.IsChecked = !(listView.SelectedItems.Count < listView.Items.Count);
             lock (userOperationStatusLockObject)
                 ComboBoxSelectionChanged = true;
         }
@@ -140,6 +142,16 @@ namespace TX
                 StorageApplicationPermissions.FutureAccessList.Add(file);
                 MainURITextBox.Text = file.Path;
             }
+        }
+
+        private void SelectAllStreamsCheckBox_Checked(object sender, RoutedEventArgs e) =>
+            StreamSelectionListView.SelectAll();
+
+        private void SelectAllStreamsCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (StreamSelectionListView.SelectedItems.Count ==
+                StreamSelectionListView.Items.Count)
+                StreamSelectionListView.SelectedItems.Clear();
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
@@ -275,6 +287,9 @@ namespace TX
                                     StreamSelectionListView.SelectionMode =
                                         multiSubsourcesExtracted.IsMultiSelectionSupported ?
                                         ListViewSelectionMode.Multiple : ListViewSelectionMode.Single;
+                                    SelectAllStreamsCheckBox.Visibility = 
+                                        multiSubsourcesExtracted.IsMultiSelectionSupported ?
+                                        Visibility.Visible : Visibility.Collapsed;
                                     StreamSelectionListView.ItemsSource = infos.Select(
                                         kvp => kvp.Value).ToArray();
                                     StreamSelectionStackPanel.Visibility = Visibility.Visible;

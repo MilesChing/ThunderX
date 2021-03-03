@@ -293,4 +293,13 @@
   <data name="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" xml:space="preserve">
     <value>重新加载 Tracker 列表</value>
   </data>
+  <data name="NewTaskPage_Streams_CheckBox.Content" xml:space="preserve">
+    <value>选择全部</value>
+  </data>
+  <data name="NewTaskPage_ClipboardButton_TextBlock.Text" xml:space="preserve">
+    <value>从剪贴板插入</value>
+  </data>
+  <data name="NewTaskPage_FileButton_TextBlock.Text" xml:space="preserve">
+    <value>选取文件以开始</value>
+  </data>
 </root>
