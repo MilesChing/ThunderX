@@ -295,10 +295,10 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
-🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</source>
-          <target state="translated">🌎 这一版本完整推出了基于 BitTorrent 协议的下载。以本地 torrent 文件或 magnet 链接的形式均可创建任务，在我们的下载器中追加自定义的 Tracker 服务器列表也受支持。
-🚀 后台任务已被引入，以在 Thunder X 处于挂起或被关闭状态下仍能在后台进行一定时间的下载。后台任务打开后将在设备连接电源时生效。</target>
+          <source>🔨 This release is mainly used to fix the crashing and errors during the completion process of torrent downloader.
+🌫 We also improved the experience of creating task with multiple streams, several UI adjustment is performed.</source>
+          <target state="translated">🔨 这一版本主要修复了 BitTorrent 下载至 100% 后出现的长时间无响应和程序崩溃。
+🌫 除此之外，我们提升了创建带有多个下载流可选的任务时的用户体验，进行了几处小的 UI 调整。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
@@ -383,6 +383,18 @@ Create a task for downloading.</source>
         <trans-unit id="SetPage_Torrent_CustomTrackerListFile_ReloadItem.Text" translate="yes" xml:space="preserve">
           <source>Reload Tracker List</source>
           <target state="translated">重新加载 Tracker 列表</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_Streams_CheckBox.Content" translate="yes" xml:space="preserve">
+          <source>Select All</source>
+          <target state="translated">选择全部</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_ClipboardButton_TextBlock.Text" translate="yes" xml:space="preserve">
+          <source>Insert from clipboard</source>
+          <target state="translated">从剪贴板插入</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_FileButton_TextBlock.Text" translate="yes" xml:space="preserve">
+          <source>Pick source file</source>
+          <target state="translated">选取文件以开始</target>
         </trans-unit>
       </group>
     </body>

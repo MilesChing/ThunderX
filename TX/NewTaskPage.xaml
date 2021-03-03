@@ -16,7 +16,7 @@
                       RelativePanel.AlignLeftWithPanel="True"
                       RelativePanel.AlignTopWithPanel="True"
                       RelativePanel.AlignBottomWithPanel="True">
-            <StackPanel Orientation="Vertical" Padding="16 0 16 44" Width="400">
+            <StackPanel Orientation="Vertical" Padding="16 0 16 80" Width="400">
                 
                 <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
 
@@ -43,13 +43,13 @@
                     <Button x:Name="ClipboardButton" Click="ClipboardButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon FontSize="12" FontFamily="Segoe MDL2 Assets" Glyph="&#xE77F;"/>
-                            <TextBlock Margin="8 0 0 0" FontSize="12">Insert from clipboard</TextBlock>
+                            <TextBlock x:Uid="NewTaskPage_ClipboardButton_TextBlock" Margin="8 0 0 0" FontSize="12"/>
                         </StackPanel>
                     </Button>
                     <Button x:Name="FileButton" Click="FileButton_Click">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon FontSize="12" FontFamily="Segoe MDL2 Assets" Glyph="&#xE8E5;"/>
-                            <TextBlock Margin="8 0 0 0" FontSize="12">Pick file to start</TextBlock>
+                            <TextBlock x:Uid="NewTaskPage_FileButton_TextBlock" Margin="8 0 0 0" FontSize="12"/>
                         </StackPanel>
                     </Button>
                 </controls:WrapStackPanel>
@@ -58,10 +58,15 @@
                     <!--Streams-->
                     <TextBlock x:Uid="NewTaskPage_Streams_Title" Margin="0 0 0 12"
                                Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                    <CheckBox x:Name="SelectAllStreamsCheckBox" 
+                              x:Uid="NewTaskPage_Streams_CheckBox" Margin="0 0 0 8" 
+                              Checked="SelectAllStreamsCheckBox_Checked"
+                              Unchecked="SelectAllStreamsCheckBox_Unchecked"/>
                     <ListView x:Name="StreamSelectionListView" MinWidth="200" Margin="0 0 0 20"
                               MaxHeight="200" SelectionChanged="StreamSelectionListView_SelectionChanged"
                               Background="{ThemeResource SystemChromeMediumColor}" CornerRadius="4"/>
                 </StackPanel>
+                
                 <!--File Name-->
                 <TextBlock x:Uid="NewTaskPage_FileName_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
@@ -89,7 +94,8 @@
                               x:Uid="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch"/>
             </StackPanel>
         </ScrollViewer>
-        <Grid RelativePanel.AlignBottomWithPanel="True"
+        <Grid x:Name="BottomButtonGrid" 
+              RelativePanel.AlignBottomWithPanel="True"
               RelativePanel.AlignLeftWithPanel="True"
               RelativePanel.AlignRightWithPanel="True">
             <Grid.Background>

@@ -152,8 +152,8 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🌎 This release fully provides downloading under BitTorrent protocol. Downloading either from local torrent file or magnet link is supported. It is available as well to assign your custom tracker list into our downloader. 
-🚀 The background task is built for working in the background after Thunder X is suspended or closed, which makes full use of the idle time of your power-on devices and opens up a lot of possibilities for our further functionalities.</value>
+    <value>🔨 This release is mainly used to fix the crashing and errors during the completion process of torrent downloader.
+🌫 We also improved the experience of creating task with multiple streams, several UI adjustment is performed.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
@@ -213,11 +213,17 @@
   <data name="NewTaskPage_AcceptButton.Content" xml:space="preserve">
     <value>Create New</value>
   </data>
+  <data name="NewTaskPage_ClipboardButton_TextBlock.Text" xml:space="preserve">
+    <value>Insert from clipboard</value>
+  </data>
   <data name="NewTaskPage_DestinationFolder_Button.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
   <data name="NewTaskPage_DestinationFolder_Title.Text" xml:space="preserve">
     <value>Destination Folder</value>
+  </data>
+  <data name="NewTaskPage_FileButton_TextBlock.Text" xml:space="preserve">
+    <value>Pick source file</value>
   </data>
   <data name="NewTaskPage_FileName_CheckBox.Content" xml:space="preserve">
     <value>Custom filename</value>
@@ -230,6 +236,9 @@
   </data>
   <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
     <value>Other Configurations</value>
+  </data>
+  <data name="NewTaskPage_Streams_CheckBox.Content" xml:space="preserve">
+    <value>Select All</value>
   </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
     <value>Streams</value>
