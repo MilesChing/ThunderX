@@ -213,11 +213,17 @@
   <data name="NewTaskPage_AcceptButton.Content" xml:space="preserve">
     <value>Create New</value>
   </data>
+  <data name="NewTaskPage_ClipboardButton_TextBlock.Text" xml:space="preserve">
+    <value>Insert from clipboard</value>
+  </data>
   <data name="NewTaskPage_DestinationFolder_Button.Content" xml:space="preserve">
     <value>Select Folder</value>
   </data>
   <data name="NewTaskPage_DestinationFolder_Title.Text" xml:space="preserve">
     <value>Destination Folder</value>
+  </data>
+  <data name="NewTaskPage_FileButton_TextBlock.Text" xml:space="preserve">
+    <value>Pick source file</value>
   </data>
   <data name="NewTaskPage_FileName_CheckBox.Content" xml:space="preserve">
     <value>Custom filename</value>
@@ -230,6 +236,9 @@
   </data>
   <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
     <value>Other Configurations</value>
+  </data>
+  <data name="NewTaskPage_Streams_CheckBox.Content" xml:space="preserve">
+    <value>Select All</value>
   </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
     <value>Streams</value>

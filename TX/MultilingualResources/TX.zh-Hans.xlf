@@ -384,6 +384,18 @@ Create a task for downloading.</source>
           <source>Reload Tracker List</source>
           <target state="translated">重新加载 Tracker 列表</target>
         </trans-unit>
+        <trans-unit id="NewTaskPage_Streams_CheckBox.Content" translate="yes" xml:space="preserve">
+          <source>Select All</source>
+          <target state="translated">选择全部</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_ClipboardButton_TextBlock.Text" translate="yes" xml:space="preserve">
+          <source>Insert from clipboard</source>
+          <target state="translated">从剪贴板插入</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_FileButton_TextBlock.Text" translate="yes" xml:space="preserve">
+          <source>Pick source file</source>
+          <target state="translated">选取文件以开始</target>
+        </trans-unit>
       </group>
     </body>
   </file>
