@@ -26,6 +26,7 @@ using MonoTorrent;
 using TX.Background;
 using Windows.ApplicationModel.Background;
 using TX.Core.Utils;
+using System.Linq;
 
 namespace TX
 {
@@ -171,6 +172,20 @@ namespace TX
             CoreBackgroundTask.Run(args.TaskInstance);
         }
 
+        protected override void OnFileActivated(FileActivatedEventArgs args)
+        {
+            var targetFile = args.Files.FirstOrDefault();
+            StorageApplicationPermissions.FutureAccessList.Add(targetFile);
+            var targetFileUri = new Uri(targetFile.Path);
+            D($"Activated by file <{targetFile.Path}>");
+            if (!EnsurePageCreatedAndActivate(targetFileUri))
+            {
+                D($"Exist UI content, navigate to new task page");
+                MainPage.Current.NavigateNewTaskPage(targetFileUri);
+            }
+            base.OnFileActivated(args);
+        }
+
         protected override async void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
@@ -181,11 +196,12 @@ namespace TX
                         args as ToastNotificationActivatedEventArgs);
                     break;
                 case ActivationKind.Protocol:
-                    ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
-                    if (!EnsurePageCreatedAndActivate(eventArgs.Uri))
+                    ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
+                    D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
+                    if (!EnsurePageCreatedAndActivate(protocalArgs.Uri))
                     {
                         D($"Exist UI content, navigate to new task page");
-                        MainPage.Current.NavigateNewTaskPage(eventArgs.Uri);
+                        MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri);
                     }
                     break;
             }

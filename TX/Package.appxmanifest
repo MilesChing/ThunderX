@@ -59,6 +59,13 @@
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="thunder"/>
         </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="torrent">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.torrent</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>
