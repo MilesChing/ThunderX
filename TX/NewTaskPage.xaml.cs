@@ -75,6 +75,9 @@ namespace TX
             mainURITextBoxAnalyzingTaskCancellationTokenSource = new CancellationTokenSource();
             _ = Task.Run(() => UrlAnalyzer(mainURITextBoxAnalyzingTaskCancellationTokenSource.Token));
 
+            if (e.Parameter is Uri uri)
+                MainURITextBox.Text = uri.OriginalString;
+
             base.OnNavigatedTo(e);
         }
 
@@ -170,7 +173,7 @@ namespace TX
         private CancellationTokenSource mainURITextBoxAnalyzingTaskCancellationTokenSource;
         private readonly object userOperationStatusLockObject = new object();
         private bool ComboBoxSelectionChanged = false;
-        private bool UriChanged = false;
+        private bool UriChanged = true;
         private bool UserOperated => ComboBoxSelectionChanged | UriChanged;
 
         private async void UrlAnalyzer(CancellationToken token)
