@@ -155,19 +155,14 @@ namespace TX
 
         protected override async void OnActivated(IActivatedEventArgs args)
         {
-            if (args.Kind == ActivationKind.ToastNotification)
+            switch (args.Kind)
             {
-                string message = (args as ToastNotificationActivatedEventArgs).Argument;
-                string[] arguments = message.Split('$');
-                try
-                {
-                    await Launcher.LaunchUriAsync(new Uri(arguments[1]));
-                }
-                catch (Exception) { }
-
-                if (args.PreviousExecutionState != ApplicationExecutionState.Running)
-                    Current.Exit();
+                case ActivationKind.ToastNotification:
+                    await ToastManager.HandleToastActivationAsync(
+                        args as ToastNotificationActivatedEventArgs);
+                    break;
             }
+
             base.OnActivated(args);
         }
 
