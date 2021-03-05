@@ -302,4 +302,22 @@
   <data name="NewTaskPage_FileButton_TextBlock.Text" xml:space="preserve">
     <value>选取文件以开始</value>
   </data>
+  <data name="Toast_DownloaderCompletion_Downloaded" xml:space="preserve">
+    <value>已下载</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_Duration" xml:space="preserve">
+    <value>用时</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_Open" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_OpenFolder" xml:space="preserve">
+    <value>在文件夹中打开</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_TitlePrefix" xml:space="preserve">
+    <value>任务已完成：</value>
+  </data>
+  <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
+    <value>任务出错：</value>
+  </data>
 </root>

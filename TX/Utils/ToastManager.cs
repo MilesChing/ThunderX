@@ -12,6 +12,7 @@ using TX.Core.Downloaders;
 using TX.Core.Models.Contexts;
 using TX.Core.Utils;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources;
 using Windows.Data.Xml.Dom;
 using Windows.Storage;
 using Windows.System;
@@ -28,7 +29,8 @@ namespace TX.Utils
         public static void DownloaderErrorToast(AbstractDownloader downloader)
         {
             var xml = new ToastContentBuilder()
-                .AddText($"Task Failed: {downloader.DownloadTask.DestinationFileName}")
+                .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconWarning.png"))
+                .AddText($"{DownloaderErrorTitlePrefix}{downloader.DownloadTask.DestinationFileName}")
                 .AddText($"{downloader.Errors.FirstOrDefault().Message}")
                 .GetToastContent().GetXml();
             ToastNotificationManager.CreateToastNotifier().Show(
@@ -43,15 +45,16 @@ namespace TX.Utils
         public static async void DownloaderCompletionToast(AbstractDownloader downloader)
         {
             var xml = new ToastContentBuilder()
-                .AddText($"Task Completed: {downloader.DownloadTask.DestinationFileName}")
-                .AddText($"File Size {(await downloader.Result.GetSizeAsync()).SizedString()}")
-                .AddText($"Duration {downloader.Speed.RunningTime:hh\\:mm\\:ss}")
-                .AddButton("Open", ToastActivationType.Foreground,
+                .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconAccept.png"))
+                .AddText($"{DownloaderCompletionTitlePrefix}{downloader.DownloadTask.DestinationFileName}")
+                .AddText($"{DownloaderCompletionDownloaded} {(await downloader.Result.GetSizeAsync()).SizedString()}")
+                .AddText($"{DownloaderCompletionDuration} {downloader.Speed.RunningTime:hh\\:mm\\:ss}")
+                .AddButton(DownloaderCompletionOpen, ToastActivationType.Foreground,
                     EncodeActivationCommand(
                         ActivationCommandLaunchStorageItem, 
                         downloader.Result.Path)
                 )
-                .AddButton("Open Directory", ToastActivationType.Foreground,
+                .AddButton(DownloaderCompletionOpenFolder, ToastActivationType.Foreground,
                     EncodeActivationCommand(
                         ActivationCommandLaunchStorageItem, 
                         Path.GetDirectoryName(downloader.Result.Path))
@@ -129,5 +132,12 @@ namespace TX.Utils
         private static void D(string message) => Debug.WriteLine($"[{nameof(ToastManager)}] {message}");
 
         private const string ActivationCommandLaunchStorageItem = "LAUNCH_STORAGE_ITEM";
+        private readonly static ResourceLoader RSLoader = new ResourceLoader();
+        private readonly static string DownloaderErrorTitlePrefix = RSLoader.GetString("Toast_DownloaderError_TitlePrefix");
+        private readonly static string DownloaderCompletionTitlePrefix = RSLoader.GetString("Toast_DownloaderCompletion_TitlePrefix");
+        private readonly static string DownloaderCompletionDownloaded = RSLoader.GetString("Toast_DownloaderCompletion_Downloaded");
+        private readonly static string DownloaderCompletionDuration = RSLoader.GetString("Toast_DownloaderCompletion_Duration");
+        private readonly static string DownloaderCompletionOpen = RSLoader.GetString("Toast_DownloaderCompletion_Open");
+        private readonly static string DownloaderCompletionOpenFolder = RSLoader.GetString("Toast_DownloaderCompletion_OpenFolder");
     }
 }

@@ -400,6 +400,24 @@ Create a task for downloading.</value>
   <data name="TaskListPage_Title.Text" xml:space="preserve">
     <value>Tasks</value>
   </data>
+  <data name="Toast_DownloaderCompletion_Downloaded" xml:space="preserve">
+    <value>Downloaded</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_Duration" xml:space="preserve">
+    <value>In duration</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_OpenFolder" xml:space="preserve">
+    <value>Open in folder</value>
+  </data>
+  <data name="Toast_DownloaderCompletion_TitlePrefix" xml:space="preserve">
+    <value>Task Completed: </value>
+  </data>
+  <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
+    <value>Task Failed: </value>
+  </data>
   <data name="TotalSize" xml:space="preserve">
     <value>Total Size</value>
   </data>
