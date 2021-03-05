@@ -45,7 +45,7 @@ namespace TX.Utils
         public static async void DownloaderCompletionToast(AbstractDownloader downloader)
         {
             var xml = new ToastContentBuilder()
-                .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconAccept.png"))
+                .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconComplete.png"))
                 .AddText($"{DownloaderCompletionTitlePrefix}{downloader.DownloadTask.DestinationFileName}")
                 .AddText($"{DownloaderCompletionDownloaded} {(await downloader.Result.GetSizeAsync()).SizedString()}")
                 .AddText($"{DownloaderCompletionDuration} {downloader.Speed.RunningTime:hh\\:mm\\:ss}")
