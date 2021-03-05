@@ -223,6 +223,7 @@
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\IconAccept.png" />
+    <Content Include="Assets\IconTorrent.png" />
     <Content Include="Assets\IconWarning.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />

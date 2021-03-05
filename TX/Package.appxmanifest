@@ -64,6 +64,7 @@
             <uap:SupportedFileTypes>
               <uap:FileType>.torrent</uap:FileType>
             </uap:SupportedFileTypes>
+            <uap:Logo>Assets\IconTorrent.png</uap:Logo>
           </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>
