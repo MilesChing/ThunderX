@@ -182,20 +182,12 @@ namespace TX.Core
                     sender.Result.Path,
                     DateTime.Now));
                 if (settingEntries.IsNotificationEnabledWhenTaskCompleted)
-                {
-                    ToastManager.ShowDownloadCompleteToastAsync(
-                        "Task Completed", sender.DownloadTask.DestinationFileName,
-                        sender.Result.Path, Path.GetDirectoryName(sender.Result.Path));
-                }
+                    ToastManager.DownloaderCompletionToast(sender);
             }
             else if (status == DownloaderStatus.Error)
             {
                 if (settingEntries.IsNotificationEnabledWhenFailed)
-                {
-                    ToastManager.ShowSimpleToast(
-                        "Task Failed: " + sender.DownloadTask.DestinationFileName,
-                        sender.Errors.First().Message);
-                }
+                    ToastManager.DownloaderErrorToast(sender);
             }
             else if (status == DownloaderStatus.Disposed)
             {

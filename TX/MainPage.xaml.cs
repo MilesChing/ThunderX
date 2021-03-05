@@ -22,6 +22,7 @@ namespace TX
         public static MainPage Current { get; private set; }
 
         private static readonly Settings SettingEntries = new Settings();
+        private Action LeavePageEventHandler = null;
 
         public MainPage()
         {
@@ -33,15 +34,18 @@ namespace TX
             RequestedTheme = SettingEntries.IsDarkModeEnabled 
                 ? ElementTheme.Dark : ElementTheme.Default;
             UpdateTitleBar();
-
-            LeftFrame.Navigate(typeof(TaskList));
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            LeftFrame.Navigate(typeof(TaskList));
             await CurrentApp.WaitForInitializingAsync();
-            InvokeRightFrame(typeof(AboutPage), null);
+
+            if (e.Parameter is Uri uri)
+                NavigateRightFrame(typeof(NewTaskPage), uri);
+            else NavigateRightFrame(typeof(AboutPage), null);
+
             LoadingView.Visibility = Visibility.Collapsed;
         }
 
@@ -59,7 +63,7 @@ namespace TX
 
         public void NavigateDownloaderDetailPage(AbstractDownloader downloader)
         {
-            InvokeRightFrame(typeof(TaskDetailPage), downloader);
+            NavigateRightFrame(typeof(TaskDetailPage), downloader);
             DetailPage.Content = downloader.DownloadTask.Target.SuggestedName;
             DetailPage.Visibility = Visibility.Visible;
             (MainNavigationView.Parent as FrameworkElement)?.UpdateLayout();
@@ -69,13 +73,14 @@ namespace TX
 
         public void NavigateEmptyPage()
         {
-            InvokeRightFrame(typeof(Page), null);
+            NavigateRightFrame(typeof(Page), null);
             MainNavigationView.SelectedItem = null;
             MainNavigationView.IsBackEnabled = false;
             LeavePageEventHandler = LeaveEmptyPage;
         }
 
-        private Action LeavePageEventHandler = null;
+        public void NavigateNewTaskPage(Uri uri = null) =>
+            NavigateRightFrame(typeof(NewTaskPage), uri);
 
         private void LeaveEmptyPage()
         {
@@ -88,7 +93,7 @@ namespace TX
             DetailPage.Visibility = Visibility.Collapsed;
         }
 
-        private void InvokeRightFrame(Type pageType, object parameter)
+        private void NavigateRightFrame(Type pageType, object parameter)
         {
             LeavePageEventHandler?.Invoke();
             LeavePageEventHandler = null;
@@ -100,13 +105,13 @@ namespace TX
             if (args.InvokedItem is string invokedStr)
             {
                 if (invokedStr.Equals(ListItem.Content))
-                    InvokeRightFrame(typeof(HistoryListPage), null);
+                    NavigateRightFrame(typeof(HistoryListPage), null);
                 else if (invokedStr.Equals(AddItem.Content))
-                    InvokeRightFrame(typeof(NewTaskPage), null);
+                    NavigateRightFrame(typeof(NewTaskPage), null);
                 else if (invokedStr.Equals(SetItem.Content))
-                    InvokeRightFrame(typeof(SetPage), null);
+                    NavigateRightFrame(typeof(SetPage), null);
                 else if (invokedStr.Equals(AboutItem.Content))
-                    InvokeRightFrame(typeof(AboutPage), null);
+                    NavigateRightFrame(typeof(AboutPage), null);
             }
         }
 

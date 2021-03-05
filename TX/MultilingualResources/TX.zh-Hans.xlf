@@ -396,6 +396,30 @@ Create a task for downloading.</source>
           <source>Pick source file</source>
           <target state="translated">选取文件以开始</target>
         </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Downloaded" translate="yes" xml:space="preserve">
+          <source>Downloaded</source>
+          <target state="translated">已下载</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Duration" translate="yes" xml:space="preserve">
+          <source>In duration</source>
+          <target state="translated">用时</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Open" translate="yes" xml:space="preserve">
+          <source>Open</source>
+          <target state="translated">打开</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_OpenFolder" translate="yes" xml:space="preserve">
+          <source>Open in folder</source>
+          <target state="translated">在文件夹中打开</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_TitlePrefix" translate="yes" xml:space="preserve">
+          <source>Task Completed: </source>
+          <target state="translated">任务已完成：</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderError_TitlePrefix" translate="yes" xml:space="preserve">
+          <source>Task Failed: </source>
+          <target state="translated">任务出错：</target>
+        </trans-unit>
       </group>
     </body>
   </file>

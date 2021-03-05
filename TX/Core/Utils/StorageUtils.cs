@@ -29,10 +29,14 @@ namespace TX.Core.Utils
 
         public static async Task<IStorageItem> GetStorageItemAsync(string path)
         {
-            var rootFolder = await StorageFolder.GetFolderFromPathAsync(
-                Path.GetDirectoryName(path));
-            return await rootFolder.GetItemAsync(
-                Path.GetRelativePath(rootFolder.Path, path));
+            try
+            {
+                return await StorageFile.GetFileFromPathAsync(path);
+            }
+            catch (Exception)
+            {
+                return await StorageFolder.GetFolderFromPathAsync(path);
+            }
         }
 
         public static async Task<long> GetSizeAsync(this IStorageItem now)
