@@ -98,8 +98,9 @@ namespace TX
             }
 
             D("Background execution access checked");
-            CoreBackgroundTask.UnregisterBackgroundTask();
-            D("Application running, background task unregistered temporarily");
+            BackgroundTaskManager.UnregisterTasks();
+            BackgroundTaskManager.RegisterTasks();
+            D("Background task reregistered");
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -140,16 +141,8 @@ namespace TX
                 OOAManager.SaveToStorage();
                 D("OOA data stored");
 
-                CoreBackgroundTask.UnregisterBackgroundTask();
-                if (settingEntries.IsBackgroundTaskEnabled && Core.Downloaders.Count > 0)
-                {
-                    CoreBackgroundTask.RegisterBackgroundTask(
-                        settingEntries.BackgroundTaskFreshnessTime,
-                        settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
-                        settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
-                    D("Background task registered");
-                }
-                else D("No need for background task, skip registering");
+                BackgroundTaskManager.UnregisterTasks();
+                BackgroundTaskManager.RegisterTasks();
             }
             finally
             {
@@ -169,19 +162,21 @@ namespace TX
         {
             base.OnBackgroundActivated(args);
             D("Application activated in background");
-            CoreBackgroundTask.Run(args.TaskInstance);
+            BackgroundTaskManager.ActivateTask(args.TaskInstance);
         }
 
         protected override void OnFileActivated(FileActivatedEventArgs args)
         {
+            List<Action> actions = new List<Action>();
             var targetFile = args.Files.FirstOrDefault();
             StorageApplicationPermissions.FutureAccessList.Add(targetFile);
             var targetFileUri = new Uri(targetFile.Path);
+            actions.Add(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
             D($"Activated by file <{targetFile.Path}>");
-            if (!EnsurePageCreatedAndActivate(targetFileUri))
+            if (!EnsurePageCreatedAndActivate(actions))
             {
                 D($"Exist UI content, navigate to new task page");
-                MainPage.Current.NavigateNewTaskPage(targetFileUri);
+                foreach (var action in actions) action();
             }
             base.OnFileActivated(args);
         }
@@ -189,21 +184,24 @@ namespace TX
         protected override async void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
+            List<Action> actions = new List<Action>();
             switch (args.Kind)
             {
                 case ActivationKind.ToastNotification:
-                    await ToastManager.HandleToastActivationAsync(
-                        args as ToastNotificationActivatedEventArgs);
+                    var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
+                    actions.AddRange(await ToastManager.HandleToastActivationAsync(argument));
                     break;
                 case ActivationKind.Protocol:
                     ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
                     D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
-                    if (!EnsurePageCreatedAndActivate(protocalArgs.Uri))
-                    {
-                        D($"Exist UI content, navigate to new task page");
-                        MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri);
-                    }
+                    actions.Add(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
                     break;
+            }
+
+            if (!EnsurePageCreatedAndActivate(actions))
+            {
+                D($"Exist UI content, navigate to new task page");
+                foreach (var action in actions) action();
             }
 
             base.OnActivated(args);
