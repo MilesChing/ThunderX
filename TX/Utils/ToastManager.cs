@@ -32,6 +32,12 @@ namespace TX.Utils
                 .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconWarning.png"))
                 .AddText($"{DownloaderErrorTitlePrefix}{downloader.DownloadTask.DestinationFileName}")
                 .AddText($"{downloader.Errors.FirstOrDefault().Message}")
+                .AddToastActivationInfo(
+                    EncodeActivationCommand(
+                        ActivationCommandNavigateToTaskDetail,
+                        downloader.DownloadTask.Key
+                    ), ToastActivationType.Foreground
+                )
                 .GetToastContent().GetXml();
             ToastNotificationManager.CreateToastNotifier().Show(
                 new ToastNotification(xml));
@@ -49,12 +55,18 @@ namespace TX.Utils
                 .AddText($"{DownloaderCompletionTitlePrefix}{downloader.DownloadTask.DestinationFileName}")
                 .AddText($"{DownloaderCompletionDownloaded} {(await downloader.Result.GetSizeAsync()).SizedString()}")
                 .AddText($"{DownloaderCompletionDuration} {downloader.Speed.RunningTime:hh\\:mm\\:ss}")
-                .AddButton(DownloaderCompletionOpen, ToastActivationType.Foreground,
+                .AddToastActivationInfo(
+                    EncodeActivationCommand(
+                        ActivationCommandNavigateToTaskDetail,
+                        downloader.DownloadTask.Key
+                    ), ToastActivationType.Foreground
+                )
+                .AddButton(DownloaderCompletionOpen, ToastActivationType.Background,
                     EncodeActivationCommand(
                         ActivationCommandLaunchStorageItem, 
                         downloader.Result.Path)
                 )
-                .AddButton(DownloaderCompletionOpenFolder, ToastActivationType.Foreground,
+                .AddButton(DownloaderCompletionOpenFolder, ToastActivationType.Background,
                     EncodeActivationCommand(
                         ActivationCommandLaunchStorageItem, 
                         Path.GetDirectoryName(downloader.Result.Path))
@@ -68,15 +80,16 @@ namespace TX.Utils
         /// <summary>
         /// Handle the activation of application by toast.
         /// </summary>
-        /// <param name="args">Arguments of the activation</param>
-        public static async Task HandleToastActivationAsync(ToastNotificationActivatedEventArgs args)
+        /// <param name="argument">Argument of the activation</param>
+        /// <returns>Actions to be done after mainpage has been navigated to.</returns>
+        public static async Task<IEnumerable<Action>> HandleToastActivationAsync(string argument)
         {
-            var command = DecodeActivationCommand(args?.Argument);
+            var command = DecodeActivationCommand(argument);
             D($"Command decoded: <{string.Join(' ', command)}>");
-
-            if (command.Length > 0)
+            List<Action> actions = new List<Action>();
+            try
             {
-                switch (command[0])
+                switch (command.FirstOrDefault())
                 {
                     case ActivationCommandLaunchStorageItem:
                         foreach (string path in command.Skip(1))
@@ -92,18 +105,43 @@ namespace TX.Utils
                             }
                             catch (Exception e) { D($"{path} launching failed: {e.Message}"); }
                         }
-                        RecoverApplicationState(args);
+                        break;
+                    case ActivationCommandNavigateToTaskDetail:
+                        actions.Add(() =>
+                        {
+                            var taskKey = command.Skip(1).FirstOrDefault();
+                            if (taskKey != null)
+                            {
+                                var downloader = ((App)App.Current).Core.Downloaders.FirstOrDefault(
+                                    d => d.DownloadTask.Key.Equals(taskKey));
+                                if (downloader != null)
+                                {
+                                    D($"{downloader.GetType().Name} found with task {taskKey}");
+                                    MainPage.Current.NavigateDownloaderDetailPage(downloader);
+                                }
+                                else
+                                {
+                                    D($"Downloader with task {taskKey} not found, checking history");
+                                    bool historyExist = ((App)App.Current).Core.Histories.Any(
+                                        hist => string.Equals(hist.TaskKey, taskKey));
+                                    if (historyExist)
+                                    {
+                                        D("Found history record, navigate to history page");
+                                        MainPage.Current.NavigateHistoryPage();
+                                    }
+                                    else D("History record not found, abort");
+                                }
+                            }
+                            else D("Command format illegal: no task key");
+                        });
                         break;
                     default:
-                        RecoverApplicationState(args);
+                        D($"Unrecognized command, abort");
                         break;
                 }
             }
-            else
-            {
-                D($"Empty command, abort");
-                RecoverApplicationState(args);
-            }
+            catch (Exception) { }
+            return actions;
         }
 
         private static string EncodeActivationCommand(params string[] commands) =>
@@ -120,18 +158,10 @@ namespace TX.Utils
             catch (Exception) { return Array.Empty<string>(); }
         }
 
-        private static void RecoverApplicationState(ToastNotificationActivatedEventArgs args)
-        {
-            if (args.PreviousExecutionState != ApplicationExecutionState.Running)
-            {
-                D($"Previous execution state: {args.PreviousExecutionState}, application exit");
-                App.Current.Exit();
-            }
-        }
-
         private static void D(string message) => Debug.WriteLine($"[{nameof(ToastManager)}] {message}");
 
         private const string ActivationCommandLaunchStorageItem = "LAUNCH_STORAGE_ITEM";
+        private const string ActivationCommandNavigateToTaskDetail = "NAVIGATE_TO_TASK_DETAIL";
         private readonly static ResourceLoader RSLoader = new ResourceLoader();
         private readonly static string DownloaderErrorTitlePrefix = RSLoader.GetString("Toast_DownloaderError_TitlePrefix");
         private readonly static string DownloaderCompletionTitlePrefix = RSLoader.GetString("Toast_DownloaderCompletion_TitlePrefix");

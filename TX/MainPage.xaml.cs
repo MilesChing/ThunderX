@@ -9,6 +9,8 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI;
 using Windows.UI.Xaml.Navigation;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TX
 {
@@ -42,9 +44,15 @@ namespace TX
             LeftFrame.Navigate(typeof(TaskList));
             await CurrentApp.WaitForInitializingAsync();
 
-            if (e.Parameter is Uri uri)
-                NavigateRightFrame(typeof(NewTaskPage), uri);
-            else NavigateRightFrame(typeof(AboutPage), null);
+            // navigate right frame to about page by default
+            // this might be override by input actions
+            NavigateRightFrame(typeof(AboutPage), null);
+
+            // mainpage always consider navigation paprameter
+            // as ienumerable of actions
+            if (e.Parameter is IEnumerable<Action> actions)
+                foreach (var action in actions)
+                    action();
 
             LoadingView.Visibility = Visibility.Collapsed;
         }
@@ -81,6 +89,9 @@ namespace TX
 
         public void NavigateNewTaskPage(Uri uri = null) =>
             NavigateRightFrame(typeof(NewTaskPage), uri);
+
+        public void NavigateHistoryPage() =>
+            NavigateRightFrame(typeof(HistoryListPage), null);
 
         private void LeaveEmptyPage()
         {
