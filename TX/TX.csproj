@@ -144,6 +144,9 @@
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
+    <Compile Include="Controls\NewFeaturesFlipView.xaml.cs">
+      <DependentUpon>NewFeaturesFlipView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\OneOffActionManager.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Core\Downloaders\AbstractDownloader.cs" />
@@ -302,6 +305,10 @@
     <Page Include="Controls\DownloaderBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\NewFeaturesFlipView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HistoryListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
