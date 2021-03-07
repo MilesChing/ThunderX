@@ -8,17 +8,13 @@
     mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
         <Storyboard x:Name="GuideTextAppear">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GuideText" Storyboard.TargetProperty="(UIElement.Opacity)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="1">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut"/>
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
+            <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" AutoReverse="True" Storyboard.TargetName="GuideText" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:01.0" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MainFlipView" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="-20">
+                <EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="00:00:01.0" Value="-20">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <CubicEase EasingMode="EaseOut"/>
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -85,11 +81,10 @@
                     </Grid>
                 </DataTemplate>
             </FlipView.ItemTemplate>
-            <Rectangle Fill="Red" Width="200" Height="200"/>
         </FlipView>
         <TextBlock x:Name="GuideText" Opacity="0"
+                   x:Uid="NewFeaturesFlipView_GuideText"
                    FontSize="18" FontWeight="Normal"
-                   Text="点击任意位置开始使用"
                    RelativePanel.Below="MainFlipView"
                    RelativePanel.AlignHorizontalCenterWith="MainFlipView"
                    Margin="0 8 0 0"/>
