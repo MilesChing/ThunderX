@@ -320,4 +320,25 @@
   <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
     <value>任务出错：</value>
   </data>
+  <data name="NewFeature_0_GuideText" xml:space="preserve">
+    <value>通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</value>
+  </data>
+  <data name="NewFeature_0_Title" xml:space="preserve">
+    <value>从浏览器激活 Thunder X</value>
+  </data>
+  <data name="NewFeature_0_HeroUri" xml:space="preserve">
+    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</value>
+  </data>
+  <data name="NewFeature_1_GuideText" xml:space="preserve">
+    <value>Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</value>
+  </data>
+  <data name="NewFeature_1_HeroUri" xml:space="preserve">
+    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</value>
+  </data>
+  <data name="NewFeature_1_Title" xml:space="preserve">
+    <value>使用 Thunder X 打开</value>
+  </data>
+  <data name="NewFeaturesFlipView_GuideText.Text" xml:space="preserve">
+    <value>点击任意位置即刻开始</value>
+  </data>
 </root>

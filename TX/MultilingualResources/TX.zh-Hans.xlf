@@ -422,31 +422,31 @@ Create a task for downloading.</source>
         </trans-unit>
         <trans-unit id="NewFeature_0_GuideText" translate="yes" xml:space="preserve">
           <source>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</source>
-          <target state="new">Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</target>
+          <target state="translated">通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</target>
         </trans-unit>
         <trans-unit id="NewFeature_0_Title" translate="yes" xml:space="preserve">
           <source>Activate Thunder X from the browser</source>
-          <target state="new">Activate Thunder X from the browser</target>
+          <target state="translated">从浏览器激活 Thunder X</target>
         </trans-unit>
         <trans-unit id="NewFeature_0_HeroUri" translate="yes" xml:space="preserve">
           <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</source>
-          <target state="new">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</target>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</target>
         </trans-unit>
         <trans-unit id="NewFeature_1_GuideText" translate="yes" xml:space="preserve">
           <source>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</source>
-          <target state="new">Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</target>
+          <target state="translated">Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</target>
         </trans-unit>
         <trans-unit id="NewFeature_1_HeroUri" translate="yes" xml:space="preserve">
           <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</source>
-          <target state="new">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</target>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</target>
         </trans-unit>
         <trans-unit id="NewFeature_1_Title" translate="yes" xml:space="preserve">
           <source>Open torrent files to create a task</source>
-          <target state="new">Open torrent files to create a task</target>
+          <target state="translated">使用 Thunder X 打开</target>
         </trans-unit>
         <trans-unit id="NewFeaturesFlipView_GuideText.Text" translate="yes" xml:space="preserve">
           <source>Tap anywhere to continue</source>
-          <target state="new">Tap anywhere to continue</target>
+          <target state="translated">点击任意位置即刻开始</target>
         </trans-unit>
       </group>
     </body>

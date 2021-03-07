@@ -47,7 +47,7 @@
             <ThemeShadow x:Name="NewFeaturesPanelThemeShadow"/>
         </RelativePanel.Resources>
         <Rectangle x:Name="NewFeaturesFlipViewBackgroundMask"
-                   Fill="{ThemeResource SystemAltMediumColor}"
+                   Fill="{ThemeResource SystemAltMediumHighColor}"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignRightWithPanel="True"
                    RelativePanel.AlignTopWithPanel="True"
@@ -73,7 +73,7 @@
                         <StackPanel Grid.Row="1" Padding="16" 
                                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                     Background="{ThemeResource SystemChromeLowColor}">
-                            <TextBlock Grid.Row="1" Text="{x:Bind Title}" Padding="0 0 0 8"
+                            <TextBlock Grid.Row="1" Text="{x:Bind Title}" Padding="0 0 0 12"
                                    Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                             <TextBlock Grid.Row="2" Text="{x:Bind GuideText}"
                                    Style="{ThemeResource TXPagePlainTextBlockStyle}"/>

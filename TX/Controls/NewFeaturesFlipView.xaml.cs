@@ -37,7 +37,7 @@ namespace TX.Controls
         /// </summary>
         public Action Disposed = delegate { };
 
-        private void MainFlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void MainFlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (viewed == false &&
                 sender is FlipView flipView && 
@@ -46,6 +46,7 @@ namespace TX.Controls
                 object.Equals(flipView.SelectedItem, Features.LastOrDefault()))
             {
                 // flipped to the end
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
                 viewed = true;
                 GuideTextAppear.Begin();
             }
