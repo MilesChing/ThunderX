@@ -27,6 +27,7 @@ using TX.Background;
 using Windows.ApplicationModel.Background;
 using TX.Core.Utils;
 using System.Linq;
+using TX.PersistentActions;
 
 namespace TX
 {
@@ -36,7 +37,7 @@ namespace TX
     sealed partial class App : Application
     {
         public readonly TXCoreManager Core = new TXCoreManager();
-        public readonly OneOffActionManager OOAManager = new OneOffActionManager();
+        public readonly PersistentActionManager PActionManager = new PersistentActionManager(30);
         private readonly Settings settingEntries = new Settings();
         private readonly Task initializingTask;
 
@@ -136,10 +137,10 @@ namespace TX
                 }
 
                 Core.Suspend();
-                D("Core suspended");
+                D($"{nameof(Core)} suspended");
 
-                OOAManager.SaveToStorage();
-                D("OOA data stored");
+                PActionManager.Save();
+                D($"{nameof(PActionManager)} saved");
 
                 BackgroundTaskManager.UnregisterTasks();
                 BackgroundTaskManager.RegisterTasks();
@@ -215,8 +216,7 @@ namespace TX
 
         private bool EnsurePageCreatedAndActivate(object parameter = null)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 D("Root frame is null, create it");
                 rootFrame = new Frame();
