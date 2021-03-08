@@ -295,10 +295,8 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🔨 This release is mainly used to fix the crashing and errors during the completion process of torrent downloader.
-🌫 We also improved the experience of creating task with multiple streams, several UI adjustment is performed.</source>
-          <target state="translated">🔨 这一版本主要修复了 BitTorrent 下载至 100% 后出现的长时间无响应和程序崩溃。
-🌫 除此之外，我们提升了创建带有多个下载流可选的任务时的用户体验，进行了几处小的 UI 调整。</target>
+          <source>In this release, we built several ways for activating Thunder X including activation from browser and torrent files. We also fixed the unavailable toast notification and other bugs that occurred in the last version.</source>
+          <target state="translated">在这次发布中，我们推出了几种从外部激活 Thunder X 以快速创建任务的方法，包括从浏览器直接激活 Thunder X 和通过 Thunder X 打开 torrent 文件等等。此外，我们修复了在上一个版本中出现的 toast 通知失效和其他一些问题。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>

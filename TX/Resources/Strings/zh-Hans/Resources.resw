@@ -229,8 +229,7 @@
     <value>启用该功能</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🔨 这一版本主要修复了 BitTorrent 下载至 100% 后出现的长时间无响应和程序崩溃。
-🌫 除此之外，我们提升了创建带有多个下载流可选的任务时的用户体验，进行了几处小的 UI 调整。</value>
+    <value>在这次发布中，我们推出了几种从外部激活 Thunder X 以快速创建任务的方法，包括从浏览器直接激活 Thunder X 和通过 Thunder X 打开 torrent 文件等等。此外，我们修复了在上一个版本中出现的 toast 通知失效和其他一些问题。</value>
   </data>
   <data name="AboutPage_AppDescription.Text" xml:space="preserve">
     <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>

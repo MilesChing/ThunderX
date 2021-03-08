@@ -152,8 +152,7 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🔨 This release is mainly used to fix the crashing and errors during the completion process of torrent downloader.
-🌫 We also improved the experience of creating task with multiple streams, several UI adjustment is performed.</value>
+    <value>In this release, we built several ways for activating Thunder X including activation from browser and torrent files. We also fixed the unavailable toast notification and other bugs that occurred in the last version.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
