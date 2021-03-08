@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Services.Store;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -25,6 +27,8 @@ namespace TX
     /// </summary>
     public sealed partial class AboutPage : Page
     {
+        private readonly App CurrentApp = ((App)App.Current);
+
         public AboutPage()
         {
             this.InitializeComponent();
