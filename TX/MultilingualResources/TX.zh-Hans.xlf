@@ -420,6 +420,66 @@ Create a task for downloading.</source>
           <source>Task Failed: </source>
           <target state="translated">任务出错：</target>
         </trans-unit>
+        <trans-unit id="NewFeature_0_GuideText" translate="yes" xml:space="preserve">
+          <source>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</source>
+          <target state="translated">通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_0_Title" translate="yes" xml:space="preserve">
+          <source>Activate Thunder X from the browser</source>
+          <target state="translated">从浏览器激活 Thunder X</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_0_HeroUri" translate="yes" xml:space="preserve">
+          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</source>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_GuideText" translate="yes" xml:space="preserve">
+          <source>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</source>
+          <target state="translated">Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_HeroUri" translate="yes" xml:space="preserve">
+          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</source>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_Title" translate="yes" xml:space="preserve">
+          <source>Open torrent files to create a task</source>
+          <target state="translated">使用 Thunder X 打开</target>
+        </trans-unit>
+        <trans-unit id="NewFeaturesFlipView_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Tap anywhere to continue</source>
+          <target state="translated">点击任意位置即刻开始</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.ActionButtonContent" translate="yes" xml:space="preserve">
+          <source>Purchase Now</source>
+          <target state="translated">立即入手</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.CloseButtonContent" translate="yes" xml:space="preserve">
+          <source>Later</source>
+          <target state="translated">下次一定</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.Subtitle" translate="yes" xml:space="preserve">
+          <source>Purchase the full version of Thunder X to unlock the YouTube video URL auto extractor, together with many other downloader plugins as well as full-depth customization to Thunder X core.</source>
+          <target state="translated">购入完整版本 Thunder X 以解锁自动化 YouTube 链接提取，及更多下载功能和深度定制的 Thunder X 核心。</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.Title" translate="yes" xml:space="preserve">
+          <source>Need YouTube video downloading?</source>
+          <target state="translated">需要从 YouTube 下载？</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.Subtitle" translate="yes" xml:space="preserve">
+          <source>Purchase the full version of Thunder X to unlock downloading either from magnet links or torrent files, together with many other downloader plugins as well as full-depth customization to Thunder X core.</source>
+          <target state="translated">购入完整版本 Thunder X 以解锁对使用 Magnet 链及 Torrent 文件的 BitTorrent 支持，及更多下载功能和深度定制的 Thunder X 核心。</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.Title" translate="yes" xml:space="preserve">
+          <source>Need support for the BitTorrent protocol?</source>
+          <target state="translated">需要通过 BitTorrent 下载？</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.ActionButtonContent" translate="yes" xml:space="preserve">
+          <source>Purchase Now</source>
+          <target state="translated">立即入手</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.CloseButtonContent" translate="yes" xml:space="preserve">
+          <source>Later</source>
+          <target state="translated">下次一定</target>
+        </trans-unit>
       </group>
     </body>
   </file>

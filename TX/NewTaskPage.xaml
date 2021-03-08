@@ -17,7 +17,21 @@
                       RelativePanel.AlignTopWithPanel="True"
                       RelativePanel.AlignBottomWithPanel="True">
             <StackPanel Orientation="Vertical" Padding="16 0 16 80" Width="400">
-                
+
+                <muxc:TeachingTip
+                    x:Name="YouTubeTeachingTip"
+                    x:Uid="NewTaskPage_YouTubeTeachingTip"
+                    Target="{x:Bind MainURITextBox}"
+                    ActionButtonStyle="{ThemeResource AccentButtonStyle}"
+                    ActionButtonClick="PurchaseButtonClick"/>
+
+                <muxc:TeachingTip
+                    x:Name="TorrentTeachingTip"
+                    x:Uid="NewTaskPage_TorrentTeachingTip"
+                    Target="{x:Bind MainURITextBox}"
+                    ActionButtonStyle="{ThemeResource AccentButtonStyle}"
+                    ActionButtonClick="PurchaseButtonClick"/>
+
                 <Rectangle Height="{StaticResource TXTitleBarHeight}"/>
 
                 <Border Height="52" Margin="0 0 0 8">

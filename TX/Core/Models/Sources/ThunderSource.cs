@@ -11,6 +11,8 @@ namespace TX.Core.Models.Sources
     {
         public ThunderSource(Uri uri) : base(uri) { }
 
+        public static bool IsValid(Uri uri) => uri.Scheme.Equals("thunder");
+
         public Task<AbstractSource> GetSubsourceAsync() =>
             Task.Run(() =>  CreateSource(Uri.DecodeThunderUri()));
     }

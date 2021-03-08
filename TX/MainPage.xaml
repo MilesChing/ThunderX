@@ -4,9 +4,10 @@
       xmlns:local="using:TX"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+      xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+      xmlns:txcontrols="using:TX.Controls" 
       mc:Ignorable="d">
-    <Grid>
+    <Grid x:Name="LayoutGrid">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WidthNarrowMode">
                 <VisualState x:Name="WidthMode">

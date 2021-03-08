@@ -210,6 +210,27 @@
   <data name="MainPage_NavigationItem_Set.Content" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="NewFeaturesFlipView_GuideText.Text" xml:space="preserve">
+    <value>Tap anywhere to continue</value>
+  </data>
+  <data name="NewFeature_0_GuideText" xml:space="preserve">
+    <value>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</value>
+  </data>
+  <data name="NewFeature_0_HeroUri" xml:space="preserve">
+    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</value>
+  </data>
+  <data name="NewFeature_0_Title" xml:space="preserve">
+    <value>Activate Thunder X from the browser</value>
+  </data>
+  <data name="NewFeature_1_GuideText" xml:space="preserve">
+    <value>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</value>
+  </data>
+  <data name="NewFeature_1_HeroUri" xml:space="preserve">
+    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</value>
+  </data>
+  <data name="NewFeature_1_Title" xml:space="preserve">
+    <value>Open torrent files to create a task</value>
+  </data>
   <data name="NewTaskPage_AcceptButton.Content" xml:space="preserve">
     <value>Create New</value>
   </data>
@@ -246,8 +267,32 @@
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>Create new task</value>
   </data>
+  <data name="NewTaskPage_TorrentTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>Purchase Now</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Subtitle" xml:space="preserve">
+    <value>Purchase the full version of Thunder X to unlock downloading either from magnet links or torrent files, together with many other downloader plugins as well as full-depth customization to Thunder X core.</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Title" xml:space="preserve">
+    <value>Need support for the BitTorrent protocol?</value>
+  </data>
   <data name="NewTaskPage_URL_Title.Text" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>Purchase Now</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Subtitle" xml:space="preserve">
+    <value>Purchase the full version of Thunder X to unlock the YouTube video URL auto extractor, together with many other downloader plugins as well as full-depth customization to Thunder X core.</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Title" xml:space="preserve">
+    <value>Need YouTube video downloading?</value>
   </data>
   <data name="OpenConnections" xml:space="preserve">
     <value>Open Connections</value>

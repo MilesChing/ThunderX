@@ -33,6 +33,8 @@ namespace TX.Core.Models.Sources
             return new TorrentSource(Uri, metaData);
         }
 
+        public static bool IsValid(Uri uri) => uri.Scheme.Equals("magnet");
+
         private readonly MagnetLink link = null;
         private readonly ClientEngine engine = null;
         private readonly IEnumerable<string> announceUrls = null;

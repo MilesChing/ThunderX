@@ -44,16 +44,10 @@
                 <Grid Margin="-16 0 -16 16" Padding="16 12 16 12"
                       Background="{ThemeResource SystemAltMediumColor}"
                       Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E3;" 
-                              VerticalAlignment="Top" Margin="0 0 0 0" 
-                              Foreground="{ThemeResource TrailGreen}"/>
-                    <TextBlock x:Uid="SetPage_TrailMessage" Grid.Column="1" 
-                               HorizontalAlignment="Left" Foreground="{ThemeResource TrailGreen}"
-                               Margin="8 0 0 0" Style="{ThemeResource TXPageInfoTextBlockStyle}"/>
+                    <TextBlock x:Uid="SetPage_TrailMessage" Grid.Column="1" TextWrapping="Wrap"
+                               FontSize="14" HorizontalAlignment="Left" 
+                               Foreground="{ThemeResource TrailGreen}"
+                               Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 </Grid>
 
                 <!--Appearance-->
