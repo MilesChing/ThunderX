@@ -341,4 +341,28 @@
   <data name="NewFeaturesFlipView_GuideText.Text" xml:space="preserve">
     <value>点击任意位置即刻开始</value>
   </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>立即入手</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>下次一定</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Subtitle" xml:space="preserve">
+    <value>购入完整版本 Thunder X 以解锁自动化 YouTube 链接提取，及更多下载功能和深度定制的 Thunder X 核心。</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Title" xml:space="preserve">
+    <value>需要从 YouTube 下载？</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Subtitle" xml:space="preserve">
+    <value>购入完整版本 Thunder X 以解锁对使用 Magnet 链及 Torrent 文件的 BitTorrent 支持，及更多下载功能和深度定制的 Thunder X 核心。</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Title" xml:space="preserve">
+    <value>需要通过 BitTorrent 下载？</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>立即入手</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>下次一定</value>
+  </data>
 </root>

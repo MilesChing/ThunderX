@@ -267,8 +267,32 @@
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>Create new task</value>
   </data>
+  <data name="NewTaskPage_TorrentTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>Purchase Now</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Subtitle" xml:space="preserve">
+    <value>Purchase the full version of Thunder X to unlock downloading either from magnet links or torrent files, together with many other downloader plugins as well as full-depth customization to Thunder X core.</value>
+  </data>
+  <data name="NewTaskPage_TorrentTeachingTip.Title" xml:space="preserve">
+    <value>Need support for the BitTorrent protocol?</value>
+  </data>
   <data name="NewTaskPage_URL_Title.Text" xml:space="preserve">
     <value>URL</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>Purchase Now</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Subtitle" xml:space="preserve">
+    <value>Purchase the full version of Thunder X to unlock the YouTube video URL auto extractor, together with many other downloader plugins as well as full-depth customization to Thunder X core.</value>
+  </data>
+  <data name="NewTaskPage_YouTubeTeachingTip.Title" xml:space="preserve">
+    <value>Need YouTube video downloading?</value>
   </data>
   <data name="OpenConnections" xml:space="preserve">
     <value>Open Connections</value>
