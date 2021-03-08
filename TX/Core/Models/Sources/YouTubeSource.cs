@@ -37,6 +37,8 @@ namespace TX.Core.Models.Sources
 
         public bool IsMultiSelectionSupported => false;
 
+        public static bool IsValid(Uri uri) => uri.Host.Equals("www.youtube.com") && uri.LocalPath.Equals("/watch");
+
         private string FormatText(IStreamInfo info)
         {
             if (info is MuxedStreamInfo muxed)

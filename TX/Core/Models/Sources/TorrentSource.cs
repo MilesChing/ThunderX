@@ -53,6 +53,8 @@ namespace TX.Core.Models.Sources
             return list;
         }
 
+        public static bool IsValid(Uri uri) => uri.IsFile && Path.GetExtension(uri.LocalPath).Equals(".torrent");
+
         private string FormatText(TorrentFile file) => $"{file.Path} - {file.Length.SizedString()}";
 
         private byte[] torrentBytes = null;
