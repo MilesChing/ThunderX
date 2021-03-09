@@ -295,10 +295,8 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🔨 This release is mainly used to fix the crashing and errors during the completion process of torrent downloader.
-🌫 We also improved the experience of creating task with multiple streams, several UI adjustment is performed.</source>
-          <target state="translated">🔨 这一版本主要修复了 BitTorrent 下载至 100% 后出现的长时间无响应和程序崩溃。
-🌫 除此之外，我们提升了创建带有多个下载流可选的任务时的用户体验，进行了几处小的 UI 调整。</target>
+          <source>In this release, we built several ways for activating Thunder X including activation from browser and torrent files. We also fixed the unavailable toast notification and other bugs that occurred in the last version.</source>
+          <target state="translated">在这次发布中，我们推出了几种从外部激活 Thunder X 以快速创建任务的方法，包括从浏览器直接激活 Thunder X 和通过 Thunder X 打开 torrent 文件等等。此外，我们修复了在上一个版本中出现的 toast 通知失效和其他一些问题。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
@@ -395,6 +393,90 @@ Create a task for downloading.</source>
         <trans-unit id="NewTaskPage_FileButton_TextBlock.Text" translate="yes" xml:space="preserve">
           <source>Pick source file</source>
           <target state="translated">选取文件以开始</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Downloaded" translate="yes" xml:space="preserve">
+          <source>Downloaded</source>
+          <target state="translated">已下载</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Duration" translate="yes" xml:space="preserve">
+          <source>In duration</source>
+          <target state="translated">用时</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_Open" translate="yes" xml:space="preserve">
+          <source>Open</source>
+          <target state="translated">打开</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_OpenFolder" translate="yes" xml:space="preserve">
+          <source>Open in folder</source>
+          <target state="translated">在文件夹中打开</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderCompletion_TitlePrefix" translate="yes" xml:space="preserve">
+          <source>Task Completed: </source>
+          <target state="translated">任务已完成：</target>
+        </trans-unit>
+        <trans-unit id="Toast_DownloaderError_TitlePrefix" translate="yes" xml:space="preserve">
+          <source>Task Failed: </source>
+          <target state="translated">任务出错：</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_0_GuideText" translate="yes" xml:space="preserve">
+          <source>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</source>
+          <target state="translated">通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_0_Title" translate="yes" xml:space="preserve">
+          <source>Activate Thunder X from the browser</source>
+          <target state="translated">从浏览器激活 Thunder X</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_0_HeroUri" translate="yes" xml:space="preserve">
+          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</source>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_GuideText" translate="yes" xml:space="preserve">
+          <source>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</source>
+          <target state="translated">Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_HeroUri" translate="yes" xml:space="preserve">
+          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</source>
+          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</target>
+        </trans-unit>
+        <trans-unit id="NewFeature_1_Title" translate="yes" xml:space="preserve">
+          <source>Open torrent files to create a task</source>
+          <target state="translated">使用 Thunder X 打开</target>
+        </trans-unit>
+        <trans-unit id="NewFeaturesFlipView_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Tap anywhere to continue</source>
+          <target state="translated">点击任意位置即刻开始</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.ActionButtonContent" translate="yes" xml:space="preserve">
+          <source>Purchase Now</source>
+          <target state="translated">立即入手</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.CloseButtonContent" translate="yes" xml:space="preserve">
+          <source>Later</source>
+          <target state="translated">下次一定</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.Subtitle" translate="yes" xml:space="preserve">
+          <source>Purchase the full version of Thunder X to unlock the YouTube video URL auto extractor, together with many other downloader plugins as well as full-depth customization to Thunder X core.</source>
+          <target state="translated">购入完整版本 Thunder X 以解锁自动化 YouTube 链接提取，及更多下载功能和深度定制的 Thunder X 核心。</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_YouTubeTeachingTip.Title" translate="yes" xml:space="preserve">
+          <source>Need YouTube video downloading?</source>
+          <target state="translated">需要从 YouTube 下载？</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.Subtitle" translate="yes" xml:space="preserve">
+          <source>Purchase the full version of Thunder X to unlock downloading either from magnet links or torrent files, together with many other downloader plugins as well as full-depth customization to Thunder X core.</source>
+          <target state="translated">购入完整版本 Thunder X 以解锁对使用 Magnet 链及 Torrent 文件的 BitTorrent 支持，及更多下载功能和深度定制的 Thunder X 核心。</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.Title" translate="yes" xml:space="preserve">
+          <source>Need support for the BitTorrent protocol?</source>
+          <target state="translated">需要通过 BitTorrent 下载？</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.ActionButtonContent" translate="yes" xml:space="preserve">
+          <source>Purchase Now</source>
+          <target state="translated">立即入手</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_TorrentTeachingTip.CloseButtonContent" translate="yes" xml:space="preserve">
+          <source>Later</source>
+          <target state="translated">下次一定</target>
         </trans-unit>
       </group>
     </body>

@@ -9,6 +9,12 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI;
 using Windows.UI.Xaml.Navigation;
+using System.Collections;
+using System.Collections.Generic;
+using TX.Controls;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using System.Linq;
 
 namespace TX
 {
@@ -22,6 +28,7 @@ namespace TX
         public static MainPage Current { get; private set; }
 
         private static readonly Settings SettingEntries = new Settings();
+        private Action LeavePageEventHandler = null;
 
         public MainPage()
         {
@@ -33,16 +40,66 @@ namespace TX
             RequestedTheme = SettingEntries.IsDarkModeEnabled 
                 ? ElementTheme.Dark : ElementTheme.Default;
             UpdateTitleBar();
-
-            LeftFrame.Navigate(typeof(TaskList));
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            LeftFrame.Navigate(typeof(TaskList));
             await CurrentApp.WaitForInitializingAsync();
-            InvokeRightFrame(typeof(AboutPage), null);
+
+            // navigate right frame to about page by default
+            // this might be override by input actions
+            NavigateRightFrame(typeof(AboutPage), null);
+
+            // mainpage always consider navigation paprameter
+            // as ienumerable of actions
+            if (e.Parameter is IEnumerable<Action> actions)
+                foreach (var action in actions)
+                    action();
+
+            // show new features for the first launch
+            if (!CurrentApp.PActionManager.TryGetRecord(
+                nameof(ShowNewFeaturesFlipView), out _))
+                CurrentApp.PActionManager.Activate(
+                    nameof(ShowNewFeaturesFlipView),
+                    ShowNewFeaturesFlipView);
+
+            // release loading view
             LoadingView.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowNewFeaturesFlipView()
+        {
+            // load resources
+            var features = new List<NewFeature>();
+            var resourceLoader = Windows.ApplicationModel.Resources
+                .ResourceLoader.GetForCurrentView();
+            for (int idx = 0; ; idx += 1)
+            {
+                try
+                {
+                    string title = resourceLoader.GetString($"NewFeature_{idx}_Title");
+                    string guideText = resourceLoader.GetString($"NewFeature_{idx}_GuideText");
+                    string heroUri = resourceLoader.GetString($"NewFeature_{idx}_HeroUri");
+                    if (string.IsNullOrEmpty(title) ||
+                        string.IsNullOrEmpty(guideText) ||
+                        string.IsNullOrEmpty(heroUri))
+                        break;
+                    else features.Add(new NewFeature()
+                    {
+                        Title = title,
+                        GuideText = guideText,
+                        Hero = new BitmapImage(new Uri(heroUri))
+                    });
+                }
+                catch (Exception) { break; }
+            }
+
+            if (features.Count <= 0) return;
+            // add new features flip view to visual tree
+            var newFeaturesFlipView = new NewFeaturesFlipView(features.ToArray());
+            LayoutGrid.Children.Insert(LayoutGrid.Children.Count, newFeaturesFlipView);
         }
 
         private void UpdateTitleBar()
@@ -59,7 +116,7 @@ namespace TX
 
         public void NavigateDownloaderDetailPage(AbstractDownloader downloader)
         {
-            InvokeRightFrame(typeof(TaskDetailPage), downloader);
+            NavigateRightFrame(typeof(TaskDetailPage), downloader);
             DetailPage.Content = downloader.DownloadTask.Target.SuggestedName;
             DetailPage.Visibility = Visibility.Visible;
             (MainNavigationView.Parent as FrameworkElement)?.UpdateLayout();
@@ -69,13 +126,17 @@ namespace TX
 
         public void NavigateEmptyPage()
         {
-            InvokeRightFrame(typeof(Page), null);
+            NavigateRightFrame(typeof(Page), null);
             MainNavigationView.SelectedItem = null;
             MainNavigationView.IsBackEnabled = false;
             LeavePageEventHandler = LeaveEmptyPage;
         }
 
-        private Action LeavePageEventHandler = null;
+        public void NavigateNewTaskPage(Uri uri = null) =>
+            NavigateRightFrame(typeof(NewTaskPage), uri);
+
+        public void NavigateHistoryPage() =>
+            NavigateRightFrame(typeof(HistoryListPage), null);
 
         private void LeaveEmptyPage()
         {
@@ -88,7 +149,7 @@ namespace TX
             DetailPage.Visibility = Visibility.Collapsed;
         }
 
-        private void InvokeRightFrame(Type pageType, object parameter)
+        private void NavigateRightFrame(Type pageType, object parameter)
         {
             LeavePageEventHandler?.Invoke();
             LeavePageEventHandler = null;
@@ -100,13 +161,13 @@ namespace TX
             if (args.InvokedItem is string invokedStr)
             {
                 if (invokedStr.Equals(ListItem.Content))
-                    InvokeRightFrame(typeof(HistoryListPage), null);
+                    NavigateRightFrame(typeof(HistoryListPage), null);
                 else if (invokedStr.Equals(AddItem.Content))
-                    InvokeRightFrame(typeof(NewTaskPage), null);
+                    NavigateRightFrame(typeof(NewTaskPage), null);
                 else if (invokedStr.Equals(SetItem.Content))
-                    InvokeRightFrame(typeof(SetPage), null);
+                    NavigateRightFrame(typeof(SetPage), null);
                 else if (invokedStr.Equals(AboutItem.Content))
-                    InvokeRightFrame(typeof(AboutPage), null);
+                    NavigateRightFrame(typeof(AboutPage), null);
             }
         }
 

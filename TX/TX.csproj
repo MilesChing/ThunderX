@@ -136,12 +136,19 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Background\AbstractBackgroundTask.cs" />
+    <Compile Include="Background\BackgroundTaskManager.cs" />
     <Compile Include="Background\CoreBackgroundTask.cs" />
+    <Compile Include="Background\ToastActivationBackgroundTask.cs" />
     <Compile Include="Controls\DownloaderBar.xaml.cs">
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
-    <Compile Include="Utils\OneOffActionManager.cs" />
+    <Compile Include="Controls\NewFeaturesFlipView.xaml.cs">
+      <DependentUpon>NewFeaturesFlipView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PersistentActions\ActivationRecord.cs" />
+    <Compile Include="PersistentActions\PersistentActionManager.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Core\Downloaders\AbstractDownloader.cs" />
     <Compile Include="Core\Downloaders\HttpDownloader.cs" />
@@ -222,11 +229,17 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\IconAccept.png" />
+    <Content Include="Assets\IconComplete.png" />
+    <Content Include="Assets\IconTorrent.png" />
+    <Content Include="Assets\IconWarning.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />
     <Content Include="Assets\LargeTile.scale-200.png" />
     <Content Include="Assets\LargeTile.scale-400.png" />
+    <Content Include="Assets\NewFeatureHeros\2.0.7.0\2_0_7_0_NTH_1.png" />
+    <Content Include="Assets\NewFeatureHeros\2.0.7.0\2_0_7_0_NTH_2.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-125.png" />
     <Content Include="Assets\SmallTile.scale-150.png" />
@@ -296,6 +309,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\NewFeaturesFlipView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HistoryListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -327,6 +344,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>6.1.1</Version>

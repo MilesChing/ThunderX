@@ -11,12 +11,14 @@ using TX.Controls;
 using TX.Core.Models.Sources;
 using TX.Core.Models.Targets;
 using TX.Core.Providers;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -74,6 +76,9 @@ namespace TX
             TargetFolder = await LocalFolderManager.GetOrCreateDownloadFolderAsync();
             mainURITextBoxAnalyzingTaskCancellationTokenSource = new CancellationTokenSource();
             _ = Task.Run(() => UrlAnalyzer(mainURITextBoxAnalyzingTaskCancellationTokenSource.Token));
+
+            if (e.Parameter is Uri uri)
+                MainURITextBox.Text = uri.OriginalString;
 
             base.OnNavigatedTo(e);
         }
@@ -167,10 +172,16 @@ namespace TX
             }
         }
 
+        private async void PurchaseButtonClick(Microsoft.UI.Xaml.Controls.TeachingTip sender, object args)
+        {
+            var pfn = Package.Current.Id.FamilyName;
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store://pdp/?PFN=" + pfn));
+        }
+
         private CancellationTokenSource mainURITextBoxAnalyzingTaskCancellationTokenSource;
         private readonly object userOperationStatusLockObject = new object();
         private bool ComboBoxSelectionChanged = false;
-        private bool UriChanged = false;
+        private bool UriChanged = true;
         private bool UserOperated => ComboBoxSelectionChanged | UriChanged;
 
         private async void UrlAnalyzer(CancellationToken token)
@@ -185,22 +196,27 @@ namespace TX
                 bool selectionOperated = false;
                 lock (userOperationStatusLockObject)
                 {
+                    // sync user operation status flags
                     uriOperated = UriChanged;
                     selectionOperated = ComboBoxSelectionChanged;
                     operated = uriOperated | selectionOperated;
+                    // clear flags shows we have handled this operation
                     if (operated) UriChanged = ComboBoxSelectionChanged = false;
                 }
 
                 if (!operated)
                 {
+                    // wait 200ms if user is not operated
                     await Task.Delay(200);
                     continue;
                 }
                 
                 if (!uriOperated)
                 {
+                    // user operated but not changed the URI
                     if (selectionOperated)
                     {
+                        // user changed the stream selection
                         ItemIndexRange[] selectedRanges = null;
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                             selectedRanges = StreamSelectionListView.SelectedRanges.ToArray();
@@ -252,12 +268,13 @@ namespace TX
                 }
                 else
                 {
-                    string nowUri = string.Empty;
+                    // URI is changed
+                    string nowUriString = string.Empty;
                     optionalKeyValues = Array.Empty<KeyValuePair<string, string>>();
                     multiTargetsExtractedSource = null;
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                        nowUri = MainURITextBox.Text;
+                        nowUriString = MainURITextBox.Text;
                         UriAnalyzingProgressBar.IsIndeterminate = true;
                         SuggestedFilenameTextBox.Text = UnknownText;
                         StreamSelectionStackPanel.Visibility = Visibility.Collapsed;
@@ -266,7 +283,20 @@ namespace TX
 
                     try
                     {
-                        var source = AbstractSource.CreateSource(new Uri(nowUri));
+                        var nowUri = new Uri(nowUriString);
+                        var source = AbstractSource.CreateSource(nowUri);
+
+                        if (CurrentApp.AppLicense.IsTrial)
+                        {
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            {
+                                if (YouTubeSource.IsValid(nowUri))
+                                    YouTubeTeachingTip.IsOpen = true;
+                                else if (TorrentSource.IsValid(nowUri) || MagnetSource.IsValid(nowUri))
+                                    TorrentTeachingTip.IsOpen = true;
+                            });
+                        }
+
                         while (true)
                         {
                             Ensure.That(UserOperated).IsFalse();
@@ -287,7 +317,7 @@ namespace TX
                                     StreamSelectionListView.SelectionMode =
                                         multiSubsourcesExtracted.IsMultiSelectionSupported ?
                                         ListViewSelectionMode.Multiple : ListViewSelectionMode.Single;
-                                    SelectAllStreamsCheckBox.Visibility = 
+                                    SelectAllStreamsCheckBox.Visibility =
                                         multiSubsourcesExtracted.IsMultiSelectionSupported ?
                                         Visibility.Visible : Visibility.Collapsed;
                                     StreamSelectionListView.ItemsSource = infos.Select(

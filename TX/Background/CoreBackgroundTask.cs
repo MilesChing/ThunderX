@@ -6,15 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using TX.Utils;
 using Windows.ApplicationModel.Background;
+using Windows.UI.Xaml;
 
 namespace TX.Background
 {
-    public static class CoreBackgroundTask
+    /// <summary>
+    /// CoreBackgroundTask starts available tasks in background once triggered.
+    /// </summary>
+    class CoreBackgroundTask : AbstractBackgroundTask
     {
-        public static async void Run(IBackgroundTaskInstance taskInstance)
+        public override string Name => GetType().Name;
+
+        public override async void Run(IBackgroundTaskInstance taskInstance)
         {
-            var deferral = taskInstance.GetDeferral();
+            if (Window.Current?.Content != null)
+            {
+                D("Application is running in foreground, aborted this background execution");
+                return;
+            }
+
             DateTime startTime = DateTime.Now;
+            var deferral = taskInstance.GetDeferral();
             try
             {
                 var Current = ((App)App.Current);
@@ -26,44 +38,34 @@ namespace TX.Background
                 if (activeDownloaders.Length == 0)
                 {
                     taskInstance.Task.Unregister(false);
-                    Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] no downloader found. Unregister background task");
+                    D($"No downloader found. Unregistered background task");
                 }
                 else
                 {
-                    Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] {activeDownloaders.Length} downloader(s) activated");
+                    D($"{activeDownloaders.Length} downloader(s) activated");
                     await Task.Delay(startTime + TimeSpan.FromSeconds(9 * 60 + 55) - DateTime.Now);
                 }
             }
             finally
             {
-                Debug.WriteLine($"[{nameof(CoreBackgroundTask)}] finished after {DateTime.Now - startTime}");
+                D($"Finished after {DateTime.Now - startTime}");
                 deferral.Complete();
             }
         }
 
-        public static void RegisterBackgroundTask(
-            uint backgroundTaskFreshnessTime = 15,
-            bool runOnlyWhenUserNotPresent = false,
-            bool runOnlyWhenBackgroundWorkCostNotHigh = false)
+        public override BackgroundTaskBuilder Build()
         {
-            var thisTaskName = nameof(CoreBackgroundTask);
-            var builder = new BackgroundTaskBuilder();
-            builder.Name = thisTaskName;
-            builder.SetTrigger(new MaintenanceTrigger(backgroundTaskFreshnessTime, true));
+            var settings = new Settings();
+            var builder = new BackgroundTaskBuilder() { Name = Name };
+            builder.SetTrigger(new MaintenanceTrigger(settings.BackgroundTaskFreshnessTime, true));
             builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-            if (runOnlyWhenUserNotPresent)
+            if (settings.RunBackgroundTaskOnlyWhenUserNotPresent)
                 builder.AddCondition(new SystemCondition(SystemConditionType.UserNotPresent));
-            if (runOnlyWhenBackgroundWorkCostNotHigh)
+            if (settings.RunOnlyWhenBackgroundWorkCostNotHigh)
                 builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
-            builder.Register();
+            return builder;
         }
 
-        public static void UnregisterBackgroundTask()
-        {
-            var thisTaskName = nameof(CoreBackgroundTask);
-            var exists = BackgroundTaskRegistration.AllTasks.FirstOrDefault(
-                task => task.Value.Name.Equals(thisTaskName));
-            exists.Value?.Unregister(false);
-        }
+        private void D(string message) => Debug.WriteLine($"[{GetType().Name}] {message}");
     }
 }

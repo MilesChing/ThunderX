@@ -25,6 +25,9 @@ using Windows.Storage.AccessCache;
 using MonoTorrent;
 using TX.Background;
 using Windows.ApplicationModel.Background;
+using TX.Core.Utils;
+using System.Linq;
+using TX.PersistentActions;
 
 namespace TX
 {
@@ -34,13 +37,10 @@ namespace TX
     sealed partial class App : Application
     {
         public readonly TXCoreManager Core = new TXCoreManager();
-        public readonly OneOffActionManager OOAManager = new OneOffActionManager();
+        public readonly PersistentActionManager PActionManager = new PersistentActionManager(30);
         private readonly Settings settingEntries = new Settings();
+        private readonly Task initializingTask;
 
-        /// <summary>
-        /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
-        /// 已执行，逻辑上等同于 main() 或 WinMain()。
-        /// </summary>
         public App()
         {
             this.InitializeComponent(); 
@@ -53,13 +53,13 @@ namespace TX
 
         public async Task WaitForInitializingAsync() => await initializingTask;
 
-        private Task initializingTask;
-
         private async Task InitializeAsync()
         {
+            D("Application initializing");
             await InitializeAppLicenceAsync();
             await InitializeBackgroundTaskAsync();
             await Core.InitializeAsync(await ReadLocalStorageAsync());
+            D("Application initialized");
         }
 
         private async Task<byte[]> ReadLocalStorageAsync()
@@ -67,11 +67,13 @@ namespace TX
             try
             {
                 var cacheFile = await GetCacheFileAsync();
-                return (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
+                var res = (await FileIO.ReadBufferAsync(cacheFile)).ToArray();
+                D($"Database loaded, totally {res.Length} bytes");
+                return res;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Cache file reading failed: " + e.Message);
+                D($"Loading database failed: {e.Message}");
                 return null;
             }
         }
@@ -80,6 +82,7 @@ namespace TX
         {
             var storeContext = StoreContext.GetDefault();
             AppLicense = await storeContext.GetAppLicenseAsync();
+            D("Application license obtained");
         }
 
         private async Task InitializeBackgroundTaskAsync()
@@ -94,8 +97,11 @@ namespace TX
                     await BackgroundExecutionManager.RequestAccessAsync();
                     break;
             }
-            
-            CoreBackgroundTask.UnregisterBackgroundTask();
+
+            D("Background execution access checked");
+            BackgroundTaskManager.UnregisterTasks();
+            BackgroundTaskManager.RegisterTasks();
+            D("Background task reregistered");
         }
 
         private async Task<StorageFile> GetCacheFileAsync()
@@ -104,6 +110,7 @@ namespace TX
 
         private async void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs s)
         {
+            D("Application suspending");
             var deferral = s.SuspendingOperation.GetDeferral();
             try
             {
@@ -111,115 +118,127 @@ namespace TX
                 {
                     var cacheFile = await GetCacheFileAsync();
                     var props = await cacheFile.GetBasicPropertiesAsync();
+                    D($"Database file obtained, size {((long)props.Size).SizedString()}");
                     if (props.Size > 0)
                     {
-                        Debug.WriteLine("[App] recreating database");
                         await cacheFile.DeleteAsync();
                         cacheFile = await GetCacheFileAsync();
-                        Debug.WriteLine("[App] database recreated");
+                        D("Database file refreshed");
                     }
                     await FileIO.WriteBytesAsync(
                         cacheFile,
                         Core.ToPersistentByteArray()
-                    );
-                    Debug.WriteLine("[App] database writen");
+                    ); 
+                    D("Database written");
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("[App] database writing failed: " + e.Message);
+                    D($"Database writting failed: {e.Message}");
                 }
 
                 Core.Suspend();
-                OOAManager.SaveToStorage();
+                D($"{nameof(Core)} suspended");
 
-                CoreBackgroundTask.UnregisterBackgroundTask();
-                if (settingEntries.IsBackgroundTaskEnabled && Core.Downloaders.Count > 0)
-                    CoreBackgroundTask.RegisterBackgroundTask(
-                        settingEntries.BackgroundTaskFreshnessTime,
-                        settingEntries.RunBackgroundTaskOnlyWhenUserNotPresent,
-                        settingEntries.RunOnlyWhenBackgroundWorkCostNotHigh);
+                PActionManager.Save();
+                D($"{nameof(PActionManager)} saved");
+
+                BackgroundTaskManager.UnregisterTasks();
+                BackgroundTaskManager.RegisterTasks();
             }
             finally
             {
+                D("Application suspended");
                 deferral.Complete();
             }
         }
 
-        private void OnResuming(object sender, object e) => Core.Resume();
+        private void OnResuming(object sender, object e)
+        {
+            D("Application resuming");
+            Core.Resume();
+            D("Application resumed");
+        }
 
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             base.OnBackgroundActivated(args);
-            CoreBackgroundTask.Run(args.TaskInstance);
+            D("Application activated in background");
+            BackgroundTaskManager.ActivateTask(args.TaskInstance);
+        }
+
+        protected override void OnFileActivated(FileActivatedEventArgs args)
+        {
+            List<Action> actions = new List<Action>();
+            var targetFile = args.Files.FirstOrDefault();
+            StorageApplicationPermissions.FutureAccessList.Add(targetFile);
+            var targetFileUri = new Uri(targetFile.Path);
+            actions.Add(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
+            D($"Activated by file <{targetFile.Path}>");
+            if (!EnsurePageCreatedAndActivate(actions))
+            {
+                D($"Exist UI content, navigate to new task page");
+                foreach (var action in actions) action();
+            }
+            base.OnFileActivated(args);
         }
 
         protected override async void OnActivated(IActivatedEventArgs args)
         {
-            if (args.Kind == ActivationKind.ToastNotification)
+            D($"Application activated by {args.Kind}");
+            List<Action> actions = new List<Action>();
+            switch (args.Kind)
             {
-                string message = (args as ToastNotificationActivatedEventArgs).Argument;
-                string[] arguments = message.Split('$');
-                try
-                {
-                    await Launcher.LaunchUriAsync(new Uri(arguments[1]));
-                }
-                catch (Exception) { }
-
-                if (args.PreviousExecutionState != ApplicationExecutionState.Running)
-                    Current.Exit();
+                case ActivationKind.ToastNotification:
+                    var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
+                    actions.AddRange(await ToastManager.HandleToastActivationAsync(argument));
+                    break;
+                case ActivationKind.Protocol:
+                    ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
+                    D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
+                    actions.Add(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    break;
             }
+
+            if (!EnsurePageCreatedAndActivate(actions))
+            {
+                D($"Exist UI content, navigate to new task page");
+                foreach (var action in actions) action();
+            }
+
             base.OnActivated(args);
         }
 
-        /// <summary>
-        /// 在应用程序由最终用户正常启动时进行调用。
-        /// 将在启动应用程序以打开特定文件等情况下使用。
-        /// </summary>
-        /// <param name="e">有关启动请求和过程的详细信息。</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
+            D("Application launched");
+            EnsurePageCreatedAndActivate();
+        }
 
-            // 不要在窗口已包含内容时重复应用程序初始化，
-            // 只需确保窗口处于活动状态
-            if (rootFrame == null)
+        private bool EnsurePageCreatedAndActivate(object parameter = null)
+        {
+            if (!(Window.Current.Content is Frame rootFrame))
             {
-                // 创建要充当导航上下文的框架，并导航到第一页
+                D("Root frame is null, create it");
                 rootFrame = new Frame();
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: 从之前挂起的应用程序加载状态
-                }
-
-                // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
             }
 
-            if (e.PrelaunchActivated == false)
+            bool res = (rootFrame.Content == null);
+            if (rootFrame.Content == null)
             {
-                if (rootFrame.Content == null)
-                {
-                    // 当导航堆栈尚未还原时，导航到第一页，
-                    // 并通过将所需信息作为导航参数传入来配置
-                    // 参数
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
-                }
-                // 确保当前窗口处于活动状态
-                Window.Current.Activate();
+                D("No content in root frame, navigate to MainPage");
+                rootFrame.Navigate(typeof(MainPage), parameter);
             }
+            Window.Current.Activate();
+            return res;
         }
 
-        /// <summary>
-        /// 导航到特定页失败时调用
-        /// </summary>
-        ///<param name="sender">导航失败的框架</param>
-        ///<param name="e">有关导航失败的详细信息</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
+
+        private void D(string message) => Debug.WriteLine($"[{nameof(App)}] {message}");
     }
 }

@@ -65,6 +65,8 @@ namespace TX.Core.Models.Sources
             }
         }
 
+        public static bool IsValid(Uri uri) => uri.Scheme.Equals("http") || uri.Scheme.Equals("https");
+
         private bool IsFileNameValid(string fileName)
         {
             if (fileName == string.Empty) return false;
