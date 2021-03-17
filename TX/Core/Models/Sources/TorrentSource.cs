@@ -42,7 +42,8 @@ namespace TX.Core.Models.Sources
         {      
             if (torrentBytes == null)
             {
-                var file = await StorageFile.GetFileFromPathAsync(Uri.AbsoluteUri);
+                // for files, only Uri.LocalPath is correct to use
+                var file = await StorageFile.GetFileFromPathAsync(Uri.LocalPath);
                 torrentBytes = (await FileIO.ReadBufferAsync(file)).ToArray();
             }
 
