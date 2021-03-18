@@ -19,7 +19,7 @@ namespace TX.Core.Utils
                     "IsThunderProxy"
                 ).IsTrue();
                 if (!strUri.EndsWith('/')) strUri += '/';
-                string t = Encoding.ASCII.GetString(
+                string t = Encoding.UTF8.GetString(
                     Convert.FromBase64String(
                         strUri.Substring(10, strUri.Length - 11)
                     )

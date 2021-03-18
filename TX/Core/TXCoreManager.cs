@@ -40,7 +40,7 @@ namespace TX.Core
 
                 if (checkPoint != null)
                 {
-                    var json = Encoding.ASCII.GetString(checkPoint);
+                    var json = Encoding.UTF8.GetString(checkPoint);
                     var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
                         new JsonSerializerSettings()
                         {
@@ -199,7 +199,7 @@ namespace TX.Core
         public byte[] ToPersistentByteArray()
         {
             D("Generating persistent byte array...");
-            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     Tasks = Tasks.ToArray(),

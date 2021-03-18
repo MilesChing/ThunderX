@@ -263,7 +263,7 @@ namespace TX.Core.Downloaders
         public byte[] ToPersistentByteArray()
         {
             var progress = (CompositeProgress)Progress;
-            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     TaskKey = DownloadTask.Key,
@@ -277,7 +277,7 @@ namespace TX.Core.Downloaders
         private void ApplyCheckPoint(byte[] checkPointByteArray)
         {
             var checkPoint = JsonConvert.DeserializeObject<InnerCheckPoint>(
-                Encoding.ASCII.GetString(checkPointByteArray));
+                Encoding.UTF8.GetString(checkPointByteArray));
             var progress = (CompositeProgress) Progress;
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey))
                 .IsEqualTo(DownloadTask.Key);
