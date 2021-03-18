@@ -15,21 +15,23 @@ namespace TX.Core.Models.Targets
 {
     public class TorrentTarget : AbstractTarget
     {
-        public TorrentTarget(byte[] torrentBytes, Uri displayedUri, string[] selectedFilePaths)
+        public TorrentTarget(byte[] torrentBytes, Uri displayedUri, string[] selectedFiles)
         {
             Ensure.That(torrentBytes, nameof(torrentBytes)).IsNotNull();
-            Ensure.That(selectedFilePaths, nameof(selectedFilePaths)).IsNotNull();
+            Ensure.That(selectedFiles, nameof(selectedFiles)).IsNotNull();
             Ensure.That(displayedUri, nameof(displayedUri)).IsNotNull();
 
             DisplayedUri = displayedUri;
             Torrent = Torrent.Load(torrentBytes);
 
             this.torrentBytes = torrentBytes;
-            this.selectedFilePaths = selectedFilePaths;
+            this.selectedFiles = selectedFiles;
             foreach (var file in Torrent.Files)
-                if (selectedFilePaths.Contains(file.Path))
+            {
+                if (selectedFiles.Contains(file.Path))
                     file.Priority = Priority.Normal;
                 else file.Priority = Priority.DoNotDownload;
+            }
         }
 
         [JsonIgnore]
@@ -40,7 +42,7 @@ namespace TX.Core.Models.Targets
         protected override string GetSuggestedName() => Torrent.Name;
 
         [JsonProperty]
-        private readonly string[] selectedFilePaths = null;
+        private readonly string[] selectedFiles = null;
         [JsonProperty]
         private readonly byte[] torrentBytes = null;
     }

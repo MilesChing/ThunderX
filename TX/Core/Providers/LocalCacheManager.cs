@@ -21,7 +21,7 @@ namespace TX.Core.Providers
             cacheItems.Clear();
             if (persistentData != null)
             {
-                string dataString = Encoding.ASCII.GetString(persistentData);
+                string dataString = Encoding.UTF8.GetString(persistentData);
                 var cacheArr = JsonConvert.DeserializeObject<
                     KeyValuePair<string, CacheItemInfo>[]>(dataString);
                 foreach (var kvp in cacheArr) cacheItems.Add(kvp.Key, kvp.Value);
@@ -36,7 +36,7 @@ namespace TX.Core.Providers
             lock (cacheItems)
             {
                 string dataString = JsonConvert.SerializeObject(cacheItems.ToArray());
-                return Encoding.ASCII.GetBytes(dataString);
+                return Encoding.UTF8.GetBytes(dataString);
             }
         }
 
