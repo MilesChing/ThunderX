@@ -16,6 +16,11 @@ namespace TX.Core.Providers
 {
     public class LocalCacheManager : IPersistable
     {
+        public LocalCacheManager(StorageFolder cacheFolder)
+        {
+            this.cacheFolder = cacheFolder;
+        }
+
         public void Initialize(byte[] persistentData)
         {
             cacheItems.Clear();
@@ -46,8 +51,8 @@ namespace TX.Core.Providers
             {
                 Debug.WriteLine("[{0}] cleaning cache folder".AsFormat(
                     nameof(LocalCacheManager)));
-                var cacheFolder = ApplicationData.Current.LocalCacheFolder;
                 var items = await cacheFolder.GetItemsAsync();
+
                 List<IStorageItem> unused_items = null;
 
                 lock (cacheItems)
@@ -93,15 +98,13 @@ namespace TX.Core.Providers
                 string path = string.Empty;
                 if (isFolder)
                 {
-                    var folder = await ApplicationData.Current
-                        .LocalCacheFolder.CreateFolderAsync(
+                    var folder = await cacheFolder.CreateFolderAsync(
                         randomName, CreationCollisionOption.GenerateUniqueName);
                     path = folder.Path;
                 }
                 else
                 {
-                    var file = await ApplicationData.Current
-                        .LocalCacheFolder.CreateFileAsync(
+                    var file = await cacheFolder.CreateFileAsync(
                         randomName, CreationCollisionOption.GenerateUniqueName);
                     path = file.Path;
                 }
@@ -126,8 +129,7 @@ namespace TX.Core.Providers
             }
         }
 
-        private IStorageFile GetCacheFileForTask(
-            string token, string taskKey)
+        private IStorageFile GetCacheFileForTask(string token, string taskKey)
         {
             lock (cacheItems)
             {
@@ -150,8 +152,7 @@ namespace TX.Core.Providers
             }
         }
 
-        private IStorageFolder GetCacheFolderForTask(
-            string token, string taskKey)
+        private IStorageFolder GetCacheFolderForTask(string token, string taskKey)
         {
             lock (cacheItems)
             {
@@ -207,5 +208,6 @@ namespace TX.Core.Providers
 
         private readonly Dictionary<string, CacheItemInfo> cacheItems = 
             new Dictionary<string, CacheItemInfo>();
+        private StorageFolder cacheFolder = null;
     }
 }

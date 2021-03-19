@@ -20,6 +20,7 @@ using TX.Core.Providers;
 using TX.Core.Utils;
 using TX.Utils;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.Core
 {
@@ -37,6 +38,7 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
+                await InitializeCacheFolderAsync();
 
                 if (checkPoint != null)
                 {
@@ -287,6 +289,34 @@ namespace TX.Core
             }
         }
 
+        private async Task InitializeCacheFolderAsync()
+        {
+            StorageFolder cacheFolder = null;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(settingEntries.CacheFolderToken))
+                {
+                    D($"Cache folder token <{settingEntries.CacheFolderToken}>");
+                    cacheFolder = await StorageApplicationPermissions
+                        .FutureAccessList.GetFolderAsync(
+                            settingEntries.CacheFolderToken);
+                }
+                else D("Cache folder token null or empty");
+            }
+            catch (Exception e) 
+            {
+                D($"Cache folder initialization failed: {e.Message}");
+            }
+
+            if (cacheFolder == null)
+                cacheFolder = ApplicationData.Current.LocalCacheFolder;
+
+            D($"Cache folder initialized: {cacheFolder.Path}");
+            coreCacheManager = new LocalCacheManager(cacheFolder);
+            D("Core cache manager initialized");
+        }
+
         private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             D($"Failed serializing json: {args.ErrorContext.Error.Message}");
@@ -297,10 +327,10 @@ namespace TX.Core
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
-        private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
+        private LocalCacheManager coreCacheManager = null;
         private readonly List<string> customAnnounceUrls = new List<string>();
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
