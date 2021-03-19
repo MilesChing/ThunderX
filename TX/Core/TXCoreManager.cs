@@ -41,29 +41,32 @@ namespace TX.Core
                 if (checkPoint != null)
                 {
                     var json = Encoding.UTF8.GetString(checkPoint);
-                    var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
-                        new JsonSerializerSettings()
+                    var checkPointObject = JsonConvert.DeserializeObject<
+                        InnerCheckPoint>(json, new JsonSerializerSettings()
                         {
-                            TypeNameHandling = TypeNameHandling.All
+                            TypeNameHandling = TypeNameHandling.Auto,
+                            Error = HandleJsonError,
                         });
                     if (checkPointObject.Tasks != null)
                         foreach (var kvp in checkPointObject.Tasks)
                             tasks.Add(kvp.Key, kvp.Value);
-                    coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
+                    try { coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint); }
+                    catch (Exception) { }
                     if (checkPointObject.Downloaders != null)
                         foreach (var kvp in checkPointObject.Downloaders)
-                            CreateDownloader(kvp.Key, kvp.Value);
+                            try { CreateDownloader(kvp.Key, kvp.Value); }
+                            catch (Exception) { }
                     if (checkPointObject.Histories != null)
                         foreach (var hist in checkPointObject.Histories)
-                            histories.Add(hist);
+                            try { histories.Add(hist); }
+                            catch (Exception) { }
                 }
 
-                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                D("Initialized");
             }
             catch (Exception e)
             {
-                Debug.WriteLine("[{0}] initialization failed: \n{1}".AsFormat(
-                    nameof(TXCoreManager), e.Message));
+                D($"Initialization failed: \n{e.Message}");
             }
         }
 
@@ -216,10 +219,10 @@ namespace TX.Core
                         }).ToArray(),
                     Histories = Histories.ToArray(),
                     CacheManagerCheckPoint = coreCacheManager.ToPersistentByteArray(),
-                },
-                new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
+                }, new JsonSerializerSettings() 
+                { 
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Error = HandleJsonError,
                 }));
         }
 
@@ -282,6 +285,12 @@ namespace TX.Core
             {
                 D($"DhtEngine initialization failed: {e.Message}");
             }
+        }
+
+        private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        {
+            D($"Failed serializing json: {args.ErrorContext.Error.Message}");
+            args.ErrorContext.Handled = true;
         }
 
         private readonly Settings settingEntries = new Settings();
