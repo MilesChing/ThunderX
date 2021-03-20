@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
-using MonoTorrent.Dht;
+﻿using MonoTorrent.Dht;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

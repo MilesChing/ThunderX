@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
+﻿using Microsoft.Toolkit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,12 +39,11 @@ namespace TX
         private Visibility ApplicationTrailVersionMessageVisibility =>
             IsApplicationVersionNotTrail ? Visibility.Collapsed : Visibility.Visible;
 
-        private string VersionText =>
-            "{0}.{1}.{2}.{3}".AsFormat(
-                Package.Current.Id.Version.Major,
-                Package.Current.Id.Version.Minor,
-                Package.Current.Id.Version.Build,
-                Package.Current.Id.Version.Revision);
+        private string VersionText => string.Join("-",
+            Package.Current.Id.Version.Major,
+            Package.Current.Id.Version.Minor,
+            Package.Current.Id.Version.Build,
+            Package.Current.Id.Version.Revision);
 
         private async void BuyButton_Click(object sender, RoutedEventArgs e)
         {
