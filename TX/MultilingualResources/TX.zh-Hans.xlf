@@ -287,8 +287,10 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>In this release, we built several ways for activating Thunder X including activation from browser and torrent files. We also fixed the unavailable toast notification and other bugs that occurred in the last version.</source>
-          <target state="translated">在这次发布中，我们推出了几种从外部激活 Thunder X 以快速创建任务的方法，包括从浏览器直接激活 Thunder X 和通过 Thunder X 打开 torrent 文件等等。此外，我们修复了在上一个版本中出现的 toast 通知失效和其他一些问题。</target>
+          <source>🈂 Fixed the issue that files could not be imported due to special characters in the path. 
+💾 Fixed the failure to restore download tasks and history due to coding errors.</source>
+          <target state="translated">🈂 修复了由于路径中的特殊字符导致 .torrent 文件无法导入的问题。
+💾 修复了由于编码错误导致无法恢复下载任务和历史记录的问题。</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
