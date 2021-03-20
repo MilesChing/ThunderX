@@ -314,8 +314,6 @@ namespace TX.Core.Downloaders
             cacheFolderToken = checkPoint.CacheFolderToken;
         }
 
-        private void D(string text) => Debug.WriteLine($"[{GetType().Name} with task {DownloadTask.Key}] {text}");
-
         private class InnerCheckPoint
         {
             public string TaskKey;

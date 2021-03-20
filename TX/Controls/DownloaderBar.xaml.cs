@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -111,9 +110,7 @@ namespace TX.Controls
             await Dispatcher.RunAsync(
                 CoreDispatcherPriority.Normal, () => {
                     var mprog = prog as IMeasurableProgress;
-                    SizeTextBlock.Text = "{0} of {1}".AsFormat(
-                        mprog.DownloadedSize.SizedString(),
-                        mprog.TotalSize.SizedString());
+                    SizeTextBlock.Text = $"{mprog.DownloadedSize.SizedString()} of {mprog.TotalSize.SizedString()}";
                     MainProgressBar.Value = mprog.Progress * 100;
                 });
 

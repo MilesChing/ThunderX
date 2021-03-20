@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -55,9 +54,8 @@ namespace TX.Core.Downloaders
             {
                 if(_status_ != value)
                 {
+                    D($"Status changed {_status_} -> {value}");
                     _status_ = value;
-                    Debug.WriteLine("[downloader with task {0}] status -> {1}"
-                        .AsFormat(DownloadTask.Key, value.ToString()));
                     StatusChanged?.Invoke(this, value);
                 }
             }
@@ -77,8 +75,7 @@ namespace TX.Core.Downloaders
             lock (statusLockObject)
                 if (CanStart) Status = DownloaderStatus.Pending;
                 else return;
-            Debug.WriteLine("[downloader with task {0}] Start() called"
-                .AsFormat(DownloadTask.Key));
+            D($"Start() called");
             Task.Run(async () =>
             {
                 try
@@ -89,8 +86,7 @@ namespace TX.Core.Downloaders
                 } 
                 catch (Exception e) 
                 {
-                    Debug.WriteLine("[downloader with task {0}] Start() failed:\n\t{1}"
-                        .AsFormat(DownloadTask.Key, e.Message));
+                    D($"Start() failed: {e.Message}");
                     exceptions.Insert(0, e);
                     lock (statusLockObject)
                         Status = DownloaderStatus.Error;
@@ -120,7 +116,7 @@ namespace TX.Core.Downloaders
             lock (statusLockObject)
                 if (CanCancel) Status = DownloaderStatus.Pending;
                 else return;
-            Debug.WriteLine("[downloader with task {0}] Cancel() called".AsFormat(DownloadTask.Key));
+            D($"Cancel() called");
             Task.Run(async () =>
             {
                 try
@@ -131,8 +127,7 @@ namespace TX.Core.Downloaders
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("[downloader with task {0}] cancel function failed:\n\t{1}"
-                        .AsFormat(DownloadTask.Key, e.Message));
+                    D($"Cancel() failed: {e.Message}");
                     exceptions.Insert(0, e);
                     lock (statusLockObject)
                         Status = DownloaderStatus.Error;
@@ -159,8 +154,7 @@ namespace TX.Core.Downloaders
         public void Dispose()
         {
             // temptation to dispose the downloader should always work
-            Debug.WriteLine("[downloader with task {0}] Dispose() called"
-                .AsFormat(DownloadTask.Key));
+            D($"Dispose() called");
             // dispose method loops to check and modify the downloader
             // until its status turns disposable.
             while (true)
@@ -186,12 +180,11 @@ namespace TX.Core.Downloaders
                 {
                     // if the downloader is not running or pending, 
                     // call inner disposal method directly
-                    Debug.WriteLine("[downloader with task {0}] disposing".AsFormat(DownloadTask.Key));
+                    D($"Disposing");
                     try { DisposeAsync().Wait(); }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("[downloader with task {0}] Dispose() (disposing) failed:\n\t{1}"
-                            .AsFormat(DownloadTask.Key, e.Message));
+                        D($"Dispose() (disposing) failed: {e.Message}");
                     }
 
                     // a disposed downloader should not enter other statuses again,
@@ -212,8 +205,7 @@ namespace TX.Core.Downloaders
                     {
                         // cancelation failed, enter error status directly to complete disposal
                         // during next loop
-                        Debug.WriteLine("[downloader with task {0}] Cancel() (disposing) failed:\n\t{1}"
-                            .AsFormat(DownloadTask.Key, e.Message));
+                        D($"Cancel() (disposing) failed: {e.Message}");
                         exceptions.Insert(0, e);
                         Status = DownloaderStatus.Error;
                     }
@@ -241,23 +233,20 @@ namespace TX.Core.Downloaders
                 else return;
             // restore the exception
             exceptions.Insert(0, exception);
-            Debug.WriteLine("[downloader with task {0}] error captured: <{1}> (total exceptions: {2})"
-                .AsFormat(DownloadTask.Key, exception.GetType().Name, Errors.Count));
+            D($"Error captured: <{exception.GetType().Name}> (total exceptions: {Errors.Count})");
 
             // for some specific cases (failed during cancelation, failed during completetion, etc.),
             // do not retry, enter error status directly.
             if (dontRetry)
             {
-                Debug.WriteLine("[downloader with task {0}] no need to retry, abort"
-                    .AsFormat(DownloadTask.Key));
+                D($"No need to retry, abort");
                 lock (statusLockObject) Status = DownloaderStatus.Error;
             }
             // if number of retries exceeded the maximum retries, enter error status directly.
             // TODO: wrap maximum retries configuration in DownloaderContext
             else if(Retries >= MaximumRetries)
             {
-                Debug.WriteLine("[downloader with task {0}] retries exceeded, abort (total retries: {1})"
-                    .AsFormat(DownloadTask.Key, Retries));
+                D($"Retries exceeded, abort (total retries: {Retries})");
                 lock (statusLockObject) Status = DownloaderStatus.Error;
             }
             // else retry after 1000 thousands
@@ -270,8 +259,7 @@ namespace TX.Core.Downloaders
                     {
                         // simply cancel, wait for a period, and restart the downloader
                         Retries += 1;
-                        Debug.WriteLine("[downloader with task {0}] retring in {1} ms (total retries: {2})"
-                            .AsFormat(DownloadTask.Key, 1000, Retries));
+                        D($"Retring in {1000} ms (total retries: {Retries})");
                         lock (statusLockObject)
                             Status = DownloaderStatus.Running;
                         Cancel();
@@ -341,6 +329,9 @@ namespace TX.Core.Downloaders
         /// Amount of retries since the downloader was constructed.
         /// </summary>
         public int Retries { get; private set; } = 0;
+
+        protected virtual void D(string message) => 
+            Debug.WriteLine($"[{GetType().Name}] [task <{DownloadTask.Key}>] {message}");
 
         private readonly object statusLockObject = new object();
     }
