@@ -36,6 +36,8 @@ namespace TX.Core.Providers
         public ICacheStorageProvider GetCacheProviderForTask(string taskKey)
             => new InnerProvider(this, taskKey);
 
+        public IStorageFolder CacheFolder => cacheFolder;
+
         public byte[] ToPersistentByteArray()
         {
             lock (cacheItems)
@@ -51,7 +53,10 @@ namespace TX.Core.Providers
             {
                 Debug.WriteLine("[{0}] cleaning cache folder".AsFormat(
                     nameof(LocalCacheManager)));
-                var items = await cacheFolder.GetItemsAsync();
+                IEnumerable<IStorageItem> items = await cacheFolder.GetItemsAsync();
+                if (!cacheFolder.IsEqual(ApplicationData.Current.LocalCacheFolder))
+                    items = items.Concat(await ApplicationData.Current
+                        .LocalCacheFolder.GetItemsAsync());
 
                 List<IStorageItem> unused_items = null;
 
@@ -75,6 +80,8 @@ namespace TX.Core.Providers
                 {
                     try
                     {
+                        StorageApplicationPermissions.FutureAccessList.Remove(
+                            StorageApplicationPermissions.FutureAccessList.Add(item));
                         await item.DeleteAsync();
                         Debug.WriteLine($"[{nameof(LocalCacheManager)}] remove storage item <{item.Path}>");
                     }
@@ -88,26 +95,20 @@ namespace TX.Core.Providers
             }
         }
 
-        private async Task<string> NewCacheStorageForTaskAsync(
-            string taskKey, bool isFolder)
+        private async Task<string> NewCacheStorageForTaskAsync(string taskKey, bool isFolder)
         {
             try
             {
                 string ext = RandomUtils.String(4);
                 var randomName = "{0}-{1}".AsFormat(taskKey, ext);
-                string path = string.Empty;
-                if (isFolder)
-                {
-                    var folder = await cacheFolder.CreateFolderAsync(
-                        randomName, CreationCollisionOption.GenerateUniqueName);
-                    path = folder.Path;
-                }
-                else
-                {
-                    var file = await cacheFolder.CreateFileAsync(
-                        randomName, CreationCollisionOption.GenerateUniqueName);
-                    path = file.Path;
-                }
+                IStorageItem item = null;
+
+                if (isFolder) item = await cacheFolder.CreateFolderAsync(
+                    randomName, CreationCollisionOption.GenerateUniqueName);
+                else item = await cacheFolder.CreateFileAsync(
+                    randomName, CreationCollisionOption.GenerateUniqueName);
+
+                StorageApplicationPermissions.FutureAccessList.Add(item);
 
                 lock (cacheItems)
                 {
@@ -118,7 +119,7 @@ namespace TX.Core.Providers
                     {
                         Token = token,
                         TaskKey = taskKey,
-                        FilePath = path,
+                        FilePath = item.Path,
                     };
                     return token;
                 }
@@ -208,6 +209,6 @@ namespace TX.Core.Providers
 
         private readonly Dictionary<string, CacheItemInfo> cacheItems = 
             new Dictionary<string, CacheItemInfo>();
-        private StorageFolder cacheFolder = null;
+        private readonly StorageFolder cacheFolder = null;
     }
 }

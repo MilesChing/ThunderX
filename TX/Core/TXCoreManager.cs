@@ -38,7 +38,7 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
-                await InitializeCacheFolderAsync();
+                InitializeCacheFolder();
 
                 if (checkPoint != null)
                 {
@@ -85,6 +85,8 @@ namespace TX.Core
         public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
 
         public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
+
+        public IStorageFolder CacheFolder => coreCacheManager.CacheFolder;
 
         public void RemoveHistory(DownloadHistory history) =>
             histories.Remove(history);
@@ -289,31 +291,10 @@ namespace TX.Core
             }
         }
 
-        private async Task InitializeCacheFolderAsync()
+        private void InitializeCacheFolder()
         {
-            StorageFolder cacheFolder = null;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(settingEntries.CacheFolderToken))
-                {
-                    D($"Cache folder token <{settingEntries.CacheFolderToken}>");
-                    cacheFolder = await StorageApplicationPermissions
-                        .FutureAccessList.GetFolderAsync(
-                            settingEntries.CacheFolderToken);
-                }
-                else D("Cache folder token null or empty");
-            }
-            catch (Exception e) 
-            {
-                D($"Cache folder initialization failed: {e.Message}");
-            }
-
-            if (cacheFolder == null)
-                cacheFolder = ApplicationData.Current.LocalCacheFolder;
-
-            D($"Cache folder initialized: {cacheFolder.Path}");
-            coreCacheManager = new LocalCacheManager(cacheFolder);
+            coreCacheManager = new LocalCacheManager(
+                ApplicationData.Current.LocalCacheFolder);
             D("Core cache manager initialized");
         }
 

@@ -119,12 +119,6 @@
   <data name="SetPage_Downloader_Title.Text" xml:space="preserve">
     <value>下载器配置</value>
   </data>
-  <data name="SetPage_DownloadFolder_Button.Content" xml:space="preserve">
-    <value>选取文件夹</value>
-  </data>
-  <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
-    <value>默认下载文件夹</value>
-  </data>
   <data name="SetPage_Notifications_TaskCompletedToggleSwitch.Header" xml:space="preserve">
     <value>有任务完成时发送通知</value>
   </data>
@@ -259,9 +253,6 @@
   <data name="SetPage_CleanUp_GuideText.Text" xml:space="preserve">
     <value>失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</value>
   </data>
-  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
-    <value>打开文件夹</value>
-  </data>
   <data name="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" xml:space="preserve">
     <value>启用后台下载</value>
   </data>
@@ -363,5 +354,11 @@
   </data>
   <data name="NewTaskPage_TorrentTeachingTip.CloseButtonContent" xml:space="preserve">
     <value>下次一定</value>
+  </data>
+  <data name="SetPage_Folders_DownloadFolder_Subtitle.Text" xml:space="preserve">
+    <value>下载文件夹</value>
+  </data>
+  <data name="SetPage_Folders_Title.Text" xml:space="preserve">
+    <value>目录</value>
   </data>
 </root>

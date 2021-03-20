@@ -59,22 +59,41 @@
                               IsOn="{x:Bind SettingEntries.IsDarkModeEnabled, Mode=TwoWay}"/>
 
                 <!--Default Download Folder-->
-                <TextBlock x:Uid="SetPage_DownloadFolder_Title" Margin="0 0 0 16"
+                <TextBlock x:Uid="SetPage_Folders_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <TextBlock x:Name="DefaultDownloadFolderPathTextBlock" 
-                           Style="{ThemeResource TXFilePathStyle}" Margin="0 0 0 16"/>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 24">
-                    <!--Select Folder-->
-                    <Button x:Name="DefaultDownloadFolderButton" x:Uid="SetPage_DownloadFolder_Button"
-                            Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}" Margin="0 0 8 0"
-                            Click="DefaultDownloadFolderButton_Click"/>
-                    <!--Open Folder-->
-                    <Button x:Name="OpenDownloadFolderButton" x:Uid="SetPage_DownloadFolder_OpenButton"
-                            Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
-                            Background="{ThemeResource SystemAccentColor}"
-                            Foreground="{ThemeResource SystemAltHighColor}"
-                            Click="OpenDownloadFolderButton_Click"/>
-                </StackPanel>
+                <Grid Margin="0 0 0 24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Uid="SetPage_Folders_DownloadFolder_Subtitle"
+                               Style="{ThemeResource TXControlHeaderStyle}"
+                               Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+                    <TextBlock x:Name="DownloadFolderPathTextBlock" 
+                               Grid.Row="1" Grid.Column="0" Margin="0 0 8 0"
+                               Style="{ThemeResource TXFilePathStyle}"/>
+                    <AppBarButton x:Name="DownloadFolderEditButton" 
+                                  Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                  Icon="Edit" Width="40" LabelPosition="Collapsed" 
+                                  VerticalAlignment="Top" Style="{ThemeResource AppBarButtonRevealStyle}"
+                                  Click="DownloadFolderEditButton_Click"/>
+                    <AppBarButton x:Name="DownloadFolderOpenButton"
+                                  Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"
+                                  Width="40" LabelPosition="Collapsed"
+                                  VerticalAlignment="Top" Style="{ThemeResource AppBarButtonRevealStyle}"
+                                  Click="DownloadFolderOpenButton_Click">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE8DA;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </Grid>
 
                 <!--Downloader Configurations-->
                 <TextBlock x:Uid="SetPage_Downloader_Title" Margin="0 0 0 16"

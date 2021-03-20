@@ -33,15 +33,6 @@ namespace TX.Utils
             set { SetValue(nameof(DownloadsFolderToken), value); }
         }
 
-        /// <summary>
-        /// Token of the cache folder (in the FutureAccessList).
-        /// </summary>
-        public string CacheFolderToken
-        {
-            get { return TryGetValue<string>(nameof(CacheFolderToken), null); }
-            set { SetValue(nameof(CacheFolderToken), value); }
-        }
-
         #endregion
 
         #region Downloader Settings

@@ -148,14 +148,6 @@
           <source>Downloader Configurations</source>
           <target state="translated">下载器配置</target>
         </trans-unit>
-        <trans-unit id="SetPage_DownloadFolder_Button.Content" translate="yes" xml:space="preserve">
-          <source>Select Folder</source>
-          <target state="translated">选取文件夹</target>
-        </trans-unit>
-        <trans-unit id="SetPage_DownloadFolder_Title.Text" translate="yes" xml:space="preserve">
-          <source>Default Download Folder</source>
-          <target state="translated">默认下载文件夹</target>
-        </trans-unit>
         <trans-unit id="SetPage_Notifications_TaskCompletedToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Task Completion Notification</source>
           <target state="translated">有任务完成时发送通知</target>
@@ -338,10 +330,6 @@ Create a task for downloading.</source>
           <source>Cache files that are no longer valid are automatically cleaned each time the application is closed. Manual cleanup is often unnecessary.</source>
           <target state="translated">失效的缓存文件将在每次应用程序被关闭时被自动清理。一般来说手动进行垃圾清理是不必要的。</target>
         </trans-unit>
-        <trans-unit id="SetPage_DownloadFolder_OpenButton.Content" translate="yes" xml:space="preserve">
-          <source>Open Current</source>
-          <target state="translated">打开文件夹</target>
-        </trans-unit>
         <trans-unit id="SetPage_BackgroundTask_BackgroundTaskToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Enable Downloads in Background</source>
           <target state="translated">启用后台下载</target>
@@ -477,6 +465,14 @@ Create a task for downloading.</source>
         <trans-unit id="NewTaskPage_TorrentTeachingTip.CloseButtonContent" translate="yes" xml:space="preserve">
           <source>Later</source>
           <target state="translated">下次一定</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Folders_DownloadFolder_Subtitle.Text" translate="yes" xml:space="preserve">
+          <source>Download Folder</source>
+          <target state="translated">下载文件夹</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Folders_Title.Text" translate="yes" xml:space="preserve">
+          <source>Folders</source>
+          <target state="translated">目录</target>
         </trans-unit>
       </group>
     </body>
