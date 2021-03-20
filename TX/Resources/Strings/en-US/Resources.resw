@@ -152,7 +152,8 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>In this release, we built several ways for activating Thunder X including activation from browser and torrent files. We also fixed the unavailable toast notification and other bugs that occurred in the last version.</value>
+    <value>🈂 Fixed the issue that files could not be imported due to special characters in the path. 
+💾 Fixed the failure to restore download tasks and history due to coding errors.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
@@ -350,14 +351,11 @@
   <data name="SetPage_Downloader_Title.Text" xml:space="preserve">
     <value>Downloader Configurations</value>
   </data>
-  <data name="SetPage_DownloadFolder_Button.Content" xml:space="preserve">
-    <value>Select Folder</value>
+  <data name="SetPage_Folders_DownloadFolder_Subtitle.Text" xml:space="preserve">
+    <value>Download Folder</value>
   </data>
-  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
-    <value>Open Current</value>
-  </data>
-  <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
-    <value>Default Download Folder</value>
+  <data name="SetPage_Folders_Title.Text" xml:space="preserve">
+    <value>Folders</value>
   </data>
   <data name="SetPage_HTTP_Title.Text" xml:space="preserve">
     <value>HTTP/HTTPS</value>

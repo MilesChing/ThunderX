@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -205,8 +204,7 @@ namespace TX
                         if (exp != null)
                         {
                             ErrorStackPanel.Visibility = Visibility.Visible;
-                            ErrorTextBlock.Text = "{0}: {1}".AsFormat(
-                                exp.HResult, exp.GetType().Name);
+                            ErrorTextBlock.Text = $"{exp.HResult}: {exp.GetType().Name}";
                             ErrorDetailTextBlock.Text = exp.ToString();
                         }
                     }

@@ -12,7 +12,6 @@ using TX.Core.Models.Contexts;
 using TX.Core.Utils;
 using Windows.Storage;
 using EnsureThat;
-using Microsoft.Toolkit.Extensions;
 
 namespace TX.Core.Downloaders
 {
@@ -42,9 +41,7 @@ namespace TX.Core.Downloaders
         ) : base(task) 
         {
             Ensure.That(task.Target is HttpTarget, null, 
-                opts => opts.WithMessage("type of {0} must be {1}".AsFormat(
-                    nameof(task.Target), nameof(HttpTarget)
-                ))
+                opts => opts.WithMessage($"type of {nameof(task.Target)} must be {nameof(HttpTarget)}")
             ).IsTrue();
             Ensure.That(folderProvider, nameof(folderProvider)).IsNotNull();
             Ensure.That(cacheProvider, nameof(cacheProvider)).IsNotNull();

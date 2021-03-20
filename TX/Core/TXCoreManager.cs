@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Extensions;
-using MonoTorrent.Dht;
+﻿using MonoTorrent.Dht;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,6 +19,7 @@ using TX.Core.Providers;
 using TX.Core.Utils;
 using TX.Utils;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.Core
 {
@@ -37,33 +37,37 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
+                InitializeCacheFolder();
 
                 if (checkPoint != null)
                 {
-                    var json = Encoding.ASCII.GetString(checkPoint);
-                    var checkPointObject = JsonConvert.DeserializeObject<InnerCheckPoint>(json,
-                        new JsonSerializerSettings()
+                    var json = Encoding.UTF8.GetString(checkPoint);
+                    var checkPointObject = JsonConvert.DeserializeObject<
+                        InnerCheckPoint>(json, new JsonSerializerSettings()
                         {
-                            TypeNameHandling = TypeNameHandling.All
+                            TypeNameHandling = TypeNameHandling.Auto,
+                            Error = HandleJsonError,
                         });
                     if (checkPointObject.Tasks != null)
                         foreach (var kvp in checkPointObject.Tasks)
                             tasks.Add(kvp.Key, kvp.Value);
-                    coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint);
+                    try { coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint); }
+                    catch (Exception) { }
                     if (checkPointObject.Downloaders != null)
                         foreach (var kvp in checkPointObject.Downloaders)
-                            CreateDownloader(kvp.Key, kvp.Value);
+                            try { CreateDownloader(kvp.Key, kvp.Value); }
+                            catch (Exception) { }
                     if (checkPointObject.Histories != null)
                         foreach (var hist in checkPointObject.Histories)
-                            histories.Add(hist);
+                            try { histories.Add(hist); }
+                            catch (Exception) { }
                 }
 
-                Debug.WriteLine("[{0}] initialized".AsFormat(nameof(TXCoreManager)));
+                D("Initialized");
             }
             catch (Exception e)
             {
-                Debug.WriteLine("[{0}] initialization failed: \n{1}".AsFormat(
-                    nameof(TXCoreManager), e.Message));
+                D($"Initialization failed: \n{e.Message}");
             }
         }
 
@@ -80,6 +84,8 @@ namespace TX.Core
         public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
 
         public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
+
+        public IStorageFolder CacheFolder => coreCacheManager.CacheFolder;
 
         public void RemoveHistory(DownloadHistory history) =>
             histories.Remove(history);
@@ -199,7 +205,7 @@ namespace TX.Core
         public byte[] ToPersistentByteArray()
         {
             D("Generating persistent byte array...");
-            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     Tasks = Tasks.ToArray(),
@@ -216,10 +222,10 @@ namespace TX.Core
                         }).ToArray(),
                     Histories = Histories.ToArray(),
                     CacheManagerCheckPoint = coreCacheManager.ToPersistentByteArray(),
-                },
-                new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All
+                }, new JsonSerializerSettings() 
+                { 
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Error = HandleJsonError,
                 }));
         }
 
@@ -284,14 +290,27 @@ namespace TX.Core
             }
         }
 
+        private void InitializeCacheFolder()
+        {
+            coreCacheManager = new LocalCacheManager(
+                ApplicationData.Current.LocalCacheFolder);
+            D("Core cache manager initialized");
+        }
+
+        private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+        {
+            D($"Failed serializing json: {args.ErrorContext.Error.Message}");
+            args.ErrorContext.Handled = true;
+        }
+
         private readonly Settings settingEntries = new Settings();
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
-        private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
+        private LocalCacheManager coreCacheManager = null;
         private readonly List<string> customAnnounceUrls = new List<string>();
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");

@@ -105,7 +105,7 @@ namespace TX.Core.Downloaders
             }
             catch (Exception) { }
 
-            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     TaskKey = DownloadTask.Key,
@@ -295,7 +295,7 @@ namespace TX.Core.Downloaders
         private void ApplyCheckPoint(byte[] checkPointByteArray)
         {
             checkPoint = JsonConvert.DeserializeObject<InnerCheckPoint>(
-                Encoding.ASCII.GetString(checkPointByteArray));
+                Encoding.UTF8.GetString(checkPointByteArray));
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey)).IsEqualTo(DownloadTask.Key);
 
             if (checkPoint.FastResumeData != null)
@@ -313,8 +313,6 @@ namespace TX.Core.Downloaders
             (Progress as BaseProgress).Increase(checkPoint.DownloadedSize);
             cacheFolderToken = checkPoint.CacheFolderToken;
         }
-
-        private void D(string text) => Debug.WriteLine($"[{GetType().Name} with task {DownloadTask.Key}] {text}");
 
         private class InnerCheckPoint
         {

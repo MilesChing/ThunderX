@@ -54,53 +54,13 @@ namespace TX
         public SetPage()
         {
             this.InitializeComponent();
-            SetDownloadFolder();
-            MemoryUpperboundComboBox.ItemsSource = MemoryLimits.Select(m => m.SizedString()).ToArray();
-            MemoryUpperboundComboBox.SelectedIndex = Math.Max(Array.IndexOf(
-                MemoryLimits, SettingEntries.MemoryLimit
-            ), 0);
-            ReloadAnnounceUrls();
         }
 
-        public async void SetDownloadFolder()
+        private void ReloadAnnounceUrls()
         {
-            DefaultDownloadFolderPathTextBlock.Text = (await LocalFolderManager
-                .GetOrCreateDownloadFolderAsync()).Path;
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            RefreshStorageSize();
-
-            base.OnNavigatedTo(e);
-        }
-
-        private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (sender is ToggleSwitch tw)
-            {
-                MainPage.Current.RequestedTheme = tw.IsOn ?
-                    ElementTheme.Dark : ElementTheme.Default;
-            }
-        }
-
-        private async void DefaultDownloadFolderButton_Click(object sender, RoutedEventArgs e)
-        {
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.FileTypeFilter.Add(".");
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
-            var folder = await folderPicker.PickSingleFolderAsync();
-            if (folder == null) return;
-            SettingEntries.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
-            DefaultDownloadFolderPathTextBlock.Text = folder.Path;
-        }
-
-        private void MemoryUpperboundComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is ComboBox cb)
-            {
-                SettingEntries.MemoryLimit = MemoryLimits[cb.SelectedIndex];
-            }
+            AnnounceUrlsCollection.Clear();
+            foreach (var url in Core.CustomAnnounceURLs)
+                AnnounceUrlsCollection.Add(url);
         }
 
         private async void RefreshStorageSize()
@@ -108,7 +68,7 @@ namespace TX
             CacheFileSizeTextBlock.Opacity = 0.4;
             try
             {
-                var cacheSize = await ApplicationData.Current.LocalCacheFolder.GetSizeAsync();
+                var cacheSize = await Core.CacheFolder.GetSizeAsync();
                 CacheFileSizeTextBlock.Text = cacheSize.SizedString();
             }
             catch (Exception)
@@ -122,14 +82,52 @@ namespace TX
             }
         }
 
+        private async void InitializeDownloadFolder()
+        {
+            DownloadFolderPathTextBlock.Text = (await LocalFolderManager
+                .GetOrCreateDownloadFolderAsync()).Path;
+        }
+
+        private void InitializeMemoryLimits()
+        {
+            MemoryUpperboundComboBox.ItemsSource = MemoryLimits.Select(m => m.SizedString()).ToArray();
+            MemoryUpperboundComboBox.SelectedIndex = Math.Max(Array.IndexOf(
+                MemoryLimits, SettingEntries.MemoryLimit), 0);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            RefreshStorageSize();
+            InitializeDownloadFolder();
+            InitializeMemoryLimits();
+            ReloadAnnounceUrls();
+
+            base.OnNavigatedTo(e);
+        }
+
+        private void DarkModeToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch tw)
+            {
+                MainPage.Current.RequestedTheme = tw.IsOn ?
+                    ElementTheme.Dark : ElementTheme.Default;
+            }
+        }
+
+        private void MemoryUpperboundComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox cb && 
+                cb.SelectedIndex >= 0 && cb.SelectedIndex < MemoryLimits.Length)
+            {
+                SettingEntries.MemoryLimit = MemoryLimits[cb.SelectedIndex];
+            }
+        }
+
         private async void CleanUpButton_Click(object sender, RoutedEventArgs e)
         {
             await ((App)App.Current).Core.CleanCacheFolderAsync();
             RefreshStorageSize();
         }
-
-        private async void OpenDownloadFolderButton_Click(object sender, RoutedEventArgs e) =>
-            await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
 
         private async void EditFileItem_Click(object sender, RoutedEventArgs e)
         {
@@ -143,11 +141,18 @@ namespace TX
             ReloadAnnounceUrls();
         }
 
-        private void ReloadAnnounceUrls()
+        private async void DownloadFolderEditButton_Click(object sender, RoutedEventArgs e)
         {
-            AnnounceUrlsCollection.Clear();
-            foreach (var url in Core.CustomAnnounceURLs)
-                AnnounceUrlsCollection.Add(url);
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.FileTypeFilter.Add(".");
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Downloads;
+            var folder = await folderPicker.PickSingleFolderAsync();
+            if (folder == null) return;
+            SettingEntries.DownloadsFolderToken = StorageApplicationPermissions.MostRecentlyUsedList.Add(folder);
+            InitializeDownloadFolder();
         }
+
+        private async void DownloadFolderOpenButton_Click(object sender, RoutedEventArgs e) =>
+            await Launcher.LaunchFolderAsync(await LocalFolderManager.GetOrCreateDownloadFolderAsync());
     }
 }

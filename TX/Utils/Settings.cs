@@ -77,7 +77,7 @@ namespace TX.Utils
             get
             {
                 if (IsApplicationVersionTrail) return 1;
-                return TryGetValue(nameof(ThreadNumber), 1);
+                return TryGetValue(nameof(ThreadNumber), 4);
             }
             set { SetValue(nameof(ThreadNumber), value); }
         }

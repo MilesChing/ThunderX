@@ -1,5 +1,4 @@
 ﻿using EnsureThat;
-using Microsoft.Toolkit.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -48,10 +47,8 @@ namespace TX.Core.Downloaders
             long threadSegmentSize = 8 * 1024 * 1024
         ) : base(task)
         {
-            Ensure.That(task.Target is HttpRangableTarget, null,
-                opts => opts.WithMessage("type of {0} must be {1}".AsFormat(
-                    nameof(task.Target), nameof(HttpRangableTarget)
-                ))
+            Ensure.That(task.Target is HttpRangableTarget, null, opts => opts.WithMessage(
+                $"type of {nameof(task.Target)} must be {nameof(HttpRangableTarget)}")
             ).IsTrue();
             Ensure.That(folderProvider, nameof(folderProvider)).IsNotNull();
             Ensure.That(cacheProvider, nameof(cacheProvider)).IsNotNull();
@@ -97,8 +94,7 @@ namespace TX.Core.Downloaders
             cancellationTokenSource = new CancellationTokenSource();
 
             int realThreadNum = Math.Min(workQueue.Count, threadNum);
-            Debug.WriteLine("[{0} with task {1}] launching {2} workers".AsFormat(
-                nameof(HttpParallelDownloader), DownloadTask.Key, realThreadNum));
+            D($"Launching {realThreadNum} workers");
 
             var workers = new Task[realThreadNum];
             WorkerCount = realThreadNum;
@@ -216,18 +212,15 @@ namespace TX.Core.Downloaders
             CancellationToken cancellationToken,
             int workerId)
         {
-            var prefix = "[{0} with task {1}] [worker {2}]".AsFormat(
-                nameof(HttpParallelDownloader), DownloadTask.Key, workerId);
             SegmentProgress progress;
-            Debug.WriteLine("{0} launched".AsFormat(prefix));
+            D(workerId, "Launched");
             while ((!cancellationToken.IsCancellationRequested)
                 && (!taskQueue.IsEmpty))
             {
                 bool succ = taskQueue.TryDequeue(out Range task);
                 if (!succ) continue;
                 TasksRemained = taskQueue.Count;
-                Debug.WriteLine("{0} picked task [{1},{2}) , {3} remained in queue"
-                    .AsFormat(prefix, task.Begin, task.End, taskQueue.Count));
+                D(workerId, $"Picked task [{task.Begin}, {task.End}], {taskQueue.Count} remained in queue");
 
                 var target = (DownloadTask.Target as HttpRangableTarget);
 
@@ -248,13 +241,13 @@ namespace TX.Core.Downloaders
                     }
 
                     if (cancellationToken.IsCancellationRequested)
-                        Debug.WriteLine("{0} task canceled".AsFormat(prefix));
+                        D(workerId, $"Cancelled");
                     else if (progress.DownloadedSize == progress.TotalSize)
-                        Debug.WriteLine("{0} task completed".AsFormat(prefix));
+                        D(workerId, $"Completed");
                     else
                     {
-                        Debug.WriteLine("{0} task uncompleted".AsFormat(prefix));
-                        throw new Exception("{0} task uncompleted".AsFormat(prefix));
+                        D(workerId, $"Cancelled but uncompleted, exception throwed");
+                        throw new Exception($"Worker {workerId} task uncompleted");
                     }
                 }
             }
@@ -263,7 +256,7 @@ namespace TX.Core.Downloaders
         public byte[] ToPersistentByteArray()
         {
             var progress = (CompositeProgress)Progress;
-            return Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     TaskKey = DownloadTask.Key,
@@ -277,7 +270,7 @@ namespace TX.Core.Downloaders
         private void ApplyCheckPoint(byte[] checkPointByteArray)
         {
             var checkPoint = JsonConvert.DeserializeObject<InnerCheckPoint>(
-                Encoding.ASCII.GetString(checkPointByteArray));
+                Encoding.UTF8.GetString(checkPointByteArray));
             var progress = (CompositeProgress) Progress;
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey))
                 .IsEqualTo(DownloadTask.Key);
@@ -287,6 +280,9 @@ namespace TX.Core.Downloaders
             cacheFileToken = checkPoint.CacheFileToken;
             progress.Initialize(checkPoint.TotalSize, checkPoint.CoveredRanges);
         }
+
+        private void D(int workerId, string message) =>
+            base.D($"[worker {workerId}] {message}");
 
         private class InnerCheckPoint
         {
