@@ -350,14 +350,11 @@
   <data name="SetPage_Downloader_Title.Text" xml:space="preserve">
     <value>Downloader Configurations</value>
   </data>
-  <data name="SetPage_DownloadFolder_Button.Content" xml:space="preserve">
-    <value>Select Folder</value>
+  <data name="SetPage_Folders_DownloadFolder_Subtitle.Text" xml:space="preserve">
+    <value>Download Folder</value>
   </data>
-  <data name="SetPage_DownloadFolder_OpenButton.Content" xml:space="preserve">
-    <value>Open Current</value>
-  </data>
-  <data name="SetPage_DownloadFolder_Title.Text" xml:space="preserve">
-    <value>Default Download Folder</value>
+  <data name="SetPage_Folders_Title.Text" xml:space="preserve">
+    <value>Folders</value>
   </data>
   <data name="SetPage_HTTP_Title.Text" xml:space="preserve">
     <value>HTTP/HTTPS</value>

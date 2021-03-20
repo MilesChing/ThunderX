@@ -20,6 +20,7 @@ using TX.Core.Providers;
 using TX.Core.Utils;
 using TX.Utils;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 
 namespace TX.Core
 {
@@ -37,6 +38,7 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
+                InitializeCacheFolder();
 
                 if (checkPoint != null)
                 {
@@ -83,6 +85,8 @@ namespace TX.Core
         public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
 
         public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
+
+        public IStorageFolder CacheFolder => coreCacheManager.CacheFolder;
 
         public void RemoveHistory(DownloadHistory history) =>
             histories.Remove(history);
@@ -287,6 +291,13 @@ namespace TX.Core
             }
         }
 
+        private void InitializeCacheFolder()
+        {
+            coreCacheManager = new LocalCacheManager(
+                ApplicationData.Current.LocalCacheFolder);
+            D("Core cache manager initialized");
+        }
+
         private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             D($"Failed serializing json: {args.ErrorContext.Error.Message}");
@@ -297,10 +308,10 @@ namespace TX.Core
         private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
         private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
         private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
-        private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
+        private LocalCacheManager coreCacheManager = null;
         private readonly List<string> customAnnounceUrls = new List<string>();
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
