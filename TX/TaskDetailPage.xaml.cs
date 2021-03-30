@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using TX.Controls;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
+using TX.Core.Models.Contexts;
 using TX.Core.Models.Progresses;
 using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Models.Targets;
@@ -42,6 +43,9 @@ namespace TX
                 ClearDownloaderBinding();
             Downloader = downloader;
             if (downloader == null) return;
+
+            Downloader.DownloadTask.PropertyChanged += DownloadTask_PropertyChanged;
+            DownloadTask_PropertyChanged(Downloader.DownloadTask, null);
 
             TaskNameTextBlock.Text = downloader.DownloadTask.DestinationFileName;
             if (downloader.DownloadTask.Target is HttpTarget httpTarget)
@@ -83,6 +87,22 @@ namespace TX
             else VisibleRangePanel.Visibility = Visibility.Collapsed;
         }
 
+        private async void DownloadTask_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is DownloadTask task)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if (task.ScheduledStartTime.HasValue)
+                    {
+                        ScheduledTimeStackPanel.Visibility = Visibility.Visible;
+                        ScheduledTimeText.Text = task.ScheduledStartTime.Value.ToString("f");
+                    }
+                    else ScheduledTimeStackPanel.Visibility = Visibility.Collapsed;
+                });
+            }
+        }
+
         private void BindedVisibleRangeListChanged(IVisibleProgress sender)
         {
              VisibleRangeListView.Dispatcher.RunAsync(
@@ -114,6 +134,7 @@ namespace TX
                 ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
             SetVisibleRangeListViewItemsSource(null);
 
+            Downloader.DownloadTask.PropertyChanged -= DownloadTask_PropertyChanged;
             Downloader.StatusChanged -= StatusChanged;
             Downloader.Speed.Updated -= Speed_Updated;
             Downloader.Progress.ProgressChanged -= Progress_Changed;
@@ -130,6 +151,7 @@ namespace TX
 
             BasicLabelCollection.Clear();
             DynamicLabelCollection.Clear();
+            
             Downloader = null;
         }
 

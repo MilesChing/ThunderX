@@ -116,6 +116,27 @@
                     </AppBarButton>
                 </Grid>
             </StackPanel>
+            <StackPanel Style="{StaticResource InnerStackPanelStyle}"
+                        BorderBrush="{ThemeResource SchedulerBorderColor}" 
+                        Background="{ThemeResource SchedulerColor}"
+                        x:Name="ScheduledTimeStackPanel" Padding="8">
+                <Grid Margin="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                              Glyph="&#xEC92;" Grid.Column="0" FontSize="24"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left"
+                               Margin="12 0 0 0" FontSize="14">
+                        <Run x:Uid="TaskDetailPage_ScheduledTime_StartsAt"
+                             Foreground="{ThemeResource SystemBaseHighColor}"/>
+                        <Run x:Name="ScheduledTimeText" FontWeight="Bold"
+                             Foreground="{ThemeResource SystemBaseHighColor}"/>
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
                 <Grid>
                     <Grid.RowDefinitions>

@@ -476,6 +476,18 @@ Create a task for downloading.</source>
           <source>Folders</source>
           <target state="translated">目录</target>
         </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_ScheduleTask_Header.Text" translate="yes" xml:space="preserve">
+          <source>Schedule the task</source>
+          <target state="translated">计划任务</target>
+        </trans-unit>
+        <trans-unit id="TaskDetailPage_ScheduledTime_StartsAt.Text" translate="yes" xml:space="preserve">
+          <source>Scheduled to start at</source>
+          <target state="translated">计划开始于</target>
+        </trans-unit>
+        <trans-unit id="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>A scheduled task will not be automatically started in the background or foreground before its scheduled time.</source>
+          <target state="translated">计划任务在其计划时间到达前不会被前台的应用程序或后台任务自动启动。</target>
+        </trans-unit>
       </group>
     </body>
   </file>

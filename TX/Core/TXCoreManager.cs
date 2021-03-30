@@ -96,7 +96,8 @@ namespace TX.Core
             AbstractTarget target,
             IStorageFolder destinationFolder,
             bool isBackgroundDownloadAllowed,
-            string customFileName = null)
+            string customFileName = null,
+            DateTime? scheduledDateTime = null)
         {
             string token = RandomUtils.String(8);
             while (tasks.ContainsKey(token))
@@ -108,7 +109,10 @@ namespace TX.Core
                 coreFolderManager.StoreFolder(destinationFolder),
                 DateTime.Now,
                 isBackgroundDownloadAllowed
-            );
+            )
+            {
+                ScheduledStartTime = scheduledDateTime
+            };
 
             CreateDownloader(token);
 
