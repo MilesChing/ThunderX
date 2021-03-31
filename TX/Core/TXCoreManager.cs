@@ -39,7 +39,6 @@ namespace TX.Core
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
                 InitializeCacheFolder();
-                StartScheduler();
 
                 if (checkPoint != null)
                 {
@@ -65,6 +64,7 @@ namespace TX.Core
                             catch (Exception) { }
                 }
 
+                StartScheduler();
                 D("Initialized");
             }
             catch (Exception e)
@@ -314,11 +314,10 @@ namespace TX.Core
         {
             schedulerCancellationTokenSource?.Cancel();
             schedulerCancellationTokenSource = new CancellationTokenSource();
-            schedulerRunningTask = RunSchedulerAsync(SchedulerTimerInterval, 
-                schedulerCancellationTokenSource.Token);
+            schedulerRunningTask = RunSchedulerAsync(schedulerCancellationTokenSource.Token);
         }
 
-        private async Task RunSchedulerAsync(TimeSpan interval, CancellationToken token)
+        private async Task RunSchedulerAsync(CancellationToken token)
         {
             D("[Scheduler] Started");
             while (!token.IsCancellationRequested)
@@ -327,17 +326,27 @@ namespace TX.Core
                 {
                     DateTime now = DateTime.Now;
                     D($"[Scheduler] <{now:T}> Checking scheduled downloaders");
+                    TimeSpan nextDelayTimeSpan = SchedulerTimerInterval;
                     foreach (var downloader in downloaders)
                     {
                         var scheduledTime = downloader.DownloadTask.ScheduledStartTime;
-                        if (scheduledTime != null && now >= scheduledTime)
+                        if (scheduledTime != null)
                         {
-                            D($"[Scheduler] Start {downloader.GetType().Name} with task {downloader.DownloadTask.Key}");
-                            downloader.Start();
-                            downloader.DownloadTask.ScheduledStartTime = null;
+                            if (scheduledTime.Value <= now)
+                            {
+                                D($"[Scheduler] Start {downloader.GetType().Name} with task {downloader.DownloadTask.Key}");
+                                downloader.Start();
+                                downloader.DownloadTask.ScheduledStartTime = null;
+                            }
+                            else
+                            {
+                                var timeBeforeScheduled = scheduledTime.Value - now;
+                                if (timeBeforeScheduled < nextDelayTimeSpan)
+                                    nextDelayTimeSpan = timeBeforeScheduled;
+                            }
                         }
                     }
-                    try { await Task.Delay(interval, token); }
+                    try { await Task.Delay(nextDelayTimeSpan, token); }
                     catch (TaskCanceledException) { }
                 } catch (Exception) { }
             }
