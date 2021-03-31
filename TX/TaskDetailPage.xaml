@@ -15,13 +15,25 @@
         VerticalScrollMode="Auto"
         VerticalScrollBarVisibility="Hidden">
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="DownloaderStatusGroup">
-                <VisualState x:Name="Unbind"/>
-                <VisualState x:Name="Completed"/>
-                <VisualState x:Name="Pending"/>
-                <VisualState x:Name="Error"/>
-                <VisualState x:Name="Ready"/>
-                <VisualState x:Name="Running"/>
+            <VisualStateGroup>
+                <VisualState x:Name="Scheduled">
+                    <VisualState.Setters>
+                        <Setter Target="ScheduledTimeStackPanel.BorderBrush" Value="{ThemeResource SchedulerBorderColor}"/>
+                        <Setter Target="ScheduledTimeStackPanel.Background" Value="{ThemeResource SchedulerColor}"/>
+                        <Setter Target="ScheduledTimeTextBlock.Visibility" Value="Visible"/>
+                        <Setter Target="ScheduledTitleTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="DateTimePickersStackPanel.Visibility" Value="Collapsed"/>
+                        <Setter Target="SchedulerActionButton.Icon" Value="Cancel"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Unscheduled">
+                    <VisualState.Setters>
+                        <Setter Target="ScheduledTimeTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ScheduledTitleTextBlock.Visibility" Value="Visible"/>
+                        <Setter Target="DateTimePickersStackPanel.Visibility" Value="Visible"/>
+                        <Setter Target="SchedulerActionButton.Icon" Value="Accept"/>
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <StackPanel
@@ -117,24 +129,43 @@
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}"
-                        BorderBrush="{ThemeResource SchedulerBorderColor}" 
-                        Background="{ThemeResource SchedulerColor}"
                         x:Name="ScheduledTimeStackPanel" Padding="8">
                 <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                              Glyph="&#xEC92;" Grid.Column="0" FontSize="24"
-                              VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left"
-                               Margin="12 0 0 0" FontSize="14">
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              Grid.Row="0" Grid.Column="0" FontSize="24"
+                              VerticalAlignment="Center" Glyph="&#xEC92;" />
+                    <TextBlock x:Name="ScheduledTimeTextBlock" Visibility="Collapsed"
+                               Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+                               VerticalAlignment="Center" Margin="12 0 0 4" FontSize="14">
                         <Run x:Uid="TaskDetailPage_ScheduledTime_StartsAt"
                              Foreground="{ThemeResource SystemBaseHighColor}"/>
                         <Run x:Name="ScheduledTimeText" FontWeight="Bold"
                              Foreground="{ThemeResource SystemBaseHighColor}"/>
                     </TextBlock>
+                    <TextBlock x:Name="ScheduledTitleTextBlock" VerticalAlignment="Center"
+                               Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+                               Margin="12 0 0 4" FontSize="14" FontWeight="Bold"
+                               x:Uid="NewTaskPage_OtherConfigs_ScheduleTask_Header"/>
+                    <StackPanel x:Name="DateTimePickersStackPanel" Margin="0 16 0 0"
+                                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                Orientation="Vertical">
+                        <DatePicker x:Name="ScheduleDatePicker" Margin="0 0 0 8"/>
+                        <TimePicker x:Name="ScheduleTimePicker"/>
+                    </StackPanel>
+                    <AppBarButton x:Name="SchedulerActionButton" Width="40"
+                                  Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="-8"
+                                  HorizontalAlignment="Right" Icon="Accept" LabelPosition="Collapsed"
+                                  Style="{ThemeResource AppBarButtonRevealStyle}"
+                                  Click="SchedulerActionButton_Click"/>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">

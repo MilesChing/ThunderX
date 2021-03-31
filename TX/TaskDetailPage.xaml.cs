@@ -93,12 +93,16 @@ namespace TX
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
+                    string targetVisualState = "Unscheduled";
                     if (task.ScheduledStartTime.HasValue)
                     {
-                        ScheduledTimeStackPanel.Visibility = Visibility.Visible;
+                        targetVisualState = "Scheduled";
                         ScheduledTimeText.Text = task.ScheduledStartTime.Value.ToString("f");
                     }
-                    else ScheduledTimeStackPanel.Visibility = Visibility.Collapsed;
+
+                    ScheduleTimePicker.SelectedTime = null;
+                    ScheduleDatePicker.SelectedDate = null;
+                    VisualStateManager.GoToState(this, targetVisualState, false);
                 });
             }
         }
@@ -212,7 +216,6 @@ namespace TX
         private async void StatusChanged(AbstractDownloader sender, DownloaderStatus status)
             => await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () => {
-                    VisualStateManager.GoToState(this, status.ToString(), true);
                     StartButton.IsEnabled = sender.CanStart;
                     CancelButton.IsEnabled = sender.CanCancel;
                     StatusTextBlock.Text = status.ToString();
@@ -234,6 +237,10 @@ namespace TX
                     {
                         ErrorStackPanel.Visibility = Visibility.Collapsed;
                     }
+
+                    if (status == DownloaderStatus.Completed || 
+                        status == DownloaderStatus.Disposed)
+                        ScheduledTimeStackPanel.Visibility = Visibility.Collapsed;
                 });
 
         private void UpdateIntoDynamicLabelCollection(string key, string value)
@@ -277,6 +284,29 @@ namespace TX
         {
             DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
+        }
+
+        private void SchedulerActionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is AppBarButton appBarButton &&
+                appBarButton.Icon is SymbolIcon symbolIcon &&
+                Downloader != null) { 
+
+                if (symbolIcon.Symbol == Symbol.Accept)
+                {
+                    if (ScheduleDatePicker.SelectedDate.HasValue &&
+                        ScheduleTimePicker.SelectedTime.HasValue)
+                    {
+                        Downloader.DownloadTask.ScheduledStartTime = 
+                            ScheduleDatePicker.SelectedDate.Value.Date +
+                            ScheduleTimePicker.SelectedTime.Value;
+                    }
+                }
+                else if (symbolIcon.Symbol == Symbol.Cancel)
+                {
+                    Downloader.DownloadTask.ScheduledStartTime = null;
+                }
+            }
         }
 
         private void CopyItem_Click(object sender, RoutedEventArgs e)
