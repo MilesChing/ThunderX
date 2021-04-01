@@ -116,14 +116,7 @@ namespace TX.Utils
                             var taskKey = command.Skip(1).FirstOrDefault();
                             if (taskKey != null)
                             {
-                                bool historyExist = ((App)App.Current).Core.Histories.Any(
-                                    hist => string.Equals(hist.TaskKey, taskKey));
-                                if (historyExist)
-                                {
-                                    D($"History with task <{taskKey}> found, navigating to history page");
-                                    MainPage.Current.NavigateHistoryPage();
-                                }
-                                else D("History record not found, abort");
+                                MainPage.Current.NavigateHistoryPage(taskKey);
                             }
                             else D("Command format illegal: no task key");
                         });

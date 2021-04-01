@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TX.Core;
 using TX.Core.Models.Contexts;
 using TX.Core.Utils;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -59,43 +60,49 @@ namespace TX
             base.OnNavigatedFrom(e);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             Core.ObservableHistories.CollectionChanged += CollectionChanged;
             var nowHistories = VMCollection.Select(view => view.OriginalHistory);
             var newItems = Core.Histories.Except(nowHistories).ToList();
             var oldItems = nowHistories.Except(Core.Histories).ToList();
-            CollectionChanged(Core.Histories,
+            await SolveCollectionChangingAsync(Core.Histories,
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Replace, newItems, oldItems));
+            if (e.Parameter is string paramString)
+                ScrollTo(paramString);
             base.OnNavigatedTo(e);
         }
 
         private async void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                async () =>
-                {
-                    if (e.OldItems != null)
-                    {
-                        var toBeRemoved = VMCollection.Where(
-                            vm => e.OldItems.OfType<DownloadHistory>().Any(
-                                hist => hist.TaskKey.Equals(vm.TaskKey))).ToList();
-                        foreach (var vm in toBeRemoved)
-                            VMCollection.Remove(vm);
-                    }
+                async () => await SolveCollectionChangingAsync(sender, e));
 
-                    if (e.NewItems != null)
+        private async Task SolveCollectionChangingAsync(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                var toBeRemoved = VMCollection.Where(
+                    vm => e.OldItems.OfType<DownloadHistory>().Any(
+                        hist => hist.TaskKey.Equals(vm.TaskKey))).ToList();
+                foreach (var vm in toBeRemoved)
+                    VMCollection.Remove(vm);
+            }
+
+            if (e.NewItems != null)
+            {
+                foreach (DownloadHistory hist in e.NewItems)
+                {
+                    var newVM = await GetNewDownloadHistoryViewModelAsync(hist);
+
+                    if (newVM != null)
                     {
-                        foreach (DownloadHistory hist in e.NewItems)
-                        {
-                            var newVM = await GetNewDownloadHistoryViewModelAsync(hist);
-                            
-                            if (newVM != null)
-                                VMCollection.Add(newVM);
-                            else Core.RemoveHistory(hist);
-                        }
+                        VMCollection.Add(newVM);
                     }
-                });
+                    else Core.RemoveHistory(hist);
+                }
+            }
+        }
 
         private async Task<DownloadHistoryViewModel> GetNewDownloadHistoryViewModelAsync(DownloadHistory history)
         {
@@ -220,6 +227,12 @@ namespace TX
 
         private void HistoryViewList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
             SelectionCountText.Text = HistoryViewList.SelectedItems.Count.ToString();
+
+        private void ScrollTo(string taskKey)
+        {
+            var item = VMCollection.FirstOrDefault(vm => vm.TaskKey.Equals(taskKey));
+            if (item != null) HistoryViewList.ScrollIntoView(item);
+        }
     }
 
     class DownloadHistoryViewModel

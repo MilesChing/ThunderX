@@ -135,8 +135,8 @@ namespace TX
         public void NavigateNewTaskPage(Uri uri = null) =>
             NavigateRightFrame(typeof(NewTaskPage), uri);
 
-        public void NavigateHistoryPage() =>
-            NavigateRightFrame(typeof(HistoryListPage), null);
+        public void NavigateHistoryPage(object parameter = null) =>
+            NavigateRightFrame(typeof(HistoryListPage), parameter);
 
         private void LeaveEmptyPage()
         {
