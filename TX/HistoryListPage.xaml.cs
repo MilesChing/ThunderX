@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -7,7 +9,6 @@ using System.Threading.Tasks;
 using TX.Core;
 using TX.Core.Models.Contexts;
 using TX.Core.Utils;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -80,27 +81,24 @@ namespace TX
 
         private async Task SolveCollectionChangingAsync(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.OldItems != null)
+            var oldItems = e.OldItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
+            var newItems = e.NewItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
+            var intersect = oldItems.Intersect(newItems);
+            oldItems = oldItems.Except(intersect);
+            newItems = newItems.Except(intersect);
+
+            foreach (DownloadHistory hist in oldItems)
             {
-                var toBeRemoved = VMCollection.Where(
-                    vm => e.OldItems.OfType<DownloadHistory>().Any(
-                        hist => hist.TaskKey.Equals(vm.TaskKey))).ToList();
-                foreach (var vm in toBeRemoved)
-                    VMCollection.Remove(vm);
+                var toBeDeleted = VMCollection.FirstOrDefault(
+                    vm => vm.TaskKey.Equals(hist.TaskKey));
+                if (toBeDeleted != null) VMCollection.Remove(toBeDeleted);
             }
 
-            if (e.NewItems != null)
+            foreach (DownloadHistory hist in newItems)
             {
-                foreach (DownloadHistory hist in e.NewItems)
-                {
-                    var newVM = await GetNewDownloadHistoryViewModelAsync(hist);
-
-                    if (newVM != null)
-                    {
-                        VMCollection.Add(newVM);
-                    }
-                    else Core.RemoveHistory(hist);
-                }
+                var newVM = await GetNewDownloadHistoryViewModelAsync(hist);
+                if (newVM != null) VMCollection.Add(newVM);
+                else Core.RemoveHistory(hist);
             }
         }
 
@@ -144,6 +142,7 @@ namespace TX
                         TaskKey = task.Key,
                         HistoryFileName = folder.Name,
                         HistoryFileSizeString = size.SizedString(),
+                        CreationTimeString = history.CreationTime.ToString("f"),
                         Source = source,
                         OriginalHistory = history,
                     };
@@ -242,6 +241,8 @@ namespace TX
         public string HistoryFileName;
 
         public string HistoryFileSizeString;
+
+        public string CreationTimeString;
 
         public ImageSource Source;
 

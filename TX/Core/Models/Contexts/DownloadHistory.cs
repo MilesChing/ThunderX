@@ -36,5 +36,14 @@ namespace TX.Core.Models.Contexts
             this.DestinationPath = destinationPath;
             this.CreationTime = creationTime;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is DownloadHistory history)
+                return TaskKey.Equals(history.TaskKey);
+            else return base.Equals(obj);
+        }
+
+        public override int GetHashCode() => TaskKey.GetHashCode();
     }
 }

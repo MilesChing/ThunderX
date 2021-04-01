@@ -39,32 +39,41 @@
             SelectionChanged="HistoryViewList_SelectionChanged">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="local:DownloadHistoryViewModel">
-                    <Grid Padding="8 4 8 8" CornerRadius="4" BorderThickness="1"
+                    <Grid CornerRadius="4" BorderThickness="1"
                           BorderBrush="{ThemeResource SystemChromeMediumColor}"
                           Background="{ThemeResource SystemAltHighColor}"
-                          Width="120" Height="188"
                           Holding="Item_Holding"
                           RightTapped="Item_RightTapped">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="36"/>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="100"/>
                         </Grid.RowDefinitions>
-                        <Image Grid.Row="0"
-                               Width="48" Height="48"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Row="0" Grid.Column="0"
+                               Width="40" Height="40"
                                Source="{x:Bind Source}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
-                        <TextBlock Text="{x:Bind HistoryFileName}" 
-                                   TextWrapping="Wrap"
-                                   FontSize="12" Grid.Row="1"
+                        <StackPanel Grid.Row="0" Grid.Column="1" 
+                                    Orientation="Vertical" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind HistoryFileName}" 
+                                   TextWrapping="Wrap" Margin="0 0 16 0"
+                                   FontSize="14" Grid.Row="1"
                                    VerticalAlignment="Top" MaxLines="2"
                                    Foreground="{ThemeResource SystemBaseHighColor}"/>
-                        <TextBlock Text="{x:Bind HistoryFileSizeString}"
-                                   Margin="0 8 0 0" TextWrapping="Wrap"
+                            <TextBlock Text="{x:Bind OriginalHistory.CreationTime}"
+                                   Margin="0 4 8 0" TextWrapping="Wrap"
                                    FontSize="12" Grid.Row="2"
                                    VerticalAlignment="Bottom"
                                    Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                            <TextBlock Text="{x:Bind HistoryFileSizeString}"
+                                   Margin="0 4 8 0" TextWrapping="Wrap"
+                                   FontSize="12" Grid.Row="2"
+                                   VerticalAlignment="Bottom"
+                                   Foreground="{ThemeResource SystemBaseMediumColor}"/>
+                        </StackPanel>
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
                                 <!--Open File-->
