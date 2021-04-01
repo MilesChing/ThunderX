@@ -139,7 +139,6 @@
     <Compile Include="Background\AbstractBackgroundTask.cs" />
     <Compile Include="Background\BackgroundTaskManager.cs" />
     <Compile Include="Background\CoreBackgroundTask.cs" />
-    <Compile Include="Background\ToastActivationBackgroundTask.cs" />
     <Compile Include="Controls\DownloaderBar.xaml.cs">
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
