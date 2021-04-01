@@ -38,7 +38,8 @@
         </VisualStateManager.VisualStateGroups>
         <StackPanel
             Orientation="Vertical"
-            Padding="8">
+            Padding="8" MaxWidth="800"
+            HorizontalAlignment="Left">
             <StackPanel.Resources>
                 <Style TargetType="StackPanel" x:Key="InnerStackPanelStyle">
                     <Setter Property="Margin" Value="0 0 0 8"/>
