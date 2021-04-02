@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ToastManager.cs" />
+    <Compile Include="Utils\VisFuncs.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
