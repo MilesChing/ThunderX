@@ -57,19 +57,9 @@ namespace TX.Utils
                 .AddText($"{DownloaderCompletionDuration} {downloader.Speed.RunningTime:hh\\:mm\\:ss}")
                 .AddToastActivationInfo(
                     EncodeActivationCommand(
-                        ActivationCommandNavigateToTaskDetail,
+                        ActivationCommandNavigateToTaskHistory,
                         downloader.DownloadTask.Key
                     ), ToastActivationType.Foreground
-                )
-                .AddButton(DownloaderCompletionOpen, ToastActivationType.Background,
-                    EncodeActivationCommand(
-                        ActivationCommandLaunchStorageItem, 
-                        downloader.Result.Path)
-                )
-                .AddButton(DownloaderCompletionOpenFolder, ToastActivationType.Background,
-                    EncodeActivationCommand(
-                        ActivationCommandLaunchStorageItem, 
-                        Path.GetDirectoryName(downloader.Result.Path))
                 )
                 .GetToastContent().GetXml();
             ToastNotificationManager.CreateToastNotifier().Show(
@@ -82,7 +72,7 @@ namespace TX.Utils
         /// </summary>
         /// <param name="argument">Argument of the activation</param>
         /// <returns>Actions to be done after mainpage has been navigated to.</returns>
-        public static async Task<IEnumerable<Action>> HandleToastActivationAsync(string argument)
+        public static IEnumerable<Action> HandleToastActivation(string argument)
         {
             var command = DecodeActivationCommand(argument);
             D($"Command decoded: <{string.Join(' ', command)}>");
@@ -91,21 +81,6 @@ namespace TX.Utils
             {
                 switch (command.FirstOrDefault())
                 {
-                    case ActivationCommandLaunchStorageItem:
-                        foreach (string path in command.Skip(1))
-                        {
-                            try
-                            {
-                                var item = await StorageUtils.GetStorageItemAsync(path);
-                                if (item is StorageFolder folder)
-                                    await Launcher.LaunchFolderAsync(folder);
-                                if (item is StorageFile file)
-                                    await Launcher.LaunchFileAsync(file);
-                                D($"{path} launched");
-                            }
-                            catch (Exception e) { D($"{path} launching failed: {e.Message}"); }
-                        }
-                        break;
                     case ActivationCommandNavigateToTaskDetail:
                         actions.Add(() =>
                         {
@@ -135,6 +110,17 @@ namespace TX.Utils
                             else D("Command format illegal: no task key");
                         });
                         break;
+                    case ActivationCommandNavigateToTaskHistory:
+                        actions.Add(() =>
+                        {
+                            var taskKey = command.Skip(1).FirstOrDefault();
+                            if (taskKey != null)
+                            {
+                                MainPage.Current.NavigateHistoryPage(taskKey);
+                            }
+                            else D("Command format illegal: no task key");
+                        });
+                        break;
                     default:
                         D($"Unrecognized command, abort");
                         break;
@@ -160,8 +146,8 @@ namespace TX.Utils
 
         private static void D(string message) => Debug.WriteLine($"[{nameof(ToastManager)}] {message}");
 
-        private const string ActivationCommandLaunchStorageItem = "LAUNCH_STORAGE_ITEM";
         private const string ActivationCommandNavigateToTaskDetail = "NAVIGATE_TO_TASK_DETAIL";
+        private const string ActivationCommandNavigateToTaskHistory = "NAVIGATE_TO_TASK_HISTORY";
         private readonly static ResourceLoader RSLoader = new ResourceLoader();
         private readonly static string DownloaderErrorTitlePrefix = RSLoader.GetString("Toast_DownloaderError_TitlePrefix");
         private readonly static string DownloaderCompletionTitlePrefix = RSLoader.GetString("Toast_DownloaderCompletion_TitlePrefix");

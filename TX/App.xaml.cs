@@ -182,7 +182,7 @@ namespace TX
             base.OnFileActivated(args);
         }
 
-        protected override async void OnActivated(IActivatedEventArgs args)
+        protected override void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
             List<Action> actions = new List<Action>();
@@ -190,7 +190,7 @@ namespace TX
             {
                 case ActivationKind.ToastNotification:
                     var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
-                    actions.AddRange(await ToastManager.HandleToastActivationAsync(argument));
+                    actions.AddRange(ToastManager.HandleToastActivation(argument));
                     break;
                 case ActivationKind.Protocol:
                     ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
