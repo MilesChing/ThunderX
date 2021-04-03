@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using TX.Core.Downloaders;
@@ -63,6 +64,7 @@ namespace TX.Core
                             catch (Exception) { }
                 }
 
+                StartScheduler();
                 D("Initialized");
             }
             catch (Exception e)
@@ -94,7 +96,8 @@ namespace TX.Core
             AbstractTarget target,
             IStorageFolder destinationFolder,
             bool isBackgroundDownloadAllowed,
-            string customFileName = null)
+            string customFileName = null,
+            DateTime? scheduledDateTime = null)
         {
             string token = RandomUtils.String(8);
             while (tasks.ContainsKey(token))
@@ -106,7 +109,10 @@ namespace TX.Core
                 coreFolderManager.StoreFolder(destinationFolder),
                 DateTime.Now,
                 isBackgroundDownloadAllowed
-            );
+            )
+            {
+                ScheduledStartTime = scheduledDateTime
+            };
 
             CreateDownloader(token);
 
@@ -232,7 +238,14 @@ namespace TX.Core
         public void Suspend()
         {
             D("Suspending core...");
+            D("Cancelling scheduler...");
+            schedulerCancellationTokenSource?.Cancel();
+            schedulerCancellationTokenSource = null;
+            schedulerRunningTask?.Wait();
+            schedulerRunningTask = null;
+            D("Cleaning unused task entries...");
             CleanTasks();
+            D("Cleaning local cache folder...");
             Task.Run(async () => await CleanCacheFolderAsync()).Wait();
             D("Cancelling downloaders...");
             foreach (var downloader in downloaders)
@@ -243,7 +256,7 @@ namespace TX.Core
 
         public void Resume()
         {
-            D("Resuming...");
+            StartScheduler();
             D("Resumed");
         }
 
@@ -297,6 +310,49 @@ namespace TX.Core
             D("Core cache manager initialized");
         }
 
+        private void StartScheduler()
+        {
+            schedulerCancellationTokenSource?.Cancel();
+            schedulerCancellationTokenSource = new CancellationTokenSource();
+            schedulerRunningTask = RunSchedulerAsync(schedulerCancellationTokenSource.Token);
+        }
+
+        private async Task RunSchedulerAsync(CancellationToken token)
+        {
+            D("[Scheduler] Started");
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    DateTime now = DateTime.Now;
+                    D($"[Scheduler] <{now:T}> Checking scheduled downloaders");
+                    TimeSpan nextDelayTimeSpan = SchedulerTimerInterval;
+                    foreach (var downloader in downloaders)
+                    {
+                        var scheduledTime = downloader.DownloadTask.ScheduledStartTime;
+                        if (scheduledTime != null)
+                        {
+                            if (scheduledTime.Value <= now)
+                            {
+                                D($"[Scheduler] Start {downloader.GetType().Name} with task {downloader.DownloadTask.Key}");
+                                downloader.Start();
+                                downloader.DownloadTask.ScheduledStartTime = null;
+                            }
+                            else
+                            {
+                                var timeBeforeScheduled = scheduledTime.Value - now;
+                                if (timeBeforeScheduled < nextDelayTimeSpan)
+                                    nextDelayTimeSpan = timeBeforeScheduled;
+                            }
+                        }
+                    }
+                    try { await Task.Delay(nextDelayTimeSpan, token); }
+                    catch (TaskCanceledException) { }
+                } catch (Exception) { }
+            }
+            D("[Scheduler] Cancelled");
+        }
+
         private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             D($"Failed serializing json: {args.ErrorContext.Error.Message}");
@@ -312,6 +368,9 @@ namespace TX.Core
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
         private LocalCacheManager coreCacheManager = null;
         private readonly List<string> customAnnounceUrls = new List<string>();
+        private Task schedulerRunningTask = null;
+        private CancellationTokenSource schedulerCancellationTokenSource = null;
+        private static readonly TimeSpan SchedulerTimerInterval = TimeSpan.FromMinutes(1.0);
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 

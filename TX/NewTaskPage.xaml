@@ -104,26 +104,34 @@
 
                 <TextBlock x:Uid="NewTaskPage_OtherConfigs_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                <ToggleSwitch x:Name="BackgroundAllowedToggleSwitch" Margin="0 0 0 20" IsOn="True"
+                <ToggleSwitch x:Name="BackgroundAllowedToggleSwitch" Margin="0 0 0 8" IsOn="True"
                               x:Uid="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch"/>
+                <TextBlock x:Uid="NewTaskPage_OtherConfigs_ScheduleTask_Header"
+                           Style="{ThemeResource TXControlHeaderStyle}"/>
+                <DatePicker x:Name="ScheduleDatePicker" Margin="0 4 0 8"
+                            SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged"/>
+                <TimePicker x:Name="ScheduleTimePicker" Margin="0 0 0 8"
+                            SelectedTimeChanged="ScheduleTimePicker_SelectedTimeChanged"/>
+                <Rectangle Height="20"/>
             </StackPanel>
         </ScrollViewer>
-        <Grid x:Name="BottomButtonGrid" 
-              RelativePanel.AlignBottomWithPanel="True"
-              RelativePanel.AlignLeftWithPanel="True"
-              RelativePanel.AlignRightWithPanel="True">
-            <Grid.Background>
+        <StackPanel x:Name="BottomButtonGrid" 
+                    RelativePanel.AlignBottomWithPanel="True"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    Orientation="Horizontal" Padding="16">
+            <StackPanel.Background>
                 <AcrylicBrush
                     BackgroundSource="Backdrop"
                     TintLuminosityOpacity="0.2" TintOpacity="0.0"
                     FallbackColor="{ThemeResource SystemChromeLowColor}"
                     TintColor="{ThemeResource SystemChromeLowColor}"/>
-            </Grid.Background>
+            </StackPanel.Background>
             <!--Create New-->
             <Button x:Uid="NewTaskPage_AcceptButton" x:Name="AcceptButton" 
                     Style="{ThemeResource AccentButtonStyle}"
-                    Height="36" Width="160" Margin="16" IsEnabled="False"
+                    Height="36" Width="160" IsEnabled="False"
                     Click="AcceptButton_Click"/>
-        </Grid>
+        </StackPanel>
     </RelativePanel>
 </Page>

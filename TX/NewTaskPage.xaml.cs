@@ -71,6 +71,8 @@ namespace TX
 
         private AbstractTarget FinalTarget;
 
+        private DateTime? ScheduledDateTime = null;
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             TargetFolder = await LocalFolderManager.GetOrCreateDownloadFolderAsync();
@@ -159,15 +161,37 @@ namespace TX
                 StreamSelectionListView.SelectedItems.Clear();
         }
 
+        private void ScheduleTimePicker_SelectedTimeChanged(TimePicker sender, TimePickerSelectedValueChangedEventArgs args)
+            => HandleDateTime();
+
+        private void ScheduleDatePicker_SelectedDateChanged(DatePicker sender, DatePickerSelectedValueChangedEventArgs args)
+            => HandleDateTime();
+
+        private void HandleDateTime()
+        {
+            if (ScheduleDatePicker.SelectedDate.HasValue &&
+                ScheduleTimePicker.SelectedTime.HasValue)
+            {
+                ScheduledDateTime = ScheduleDatePicker.SelectedDate.Value.Date +
+                    ScheduleTimePicker.SelectedTime.Value;
+            }
+            else
+            {
+                ScheduledDateTime = null;
+            }
+        }
+
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             if (FinalTarget != null && TargetFolder != null)
             {
-                CurrentApp.Core.CreateTask(
+                string taskKey = CurrentApp.Core.CreateTask(
                     FinalTarget,
                     TargetFolder,
                     BackgroundAllowedToggleSwitch.IsOn,
-                    DestinationFileName);
+                    DestinationFileName,
+                    ScheduledDateTime);
+
                 MainPage.Current.NavigateEmptyPage();
             }
         }
@@ -285,17 +309,6 @@ namespace TX
                     {
                         var nowUri = new Uri(nowUriString);
                         var source = AbstractSource.CreateSource(nowUri);
-
-                        if (CurrentApp.AppLicense.IsTrial)
-                        {
-                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                if (YouTubeSource.IsValid(nowUri))
-                                    YouTubeTeachingTip.IsOpen = true;
-                                else if (TorrentSource.IsValid(nowUri) || MagnetSource.IsValid(nowUri))
-                                    TorrentTeachingTip.IsOpen = true;
-                            });
-                        }
 
                         while (true)
                         {

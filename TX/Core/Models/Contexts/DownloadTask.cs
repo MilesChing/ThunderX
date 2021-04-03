@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Core.Models.Targets;
 
 namespace TX.Core.Models.Contexts
 {
-    public class DownloadTask
+    public class DownloadTask : INotifyPropertyChanged
     {
         /// <summary>
         /// The identifier of this Task which is unique in a DownloaderManager.
@@ -58,6 +60,22 @@ namespace TX.Core.Models.Contexts
         public bool IsBackgroundDownloadAllowed { get; private set; }
 
         /// <summary>
+        /// Scheduled start time of the task.
+        /// </summary>
+        public DateTime? ScheduledStartTime 
+        { 
+            get { return scheduledStartTime; } 
+            set
+            {
+                scheduledStartTime = value;
+                OnPropertyChanged();
+            } 
+        }
+        private DateTime? scheduledStartTime = null;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        /// <summary>
         /// Initialize a DownloadTask with a given key
         /// </summary>
         public DownloadTask(
@@ -75,5 +93,8 @@ namespace TX.Core.Models.Contexts
             CreationTime = creationTime;
             IsBackgroundDownloadAllowed = isBackgroundDownloadAllowed;
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 }

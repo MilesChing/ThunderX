@@ -43,13 +43,24 @@ namespace TX
 
         public App()
         {
-            this.InitializeComponent(); 
+            this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.Resuming += OnResuming;
             initializingTask = InitializeAsync();
         }
 
+#if DEBUG_TRAIL
+        public class FakeTrailAppLicense 
+        {
+            public bool IsTrial => true;
+
+            public TimeSpan TrialTimeRemaining => TimeSpan.FromDays(1.0);
+        }
+
+        public FakeTrailAppLicense AppLicense { get; } = new FakeTrailAppLicense();
+#else
         public StoreAppLicense AppLicense { get; private set; } = null;
+#endif
 
         public async Task WaitForInitializingAsync() => await initializingTask;
 
@@ -80,8 +91,10 @@ namespace TX
 
         private async Task InitializeAppLicenceAsync()
         {
+#if !DEBUG_TRAIL
             var storeContext = StoreContext.GetDefault();
             AppLicense = await storeContext.GetAppLicenseAsync();
+#endif
             D("Application license obtained");
         }
 
@@ -182,7 +195,7 @@ namespace TX
             base.OnFileActivated(args);
         }
 
-        protected override async void OnActivated(IActivatedEventArgs args)
+        protected override void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
             List<Action> actions = new List<Action>();
@@ -190,7 +203,7 @@ namespace TX
             {
                 case ActivationKind.ToastNotification:
                     var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
-                    actions.AddRange(await ToastManager.HandleToastActivationAsync(argument));
+                    actions.AddRange(ToastManager.HandleToastActivation(argument));
                     break;
                 case ActivationKind.Protocol:
                     ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;

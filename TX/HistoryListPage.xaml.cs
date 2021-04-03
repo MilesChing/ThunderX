@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -28,6 +30,9 @@ namespace TX
     {
         App CurrentApp => ((App)App.Current);
         TXCoreManager Core => CurrentApp.Core;
+
+        private readonly ObservableCollection<DownloadHistoryViewModel> VMCollection =
+            new ObservableCollection<DownloadHistoryViewModel>();
 
         public HistoryListPage()
         {
@@ -59,99 +64,117 @@ namespace TX
             base.OnNavigatedFrom(e);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             Core.ObservableHistories.CollectionChanged += CollectionChanged;
             var nowHistories = VMCollection.Select(view => view.OriginalHistory);
             var newItems = Core.Histories.Except(nowHistories).ToList();
             var oldItems = nowHistories.Except(Core.Histories).ToList();
-            CollectionChanged(Core.Histories,
+            await SolveCollectionChangingAsync(Core.Histories,
                 new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Replace, newItems, oldItems));
+            HandleNavigationParameter(e.Parameter);
             base.OnNavigatedTo(e);
+        }
+
+        private void HandleNavigationParameter(object parameter)
+        {
+            if (parameter is string paramString)
+            {
+                var item = VMCollection.FirstOrDefault(vm => 
+                    vm.TaskKey.Equals(paramString));
+                if (item != null)
+                {
+                    HistoryViewList.ScrollIntoView(item);
+                    HistoryViewList.SelectionMode = ListViewSelectionMode.Single;
+                    HistoryViewList.SelectedItem = item;
+                }
+            }
         }
 
         private async void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                async () =>
-                {
-                    if (e.OldItems != null)
-                    {
-                        var toBeRemoved = VMCollection.Where(
-                            vm => e.OldItems.OfType<DownloadHistory>().Any(
-                                hist => hist.TaskKey.Equals(vm.TaskKey))).ToList();
-                        foreach (var vm in toBeRemoved)
-                            VMCollection.Remove(vm);
-                    }
+                async () => await SolveCollectionChangingAsync(sender, e));
 
-                    if (e.NewItems != null)
-                    {
-                        foreach (DownloadHistory hist in e.NewItems)
-                        {
-                            var newVM = await GetNewDownloadHistoryViewModelAsync(hist);
-                            
-                            if (newVM != null)
-                                VMCollection.Add(newVM);
-                            else Core.RemoveHistory(hist);
-                        }
-                    }
-                });
+        private async Task SolveCollectionChangingAsync(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var oldItems = e.OldItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
+            var newItems = e.NewItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
+            var intersect = oldItems.Intersect(newItems);
+            oldItems = oldItems.Except(intersect);
+            newItems = newItems.Except(intersect);
 
-        private async Task<DownloadHistoryViewModel> GetNewDownloadHistoryViewModelAsync(DownloadHistory history)
+            foreach (DownloadHistory hist in oldItems)
+            {
+                var toBeDeleted = VMCollection.FirstOrDefault(
+                    vm => vm.TaskKey.Equals(hist.TaskKey));
+                if (toBeDeleted != null) VMCollection.Remove(toBeDeleted);
+            }
+
+            foreach (DownloadHistory hist in newItems)
+            {
+                var newVM = await NewDownloadHistoryViewModelAsync(hist);
+                if (newVM != null) VMCollection.Add(newVM);
+                else Core.RemoveHistory(hist);
+            }
+        }
+
+        private async Task<DownloadHistoryViewModel> NewDownloadHistoryViewModelAsync(DownloadHistory history)
         {
             try
             {
-                if (!Core.Tasks.TryGetValue(history.TaskKey, out DownloadTask task))
-                    return null;
+                IStorageItem item = null;
 
-                var item = await StorageUtils.GetStorageItemAsync(history.DestinationPath);
-
-                if (item.IsOfType(StorageItemTypes.File))
+                try
                 {
-                    var file = item as StorageFile;
-                    var size = await file.GetSizeAsync();
+                    item = await StorageUtils.GetStorageItemAsync(history.DestinationPath);
+                }
+                catch (Exception)
+                {
+                    item = null;
+                }
+
+                long? size = null;
+                ImageSource iconSource = null;
+                string fileName = Path.GetFileName(history.DestinationPath);
+                if (string.IsNullOrEmpty(fileName)) fileName = Path.GetDirectoryName(history.DestinationPath);
+                if (string.IsNullOrEmpty(fileName)) fileName = history.DestinationPath;
+
+                if (item is StorageFile file)
+                {
+                    size = await file.GetSizeAsync();
                     var source = new BitmapImage();
                     using (var thumbnail = await file.GetThumbnailAsync(
                         Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                         await source.SetSourceAsync(thumbnail);
-                    return new DownloadHistoryViewModel()
-                    {
-                        TaskKey = task.Key,
-                        HistoryFileName = file.Name,
-                        HistoryFileSizeString = size.SizedString(),
-                        Source = source,
-                        OriginalHistory = history,
-                    };
-                }
-
-                if (item.IsOfType(StorageItemTypes.Folder))
+                    iconSource = source;
+                } 
+                else if (item is StorageFolder folder)
                 {
-                    var folder = item as StorageFolder;
-                    var size = await folder.GetSizeAsync();
+                    size = await folder.GetSizeAsync();
                     var source = new BitmapImage();
                     using (var thumbnail = await folder.GetThumbnailAsync(
                         Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                         await source.SetSourceAsync(thumbnail);
-                    return new DownloadHistoryViewModel()
-                    {
-                        TaskKey = task.Key,
-                        HistoryFileName = folder.Name,
-                        HistoryFileSizeString = size.SizedString(),
-                        Source = source,
-                        OriginalHistory = history,
-                    };
+                    iconSource = source;
+                } 
+                else
+                {
                 }
 
-                return null;
+                return new DownloadHistoryViewModel()
+                {
+                    OriginalHistory = history,
+                    TaskKey = history.TaskKey,
+                    HistoryFileSize = size,
+                    Source = iconSource,
+                };
             }
             catch (Exception)
             {
                 return null;
             }
         }
-
-        private readonly ObservableCollection<DownloadHistoryViewModel> VMCollection =
-            new ObservableCollection<DownloadHistoryViewModel>();
 
         private void Item_Holding(object sender, HoldingRoutedEventArgs e) =>
             FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
@@ -226,9 +249,7 @@ namespace TX
     {
         public string TaskKey;
 
-        public string HistoryFileName;
-
-        public string HistoryFileSizeString;
+        public long? HistoryFileSize;
 
         public ImageSource Source;
 

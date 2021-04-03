@@ -58,48 +58,8 @@ namespace TX
                 foreach (var action in actions)
                     action();
 
-            // show new features for the first launch
-            if (!CurrentApp.PActionManager.TryGetRecord(
-                nameof(ShowNewFeaturesFlipView), out _))
-                CurrentApp.PActionManager.Activate(
-                    nameof(ShowNewFeaturesFlipView),
-                    ShowNewFeaturesFlipView);
-
             // release loading view
             LoadingView.Visibility = Visibility.Collapsed;
-        }
-
-        private void ShowNewFeaturesFlipView()
-        {
-            // load resources
-            var features = new List<NewFeature>();
-            var resourceLoader = Windows.ApplicationModel.Resources
-                .ResourceLoader.GetForCurrentView();
-            for (int idx = 0; ; idx += 1)
-            {
-                try
-                {
-                    string title = resourceLoader.GetString($"NewFeature_{idx}_Title");
-                    string guideText = resourceLoader.GetString($"NewFeature_{idx}_GuideText");
-                    string heroUri = resourceLoader.GetString($"NewFeature_{idx}_HeroUri");
-                    if (string.IsNullOrEmpty(title) ||
-                        string.IsNullOrEmpty(guideText) ||
-                        string.IsNullOrEmpty(heroUri))
-                        break;
-                    else features.Add(new NewFeature()
-                    {
-                        Title = title,
-                        GuideText = guideText,
-                        Hero = new BitmapImage(new Uri(heroUri))
-                    });
-                }
-                catch (Exception) { break; }
-            }
-
-            if (features.Count <= 0) return;
-            // add new features flip view to visual tree
-            var newFeaturesFlipView = new NewFeaturesFlipView(features.ToArray());
-            LayoutGrid.Children.Insert(LayoutGrid.Children.Count, newFeaturesFlipView);
         }
 
         private void UpdateTitleBar()
@@ -135,8 +95,8 @@ namespace TX
         public void NavigateNewTaskPage(Uri uri = null) =>
             NavigateRightFrame(typeof(NewTaskPage), uri);
 
-        public void NavigateHistoryPage() =>
-            NavigateRightFrame(typeof(HistoryListPage), null);
+        public void NavigateHistoryPage(object parameter = null) =>
+            NavigateRightFrame(typeof(HistoryListPage), parameter);
 
         private void LeaveEmptyPage()
         {

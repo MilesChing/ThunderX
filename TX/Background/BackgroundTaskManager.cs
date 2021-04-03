@@ -59,7 +59,6 @@ namespace TX.Background
             new AbstractBackgroundTask[]
             {
                 new CoreBackgroundTask(),
-                new ToastActivationBackgroundTask(),
             };
     }
 }

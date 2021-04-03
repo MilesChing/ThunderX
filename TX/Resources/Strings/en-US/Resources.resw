@@ -135,25 +135,28 @@
   <data name="AboutPage_LogoText_PackageVersion.Text" xml:space="preserve">
     <value>Package Version</value>
   </data>
+  <data name="AboutPage_ThanksInfo_Title.Text" xml:space="preserve">
+    <value>Thanks</value>
+  </data>
   <data name="AboutPage_Title.Text" xml:space="preserve">
     <value>About</value>
   </data>
   <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
-    <value>If satisfied with our application, pay to support development teams and to enjoy these features:
-🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.
-🚀 Keep downloading in background after Thunder X closed or suspended.</value>
+    <value>Your current trial license includes full Thunder X features, but its usage time is limited. If satisfied with our application, only a one-time purchase is required to get the full license and enjoy subsequent iterations of Thunder X!</value>
   </data>
   <data name="AboutPage_TrailMessage_BuyButton.Content" xml:space="preserve">
     <value>Buy Now</value>
+  </data>
+  <data name="AboutPage_TrailMessage_Remaining.Text" xml:space="preserve">
+    <value>The remaining time for your trail:</value>
   </data>
   <data name="AboutPage_TrailMessage_Title.Text" xml:space="preserve">
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🈂 Fixed the issue that files could not be imported due to special characters in the path. 
-💾 Fixed the failure to restore download tasks and history due to coding errors.</value>
+    <value>🍞 Fixed the crashing caused by activations of completion toasts.
+🎞 Enhanced history page with lower loading consumption.
+⏲ Schedule the automatic start of the task either from new task page or from detailed page.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
@@ -163,6 +166,9 @@
   </data>
   <data name="CreationTime" xml:space="preserve">
     <value>Creation Time</value>
+  </data>
+  <data name="Day(s)" xml:space="preserve">
+    <value>Day(s)</value>
   </data>
   <data name="DeleteConfirmationFlyout_ConfirmButton.Content" xml:space="preserve">
     <value>Yes, remove it</value>
@@ -213,24 +219,6 @@
   <data name="NewFeaturesFlipView_GuideText.Text" xml:space="preserve">
     <value>Tap anywhere to continue</value>
   </data>
-  <data name="NewFeature_0_GuideText" xml:space="preserve">
-    <value>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</value>
-  </data>
-  <data name="NewFeature_0_HeroUri" xml:space="preserve">
-    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</value>
-  </data>
-  <data name="NewFeature_0_Title" xml:space="preserve">
-    <value>Activate Thunder X from the browser</value>
-  </data>
-  <data name="NewFeature_1_GuideText" xml:space="preserve">
-    <value>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</value>
-  </data>
-  <data name="NewFeature_1_HeroUri" xml:space="preserve">
-    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</value>
-  </data>
-  <data name="NewFeature_1_Title" xml:space="preserve">
-    <value>Open torrent files to create a task</value>
-  </data>
   <data name="NewTaskPage_AcceptButton.Content" xml:space="preserve">
     <value>Create New</value>
   </data>
@@ -254,6 +242,12 @@
   </data>
   <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
     <value>Allow Downloaded in Background</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" xml:space="preserve">
+    <value>A scheduled task will not be automatically started in the background or foreground before its scheduled time.</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_Header.Text" xml:space="preserve">
+    <value>Schedule the task</value>
   </data>
   <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
     <value>Other Configurations</value>
@@ -399,9 +393,6 @@
   <data name="SetPage_Torrent_ToggleSwitch.Header" xml:space="preserve">
     <value>Plugin Enabled</value>
   </data>
-  <data name="SetPage_TrailMessage.Text" xml:space="preserve">
-    <value>Some features are not unsupported in trial version. Obtain full version to support us and unlock more functionalities!</value>
-  </data>
   <data name="SetPage_YouTube_Title.Text" xml:space="preserve">
     <value>YouTube Analyzer</value>
   </data>
@@ -416,6 +407,9 @@
   </data>
   <data name="TaskDetailPage_CopyItem.Text" xml:space="preserve">
     <value>Copy</value>
+  </data>
+  <data name="TaskDetailPage_ScheduledTime_StartsAt.Text" xml:space="preserve">
+    <value>Scheduled to start at</value>
   </data>
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>Progress</value>

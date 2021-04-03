@@ -11,17 +11,21 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush
-                        x:Key="TrailGreen"
-                        Color="#00D15E"/>
+                        x:Key="TrailThemeColor"
+                        Color="#FFD66E"/>
                     <Color x:Key="ThemeTransparentColor">#00000000</Color>
                     <Color x:Key="TaskListBackgroundColor">#070707</Color>
+                    <Color x:Key="SchedulerColor">#144429</Color>
+                    <Color x:Key="SchedulerBorderColor">#309E61</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush
-                        x:Key="TrailGreen"
-                        Color="#008D26"/>
+                        x:Key="TrailThemeColor"
+                        Color="#E9A800"/>
                     <Color x:Key="ThemeTransparentColor">#00FFFFFF</Color>
                     <Color x:Key="TaskListBackgroundColor">#F7F7F7</Color>
+                    <Color x:Key="SchedulerColor">#C0FFDC</Color>
+                    <Color x:Key="SchedulerBorderColor">#40D482</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <SolidColorBrush
@@ -68,6 +72,18 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="LineHeight" Value="20"/>
+            </Style>
+
+            <Style x:Key="TXControlHeaderStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="{ThemeResource SliderTopHeaderMargin}"/>
+                <Setter Property="FontWeight" Value="{ThemeResource SliderHeaderThemeFontWeight}"/>
+                <Setter Property="Foreground" Value="{ThemeResource SliderHeaderForeground}"/>
+            </Style>
+            
+            <Style x:Key="TXFilePathStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Consolas"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}"/>
             </Style>
 
             <Style TargetType="muxc:TeachingTip">

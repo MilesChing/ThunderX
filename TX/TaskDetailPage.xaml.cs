@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using TX.Controls;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
+using TX.Core.Models.Contexts;
 using TX.Core.Models.Progresses;
 using TX.Core.Models.Progresses.Interfaces;
 using TX.Core.Models.Targets;
@@ -43,6 +44,9 @@ namespace TX
             Downloader = downloader;
             if (downloader == null) return;
 
+            Downloader.DownloadTask.PropertyChanged += DownloadTask_PropertyChanged;
+            DownloadTask_PropertyChanged(Downloader.DownloadTask, null);
+
             TaskNameTextBlock.Text = downloader.DownloadTask.DestinationFileName;
             if (downloader.DownloadTask.Target is HttpTarget httpTarget)
                 TaskHyperlink.Text = httpTarget.Uri.ToString();
@@ -53,11 +57,11 @@ namespace TX
             Downloader.StatusChanged += StatusChanged;
             StatusChanged(downloader, downloader.Status);
 
-            Downloader.Progress.ProgressChanged += Progress_Changed;
-            Progress_Changed(downloader.Progress, null);
+            Downloader.Progress.ProgressChanged += ProgressChanged;
+            ProgressChanged(downloader.Progress, null);
 
-            Downloader.Speed.Updated += Speed_Updated;
-            Speed_Updated(downloader.Speed);
+            Downloader.Speed.Updated += SpeedUpdated;
+            SpeedUpdated(downloader.Speed);
 
             var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
             BasicLabelCollection.Add(new TaskDetailPageLabel(
@@ -81,6 +85,26 @@ namespace TX
                 VisibleRangePanel.Visibility = Visibility.Visible;
             }
             else VisibleRangePanel.Visibility = Visibility.Collapsed;
+        }
+
+        private async void DownloadTask_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is DownloadTask task)
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    string targetVisualState = "Unscheduled";
+                    if (task.ScheduledStartTime.HasValue)
+                    {
+                        targetVisualState = "Scheduled";
+                        ScheduledTimeText.Text = task.ScheduledStartTime.Value.ToString("f");
+                    }
+
+                    ScheduleTimePicker.SelectedTime = null;
+                    ScheduleDatePicker.SelectedDate = null;
+                    VisualStateManager.GoToState(this, targetVisualState, false);
+                });
+            }
         }
 
         private void BindedVisibleRangeListChanged(IVisibleProgress sender)
@@ -114,9 +138,10 @@ namespace TX
                 ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
             SetVisibleRangeListViewItemsSource(null);
 
+            Downloader.DownloadTask.PropertyChanged -= DownloadTask_PropertyChanged;
             Downloader.StatusChanged -= StatusChanged;
-            Downloader.Speed.Updated -= Speed_Updated;
-            Downloader.Progress.ProgressChanged -= Progress_Changed;
+            Downloader.Speed.Updated -= SpeedUpdated;
+            Downloader.Progress.ProgressChanged -= ProgressChanged;
 
             TaskNameTextBlock.Text = string.Empty;
             TaskHyperlink.Text = string.Empty;
@@ -130,10 +155,11 @@ namespace TX
 
             BasicLabelCollection.Clear();
             DynamicLabelCollection.Clear();
+            
             Downloader = null;
         }
 
-        private async void Progress_Changed(IProgress sender, IProgressChangedEventArg _)
+        private async void ProgressChanged(IProgress sender, IProgressChangedEventArg _)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
@@ -150,7 +176,7 @@ namespace TX
                 });
         }
 
-        private async void Speed_Updated(SpeedCalculator sender)
+        private async void SpeedUpdated(SpeedCalculator sender)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -190,28 +216,21 @@ namespace TX
         private async void StatusChanged(AbstractDownloader sender, DownloaderStatus status)
             => await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () => {
-                    VisualStateManager.GoToState(this, status.ToString(), true);
                     StartButton.IsEnabled = sender.CanStart;
                     CancelButton.IsEnabled = sender.CanCancel;
                     StatusTextBlock.Text = status.ToString();
-
-                    if (status == DownloaderStatus.Disposed)
-                        DisposeButton.IsEnabled = false;
                     
                     if (status == DownloaderStatus.Error)
                     {
                         var exp = sender.Errors.FirstOrDefault();
                         if (exp != null)
                         {
-                            ErrorStackPanel.Visibility = Visibility.Visible;
                             ErrorTextBlock.Text = $"{exp.HResult}: {exp.GetType().Name}";
                             ErrorDetailTextBlock.Text = exp.ToString();
                         }
                     }
-                    else
-                    {
-                        ErrorStackPanel.Visibility = Visibility.Collapsed;
-                    }
+
+                    VisualStateManager.GoToState(this, status.ToString(), true);
                 });
 
         private void UpdateIntoDynamicLabelCollection(string key, string value)
@@ -255,6 +274,43 @@ namespace TX
         {
             DeleteConfirmationFlyout.Hide();
             Task.Run(() => Downloader.Dispose());
+        }
+
+        private void SchedulerActionButton_Click(object sender, RoutedEventArgs e)
+        {
+            const string Unscheduled = nameof(Unscheduled);
+            const string Scheduling = nameof(Scheduling);
+            const string Scheduled = nameof(Scheduled);
+            switch (SchedulingStateGroup.CurrentState?.Name) 
+            {
+                case null:
+                    VisualStateManager.GoToState(this, "Unscheduled", true);
+                    break;
+                case Scheduling:
+                    VisualStateManager.GoToState(this, "Unscheduled", true);
+                    break;
+                case Unscheduled:
+                    VisualStateManager.GoToState(this, "Scheduling", true);
+                    break;
+                case Scheduled:
+                    Downloader.DownloadTask.ScheduledStartTime = null;
+                    break;
+            }
+        }
+
+        private void ScheduleTimePicker_SelectedTimeChanged(TimePicker sender, TimePickerSelectedValueChangedEventArgs args)
+            => HandleSelectedDateTimeChanged();
+
+        private void ScheduleDatePicker_SelectedDateChanged(DatePicker sender, DatePickerSelectedValueChangedEventArgs args)
+            => HandleSelectedDateTimeChanged();
+
+        private void HandleSelectedDateTimeChanged()
+        {
+            if (ScheduleDatePicker.SelectedDate.HasValue &&
+                ScheduleTimePicker.SelectedTime.HasValue)
+                Downloader.DownloadTask.ScheduledStartTime =
+                    ScheduleDatePicker.SelectedDate.Value.Date +
+                    ScheduleTimePicker.SelectedTime.Value;
         }
 
         private void CopyItem_Click(object sender, RoutedEventArgs e)
