@@ -31,8 +31,12 @@ namespace TX.Background
             {
                 var Current = ((App)App.Current);
                 await Current.WaitForInitializingAsync();
+                DateTime timeNow = DateTime.Now;
                 var activeDownloaders = Current.Core.Downloaders.Where(
-                    d => d.DownloadTask.IsBackgroundDownloadAllowed && d.CanStart).ToArray();
+                    d => d.DownloadTask.IsBackgroundDownloadAllowed && d.CanStart
+                        && d.Retries < d.MaximumRetries 
+                        && (d.DownloadTask.ScheduledStartTime.HasValue == false ||
+                            d.DownloadTask.ScheduledStartTime.Value <= timeNow)).ToArray();
                 foreach (var downloader in activeDownloaders)
                     downloader.Start();
                 if (activeDownloaders.Length == 0)

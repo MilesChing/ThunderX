@@ -255,6 +255,12 @@
   <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
     <value>Allow Downloaded in Background</value>
   </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" xml:space="preserve">
+    <value>A scheduled task will not be automatically started in the background or foreground before its scheduled time.</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_Header.Text" xml:space="preserve">
+    <value>Schedule the task</value>
+  </data>
   <data name="NewTaskPage_OtherConfigs_Title.Text" xml:space="preserve">
     <value>Other Configurations</value>
   </data>
@@ -416,6 +422,9 @@
   </data>
   <data name="TaskDetailPage_CopyItem.Text" xml:space="preserve">
     <value>Copy</value>
+  </data>
+  <data name="TaskDetailPage_ScheduledTime_StartsAt.Text" xml:space="preserve">
+    <value>Scheduled to start at</value>
   </data>
   <data name="TaskDetailPage_Subtitle_Progress.Text" xml:space="preserve">
     <value>Progress</value>

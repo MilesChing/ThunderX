@@ -362,4 +362,13 @@
   <data name="SetPage_Folders_Title.Text" xml:space="preserve">
     <value>目录</value>
   </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_Header.Text" xml:space="preserve">
+    <value>计划任务</value>
+  </data>
+  <data name="TaskDetailPage_ScheduledTime_StartsAt.Text" xml:space="preserve">
+    <value>计划开始于</value>
+  </data>
+  <data name="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" xml:space="preserve">
+    <value>计划任务在其计划时间到达前不会被前台的应用程序或后台任务自动启动。</value>
+  </data>
 </root>

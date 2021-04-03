@@ -9,18 +9,6 @@
     xmlns:utils="using:TX.Core.Utils"
     mc:Ignorable="d" NavigationCacheMode="Enabled"
     Background="{ThemeResource SystemChromeLowColor}">
-    <Page.Resources>
-        <Style x:Key="TXControlHeaderStyle" TargetType="TextBlock">
-            <Setter Property="Margin" Value="{ThemeResource SliderTopHeaderMargin}"/>
-            <Setter Property="FontWeight" Value="{ThemeResource SliderHeaderThemeFontWeight}"/>
-            <Setter Property="Foreground" Value="{ThemeResource SliderHeaderForeground}"/>
-        </Style>
-        <Style x:Key="TXFilePathStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Consolas"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}"/>
-        </Style>
-    </Page.Resources>
     <ScrollViewer x:Name="MainScrollViewer"
                   HorizontalScrollMode="Disabled"
                   VerticalScrollMode="Auto"
