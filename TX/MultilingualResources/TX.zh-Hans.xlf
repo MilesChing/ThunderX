@@ -164,10 +164,6 @@
           <source>Settings</source>
           <target state="translated">设置</target>
         </trans-unit>
-        <trans-unit id="SetPage_TrailMessage.Text" translate="yes" xml:space="preserve">
-          <source>Some features are not unsupported in trial version. Obtain full version to support us and unlock more functionalities!</source>
-          <target state="translated">一些功能在试用版本中不受支持。获取完整版以解锁全部特性！</target>
-        </trans-unit>
         <trans-unit id="TargetType" translate="yes" xml:space="preserve">
           <source>Target Type</source>
           <target state="translated">源类型</target>
@@ -297,16 +293,8 @@ Create a task for downloading.</source>
           <target state="translated">Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</target>
         </trans-unit>
         <trans-unit id="AboutPage_TrailMessage.Text" translate="yes" xml:space="preserve">
-          <source>If satisfied with our application, pay to support development teams and to enjoy these features:
-🔌 More fantastic plugins including Torrent downloading, YouTube link and Thunderbolt protocol extractor, etc.
-🛠 Deep customization of the downloader kernel, support to change the number of threads to get the fastest download speed, limit the memory footprint of whole application core.
-🕹 Automatically retry the download when an error occurs.
-🚀 Keep downloading in background after Thunder X closed or suspended.</source>
-          <target state="translated">如果对应用程序试用版满意，入手正式版本以解锁全部特性：
-🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
-🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。
-🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</target>
+          <source>Your current trial license includes full Thunder X features, but its usage time is limited. If satisfied with our application, only a one-time purchase is required to get the full license and enjoy subsequent iterations of Thunder X!</source>
+          <target state="translated">当前的试用版许可证包含完整 Thunder X 功能，但其使用时间受到限制。如果对应用程序感到满意，获取完整许可证并享受 Thunder X 的后续迭代仅需一次购买！</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" translate="yes" xml:space="preserve">
           <source>Allow Downloaded in Background</source>
@@ -408,30 +396,6 @@ Create a task for downloading.</source>
           <source>Task Failed: </source>
           <target state="translated">任务出错：</target>
         </trans-unit>
-        <trans-unit id="NewFeature_0_GuideText" translate="yes" xml:space="preserve">
-          <source>Access links of supported protocols, such as Magnet, Thunderbolt, etc. through a browser to directly wake up Thunder X.</source>
-          <target state="translated">通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</target>
-        </trans-unit>
-        <trans-unit id="NewFeature_0_Title" translate="yes" xml:space="preserve">
-          <source>Activate Thunder X from the browser</source>
-          <target state="translated">从浏览器激活 Thunder X</target>
-        </trans-unit>
-        <trans-unit id="NewFeature_0_HeroUri" translate="yes" xml:space="preserve">
-          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</source>
-          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</target>
-        </trans-unit>
-        <trans-unit id="NewFeature_1_GuideText" translate="yes" xml:space="preserve">
-          <source>Thunder X is now supported to be chosen as the default file handler for Torrent files so that creating new tasks becomes much faster.</source>
-          <target state="translated">Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</target>
-        </trans-unit>
-        <trans-unit id="NewFeature_1_HeroUri" translate="yes" xml:space="preserve">
-          <source>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</source>
-          <target state="translated">ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</target>
-        </trans-unit>
-        <trans-unit id="NewFeature_1_Title" translate="yes" xml:space="preserve">
-          <source>Open torrent files to create a task</source>
-          <target state="translated">使用 Thunder X 打开</target>
-        </trans-unit>
         <trans-unit id="NewFeaturesFlipView_GuideText.Text" translate="yes" xml:space="preserve">
           <source>Tap anywhere to continue</source>
           <target state="translated">点击任意位置即刻开始</target>
@@ -487,6 +451,18 @@ Create a task for downloading.</source>
         <trans-unit id="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" translate="yes" xml:space="preserve">
           <source>A scheduled task will not be automatically started in the background or foreground before its scheduled time.</source>
           <target state="translated">计划任务在其计划时间到达前不会被前台的应用程序或后台任务自动启动。</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_TrailMessage_Remaining.Text" translate="yes" xml:space="preserve">
+          <source>The remaining time for your trail:</source>
+          <target state="translated">你的试用许可证剩余时间：</target>
+        </trans-unit>
+        <trans-unit id="Day(s)" translate="yes" xml:space="preserve">
+          <source>Day(s)</source>
+          <target state="translated">天</target>
+        </trans-unit>
+        <trans-unit id="AboutPage_ThanksInfo_Title.Text" translate="yes" xml:space="preserve">
+          <source>Thanks</source>
+          <target state="translated">致谢</target>
         </trans-unit>
       </group>
     </body>
