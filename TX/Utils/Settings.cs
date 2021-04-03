@@ -44,7 +44,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return 0;
                 return TryGetValue(nameof(MaximumRetries), 8); 
             }
             set { SetValue(nameof(MaximumRetries), value); }
@@ -76,7 +75,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return 1;
                 return TryGetValue(nameof(ThreadNumber), 4);
             }
             set { SetValue(nameof(ThreadNumber), value); }
@@ -93,7 +91,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return false;
                 return TryGetValue(nameof(IsYouTubeURLEnabled), true);
             }
             set { SetValue(nameof(IsYouTubeURLEnabled), value); }
@@ -110,7 +107,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return false;
                 return TryGetValue(nameof(IsThunderURLEnabled), true);
             }
             set { SetValue(nameof(IsThunderURLEnabled), value); }
@@ -127,7 +123,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return false;
                 return TryGetValue(nameof(IsTorrentEnabled), true);
             }
             set { SetValue(nameof(IsTorrentEnabled), value); }
@@ -179,7 +174,6 @@ namespace TX.Utils
         {
             get
             {
-                if (IsApplicationVersionTrail) return false;
                 return TryGetValue(nameof(IsBackgroundTaskEnabled), true);
             }
             set { SetValue(nameof(IsBackgroundTaskEnabled), value); }
@@ -280,7 +274,6 @@ namespace TX.Utils
                 .LocalSettings.Values[key] = value;
         }
 
-        private bool IsApplicationVersionTrail => ((App)App.Current).AppLicense.IsTrial;
         #endregion
     }
 }

@@ -5,6 +5,7 @@
     xmlns:local="using:TX"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:TX.Utils"
     mc:Ignorable="d" NavigationCacheMode="Enabled"
     xmlns:package="using:Windows.ApplicationModel"
     Background="{ThemeResource SystemChromeLowColor}">
@@ -69,7 +70,7 @@
 
             <Grid Margin="-16 0 -16 20" Padding="16 12 16 16"
                   Background="{ThemeResource SystemAltMediumColor}"
-                  Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
+                  Visibility="{x:Bind utils:VisFuncs.BooleanToVisibility(CurrentApp.AppLicense.IsTrial, x:False)}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
@@ -87,7 +88,8 @@
                            Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
                            VerticalAlignment="Center" Margin="8 0 0 0"/>
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock x:Uid="AboutPage_TrailMessage" Margin="0 16 0 0"/>
+                    <TextBlock x:Uid="AboutPage_TrailMessage" 
+                               Margin="0 16 0 0" LineHeight="26"/>
                     <!--Buy Now-->
                     <StackPanel Orientation="Horizontal" Margin="0 16 0 0">
                         <Button x:Name="BuyButton" 

@@ -34,11 +34,6 @@ namespace TX
             this.InitializeComponent();
         }
 
-        private bool IsApplicationVersionNotTrail => !((App)App.Current).AppLicense.IsTrial;
-
-        private Visibility ApplicationTrailVersionMessageVisibility =>
-            IsApplicationVersionNotTrail ? Visibility.Collapsed : Visibility.Visible;
-
         private string VersionText => string.Join(".",
             Package.Current.Id.Version.Major,
             Package.Current.Id.Version.Minor,

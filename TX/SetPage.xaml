@@ -28,16 +28,7 @@
                     <TextBlock x:Uid="SetPage_Title" VerticalAlignment="Center"
                                Style="{ThemeResource TXPageTitleTextBlockStyle}"/>
                 </Border>
-
-                <Grid Margin="-16 0 -16 16" Padding="16 12 16 12"
-                      Background="{ThemeResource SystemAltMediumColor}"
-                      Visibility="{x:Bind ApplicationTrailVersionMessageVisibility}">
-                    <TextBlock x:Uid="SetPage_TrailMessage" Grid.Column="1" TextWrapping="Wrap"
-                               FontSize="14" HorizontalAlignment="Left" 
-                               Foreground="{ThemeResource TrailGreen}"
-                               Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
-                </Grid>
-
+                
                 <!--Appearance-->
                 <TextBlock x:Uid="SetPage_Appearance_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
@@ -91,7 +82,7 @@
                         Minimum="0" Maximum="32" TickFrequency="4"
                         StepFrequency="4" TickPlacement="Outside"  
                         Value="{x:Bind SettingEntries.MaximumRetries, Mode=TwoWay}"
-                        IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8" />
+                        Margin="0 0 0 8" />
                 <!--Memory Upperbound-->
                 <ComboBox x:Name="MemoryUpperboundComboBox" x:Uid="SetPage_Downloader_MemorySlider"
                           Margin="0 0 0 24" Width="200" 
@@ -105,28 +96,28 @@
                         Minimum="1" Maximum="16" TickFrequency="2"
                         StepFrequency="1" TickPlacement="Outside"  
                         Value="{x:Bind SettingEntries.ThreadNumber, Mode=TwoWay}"
-                        IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 20"/>
+                        Margin="0 0 0 20"/>
 
                 <!--YouTube Analyzer-->
                 <TextBlock x:Uid="SetPage_YouTube_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <ToggleSwitch x:Name="YouTubeToggleSwitch" x:Uid="SetPage_YouTube_ToggleSwitch"
                               IsOn="{x:Bind SettingEntries.IsYouTubeURLEnabled, Mode=TwoWay}"
-                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 20"/>
+                              Margin="0 0 0 20"/>
 
                 <!--Thunderbolt Analyzer-->
                 <TextBlock x:Uid="SetPage_Thunderbolt_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <ToggleSwitch x:Name="ThunderToggleSwitch" x:Uid="SetPage_Thunderbolt_ToggleSwitch"
                               IsOn="{x:Bind SettingEntries.IsThunderURLEnabled, Mode=TwoWay}"
-                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 20"/>
+                              Margin="0 0 0 20"/>
 
                 <!--Torrent Downloader-->
                 <TextBlock x:Uid="SetPage_Torrent_Title" Margin="0 0 0 16"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <ToggleSwitch x:Name="TorrentToggleSwitch" x:Uid="SetPage_Torrent_ToggleSwitch"
                               IsOn="{x:Bind SettingEntries.IsTorrentEnabled, Mode=TwoWay}"
-                              IsEnabled="{x:Bind IsApplicationVersionNotTrail}" Margin="0 0 0 8"/>
+                              Margin="0 0 0 8"/>
                 <Slider x:Name="MaximumConnectionsSlider" x:Uid="SetPage_Torrent_MaximumConnectionsSlider"
                         Minimum="10" Maximum="100" TickFrequency="10"
                         StepFrequency="10" TickPlacement="Outside"   
@@ -177,7 +168,7 @@
                     <TextBlock x:Uid="SetPage_BackgroundTask_GuideText"
                                Style="{ThemeResource TXPageInfoTextBlockStyle}"/>
                 </Border>
-                <ToggleSwitch x:Name="BackgroundTaskToggleSwitch" IsEnabled="{x:Bind IsApplicationVersionNotTrail}"
+                <ToggleSwitch x:Name="BackgroundTaskToggleSwitch"
                               x:Uid="SetPage_BackgroundTask_BackgroundTaskToggleSwitch" Margin="0 0 0 8"
                               IsOn="{x:Bind SettingEntries.IsBackgroundTaskEnabled, Mode=TwoWay}"/>
                 <ToggleSwitch IsEnabled="{x:Bind BackgroundTaskToggleSwitch.IsOn, Mode=OneWay}"

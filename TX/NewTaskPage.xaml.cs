@@ -310,17 +310,6 @@ namespace TX
                         var nowUri = new Uri(nowUriString);
                         var source = AbstractSource.CreateSource(nowUri);
 
-                        if (CurrentApp.AppLicense.IsTrial)
-                        {
-                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                if (YouTubeSource.IsValid(nowUri))
-                                    YouTubeTeachingTip.IsOpen = true;
-                                else if (TorrentSource.IsValid(nowUri) || MagnetSource.IsValid(nowUri))
-                                    TorrentTeachingTip.IsOpen = true;
-                            });
-                        }
-
                         while (true)
                         {
                             Ensure.That(UserOperated).IsFalse();

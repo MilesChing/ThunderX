@@ -42,12 +42,7 @@ namespace TX
             1024 * 1024 * 512,
         };
 
-        private bool IsApplicationVersionNotTrail => !((App)App.Current).AppLicense.IsTrial;
-
         private readonly TXCoreManager Core = ((App)App.Current).Core;
-
-        private Visibility ApplicationTrailVersionMessageVisibility =>
-            IsApplicationVersionNotTrail ? Visibility.Collapsed : Visibility.Visible;
 
         private readonly ObservableCollection<string> AnnounceUrlsCollection = new ObservableCollection<string>();
 
