@@ -283,10 +283,12 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🈂 Fixed the issue that files could not be imported due to special characters in the path. 
-💾 Fixed the failure to restore download tasks and history due to coding errors.</source>
-          <target state="translated">🈂 修复了由于路径中的特殊字符导致 .torrent 文件无法导入的问题。
-💾 修复了由于编码错误导致无法恢复下载任务和历史记录的问题。</target>
+          <source>🍞 Fixed the crashing caused by activations of completion toasts.
+🎞 Enhanced history page with lower loading consumption.
+⏲ Schedule the automatic start of the task either from new task page or from detailed page.</source>
+          <target state="translated">🍞 修复了从任务完成通知打开文件或文件夹功能失败的问题；
+🎞 优化了历史记录页面，更高效的载入逻辑；
+⏲ 已支持计划任务：在创建任务或任务详情页面预订任务的自动开始；</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
