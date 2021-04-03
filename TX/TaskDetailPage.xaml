@@ -15,7 +15,28 @@
         VerticalScrollMode="Auto"
         VerticalScrollBarVisibility="Hidden">
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <VisualStateGroup x:Name="DownloaderStateGroup">
+                <VisualState x:Name="Pending"/>
+                <VisualState x:Name="Ready"/>
+                <VisualState x:Name="Running"/>
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Target="ErrorStackPanel.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Completed">
+                    <VisualState.Setters>
+                        <Setter Target="ScheduledTimeStackPanel.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disposed">
+                    <VisualState.Setters>
+                        <Setter Target="DisposeButton.IsEnabled" Value="false"/>
+                        <Setter Target="ScheduledTimeStackPanel.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="SchedulingStateGroup">
                 <VisualState x:Name="Scheduled">
                     <VisualState.Setters>
                         <Setter Target="ScheduledTimeStackPanel.BorderBrush" Value="{ThemeResource SchedulerBorderColor}"/>
@@ -23,15 +44,23 @@
                         <Setter Target="ScheduledTimeTextBlock.Visibility" Value="Visible"/>
                         <Setter Target="ScheduledTitleTextBlock.Visibility" Value="Collapsed"/>
                         <Setter Target="DateTimePickersStackPanel.Visibility" Value="Collapsed"/>
-                        <Setter Target="SchedulerActionButton.Icon" Value="Cancel"/>
+                        <Setter Target="SchedulerActionButtonFontIcon.Glyph" Value="&#xE10A;"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Unscheduled">
                     <VisualState.Setters>
                         <Setter Target="ScheduledTimeTextBlock.Visibility" Value="Collapsed"/>
                         <Setter Target="ScheduledTitleTextBlock.Visibility" Value="Visible"/>
+                        <Setter Target="DateTimePickersStackPanel.Visibility" Value="Collapsed"/>
+                        <Setter Target="SchedulerActionButtonFontIcon.Glyph" Value="&#xE011;"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Scheduling">
+                    <VisualState.Setters>
+                        <Setter Target="ScheduledTimeTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ScheduledTitleTextBlock.Visibility" Value="Visible"/>
                         <Setter Target="DateTimePickersStackPanel.Visibility" Value="Visible"/>
-                        <Setter Target="SchedulerActionButton.Icon" Value="Accept"/>
+                        <Setter Target="SchedulerActionButtonFontIcon.Glyph" Value="&#xE010;"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -158,15 +187,22 @@
                                x:Uid="NewTaskPage_OtherConfigs_ScheduleTask_Header"/>
                     <StackPanel x:Name="DateTimePickersStackPanel" Margin="0 16 0 0"
                                 Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                Orientation="Vertical">
-                        <DatePicker x:Name="ScheduleDatePicker" Margin="0 0 0 8"/>
-                        <TimePicker x:Name="ScheduleTimePicker"/>
+                                Orientation="Vertical" Visibility="Collapsed">
+                        <DatePicker x:Name="ScheduleDatePicker" Margin="0 0 0 8"
+                                    SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged"/>
+                        <TimePicker x:Name="ScheduleTimePicker" 
+                                    SelectedTimeChanged="ScheduleTimePicker_SelectedTimeChanged"/>
                     </StackPanel>
                     <AppBarButton x:Name="SchedulerActionButton" Width="40"
                                   Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="-8"
-                                  HorizontalAlignment="Right" Icon="Accept" LabelPosition="Collapsed"
+                                  HorizontalAlignment="Right" LabelPosition="Collapsed"
                                   Style="{ThemeResource AppBarButtonRevealStyle}"
-                                  Click="SchedulerActionButton_Click"/>
+                                  Click="SchedulerActionButton_Click">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      x:Name="SchedulerActionButtonFontIcon" Glyph="&#xE011;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
                 </Grid>
             </StackPanel>
             <StackPanel Style="{StaticResource InnerStackPanelStyle}">
