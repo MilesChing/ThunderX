@@ -81,22 +81,25 @@
                 </Grid.RowDefinitions>
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E3;" 
                           VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
-                          Foreground="{ThemeResource TrailGreen}"/>
+                          Foreground="{ThemeResource TrailThemeColor}"/>
                 <!--Still using trial version?-->
                 <TextBlock x:Uid="AboutPage_TrailMessage_Title"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"
-                           Grid.Row="0" Grid.Column="1" Foreground="{ThemeResource TrailGreen}"
-                           VerticalAlignment="Center" Margin="8 0 0 0"/>
+                           Foreground="{ThemeResource TrailThemeColor}"
+                           VerticalAlignment="Center" Margin="8 0 0 0"
+                           Grid.Row="0" Grid.Column="1" />
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock x:Uid="AboutPage_TrailMessage" 
-                               Margin="0 16 0 0" LineHeight="26"/>
+                    <TextBlock x:Uid="AboutPage_TrailMessage" Margin="0 16 0 0"/>
+                    <TextBlock Margin="0 8 0 0" Foreground="{ThemeResource SystemBaseHighColor}">
+                        <Run x:Uid="AboutPage_TrailMessage_Remaining"/>
+                        <LineBreak/>
+                        <Run x:Name="TrailRemainingDatesText" FontWeight="Bold" FontSize="20"
+                             Foreground="{ThemeResource TrailThemeColor}"/>
+                    </TextBlock>
                     <!--Buy Now-->
                     <StackPanel Orientation="Horizontal" Margin="0 16 0 0">
-                        <Button x:Name="BuyButton" 
-                                x:Uid="AboutPage_TrailMessage_BuyButton"
+                        <Button x:Name="BuyButton" x:Uid="AboutPage_TrailMessage_BuyButton"
                                 Style="{ThemeResource ButtonRevealStyle}"
-                                Background="{ThemeResource TrailGreen}" 
-                                Foreground="{ThemeResource SystemAltHighColor}"
                                 Height="36" Width="160" Click="BuyButton_Click"/>
                     </StackPanel>
                 </StackPanel>
@@ -115,7 +118,18 @@
             <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_1"/>
             <RatingControl HorizontalAlignment="Left" PlaceholderValue="5" Tapped="RatingControl_Tapped"/>
             <TextBlock x:Uid="AboutPage_FeedbackInfo_GuideText_2"/>
-            <HyperlinkButton Content="MilesChing/ThunderX" NavigateUri="https://github.com/MilesChing/ThunderX"/>
+            <HyperlinkButton Content="MilesChing/ThunderX" Margin="0 0 0 20" 
+                             NavigateUri="https://github.com/MilesChing/ThunderX"/>
+
+            <!--Thanks-->
+            <TextBlock x:Uid="AboutPage_ThanksInfo_Title" Margin="0 0 0 4"
+                       Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+            <HyperlinkButton Content="alanmcgovern/MonoTorrent"
+                             ToolTipService.ToolTip="A bittorrent library for .NET."
+                             NavigateUri="https://github.com/alanmcgovern/monotorrent"/>
+            <HyperlinkButton Content="Tyrrrz/YoutubeExplode" Margin="0 0 0 20"
+                             ToolTipService.ToolTip="A library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks."
+                             NavigateUri="https://github.com/Tyrrrz/YoutubeExplode"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

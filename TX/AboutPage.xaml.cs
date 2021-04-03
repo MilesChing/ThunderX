@@ -34,11 +34,26 @@ namespace TX
             this.InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            InitializeTrailDaysRemainingText();
+            base.OnNavigatedTo(e);
+        }
+
         private string VersionText => string.Join(".",
             Package.Current.Id.Version.Major,
             Package.Current.Id.Version.Minor,
             Package.Current.Id.Version.Build,
             Package.Current.Id.Version.Revision);
+
+        private void InitializeTrailDaysRemainingText()
+        {
+            int daysRemained = (int)CurrentApp.AppLicense.TrialTimeRemaining.TotalDays;
+            TrailRemainingDatesText.Text = $"{(daysRemained <= 1 ? "≤1" : daysRemained.ToString())} {DaysText}";
+        }
+
+        private static readonly string DaysText = Windows.ApplicationModel.Resources
+            .ResourceLoader.GetForCurrentView().GetString("Day(s)");
 
         private async void BuyButton_Click(object sender, RoutedEventArgs e)
         {

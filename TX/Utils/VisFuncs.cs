@@ -17,8 +17,9 @@ namespace TX.Utils
         public static Visibility ObjectToVisibility(object obj, bool inverse = false) =>
             BooleanToVisibility(!IsNull(obj), inverse);
 
-        public static string FormatDateTime(DateTime dateTime, string format) =>
-            dateTime.ToString(format);
+        public static string FormatDateTime(DateTime dateTime, string format) => dateTime.ToString(format);
+
+        public static string FormatTimeSpan(TimeSpan timeSpan, string format) => timeSpan.ToString(format);
 
         public static bool IsNull(object obj, bool inverse = false) => (obj == null) ^ inverse;
     }

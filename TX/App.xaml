@@ -11,8 +11,8 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush
-                        x:Key="TrailGreen"
-                        Color="#00D15E"/>
+                        x:Key="TrailThemeColor"
+                        Color="#FFD66E"/>
                     <Color x:Key="ThemeTransparentColor">#00000000</Color>
                     <Color x:Key="TaskListBackgroundColor">#070707</Color>
                     <Color x:Key="SchedulerColor">#144429</Color>
@@ -20,8 +20,8 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush
-                        x:Key="TrailGreen"
-                        Color="#008D26"/>
+                        x:Key="TrailThemeColor"
+                        Color="#E9A800"/>
                     <Color x:Key="ThemeTransparentColor">#00FFFFFF</Color>
                     <Color x:Key="TaskListBackgroundColor">#F7F7F7</Color>
                     <Color x:Key="SchedulerColor">#C0FFDC</Color>

@@ -131,9 +131,6 @@
   <data name="SetPage_Title.Text" xml:space="preserve">
     <value>设置</value>
   </data>
-  <data name="SetPage_TrailMessage.Text" xml:space="preserve">
-    <value>一些功能在试用版本中不受支持。获取完整版以解锁全部特性！</value>
-  </data>
   <data name="TargetType" xml:space="preserve">
     <value>源类型</value>
   </data>
@@ -230,11 +227,7 @@
     <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
   </data>
   <data name="AboutPage_TrailMessage.Text" xml:space="preserve">
-    <value>如果对应用程序试用版满意，入手正式版本以解锁全部特性：
-🔌 解锁包含 Torrent 下载、YouTube 直链提取和 Thunderbolt 协议解析等的全部扩展功能。
-🛠 深度定制下载内核，设定任务的工作线程数，设定上限以限制应用程序的内存占用等。
-🕹 下载失败时设定自动重传。
-🚀 在 Thunder X 处于挂起或被关闭状态下仍能在后台进行下载。</value>
+    <value>当前的试用版许可证包含完整 Thunder X 功能，但其使用时间受到限制。如果对应用程序感到满意，获取完整许可证并享受 Thunder X 的后续迭代仅需一次购买！</value>
   </data>
   <data name="NewTaskPage_OtherConfigs_BackgroundAllowedToggleSwitch.Header" xml:space="preserve">
     <value>允许后台下载</value>
@@ -311,24 +304,6 @@
   <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
     <value>任务出错：</value>
   </data>
-  <data name="NewFeature_0_GuideText" xml:space="preserve">
-    <value>通过使用受支持协议的 URL 从浏览器直接激活 Thunder X ！Magnet 和 Thunderbolt 协议已受支持。</value>
-  </data>
-  <data name="NewFeature_0_Title" xml:space="preserve">
-    <value>从浏览器激活 Thunder X</value>
-  </data>
-  <data name="NewFeature_0_HeroUri" xml:space="preserve">
-    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_1.png</value>
-  </data>
-  <data name="NewFeature_1_GuideText" xml:space="preserve">
-    <value>Thunder X 已支持作为 Torrent 文件的默认处理程序。使用 Thunder X 打开 Torrent 文件以快速创建任务。</value>
-  </data>
-  <data name="NewFeature_1_HeroUri" xml:space="preserve">
-    <value>ms-appx:///Assets/NewFeatureHeros/2.0.7.0/2_0_7_0_NTH_2.png</value>
-  </data>
-  <data name="NewFeature_1_Title" xml:space="preserve">
-    <value>使用 Thunder X 打开</value>
-  </data>
   <data name="NewFeaturesFlipView_GuideText.Text" xml:space="preserve">
     <value>点击任意位置即刻开始</value>
   </data>
@@ -370,5 +345,14 @@
   </data>
   <data name="NewTaskPage_OtherConfigs_ScheduleTask_GuideText.Text" xml:space="preserve">
     <value>计划任务在其计划时间到达前不会被前台的应用程序或后台任务自动启动。</value>
+  </data>
+  <data name="AboutPage_TrailMessage_Remaining.Text" xml:space="preserve">
+    <value>你的试用许可证剩余时间：</value>
+  </data>
+  <data name="Day(s)" xml:space="preserve">
+    <value>天</value>
+  </data>
+  <data name="AboutPage_ThanksInfo_Title.Text" xml:space="preserve">
+    <value>致谢</value>
   </data>
 </root>

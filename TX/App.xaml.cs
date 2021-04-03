@@ -1,5 +1,4 @@
-﻿#define DEBUG_TRAIL
-using System;
+﻿using System;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -54,6 +53,8 @@ namespace TX
         public class FakeTrailAppLicense 
         {
             public bool IsTrial => true;
+
+            public TimeSpan TrialTimeRemaining => TimeSpan.FromDays(1.0);
         }
 
         public FakeTrailAppLicense AppLicense { get; } = new FakeTrailAppLicense();
