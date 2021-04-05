@@ -93,7 +93,7 @@
     <value>文件名</value>
   </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
-    <value>选择一个流</value>
+    <value>文件列表</value>
   </data>
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>创建新任务</value>

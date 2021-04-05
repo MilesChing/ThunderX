@@ -113,8 +113,8 @@
           <target state="translated">文件名</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_Streams_Title.Text" translate="yes" xml:space="preserve">
-          <source>Streams</source>
-          <target state="translated">选择一个流</target>
+          <source>File List</source>
+          <target state="translated">文件列表</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_Title.Text" translate="yes" xml:space="preserve">
           <source>Create new task</source>
@@ -252,7 +252,7 @@ Create a task for downloading.</source>
         </trans-unit>
         <trans-unit id="SetPage_HTTP_Title.Text" translate="yes" xml:space="preserve">
           <source>HTTP/HTTPS</source>
-          <target state="final">HTTP/HTTPS</target>
+          <target state="translated">HTTP/HTTPS</target>
         </trans-unit>
         <trans-unit id="SetPage_Thunderbolt_Title.Text" translate="yes" xml:space="preserve">
           <source>Thunderbolt Analyzer</source>
