@@ -256,7 +256,7 @@
     <value>Select All</value>
   </data>
   <data name="NewTaskPage_Streams_Title.Text" xml:space="preserve">
-    <value>Streams</value>
+    <value>File List</value>
   </data>
   <data name="NewTaskPage_Title.Text" xml:space="preserve">
     <value>Create new task</value>

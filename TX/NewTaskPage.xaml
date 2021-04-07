@@ -78,7 +78,14 @@
                               Unchecked="SelectAllStreamsCheckBox_Unchecked"/>
                     <ListView x:Name="StreamSelectionListView" MinWidth="200" Margin="0 0 0 20"
                               MaxHeight="200" SelectionChanged="StreamSelectionListView_SelectionChanged"
-                              Background="{ThemeResource SystemChromeMediumColor}" CornerRadius="4"/>
+                              Background="{ThemeResource SystemChromeMediumColor}" CornerRadius="4"
+                              IsMultiSelectCheckBoxEnabled="False">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock Text="{x:Bind}" ToolTipService.ToolTip="{x:Bind}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
                 
                 <!--File Name-->
