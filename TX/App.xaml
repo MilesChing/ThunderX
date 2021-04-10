@@ -79,15 +79,11 @@
                 <Setter Property="FontWeight" Value="{ThemeResource SliderHeaderThemeFontWeight}"/>
                 <Setter Property="Foreground" Value="{ThemeResource SliderHeaderForeground}"/>
             </Style>
-            
+
             <Style x:Key="TXFilePathStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Consolas"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}"/>
-            </Style>
-
-            <Style TargetType="muxc:TeachingTip">
-                <Setter Property="IsLightDismissEnabled" Value="True"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>
