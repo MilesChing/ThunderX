@@ -146,6 +146,7 @@
     <Compile Include="Controls\PermissionsContentDialog.xaml.cs">
       <DependentUpon>PermissionsContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ResourcedSpan.cs" />
     <Compile Include="PersistentActions\ActivationRecord.cs" />
     <Compile Include="PersistentActions\PersistentActionManager.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
@@ -205,6 +206,7 @@
       <DependentUpon>NewTaskPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings\Loader.cs" />
     <Compile Include="SetPage.xaml.cs">
       <DependentUpon>SetPage.xaml</DependentUpon>
     </Compile>

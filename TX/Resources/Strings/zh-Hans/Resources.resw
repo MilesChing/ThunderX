@@ -362,22 +362,16 @@
   <data name="PermissionsDialog_MainContentDialog.Title" xml:space="preserve">
     <value>许可 Thunder X 使用 WLAN 或移动数据</value>
   </data>
-  <data name="PermissionsDialog_Wlan_Bullet1.Text" xml:space="preserve">
-    <value>在 Windows 10 设备上，打开 “设置”</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet2.Text" xml:space="preserve">
-    <value>选择 “网络和 Internet” &gt; WLAN</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet3.Text" xml:space="preserve">
-    <value>选择 “选择能够使用你的 WLAN 数据的应用”</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet4.Text" xml:space="preserve">
-    <value>打开 “允许应用使用我的 WLAN 数据” ，并打开 “Thunder X” 的开关</value>
-  </data>
   <data name="PermissionsDialog_SetButton.Content" xml:space="preserve">
     <value>转到 “设置”</value>
   </data>
   <data name="PermissionsDialog_CloseButton.Content" xml:space="preserve">
     <value>不再提醒</value>
+  </data>
+  <data name="PermissionsDialog_StepsSpan" xml:space="preserve">
+    <value>1. 在 Windows 10 设备上，打开 &lt;Bold&gt;设置&lt;/Bold&gt;；&lt;LineBreak/&gt;
+2. 选择 &lt;Bold&gt;网络和 Internet&lt;/Bold&gt; &gt; &lt;Bold&gt;WLAN&lt;/Bold&gt;；&lt;LineBreak/&gt;
+3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
+4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</value>
   </data>
 </root>

@@ -5,20 +5,20 @@
     xmlns:local="using:TX.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:TX.Utils"
     mc:Ignorable="d"
     x:Uid="PermissionsDialog_MainContentDialog">
     <StackPanel>
         <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
                    x:Uid="PermissionsDialog_GuideText" Margin="0 0 0 16"
                    Foreground="{ThemeResource SystemBaseHighColor}"/>
+
         <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
-                   LineHeight="32" Margin="8 0 0 8">
-            <Run FontWeight="Bold">1.</Run> <Run x:Uid="PermissionsDialog_Wlan_Bullet1"/><LineBreak/>
-            <Run FontWeight="Bold">2.</Run> <Run x:Uid="PermissionsDialog_Wlan_Bullet2"/><LineBreak/>
-            <Run FontWeight="Bold">3.</Run> <Run x:Uid="PermissionsDialog_Wlan_Bullet3"/><LineBreak/>
-            <Run FontWeight="Bold">4.</Run> <Run x:Uid="PermissionsDialog_Wlan_Bullet4"/><LineBreak/>
+                   LineHeight="32" Margin="8 0 0 16">
+            <local:ResourcedSpan InlineXamlUid="PermissionsDialog_StepsSpan"/>
         </TextBlock>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8 16 0 0">
             <Button x:Name="SetButton" x:Uid="PermissionsDialog_SetButton"
                     Background="{ThemeResource SystemAccentColor}" 
                     Foreground="{ThemeResource SystemAltHighColor}"

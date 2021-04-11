@@ -303,17 +303,11 @@
   <data name="PermissionsDialog_SetButton.Content" xml:space="preserve">
     <value>Open Settings</value>
   </data>
-  <data name="PermissionsDialog_Wlan_Bullet1.Text" xml:space="preserve">
-    <value>Open Settings on your Windows 10 device</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet2.Text" xml:space="preserve">
-    <value>Select Network &amp; Internet &gt; Wi-Fi</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet3.Text" xml:space="preserve">
-    <value>Select Choose apps that can use your Wi-Fi data</value>
-  </data>
-  <data name="PermissionsDialog_Wlan_Bullet4.Text" xml:space="preserve">
-    <value>Turn on the toggle next to Let apps use my Wi-Fi data, then turn on the toggle next to Thunder X</value>
+  <data name="PermissionsDialog_StepsSpan" xml:space="preserve">
+    <value>1. Open &lt;Bold&gt;Settings&lt;/Bold&gt; on your Windows 10 device;&lt;LineBreak/&gt;
+2. Select &lt;Bold&gt;Network &amp;amp; Internet&lt;/Bold&gt; &amp;gt; &lt;Bold&gt;Wi-Fi&lt;/Bold&gt;;&lt;LineBreak/&gt;
+3. Select &lt;Bold&gt;Choose apps that can use your Wi-Fi data&lt;/Bold&gt;;&lt;LineBreak/&gt;
+4. Turn on the toggle next to &lt;Bold&gt;Let apps use my Wi-Fi data&lt;/Bold&gt;, then turn on the toggle next to &lt;Bold&gt;Thunder X&lt;/Bold&gt;;</value>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>

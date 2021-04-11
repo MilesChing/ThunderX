@@ -474,22 +474,6 @@ Create a task for downloading.</source>
           <source>How to turn on network permissions for Thunder X</source>
           <target state="translated">许可 Thunder X 使用 WLAN 或移动数据</target>
         </trans-unit>
-        <trans-unit id="PermissionsDialog_Wlan_Bullet1.Text" translate="yes" xml:space="preserve">
-          <source>Open Settings on your Windows 10 device</source>
-          <target state="translated">在 Windows 10 设备上，打开 “设置”</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_Wlan_Bullet2.Text" translate="yes" xml:space="preserve">
-          <source>Select Network &amp; Internet &gt; Wi-Fi</source>
-          <target state="translated">选择 “网络和 Internet” &gt; WLAN</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_Wlan_Bullet3.Text" translate="yes" xml:space="preserve">
-          <source>Select Choose apps that can use your Wi-Fi data</source>
-          <target state="translated">选择 “选择能够使用你的 WLAN 数据的应用”</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_Wlan_Bullet4.Text" translate="yes" xml:space="preserve">
-          <source>Turn on the toggle next to Let apps use my Wi-Fi data, then turn on the toggle next to Thunder X</source>
-          <target state="translated">打开 “允许应用使用我的 WLAN 数据” ，并打开 “Thunder X” 的开关</target>
-        </trans-unit>
         <trans-unit id="PermissionsDialog_SetButton.Content" translate="yes" xml:space="preserve">
           <source>Open Settings</source>
           <target state="translated">转到 “设置”</target>
@@ -497,6 +481,16 @@ Create a task for downloading.</source>
         <trans-unit id="PermissionsDialog_CloseButton.Content" translate="yes" xml:space="preserve">
           <source>Got it!</source>
           <target state="translated">不再提醒</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_StepsSpan" translate="yes" xml:space="preserve">
+          <source>1. Open <bpt id="1">&lt;Bold&gt;</bpt>Settings<ept id="1">&lt;/Bold&gt;</ept> on your Windows 10 device;&lt;LineBreak/&gt;
+2. Select <bpt id="2">&lt;Bold&gt;</bpt>Network &amp;amp; Internet<ept id="2">&lt;/Bold&gt;</ept> &amp;gt; <bpt id="3">&lt;Bold&gt;</bpt>Wi-Fi<ept id="3">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
+3. Select <bpt id="4">&lt;Bold&gt;</bpt>Choose apps that can use your Wi-Fi data<ept id="4">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
+4. Turn on the toggle next to <bpt id="5">&lt;Bold&gt;</bpt>Let apps use my Wi-Fi data<ept id="5">&lt;/Bold&gt;</ept>, then turn on the toggle next to <bpt id="6">&lt;Bold&gt;</bpt>Thunder X<ept id="6">&lt;/Bold&gt;</ept>;</source>
+          <target state="translated">1. 在 Windows 10 设备上，打开 &lt;Bold&gt;设置&lt;/Bold&gt;；&lt;LineBreak/&gt;
+2. 选择 &lt;Bold&gt;网络和 Internet&lt;/Bold&gt; &gt; &lt;Bold&gt;WLAN&lt;/Bold&gt;；&lt;LineBreak/&gt;
+3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
+4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</target>
         </trans-unit>
       </group>
     </body>
