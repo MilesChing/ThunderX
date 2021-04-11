@@ -92,7 +92,7 @@
                 <TextBlock x:Uid="NewTaskPage_FileName_Title" Margin="0 0 0 8"
                            Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
                 <TextBlock x:Name="SuggestedFilenameTextBox" Margin="0 0 0 8" 
-                           FontSize="16" FontStyle="Italic" Text="{x:Bind UnknownText, Mode=OneTime}"
+                           FontSize="16" FontStyle="Italic"
                            Foreground="{ThemeResource SystemAccentColor}"/>
                 <CheckBox x:Name="CustomFilenameCheckBox" x:Uid="NewTaskPage_FileName_CheckBox"
                           Checked="CustomFilenameCheckBox_IsCheckedChanged" Margin="0 0 0 8"

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TX.Core.Models.Sources;
 using TX.Core.Models.Targets;
 using TX.Core.Providers;
+using TX.Resources.Strings;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -31,8 +32,7 @@ namespace TX
     public sealed partial class NewTaskPage : Page
     {
         App CurrentApp => ((App)App.Current);
-        private readonly string UnknownText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Unknown");
+        private static readonly string UnknownText = Loader.Get("Unknown");
 
         public NewTaskPage()
         {

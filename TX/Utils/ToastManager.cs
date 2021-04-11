@@ -148,6 +148,7 @@ namespace TX.Utils
 
         private const string ActivationCommandNavigateToTaskDetail = "NAVIGATE_TO_TASK_DETAIL";
         private const string ActivationCommandNavigateToTaskHistory = "NAVIGATE_TO_TASK_HISTORY";
+        // this resource loader must be created here, since it will be called in the background
         private readonly static ResourceLoader RSLoader = new ResourceLoader();
         private readonly static string DownloaderErrorTitlePrefix = RSLoader.GetString("Toast_DownloaderError_TitlePrefix");
         private readonly static string DownloaderCompletionTitlePrefix = RSLoader.GetString("Toast_DownloaderCompletion_TitlePrefix");
