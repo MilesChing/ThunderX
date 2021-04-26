@@ -1,0 +1,32 @@
+﻿<ContentDialog
+    x:Class="TX.Controls.PermissionsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:TX.Utils"
+    mc:Ignorable="d"
+    x:Uid="PermissionsDialog_MainContentDialog">
+    <StackPanel>
+        <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
+                   x:Uid="PermissionsDialog_GuideText" Margin="0 0 0 16"
+                   Foreground="{ThemeResource SystemBaseHighColor}"/>
+
+        <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
+                   LineHeight="32" Margin="8 0 0 16">
+            <local:ResourcedSpan InlineXamlUid="PermissionsDialog_StepsSpan"/>
+        </TextBlock>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8 16 0 0">
+            <Button x:Name="SetButton" x:Uid="PermissionsDialog_SetButton"
+                    Background="{ThemeResource SystemAccentColor}" 
+                    Foreground="{ThemeResource SystemAltHighColor}"
+                    Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
+                    Click="SetButton_Click"/>
+            <Button x:Name="CloseButton" x:Uid="PermissionsDialog_CloseButton"
+                    Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
+                    Click="CloseButton_Click" Margin="8 0 0 0"/>
+        </StackPanel>
+    </StackPanel>
+</ContentDialog>
