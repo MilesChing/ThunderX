@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using TX.Resources.Strings;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -52,9 +53,6 @@ namespace TX
             TrailRemainingDatesText.Text = $"{(daysRemained <= 1 ? "≤1" : daysRemained.ToString())} {DaysText}";
         }
 
-        private static readonly string DaysText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Day(s)");
-
         private async void BuyButton_Click(object sender, RoutedEventArgs e)
         {
             var pfn = Package.Current.Id.FamilyName;
@@ -66,5 +64,7 @@ namespace TX
             var pfn = Package.Current.Id.FamilyName;
             await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?PFN=" + pfn));
         }
+
+        private static readonly string DaysText = Loader.Get("Day(s)");
     }
 }

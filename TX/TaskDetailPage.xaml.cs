@@ -23,6 +23,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using TX.Resources.Strings;
 
 namespace TX
 {
@@ -63,19 +64,14 @@ namespace TX
             Downloader.Speed.Updated += SpeedUpdated;
             SpeedUpdated(downloader.Speed);
 
-            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-            BasicLabelCollection.Add(new TaskDetailPageLabel(
-                resourceLoader.GetString("CreationTime"),
+            BasicLabelCollection.Add(new TaskDetailPageLabel(CreationTimeText,
                 downloader.DownloadTask.CreationTime.ToLocalTime().ToString("F")));
-            BasicLabelCollection.Add(new TaskDetailPageLabel(
-                resourceLoader.GetString("TargetType"),
+            BasicLabelCollection.Add(new TaskDetailPageLabel(TargetTypeText,
                 downloader.DownloadTask.Target.GetType().Name));
-            BasicLabelCollection.Add(new TaskDetailPageLabel(
-                resourceLoader.GetString("DownloaderType"),
+            BasicLabelCollection.Add(new TaskDetailPageLabel(DownloaderTypeText,
                 downloader.GetType().Name));
             if (downloader.Progress is IMeasurableProgress progress)
-                BasicLabelCollection.Add(new TaskDetailPageLabel(
-                    resourceLoader.GetString("TotalSize"),
+                BasicLabelCollection.Add(new TaskDetailPageLabel(TotalSizeText,
                     progress.TotalSize.SizedString()));
             
             if (downloader.Progress is IVisibleProgress ipv)
@@ -320,20 +316,17 @@ namespace TX
             Clipboard.SetContent(dataPackage);
         }
 
-        private static readonly string ProgressText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Progress");
-        private static readonly string SpeedText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Speed");
-        private static readonly string ErrorsText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Errors");
-        private static readonly string RetriesText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("Retries");
-        private static readonly string OpenConnectionsText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("OpenConnections");
-        private static readonly string AvailablePeersText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("AvailablePeers");
-        private static readonly string RemainingTimeText = Windows.ApplicationModel.Resources
-            .ResourceLoader.GetForCurrentView().GetString("RemainingTime");
+        private static readonly string ProgressText = Loader.Get("Progress");
+        private static readonly string SpeedText = Loader.Get("Speed");
+        private static readonly string ErrorsText = Loader.Get("Errors");
+        private static readonly string RetriesText = Loader.Get("Retries");
+        private static readonly string OpenConnectionsText = Loader.Get("OpenConnections");
+        private static readonly string AvailablePeersText = Loader.Get("AvailablePeers");
+        private static readonly string RemainingTimeText = Loader.Get("RemainingTime");
+        private static readonly string CreationTimeText = Loader.Get("CreationTime");
+        private static readonly string TargetTypeText = Loader.Get("TargetType");
+        private static readonly string DownloaderTypeText = Loader.Get("DownloaderType");
+        private static readonly string TotalSizeText = Loader.Get("TotalSize");
     }
 
     class TaskDetailPageLabel : INotifyPropertyChanged

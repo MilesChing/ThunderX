@@ -113,8 +113,8 @@
           <target state="translated">文件名</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_Streams_Title.Text" translate="yes" xml:space="preserve">
-          <source>Streams</source>
-          <target state="translated">选择一个流</target>
+          <source>File List</source>
+          <target state="translated">文件列表</target>
         </trans-unit>
         <trans-unit id="NewTaskPage_Title.Text" translate="yes" xml:space="preserve">
           <source>Create new task</source>
@@ -252,7 +252,7 @@ Create a task for downloading.</source>
         </trans-unit>
         <trans-unit id="SetPage_HTTP_Title.Text" translate="yes" xml:space="preserve">
           <source>HTTP/HTTPS</source>
-          <target state="final">HTTP/HTTPS</target>
+          <target state="translated">HTTP/HTTPS</target>
         </trans-unit>
         <trans-unit id="SetPage_Thunderbolt_Title.Text" translate="yes" xml:space="preserve">
           <source>Thunderbolt Analyzer</source>
@@ -283,12 +283,10 @@ Create a task for downloading.</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🍞 Fixed the crashing caused by activations of completion toasts.
-🎞 Enhanced history page with lower loading consumption.
-⏲ Schedule the automatic start of the task either from new task page or from detailed page.</source>
-          <target state="translated">🍞 修复了从任务完成通知打开文件或文件夹功能失败的问题；
-🎞 优化了历史记录页面，更高效的载入逻辑；
-⏲ 已支持计划任务：在创建任务或任务详情页面预订任务的自动开始；</target>
+          <source>🎨 UI adjustment for multiple file selection.
+🍞 Add request for network permissions.</source>
+          <target state="translated">🎨 多文件选择界面的 UI 调整；
+🍞 首次启动时主动请求网络权限；</target>
         </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
@@ -465,6 +463,32 @@ Create a task for downloading.</source>
         <trans-unit id="AboutPage_ThanksInfo_Title.Text" translate="yes" xml:space="preserve">
           <source>Thanks</source>
           <target state="translated">致谢</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Some Windows 10 devices that run Windows 10 version 2004 or higher and can connect to a cellular or WLAN data network include a setting that controls which apps can access the internet. These settings need to be turned on for Thunder X to access the network.</source>
+          <target state="translated">某些运行 Windows 10 版本 2004 或更高版本并可以连接到手机网络数据或 WLAN 的 Windows 10 设备包括一个设置，用于控制哪些应用可以访问 Internet。 此设置需要打开，以便 Thunder X 正常接入网络。</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_MainContentDialog.Title" translate="yes" xml:space="preserve">
+          <source>How to turn on network permissions for Thunder X</source>
+          <target state="translated">许可 Thunder X 使用 WLAN 或移动数据</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_SetButton.Content" translate="yes" xml:space="preserve">
+          <source>Open Settings</source>
+          <target state="translated">转到 “设置”</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_CloseButton.Content" translate="yes" xml:space="preserve">
+          <source>Got it!</source>
+          <target state="translated">不再提醒</target>
+        </trans-unit>
+        <trans-unit id="PermissionsDialog_StepsSpan" translate="yes" xml:space="preserve">
+          <source>1. Open <bpt id="1">&lt;Bold&gt;</bpt>Settings<ept id="1">&lt;/Bold&gt;</ept> on your Windows 10 device;&lt;LineBreak/&gt;
+2. Select <bpt id="2">&lt;Bold&gt;</bpt>Network &amp;amp; Internet<ept id="2">&lt;/Bold&gt;</ept> &amp;gt; <bpt id="3">&lt;Bold&gt;</bpt>Wi-Fi<ept id="3">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
+3. Select <bpt id="4">&lt;Bold&gt;</bpt>Choose apps that can use your Wi-Fi data<ept id="4">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
+4. Turn on the toggle next to <bpt id="5">&lt;Bold&gt;</bpt>Let apps use my Wi-Fi data<ept id="5">&lt;/Bold&gt;</ept>, then turn on the toggle next to <bpt id="6">&lt;Bold&gt;</bpt>Thunder X<ept id="6">&lt;/Bold&gt;</ept>;</source>
+          <target state="translated">1. 在 Windows 10 设备上，打开 &lt;Bold&gt;设置&lt;/Bold&gt;；&lt;LineBreak/&gt;
+2. 选择 &lt;Bold&gt;网络和 Internet&lt;/Bold&gt; &gt; &lt;Bold&gt;WLAN&lt;/Bold&gt;；&lt;LineBreak/&gt;
+3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
+4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</target>
         </trans-unit>
       </group>
     </body>

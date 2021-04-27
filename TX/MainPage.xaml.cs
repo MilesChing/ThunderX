@@ -15,6 +15,7 @@ using TX.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media;
 using System.Linq;
+using Windows.System;
 
 namespace TX
 {
@@ -60,6 +61,12 @@ namespace TX
 
             // release loading view
             LoadingView.Visibility = Visibility.Collapsed;
+
+            string permissionsDialogKey = nameof(PermissionsDialog);
+            if (CurrentApp.PActionManager.TryGetRecord(permissionsDialogKey,
+                out PersistentActions.ActivationRecord record) == false)
+                CurrentApp.PActionManager.Activate(permissionsDialogKey,
+                    () => _ = PermissionsDialog.ShowAsync());
         }
 
         private void UpdateTitleBar()

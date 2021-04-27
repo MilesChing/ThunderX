@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TX.Core;
 using TX.Core.Providers;
 using TX.Core.Utils;
+using TX.Resources.Strings;
 using TX.Utils;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -41,6 +42,7 @@ namespace TX
             1024 * 1024 * 256,
             1024 * 1024 * 512,
         };
+        private static readonly string UnknownText = Loader.Get("Unknown");
 
         private readonly TXCoreManager Core = ((App)App.Current).Core;
 
@@ -68,8 +70,7 @@ namespace TX
             }
             catch (Exception)
             {
-                CacheFileSizeTextBlock.Text = Windows.ApplicationModel.Resources
-                    .ResourceLoader.GetForCurrentView().GetString("Unknown");
+                CacheFileSizeTextBlock.Text = UnknownText;
             }
             finally
             {
