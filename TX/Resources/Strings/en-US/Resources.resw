@@ -154,9 +154,8 @@
     <value>Still using trial version?</value>
   </data>
   <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🍞 Fixed the crashing caused by activations of completion toasts.
-🎞 Enhanced history page with lower loading consumption.
-⏲ Schedule the automatic start of the task either from new task page or from detailed page.</value>
+    <value>🎨 UI adjustment for multiple file selection.
+🍞 Add request for network permissions.</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
