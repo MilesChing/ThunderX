@@ -28,6 +28,9 @@ using Windows.ApplicationModel.Background;
 using TX.Core.Utils;
 using System.Linq;
 using TX.PersistentActions;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace TX
 {
@@ -43,6 +46,8 @@ namespace TX
 
         public App()
         {
+            AppCenter.Start("5e098f14-cfbd-4f0f-9e27-715ca88e06b3",
+                   typeof(Analytics), typeof(Crashes));
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.Resuming += OnResuming;
