@@ -34,13 +34,13 @@ namespace TX.Core.Downloaders
         /// <param name="cacheProvider">Cache provider must not be null.</param>
         /// <param name="bufferProvider">Buffer provider must not be null.</param>
         public HttpDownloader(
-            DownloadTask task, 
+            DownloadTask task,
             IFolderProvider folderProvider,
             ICacheStorageProvider cacheProvider,
             IBufferProvider bufferProvider
-        ) : base(task) 
+        ) : base(task)
         {
-            Ensure.That(task.Target is HttpTarget, null, 
+            Ensure.That(task.Target is HttpTarget, null,
                 opts => opts.WithMessage($"type of {nameof(task.Target)} must be {nameof(HttpTarget)}")
             ).IsTrue();
             Ensure.That(folderProvider, nameof(folderProvider)).IsNotNull();
@@ -61,70 +61,70 @@ namespace TX.Core.Downloaders
         /// </summary>
         /// <param name="token">Cancellation token.</param>
         /// <returns>Downloading task.</returns>
-        private async Task<IStorageFile> DownloadAsync(CancellationToken token)
-        {
-            // create a new cache file
-            cacheFile = cacheProvider.GetCacheFileByToken(
-                await cacheProvider.NewCacheFileAsync());
-            var httpTarget = DownloadTask.Target as HttpTarget;
-            var progress = Progress as BaseProgress;
-            // copy data from responsed stream to file stream
-            using (var client = new HttpClient())
-                using (var ostream = await cacheFile.OpenStreamForWriteAsync())
-                    using (var istream = await client.GetStreamAsync(httpTarget.Uri))
-                        await istream.CopyToAsync(ostream, bufferProvider, token, 
-                            (size) => progress.Increase(size));
-            // if canceled, return null
-            if (token.IsCancellationRequested) return null;
-            // get destination folder
-            var folder = await folderProvider.GetFolderFromTokenAsync(
-                DownloadTask.DestinationFolderKey);
-            // move cacheFile to destination folder
-            await cacheFile.MoveAsync(folder, DownloadTask.DestinationFileName, 
-                NameCollisionOption.GenerateUniqueName);
-            var res = cacheFile;
-            cacheFile = null;
-            return res;
-        }
-
-        protected override Task StartAsync()
-            => Task.Run(() =>
-            {
-                Speed.IsEnabled = true;
-                cancellationTokenSource = new CancellationTokenSource();
-                downloadTask = Task.Run(async () =>
-                {
-                    try
-                    {
-                        var file = await DownloadAsync(cancellationTokenSource.Token);
-                        if (file != null) ReportCompleted(file);
-                        else return;
-                    }
-                    catch (Exception e)
-                    {
-                        ReportError(e);
-                    }
-                    finally
-                    {
-                        Speed.IsEnabled = false;
-                    }
-                });
-            });
-
-        protected override Task CancelAsync() =>
+        private Task<IStorageFile> DownloadAsync(CancellationToken token) =>
             Task.Run(async () =>
             {
-                cancellationTokenSource?.Cancel();
-                cancellationTokenSource = null;
-                downloadTask?.Wait();
-                downloadTask = null;
-                if(cacheFile != null)
-                    await cacheFile.DeleteAsync();
+                // create a new cache file
+                cacheFile = await cacheProvider.GetCacheFileByTokenAsync(
+                    await cacheProvider.NewCacheFileAsync());
+                var httpTarget = DownloadTask.Target as HttpTarget;
+                var progress = Progress as BaseProgress;
+                // copy data from responsed stream to file stream
+                using (var client = new HttpClient())
+                using (var ostream = await cacheFile.OpenStreamForWriteAsync())
+                using (var istream = await client.GetStreamAsync(httpTarget.Uri))
+                    await istream.CopyToAsync(ostream, bufferProvider, token,
+                        (size) => progress.Increase(size));
+                // if canceled, return null
+                if (token.IsCancellationRequested) return null;
+                // get destination folder
+                var folder = await folderProvider.GetFolderFromTokenAsync(
+                    DownloadTask.DestinationFolderKey);
+                // move cacheFile to destination folder
+                await cacheFile.MoveAsync(folder, DownloadTask.DestinationFileName,
+                    NameCollisionOption.GenerateUniqueName);
+                var res = cacheFile;
                 cacheFile = null;
-                ((BaseProgress)Progress).Reset();
+                return res;
             });
 
-        protected override Task DisposeAsync() => CancelAsync();
+        protected override async Task HandleStartAsync()
+        {
+            await Task.CompletedTask;
+            Speed.IsEnabled = true;
+            cancellationTokenSource = new CancellationTokenSource();
+            downloadTask = new Task(async () =>
+            {
+                try
+                {
+                    var file = await DownloadAsync(cancellationTokenSource.Token);
+                    if (file != null) ReportCompleted(file);
+                    else return;
+                }
+                catch (Exception e)
+                {
+                    await ReportErrorAsync(e);
+                }
+                finally
+                {
+                    Speed.IsEnabled = false;
+                }
+            });
+            downloadTask.RunSynchronously();
+        }
+
+        protected override async Task HandleCancelAsync() {
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource = null;
+            downloadTask?.Wait();
+            downloadTask = null;
+            if (cacheFile != null)
+                await cacheFile.DeleteAsync();
+            cacheFile = null;
+            ((BaseProgress)Progress).Reset();
+        }
+
+        protected override Task HandleDisposeAsync() => HandleCancelAsync();
 
         private Task downloadTask;
         private IStorageFile cacheFile;

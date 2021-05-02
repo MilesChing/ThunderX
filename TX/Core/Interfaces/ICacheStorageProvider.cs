@@ -9,8 +9,8 @@ namespace TX.Core.Interfaces
 
         Task<string> NewCacheFolderAsync();
 
-        IStorageFile GetCacheFileByToken(string token);
+        Task<IStorageFile> GetCacheFileByTokenAsync(string token);
 
-        IStorageFolder GetCacheFolderByToken(string token);
+        Task<IStorageFolder> GetCacheFolderByTokenAsync(string token);
     }
 }

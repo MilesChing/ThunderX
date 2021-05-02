@@ -141,19 +141,18 @@ namespace TX.Core.Providers
             }
         }
 
-        private IStorageFile GetCacheFileForTask(string token, string taskKey)
+        private async Task<IStorageFile> GetCacheFileForTaskAsync(string token, string taskKey)
         {
+            string filePath = string.Empty;
+
             lock (cacheItems)
             {
                 try
                 {
                     if (cacheItems.TryGetValue(token, out CacheItemInfo info))
                     {
-                        if (info.TaskKey != taskKey)
-                            return null;
-                        var linqTask = StorageFile.GetFileFromPathAsync(info.FilePath).AsTask();
-                        linqTask.Wait();
-                        return linqTask.Result;
+                        if (info.TaskKey != taskKey) return null;
+                        else filePath = info.FilePath;
                     }
                     else return null;
                 }
@@ -162,10 +161,14 @@ namespace TX.Core.Providers
                     return null;
                 }
             }
+
+            return await StorageFile.GetFileFromPathAsync(filePath);
         }
 
-        private IStorageFolder GetCacheFolderForTask(string token, string taskKey)
+        private async Task<IStorageFolder> GetCacheFolderForTaskAsync(string token, string taskKey)
         {
+            string folderPath = string.Empty;
+
             lock (cacheItems)
             {
                 try
@@ -174,9 +177,7 @@ namespace TX.Core.Providers
                     {
                         if (info.TaskKey != taskKey)
                             return null;
-                        var linqTask = StorageFolder.GetFolderFromPathAsync(info.FilePath).AsTask();
-                        linqTask.Wait();
-                        return linqTask.Result;
+                        else folderPath = info.FilePath;
                     }
                     else return null;
                 }
@@ -185,6 +186,8 @@ namespace TX.Core.Providers
                     return null;
                 }
             }
+
+            return await StorageFolder.GetFolderFromPathAsync(folderPath);
         }
 
         private void D(string message) => Debug.WriteLine($"[{GetType().Name}] {message}");
@@ -197,11 +200,11 @@ namespace TX.Core.Providers
                 this.key = key;
             }
 
-            public IStorageFile GetCacheFileByToken(string token)
-                => manager.GetCacheFileForTask(token, key);
+            public Task<IStorageFile> GetCacheFileByTokenAsync(string token)
+                => manager.GetCacheFileForTaskAsync(token, key);
 
-            public IStorageFolder GetCacheFolderByToken(string token)
-                => manager.GetCacheFolderForTask(token, key);
+            public Task<IStorageFolder> GetCacheFolderByTokenAsync(string token)
+                => manager.GetCacheFolderForTaskAsync(token, key);
 
             public Task<string> NewCacheFileAsync()
                 => manager.NewCacheStorageForTaskAsync(key, false);

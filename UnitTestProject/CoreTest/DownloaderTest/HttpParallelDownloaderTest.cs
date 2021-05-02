@@ -112,7 +112,7 @@ namespace UnitTestProject.CoreTest.DownloaderTest
                 }
 
                 await downloader.Result.DeleteAsync();
-                downloader.Dispose();
+                await downloader.DisposeAsync();
             }
         }
 
