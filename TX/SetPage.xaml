@@ -133,7 +133,7 @@
                 <ListView x:Name="CustomAnnouceUrlsListView" Margin="0 0 0 20"
                           Height="120" BorderThickness="1" CornerRadius="2" SelectionMode="None"
                           BorderBrush="{ThemeResource SystemBaseMediumColor}"
-                          ItemsSource="{x:Bind AnnounceUrlsCollection}" 
+                          ItemsSource="{x:Bind Core.AnnounceUrls, Mode=OneWay}" 
                           IsEnabled="{x:Bind TorrentToggleSwitch.IsOn, Mode=OneWay}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">

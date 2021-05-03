@@ -119,6 +119,7 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionsTest\CollectionAndWrapperTest.cs" />
     <Compile Include="CoreTest\DownloaderTest\HttpDownloaderTest.cs" />
     <Compile Include="CoreTest\DownloaderTest\HttpParallelDownloaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

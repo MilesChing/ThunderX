@@ -26,6 +26,7 @@ namespace TX.Core.Utils
                     progressIncreased(readLen);
                 }
             }
+            catch (TaskCanceledException) { }
             finally
             {
                 bufferProvider.ReleaseBuffer(buffer);

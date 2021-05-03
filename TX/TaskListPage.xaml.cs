@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using TX.Collections;
 using TX.Controls;
 using TX.Core;
 using TX.Core.Downloaders;
@@ -38,79 +39,36 @@ namespace TX
         App CurrentApp => ((App)App.Current);
         TXCoreManager Core => CurrentApp.Core;
 
+        private readonly ObservableCollection<DownloaderBar> DownloaderBars =
+            new ObservableCollection<DownloaderBar>();
+        private readonly CollectionBind<AbstractDownloader, DownloaderBar> DownloaderCollectionBind;
+
         public TaskList()
         {
-            this.InitializeComponent();
-            AllVMs.CollectionChanged += AllVMs_CollectionChanged;
-            AllVMs_CollectionChanged(AllVMs, null);
-        }
-
-        private void AllVMs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (sender is ObservableCollection<DownloaderBar> oc)
-            {
-                if (oc.Count > 0)
-                {
-                    DownloaderViewList.Visibility = Visibility.Visible;
-                    EmptyView.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    DownloaderViewList.Visibility = Visibility.Collapsed;
-                    EmptyView.Visibility = Visibility.Visible;
-                }
-            }
+            InitializeComponent();
+            DownloaderCollectionBind = 
+                new CollectionBind<AbstractDownloader, DownloaderBar>(
+                Core.Downloaders, DownloaderBars, 
+                (downloader) => {
+                    var newBar = new DownloaderBar();
+                    newBar.BindDownloader(downloader);
+                    newBar.PointerPressed += VM_Clicked;
+                    newBar.Height = 72;
+                    return newBar;
+                }, 
+                (downloader, downloaderBar) => downloaderBar.Downloader == downloader);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Core.ObservableDownloaders.CollectionChanged += Downloaders_CollectionChanged;
-            Downloaders_CollectionChanged(Core.Downloaders,
-                new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Add,
-                    Core.Downloaders.ToList())
-                );
+            DownloaderCollectionBind.IsEnabled = true;
             base.OnNavigatedTo(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Core.ObservableDownloaders.CollectionChanged -= Downloaders_CollectionChanged;
-            foreach (IDownloaderViewable vm in AllVMs)
-                vm.ClearDownloaderBinding();
-            AllVMs.Clear();
-            GC.Collect();
+            DownloaderCollectionBind.IsEnabled = false;
             base.OnNavigatedFrom(e);
-        }
-
-        private async void Downloaders_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                () => {
-                    if (e.OldItems != null)
-                    {
-                        var toBeRemoved = AllVMs.Where(
-                            bar => e.OldItems.Contains(bar.Downloader)).ToList();
-                        foreach (var bar in toBeRemoved)
-                        {
-                            AllVMs.Remove(bar);
-                            bar.PointerPressed -= VM_Clicked;
-                            bar.ClearDownloaderBinding();
-                        }
-                    }
-
-                    if (e.NewItems != null)
-                    {
-                        foreach (AbstractDownloader down in e.NewItems)
-                        {
-                            var newBar = new DownloaderBar();
-                            newBar.BindDownloader(down);
-                            newBar.PointerPressed += VM_Clicked;
-                            newBar.Height = 72;
-                            AllVMs.Add(newBar);
-                        }
-                    }
-                });
         }
 
         private void VM_Clicked(object sender, PointerRoutedEventArgs e)
@@ -118,25 +76,5 @@ namespace TX
             if (sender is DownloaderBar db)
                 MainPage.Current.NavigateDownloaderDetailPage(db.Downloader);
         }
-
-        private readonly ObservableCollection<DownloaderBar> AllVMs =
-            new ObservableCollection<DownloaderBar>();
-
-        private void Sort<TKey>(Func<DownloaderBar, TKey> keySelector)
-        {
-            var arr = AllVMs.ToArray();
-            AllVMs.Clear();
-            foreach (var bar in arr.OrderBy(keySelector))
-                AllVMs.Add(bar);
-        }
-
-        private void SortAlphabetically_Click(object sender, RoutedEventArgs e)
-            => Sort(bar => bar.Downloader.DownloadTask.Target.SuggestedName);
-
-        private void SortByCreationTime_Click(object sender, RoutedEventArgs e)
-            => Sort(bar => bar.Downloader.DownloadTask.CreationTime);
-
-        private void SortByStatus_Click(object sender, RoutedEventArgs e)
-            => Sort(bar => bar.Downloader.Status);
     }
 }
