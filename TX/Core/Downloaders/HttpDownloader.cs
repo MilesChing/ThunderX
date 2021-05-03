@@ -116,7 +116,8 @@ namespace TX.Core.Downloaders
         protected override async Task HandleCancelAsync() {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
-            downloadTask?.Wait();
+            if (downloadTask != null)
+                await downloadTask;
             downloadTask = null;
             if (cacheFile != null)
                 await cacheFile.DeleteAsync();

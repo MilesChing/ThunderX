@@ -127,9 +127,11 @@ namespace TX.Core.Downloaders
         {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
-            downloadTask?.Wait();
+            if (downloadTask != null)
+                await downloadTask;
             downloadTask = null;
-            await manager?.PauseAsync();
+            if (manager != null)
+                await manager.PauseAsync();
         }
 
         protected override async Task HandleDisposeAsync()
@@ -242,7 +244,8 @@ namespace TX.Core.Downloaders
                 case TorrentState.Seeding:
                     cancellationTokenSource?.Cancel();
                     cancellationTokenSource = null;
-                    downloadTask?.Wait();
+                    if (downloadTask != null)
+                        await downloadTask;
                     downloadTask = null;
                     await manager.StopAsync();
                     break;

@@ -34,14 +34,15 @@ namespace UnitTestProject.CollectionsTest
             bind1.IsEnabled = true;
             bind2.IsEnabled = true;
 
-            for (int batch = 0; batch < 50; ++batch)
+            int batches = 100;
+            for (int batch = 0; batch < batches; ++batch)
             {
                 bind1.IsEnabled = bind2.IsEnabled = (batch % 4 != 0);
 
                 for (int i = 0; i < 100; ++i)
                     TestAdd(testSrc1, testSrc2);
 
-                for (int i = 0; i < 50; ++i)
+                for (int i = 0; i < 120; ++i)
                     TestRemove(testSrc1, testSrc2);
 
                 TestClear(testSrc1, testSrc2);

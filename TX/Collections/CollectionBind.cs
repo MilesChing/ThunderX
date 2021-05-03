@@ -102,8 +102,8 @@ namespace TX.Collections
             foreach (var s in Source)
             {
                 int createdCount = Math.Max(0,
-                    Destination.Where(t => Comparer(s, t)).Count() -
-                    Source.Count(item => item.Equals(s)));
+                    Source.Count(item => item.Equals(s)) -
+                    Destination.Where(t => Comparer(s, t)).Count());
                 for (int i = 0; i < createdCount; ++i)
                     toBeCreated.Add(s);
             }

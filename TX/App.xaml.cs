@@ -154,7 +154,7 @@ namespace TX
                     D($"Database writting failed: {e.Message}");
                 }
 
-                Core.Suspend();
+                await Core.SuspendAsync();
                 D($"{nameof(Core)} suspended");
 
                 PActionManager.Save();

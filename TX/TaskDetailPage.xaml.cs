@@ -103,12 +103,11 @@ namespace TX
             }
         }
 
-        private void BindedVisibleRangeListChanged(IVisibleProgress sender)
+        private async void BindedVisibleRangeListChanged(IVisibleProgress sender)
         {
-             VisibleRangeListView.Dispatcher.RunAsync(
-                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    () => SetVisibleRangeListViewItemsSource(sender))
-             .AsTask().Wait();
+            await VisibleRangeListView.Dispatcher.RunAsync(
+               Windows.UI.Core.CoreDispatcherPriority.Normal,
+                   () => SetVisibleRangeListViewItemsSource(sender));
         }
 
         private void SetVisibleRangeListViewItemsSource(IVisibleProgress progress)

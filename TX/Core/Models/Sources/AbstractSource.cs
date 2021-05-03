@@ -43,7 +43,7 @@ namespace TX.Core.Models.Sources
             if (settingEntries.IsTorrentEnabled && MagnetSource.IsValid(uri))
                 return new MagnetSource(uri, 
                     core.TorrentEngine, 
-                    core.CustomAnnounceURLs);
+                    core.AnnounceUrls);
 
             if (HttpSource.IsValid(uri))
             {
