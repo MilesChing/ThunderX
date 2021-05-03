@@ -72,17 +72,17 @@ namespace TX.Utils
         /// </summary>
         /// <param name="argument">Argument of the activation</param>
         /// <returns>Actions to be done after mainpage has been navigated to.</returns>
-        public static IEnumerable<Action> HandleToastActivation(string argument)
+        public static void HandleToastActivation(string argument)
         {
             var command = DecodeActivationCommand(argument);
             D($"Command decoded: <{string.Join(' ', command)}>");
-            List<Action> actions = new List<Action>();
+            var startUpManager = ((App)App.Current).StupActionManager;
             try
             {
                 switch (command.FirstOrDefault())
                 {
                     case ActivationCommandNavigateToTaskDetail:
-                        actions.Add(() =>
+                        startUpManager.Register(() =>
                         {
                             var taskKey = command.Skip(1).FirstOrDefault();
                             if (taskKey != null)
@@ -111,7 +111,7 @@ namespace TX.Utils
                         });
                         break;
                     case ActivationCommandNavigateToTaskHistory:
-                        actions.Add(() =>
+                        startUpManager.Register(() =>
                         {
                             var taskKey = command.Skip(1).FirstOrDefault();
                             if (taskKey != null)
@@ -127,7 +127,6 @@ namespace TX.Utils
                 }
             }
             catch (Exception) { }
-            return actions;
         }
 
         private static string EncodeActivationCommand(params string[] commands) =>

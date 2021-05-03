@@ -31,6 +31,7 @@ using TX.PersistentActions;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using TX.Controls;
 
 namespace TX
 {
@@ -41,6 +42,7 @@ namespace TX
     {
         public readonly TXCoreManager Core = new TXCoreManager();
         public readonly PersistentActionManager PActionManager = new PersistentActionManager(30);
+        public readonly StartUpActionManager StupActionManager = new StartUpActionManager();
         private readonly Settings settingEntries = new Settings();
         private readonly Task initializingTask;
 
@@ -190,12 +192,12 @@ namespace TX
             var targetFile = args.Files.FirstOrDefault();
             StorageApplicationPermissions.FutureAccessList.Add(targetFile);
             var targetFileUri = new Uri(targetFile.Path);
-            actions.Add(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
+            StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
             D($"Activated by file <{targetFile.Path}>");
-            if (!EnsurePageCreatedAndActivate(actions))
+            if (!EnsurePageCreatedAndActivate())
             {
                 D($"Exist UI content, navigate to new task page");
-                foreach (var action in actions) action();
+                StupActionManager.Do();
             }
             base.OnFileActivated(args);
         }
@@ -203,24 +205,23 @@ namespace TX
         protected override void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
-            List<Action> actions = new List<Action>();
             switch (args.Kind)
             {
                 case ActivationKind.ToastNotification:
                     var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
-                    actions.AddRange(ToastManager.HandleToastActivation(argument));
+                    ToastManager.HandleToastActivation(argument);
                     break;
                 case ActivationKind.Protocol:
                     ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
                     D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
-                    actions.Add(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
                     break;
             }
 
-            if (!EnsurePageCreatedAndActivate(actions))
+            if (!EnsurePageCreatedAndActivate())
             {
                 D($"Exist UI content, navigate to new task page");
-                foreach (var action in actions) action();
+                StupActionManager.Do();
             }
 
             base.OnActivated(args);
@@ -232,7 +233,7 @@ namespace TX
             EnsurePageCreatedAndActivate();
         }
 
-        private bool EnsurePageCreatedAndActivate(object parameter = null)
+        private bool EnsurePageCreatedAndActivate()
         {
             if (!(Window.Current.Content is Frame rootFrame))
             {
@@ -246,7 +247,7 @@ namespace TX
             if (rootFrame.Content == null)
             {
                 D("No content in root frame, navigate to MainPage");
-                rootFrame.Navigate(typeof(MainPage), parameter);
+                rootFrame.Navigate(typeof(MainPage));
             }
             Window.Current.Activate();
             return res;
