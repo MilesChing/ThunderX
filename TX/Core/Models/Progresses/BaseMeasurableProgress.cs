@@ -30,11 +30,7 @@ namespace TX.Core.Models.Progresses
             Ensure.That(size).IsLte(totalSize);
 
             TotalSize = totalSize;
-            ProgressChanged += CheckProgress;
         }
-
-        private void CheckProgress(Interfaces.IProgress _, Interfaces.IProgressChangedEventArg arg)
-            => Ensure.That(arg.NewDownloadedSize).IsLte(TotalSize);
 
         public long TotalSize { get; private set; }
 

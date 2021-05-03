@@ -161,7 +161,6 @@
     <Compile Include="Core\Interfaces\ICacheStorageProvider.cs" />
     <Compile Include="Core\Interfaces\IFolderProvider.cs" />
     <Compile Include="Core\Interfaces\IPersistable.cs" />
-    <Compile Include="Core\Interfaces\IVisibleProgress.cs" />
     <Compile Include="Core\Models\Contexts\DownloadHistory.cs" />
     <Compile Include="Core\Models\Contexts\DownloadTask.cs" />
     <Compile Include="Core\Models\Progresses\BaseMeasurableProgress.cs" />
