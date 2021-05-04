@@ -490,6 +490,10 @@ Create a task for downloading.</source>
 3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
 4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</target>
         </trans-unit>
+        <trans-unit id="Toast_ProtocolActivationError_Title" translate="yes" xml:space="preserve">
+          <source>Failed Parsing External URI</source>
+          <target state="translated">解析外部 URI 出错</target>
+        </trans-unit>
       </group>
     </body>
   </file>

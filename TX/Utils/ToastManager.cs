@@ -68,6 +68,22 @@ namespace TX.Utils
         }
 
         /// <summary>
+        /// Launch a toast reporting failure handling protocol activation.
+        /// </summary>
+        /// <param name="e">The exception captured during handling.</param>
+        public static void ProtocolActivationErrorToast(Exception e)
+        {
+            var xml = new ToastContentBuilder()
+                .AddAppLogoOverride(new Uri("ms-appx:///Assets/IconWarning.png"))
+                .AddText(ProtocolActivationErrorTitle)
+                .AddText(e.Message)
+                .GetToastContent().GetXml();
+            ToastNotificationManager.CreateToastNotifier().Show(
+                new ToastNotification(xml));
+            D($"Error toast for protocol activation exception launched");
+        }
+
+        /// <summary>
         /// Handle the activation of application by toast.
         /// </summary>
         /// <param name="argument">Argument of the activation</param>
@@ -155,5 +171,6 @@ namespace TX.Utils
         private readonly static string DownloaderCompletionDuration = RSLoader.GetString("Toast_DownloaderCompletion_Duration");
         private readonly static string DownloaderCompletionOpen = RSLoader.GetString("Toast_DownloaderCompletion_Open");
         private readonly static string DownloaderCompletionOpenFolder = RSLoader.GetString("Toast_DownloaderCompletion_OpenFolder");
+        private readonly static string ProtocolActivationErrorTitle = RSLoader.GetString("Toast_ProtocolActivationError_Title");
     }
 }

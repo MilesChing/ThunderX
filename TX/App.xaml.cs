@@ -212,9 +212,18 @@ namespace TX
                     ToastManager.HandleToastActivation(argument);
                     break;
                 case ActivationKind.Protocol:
-                    ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
-                    D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
-                    StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    try
+                    {
+                        ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
+                        D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
+                        StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    }
+                    catch (Exception e)
+                    {
+                        D($"Handling protocol activation failed: {e.Message}");
+                        StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage());
+                        ToastManager.ProtocolActivationErrorToast(e);
+                    }
                     break;
             }
 
