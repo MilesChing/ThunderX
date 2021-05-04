@@ -149,6 +149,7 @@
       <DependentUpon>PermissionsContentDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ResourcedSpan.cs" />
+    <Compile Include="Controls\StartUpActionManager.cs" />
     <Compile Include="Core\Providers\DownloadTaskScheduler.cs" />
     <Compile Include="PersistentActions\ActivationRecord.cs" />
     <Compile Include="PersistentActions\PersistentActionManager.cs" />

@@ -53,11 +53,8 @@ namespace TX
             // this might be override by input actions
             NavigateRightFrame(typeof(AboutPage), null);
 
-            // mainpage always consider navigation paprameter
-            // as ienumerable of actions
-            if (e.Parameter is IEnumerable<Action> actions)
-                foreach (var action in actions)
-                    action();
+            // run start up actions
+            CurrentApp.StupActionManager.Do();
 
             // release loading view
             LoadingView.Visibility = Visibility.Collapsed;

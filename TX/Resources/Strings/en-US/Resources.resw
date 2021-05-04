@@ -471,6 +471,9 @@ Create a task for downloading.</value>
   <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
     <value>Task Failed: </value>
   </data>
+  <data name="Toast_ProtocolActivationError_Title" xml:space="preserve">
+    <value>Failed Parsing External URI</value>
+  </data>
   <data name="TotalSize" xml:space="preserve">
     <value>Total Size</value>
   </data>
