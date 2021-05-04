@@ -140,6 +140,16 @@ namespace TX
 
         private void HistoryViewList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
             SelectionCountText.Text = HistoryViewList.SelectedItems.Count.ToString();
+
+        private void HistoryViewList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double desiredWidth = 280.0;
+            int cols = (int) Math.Floor(e.NewSize.Width / desiredWidth);
+            if (cols <= 0) cols = 1;
+            HistoryViewItemWidth.Value = Math.Floor(
+                (e.NewSize.Width - HistoryViewList.Padding.Left - 
+                HistoryViewList.Padding.Right) / cols);
+        }
     }
 
     class DownloadHistoryViewModel : INotifyPropertyChanged
@@ -193,7 +203,6 @@ namespace TX
                         await source.SetSourceAsync(thumbnail);
                     Source = source;
                 }
-                else { }
             }
             catch (Exception) { }
             finally
