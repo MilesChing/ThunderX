@@ -32,8 +32,6 @@ namespace TX.Core
             coreBufferProvider = new SizeLimitedBufferProvider(
                 settingEntries.MemoryLimit, 512L * 1024L);
             taskScheduler = new DownloadTaskScheduler(downloaders);
-            coreCacheManager = new LocalCacheManager(
-                ApplicationData.Current.LocalCacheFolder);
         }
 
         public async Task InitializeAsync(byte[] checkPoint = null)
@@ -249,6 +247,8 @@ namespace TX.Core
             CleanTasks();
             D("Cleaning local cache folder...");
             await CleanCacheFolderAsync();
+            D("Cleaning storage permission lists...");
+            CleanStoragePermissionLists();
             D("Cancelling downloaders...");
             foreach (var downloader in downloaders)
                 if (downloader.Status == DownloaderStatus.Running)
@@ -280,6 +280,34 @@ namespace TX.Core
             }
         }
 
+        private void CleanStoragePermissionLists()
+        {
+            var futureList = StorageApplicationPermissions.FutureAccessList;
+            var futureListRemoved = new List<string>();
+            foreach (var entry in futureList.Entries)
+            {
+                if (downloaders.Any(downloader => downloader.
+                    DownloadTask.DestinationFolderKey.Equals(entry.Token)))
+                    continue;
+                D($"Remove FutureAccessList entry <{entry.Token}>");
+                futureListRemoved.Add(entry.Token);
+            }
+            foreach (var token in futureListRemoved)
+                futureList.Remove(token);
+
+            var recentList = StorageApplicationPermissions.MostRecentlyUsedList;
+            var recentListRemoved = new List<string>();
+            foreach (var entry in recentList.Entries)
+            {
+                if (entry.Token.Equals(settingEntries.DownloadsFolderToken))
+                    continue;
+                D($"Remove MostRecentlyUsedList entry <{entry.Token}>");
+                recentListRemoved.Add(entry.Token);
+            }
+            foreach (var token in recentListRemoved)
+                recentList.Remove(token);
+        }
+
         private async Task InitializeDhtEngineAsync()
         {
             try
@@ -308,9 +336,9 @@ namespace TX.Core
         private readonly InnerCollection<string> announceUrls = new InnerCollection<string>();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
+        private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
         private readonly DownloadTaskScheduler taskScheduler = null;
-        private LocalCacheManager coreCacheManager = null;
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
