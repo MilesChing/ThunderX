@@ -38,7 +38,20 @@
             SelectionMode="None" CanReorderItems="False" 
             CanDragItems="False" AllowDrop="False" Grid.Row="1" 
             ItemsSource="{x:Bind VMCollection}"
+            SizeChanged="HistoryViewList_SizeChanged"
             SelectionChanged="HistoryViewList_SelectionChanged">
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Style.Setters>
+                        <Setter x:Name="HistoryViewItemWidth" Property="Width" Value="300"/>
+                        <Setter Property="Height" Value="84"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="2"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    </Style.Setters>
+                </Style>
+            </GridView.ItemContainerStyle>
             <GridView.Resources>
                 <MenuFlyout x:Key="ItemMenuFlyout">
                     <!--Open File-->
@@ -70,20 +83,21 @@
                           Holding="Item_Holding" RightTapped="Item_RightTapped"
                           FlyoutBase.AttachedFlyout="{StaticResource ItemMenuFlyout}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="80"/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="72"/>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Image Grid.Row="0" Grid.Column="0" Width="40" Height="40" 
                                Visibility="{x:Bind utils:VisFuncs.ObjectToVisibility(Source, x:False), Mode=OneWay}"
-                               Source="{x:Bind Source, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <FontIcon Grid.Row="0" Grid.Column="0" Width="40" Height="40"
-                                  Visibility="{x:Bind utils:VisFuncs.ObjectToVisibility(Source, x:True), Mode=OneWay}"
-                                  HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                  FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                  Glyph="&#xF140;" FontSize="36" Foreground="{ThemeResource SystemBaseMediumHighColor}"/>
+                               Source="{x:Bind Source, Mode=OneWay}" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Rectangle Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   Visibility="{x:Bind utils:VisFuncs.ObjectToVisibility(Source, x:True), Mode=OneWay}"
+                                   Fill="{ThemeResource SystemAccentColorLight1}"
+                                   Stroke="{ThemeResource SystemBaseHighColor}"
+                                   RadiusX="4" RadiusY="4" Width="20" Height="20"/>
                         <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 0 0 4"
                                     Orientation="Vertical" VerticalAlignment="Center">
                             <TextBlock 

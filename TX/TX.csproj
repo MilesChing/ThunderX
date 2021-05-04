@@ -236,6 +236,7 @@
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\IconAccept.png" />
     <Content Include="Assets\IconComplete.png" />
+    <Content Include="Assets\IconFile.png" />
     <Content Include="Assets\IconTorrent.png" />
     <Content Include="Assets\IconWarning.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
@@ -284,6 +285,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="IconFile.png" />
     <Content Include="Resources\ConfigTemplates\AnnounceUrlListTemplate.txt" />
     <Content Include="Resources\XMLs\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />

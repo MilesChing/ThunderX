@@ -15,7 +15,7 @@ namespace TX.Core.Providers
 {
     public class LocalCacheManager : IPersistable
     {
-        public LocalCacheManager(StorageFolder cacheFolder)
+        public LocalCacheManager()
         {
             this.cacheFolder = cacheFolder;
         }
@@ -83,8 +83,6 @@ namespace TX.Core.Providers
                 {
                     try
                     {
-                        StorageApplicationPermissions.FutureAccessList.Remove(
-                            StorageApplicationPermissions.FutureAccessList.Add(item));
                         await item.DeleteAsync();
                         D($"Removed storage item <{item.Path}>");
                     }
@@ -225,6 +223,7 @@ namespace TX.Core.Providers
 
         private readonly Dictionary<string, CacheItemInfo> cacheItems = 
             new Dictionary<string, CacheItemInfo>();
-        private readonly StorageFolder cacheFolder = null;
+        private readonly StorageFolder cacheFolder =
+            ApplicationData.Current.LocalCacheFolder;
     }
 }
