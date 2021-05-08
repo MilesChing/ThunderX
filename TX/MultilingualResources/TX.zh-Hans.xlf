@@ -40,7 +40,7 @@
         </trans-unit>
         <trans-unit id="AboutPage_VersionInfo_Title.Text" translate="yes" xml:space="preserve">
           <source>Introducing Version</source>
-          <target state="translated">版本说明：</target>
+          <target state="translated">版本</target>
         </trans-unit>
         <trans-unit id="CreationTime" translate="yes" xml:space="preserve">
           <source>Creation Time</source>
@@ -282,12 +282,6 @@ Create a task for downloading.</source>
           <source>Plugin Enabled</source>
           <target state="translated">启用该功能</target>
         </trans-unit>
-        <trans-unit id="AboutPage_VersionInfo.Text" translate="yes" xml:space="preserve">
-          <source>🎨 UI adjustment for multiple file selection.
-🍞 Add request for network permissions.</source>
-          <target state="translated">🎨 多文件选择界面的 UI 调整；
-🍞 首次启动时主动请求网络权限；</target>
-        </trans-unit>
         <trans-unit id="AboutPage_AppDescription.Text" translate="yes" xml:space="preserve">
           <source>The mission of Thunder X is to provide a simple, fast and transparent download experience. Our URL parsing process, which is encapsulated to be transparent to the user, supports different types of resources and protocols. Downloader core of Thunder X is well designed to run with high efficiency and low power consumption. All of this is presented to the user through a simple styled user interface.</source>
           <target state="translated">Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</target>
@@ -464,35 +458,57 @@ Create a task for downloading.</source>
           <source>Thanks</source>
           <target state="translated">致谢</target>
         </trans-unit>
-        <trans-unit id="PermissionsDialog_GuideText.Text" translate="yes" xml:space="preserve">
-          <source>Some Windows 10 devices that run Windows 10 version 2004 or higher and can connect to a cellular or WLAN data network include a setting that controls which apps can access the internet. These settings need to be turned on for Thunder X to access the network.</source>
-          <target state="translated">某些运行 Windows 10 版本 2004 或更高版本并可以连接到手机网络数据或 WLAN 的 Windows 10 设备包括一个设置，用于控制哪些应用可以访问 Internet。 此设置需要打开，以便 Thunder X 正常接入网络。</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_MainContentDialog.Title" translate="yes" xml:space="preserve">
-          <source>How to turn on network permissions for Thunder X</source>
-          <target state="translated">许可 Thunder X 使用 WLAN 或移动数据</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_SetButton.Content" translate="yes" xml:space="preserve">
-          <source>Open Settings</source>
-          <target state="translated">转到 “设置”</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_CloseButton.Content" translate="yes" xml:space="preserve">
-          <source>Got it!</source>
-          <target state="translated">不再提醒</target>
-        </trans-unit>
-        <trans-unit id="PermissionsDialog_StepsSpan" translate="yes" xml:space="preserve">
-          <source>1. Open <bpt id="1">&lt;Bold&gt;</bpt>Settings<ept id="1">&lt;/Bold&gt;</ept> on your Windows 10 device;&lt;LineBreak/&gt;
-2. Select <bpt id="2">&lt;Bold&gt;</bpt>Network &amp;amp; Internet<ept id="2">&lt;/Bold&gt;</ept> &amp;gt; <bpt id="3">&lt;Bold&gt;</bpt>Wi-Fi<ept id="3">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
-3. Select <bpt id="4">&lt;Bold&gt;</bpt>Choose apps that can use your Wi-Fi data<ept id="4">&lt;/Bold&gt;</ept>;&lt;LineBreak/&gt;
-4. Turn on the toggle next to <bpt id="5">&lt;Bold&gt;</bpt>Let apps use my Wi-Fi data<ept id="5">&lt;/Bold&gt;</ept>, then turn on the toggle next to <bpt id="6">&lt;Bold&gt;</bpt>Thunder X<ept id="6">&lt;/Bold&gt;</ept>;</source>
-          <target state="translated">1. 在 Windows 10 设备上，打开 &lt;Bold&gt;设置&lt;/Bold&gt;；&lt;LineBreak/&gt;
-2. 选择 &lt;Bold&gt;网络和 Internet&lt;/Bold&gt; &gt; &lt;Bold&gt;WLAN&lt;/Bold&gt;；&lt;LineBreak/&gt;
-3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
-4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</target>
-        </trans-unit>
         <trans-unit id="Toast_ProtocolActivationError_Title" translate="yes" xml:space="preserve">
           <source>Failed Parsing External URI</source>
           <target state="translated">解析外部 URI 出错</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_LogUploadingPermissionPivotItem.Header" translate="yes" xml:space="preserve">
+          <source>Upload Reports</source>
+          <target state="translated">上传错误报告</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_NetworkPermissionsPivotItem.Header" translate="yes" xml:space="preserve">
+          <source>Network Permissions</source>
+          <target state="translated">网络接入许可</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_NetworkPermissions_GuideText.Text" translate="yes" xml:space="preserve">
+          <source>Some Windows 10 devices that run Windows 10 version 2004 or higher and can connect to a cellular or WLAN data network include a setting that controls which apps can access the internet. These settings need to be turned on for Thunder X to access the network.</source>
+          <target state="translated">某些运行 Windows 10 版本 2004 或更高版本并可以连接到手机网络数据或 WLAN 的 Windows 10 设备包括一个设置，用于控制哪些应用可以访问 Internet。 此设置需要打开，以便 Thunder X 正常接入网络。</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_NetworkPermissions_StepsSpan" translate="yes" xml:space="preserve">
+          <source>1. Open {Accent Settings} on your Windows 10 device;
+2. Select {Accent Network &amp;amp; Internet} &amp;gt; {Accent Wi-Fi} ;
+3. Select {Accent Choose apps that can use your Wi-Fi data} ;
+4. Turn on the toggle next to {Accent Let apps use my Wi-Fi data}, then turn on the toggle next to {Accent Thunder X} ;</source>
+          <target state="translated">1. 在 Windows 10 设备上，打开 {Accent 设置} ;
+2. 选择 {Accent 网络和 Internet} &gt; {Accent Wi-Fi} ;
+3. 选择 {Accent 选择能够使用你的 WLAN 数据的应用} ;
+4. 打开 {Accent 允许应用使用我的 WLAN 数据}，并打开 {Accent Thunder X} 的开关；</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_NetworkPermissions_SetButton.Label" translate="yes" xml:space="preserve">
+          <source>Open Settings</source>
+          <target state="translated">转到 “设置”</target>
+        </trans-unit>
+        <trans-unit id="NewVersion_InfoSpan" translate="yes" xml:space="preserve">
+          <source>🎨 UI adjustment for multiple file selection.
+🍞 Add request for network permissions.</source>
+          <target state="new">🎨 UI adjustment for multiple file selection.
+🍞 Add request for network permissions.</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_LogUploadingPermission_Span" translate="yes" xml:space="preserve">
+          <source>Thunder X uses diagnostic data to improve our products and services. We use this data to better understand how our products are performing and where improvements need to be made. We strive to gather only the info we need and to store it only for as long as it’s needed for analysis. {Bold Any data that is personally identifiable to you WILL NOT be uploaded or stored online}, like the Microsoft account you logged in to or the identity of your device.</source>
+          <target state="translated">Thunder X 需要通过上传调试数据提升软件的服务质量和用户体验。我们使用软件自动上传的数据更好地了解软件是否正常运行以及需要做出何种改进。我们严格控制数据上传的大小，确保将仅采集和上传供调试所需的数据，且将在进行所需的分析后定期删除云端存储的数据。{Bold Thunder X 不会上传或存储可用于与用户身份强关联的任何数据}，例如你的 Microsoft 账户信息或设备标识符等。</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_LogUploadingPermission_Switch.OffContent" translate="yes" xml:space="preserve">
+          <source>Don't</source>
+          <target state="translated">禁用数据上传</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_LogUploadingPermission_Switch.OnContent" translate="yes" xml:space="preserve">
+          <source>Sure</source>
+          <target state="translated">启用数据上传</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_LogUploadingPermission_Switch.Header" translate="yes" xml:space="preserve">
+          <source>Upload data for diagnostics?</source>
+          <target state="translated">我们能否上传诊断数据？</target>
         </trans-unit>
       </group>
     </body>

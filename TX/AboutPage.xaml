@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:TX.Utils"
     mc:Ignorable="d" NavigationCacheMode="Enabled"
-    xmlns:package="using:Windows.ApplicationModel"
+    xmlns:package="using:Windows.ApplicationModel" xmlns:controls="using:TX.Controls"
     Background="{ThemeResource SystemChromeLowColor}">
     <ScrollViewer HorizontalScrollMode="Disabled"
                   VerticalScrollMode="Auto"
@@ -60,7 +60,7 @@
                         <!--Package Version-->
                         <Run x:Uid="AboutPage_LogoText_PackageVersion" 
                              Foreground="{ThemeResource SystemBaseMediumColor}"/>
-                        <Run Text="{x:Bind VersionText}" 
+                        <Run Text="{x:Bind utils:PackageVersionExtensions.CurrentVersionString}" 
                              Foreground="{ThemeResource SystemAccentColor}"/>
                     </TextBlock>
                 </StackPanel>
@@ -105,12 +105,9 @@
                 </StackPanel>
             </Grid>
 
-            <TextBlock Margin="0 0 0 16" Style="{ThemeResource TXPageSubtitleTextBlockStyle}">
-                <!--Introducing Version-->
-                <Run x:Uid="AboutPage_VersionInfo_Title"/>
-                <Run Text="{x:Bind VersionText}"/>
+            <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
+                       Margin="0 0 0 20">
             </TextBlock>
-            <TextBlock x:Uid="AboutPage_VersionInfo" Margin="0 0 0 20"/>
 
             <!--Rating and Feedback-->
             <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 16"

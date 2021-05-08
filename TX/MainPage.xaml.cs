@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media;
 using System.Linq;
 using Windows.System;
+using Windows.ApplicationModel;
 
 namespace TX
 {
@@ -59,11 +60,25 @@ namespace TX
             // release loading view
             LoadingView.Visibility = Visibility.Collapsed;
 
-            string permissionsDialogKey = nameof(PermissionsDialog);
-            if (CurrentApp.PActionManager.TryGetRecord(permissionsDialogKey,
-                out PersistentActions.ActivationRecord record) == false)
-                CurrentApp.PActionManager.Activate(permissionsDialogKey,
-                    () => _ = PermissionsDialog.ShowAsync());
+            // handle startup dialog
+            string dialogKey = nameof(StartUpDialog);
+            bool recordExist = CurrentApp.PActionManager.TryGetRecord(dialogKey,
+                out PersistentActions.ActivationRecord record);
+            if (recordExist)
+            {
+                if (record.LastActivationVersion.CompareTo(
+                    Package.Current.Id.Version) < 0)
+                {
+                    CurrentApp.PActionManager.Activate(dialogKey);
+                    StartUpDialog.ClearPivotsToBeShownFirstLaunch();
+                    await StartUpDialog.ShowAsync();
+                }
+            }
+            else
+            {
+                CurrentApp.PActionManager.Activate(dialogKey);
+                await StartUpDialog.ShowAsync();
+            }
         }
 
         private void UpdateTitleBar()

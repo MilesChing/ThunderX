@@ -37,7 +37,7 @@
     <value>仍使用试用版本？</value>
   </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
-    <value>版本说明：</value>
+    <value>版本</value>
   </data>
   <data name="CreationTime" xml:space="preserve">
     <value>创建时间</value>
@@ -219,10 +219,6 @@
   <data name="SetPage_YouTube_ToggleSwitch.Header" xml:space="preserve">
     <value>启用该功能</value>
   </data>
-  <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🎨 多文件选择界面的 UI 调整；
-🍞 首次启动时主动请求网络权限；</value>
-  </data>
   <data name="AboutPage_AppDescription.Text" xml:space="preserve">
     <value>Thunder X 定位在于提供简单、快速、透明的文件下载体验。Thunder X 提供对用户完全透明的 URL 解析过程，对特殊链接进行全自动解析和提取，高效和低功耗的下载核心以及简洁极致的交互界面。</value>
   </data>
@@ -355,25 +351,37 @@
   <data name="AboutPage_ThanksInfo_Title.Text" xml:space="preserve">
     <value>致谢</value>
   </data>
-  <data name="PermissionsDialog_GuideText.Text" xml:space="preserve">
-    <value>某些运行 Windows 10 版本 2004 或更高版本并可以连接到手机网络数据或 WLAN 的 Windows 10 设备包括一个设置，用于控制哪些应用可以访问 Internet。 此设置需要打开，以便 Thunder X 正常接入网络。</value>
-  </data>
-  <data name="PermissionsDialog_MainContentDialog.Title" xml:space="preserve">
-    <value>许可 Thunder X 使用 WLAN 或移动数据</value>
-  </data>
-  <data name="PermissionsDialog_SetButton.Content" xml:space="preserve">
-    <value>转到 “设置”</value>
-  </data>
-  <data name="PermissionsDialog_CloseButton.Content" xml:space="preserve">
-    <value>不再提醒</value>
-  </data>
-  <data name="PermissionsDialog_StepsSpan" xml:space="preserve">
-    <value>1. 在 Windows 10 设备上，打开 &lt;Bold&gt;设置&lt;/Bold&gt;；&lt;LineBreak/&gt;
-2. 选择 &lt;Bold&gt;网络和 Internet&lt;/Bold&gt; &gt; &lt;Bold&gt;WLAN&lt;/Bold&gt;；&lt;LineBreak/&gt;
-3. 选择 &lt;Bold&gt;选择能够使用你的 WLAN 数据的应用&lt;/Bold&gt;；&lt;LineBreak/&gt;
-4. 打开 &lt;Bold&gt;允许应用使用我的 WLAN 数据&lt;/Bold&gt;，并打开 &lt;Bold&gt;Thunder X&lt;/Bold&gt; 的开关；</value>
-  </data>
   <data name="Toast_ProtocolActivationError_Title" xml:space="preserve">
     <value>解析外部 URI 出错</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermissionPivotItem.Header" xml:space="preserve">
+    <value>上传错误报告</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissionsPivotItem.Header" xml:space="preserve">
+    <value>网络接入许可</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_GuideText.Text" xml:space="preserve">
+    <value>某些运行 Windows 10 版本 2004 或更高版本并可以连接到手机网络数据或 WLAN 的 Windows 10 设备包括一个设置，用于控制哪些应用可以访问 Internet。 此设置需要打开，以便 Thunder X 正常接入网络。</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_StepsSpan" xml:space="preserve">
+    <value>1. 在 Windows 10 设备上，打开 {Accent 设置} ;
+2. 选择 {Accent 网络和 Internet} &gt; {Accent Wi-Fi} ;
+3. 选择 {Accent 选择能够使用你的 WLAN 数据的应用} ;
+4. 打开 {Accent 允许应用使用我的 WLAN 数据}，并打开 {Accent Thunder X} 的开关；</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_SetButton.Label" xml:space="preserve">
+    <value>转到 “设置”</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Span" xml:space="preserve">
+    <value>Thunder X 需要通过上传调试数据提升软件的服务质量和用户体验。我们使用软件自动上传的数据更好地了解软件是否正常运行以及需要做出何种改进。我们严格控制数据上传的大小，确保将仅采集和上传供调试所需的数据，且将在进行所需的分析后定期删除云端存储的数据。{Bold Thunder X 不会上传或存储可用于与用户身份强关联的任何数据}，例如你的 Microsoft 账户信息或设备标识符等。</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.OffContent" xml:space="preserve">
+    <value>禁用数据上传</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.OnContent" xml:space="preserve">
+    <value>启用数据上传</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.Header" xml:space="preserve">
+    <value>我们能否上传诊断数据？</value>
   </data>
 </root>

@@ -89,7 +89,7 @@
                        RelativePanel.AlignBottomWithPanel="True"
                        RelativePanel.AlignRightWithPanel="True"
                        RelativePanel.AlignLeftWithPanel="True"/>
-                <txcontrols:PermissionsContentDialog x:Name="PermissionsDialog"/>
+                <txcontrols:StartUpContentDialog x:Name="StartUpDialog"/>
             </RelativePanel>
         </muxc:NavigationView>
         <Border x:Name="LoadingView" Background="#222222">

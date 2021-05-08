@@ -145,11 +145,11 @@
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
-    <Compile Include="Controls\PermissionsContentDialog.xaml.cs">
-      <DependentUpon>PermissionsContentDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ResourcedSpan.cs" />
     <Compile Include="Controls\StartUpActionManager.cs" />
+    <Compile Include="Controls\StartUpContentDialog.xaml.cs">
+      <DependentUpon>StartUpContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Core\Providers\DownloadTaskScheduler.cs" />
     <Compile Include="PersistentActions\ActivationRecord.cs" />
     <Compile Include="PersistentActions\PersistentActionManager.cs" />
@@ -219,6 +219,7 @@
     <Compile Include="TaskListPage.xaml.cs">
       <DependentUpon>TaskListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\PackageVersionExtensions.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ToastManager.cs" />
     <Compile Include="Utils\VisFuncs.cs" />
@@ -285,7 +286,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="IconFile.png" />
     <Content Include="Resources\ConfigTemplates\AnnounceUrlListTemplate.txt" />
     <Content Include="Resources\XMLs\toast_complete.xml" />
     <None Include="Package.StoreAssociation.xml" />
@@ -314,7 +314,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\PermissionsContentDialog.xaml">
+    <Page Include="Controls\StartUpContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
