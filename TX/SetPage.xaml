@@ -6,9 +6,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:utils="using:TX.Core.Utils"
+    xmlns:utils="using:TX.Core.Utils" 
+    xmlns:controls="using:TX.Controls"
     mc:Ignorable="d" NavigationCacheMode="Enabled"
     Background="{ThemeResource SystemChromeLowColor}">
+    <Page.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+        <SolidColorBrush x:Key="HighlightBrush" Color="{ThemeResource SystemBaseHighColor}"/>
+        <controls:ObservableSpanTemplateCollection x:Key="ResourcedSpanStyleList">
+            <controls:SubSpanStyle Key="Bold" FontWeight="Bold"/>
+            <controls:SubSpanStyle Key="Accent" Foreground="{ThemeResource AccentBrush}"/>
+        </controls:ObservableSpanTemplateCollection>
+    </Page.Resources>
     <ScrollViewer x:Name="MainScrollViewer"
                   HorizontalScrollMode="Disabled"
                   VerticalScrollMode="Auto"
@@ -208,6 +217,22 @@
                 <Button x:Name="CleanUpButton" x:Uid="SetPage_CleanUp_Button"
                         Height="36" Width="160" Style="{ThemeResource ButtonRevealStyle}"
                         Margin="0 0 0 20" Click="CleanUpButton_Click"/>
+
+                <!--Others-->
+                <TextBlock x:Uid="SetPage_Others_Title" Margin="0 0 0 16"
+                           Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
+                <Border Margin="-16 0 -16 16" Padding="16 8 16 8"
+                        Background="{ThemeResource SystemChromeMediumHighColor}">
+                    <TextBlock Style="{ThemeResource TXPageInfoTextBlockStyle}">
+                        <controls:ResourcedSpan
+                            InlineXamlUid="StartUpDialog_LogUploadingPermission_Span"
+                            Styles="{StaticResource ResourcedSpanStyleList}"/>
+                    </TextBlock>
+                </Border>
+                
+                <!--Upload Diagnostic Data-->
+                <ToggleSwitch x:Uid="SetPage_Others_DiagnosticDataToggleSwitch" Margin="0 0 0 20"
+                              IsOn="{x:Bind SettingEntries.IsDiagnosticDataUploadingEnabled, Mode=TwoWay}"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

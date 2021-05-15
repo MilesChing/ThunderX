@@ -518,6 +518,14 @@ Create a task for downloading.</source>
           <source>Next Step</source>
           <target state="translated">下一步</target>
         </trans-unit>
+        <trans-unit id="SetPage_Others_DiagnosticDataToggleSwitch.Header" translate="yes" xml:space="preserve">
+          <source>Upload Diagnostic Data</source>
+          <target state="translated">上传诊断数据</target>
+        </trans-unit>
+        <trans-unit id="SetPage_Others_Title.Text" translate="yes" xml:space="preserve">
+          <source>Others</source>
+          <target state="translated">杂项</target>
+        </trans-unit>
       </group>
     </body>
   </file>

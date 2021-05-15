@@ -244,6 +244,19 @@ namespace TX.Utils
 
         #endregion
 
+        #region UserExperience
+
+        /// <summary>
+        /// Is diagnostic data uploading enabled.
+        /// </summary>
+        public bool IsDiagnosticDataUploadingEnabled
+        {
+            get { return TryGetValue(nameof(IsDiagnosticDataUploadingEnabled), true); }
+            set { SetValue(nameof(IsDiagnosticDataUploadingEnabled), value); }
+        }
+
+        #endregion
+
         #region Tools
 
         /// <summary>

@@ -390,4 +390,10 @@
   <data name="StartUpDialog_NextStepButton.Content" xml:space="preserve">
     <value>下一步</value>
   </data>
+  <data name="SetPage_Others_DiagnosticDataToggleSwitch.Header" xml:space="preserve">
+    <value>上传诊断数据</value>
+  </data>
+  <data name="SetPage_Others_Title.Text" xml:space="preserve">
+    <value>杂项</value>
+  </data>
 </root>
