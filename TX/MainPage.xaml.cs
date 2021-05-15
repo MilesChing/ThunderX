@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using System.Linq;
 using Windows.System;
 using Windows.ApplicationModel;
+using System.Threading.Tasks;
 
 namespace TX
 {
@@ -61,24 +62,7 @@ namespace TX
             LoadingView.Visibility = Visibility.Collapsed;
 
             // handle startup dialog
-            string dialogKey = nameof(StartUpDialog);
-            bool recordExist = CurrentApp.PActionManager.TryGetRecord(dialogKey,
-                out PersistentActions.ActivationRecord record);
-            if (recordExist)
-            {
-                if (record.LastActivationVersion.CompareTo(
-                    Package.Current.Id.Version) < 0)
-                {
-                    CurrentApp.PActionManager.Activate(dialogKey);
-                    StartUpDialog.ClearPivotsToBeShownFirstLaunch();
-                    await StartUpDialog.ShowAsync();
-                }
-            }
-            else
-            {
-                CurrentApp.PActionManager.Activate(dialogKey);
-                await StartUpDialog.ShowAsync();
-            }
+            await TryShowStartUpDialogAsync();
         }
 
         private void UpdateTitleBar()
@@ -152,10 +136,31 @@ namespace TX
 
         private void MainNavigationView_BackRequested(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs args) =>
             NavigateEmptyPage();
-
-        public string GetAppTitleFromSystem()
+    
+        private async Task<bool> TryShowStartUpDialogAsync()
         {
-            return Windows.ApplicationModel.Package.Current.DisplayName;
+            string dialogKey = nameof(StartUpDialog);
+            bool recordExist = CurrentApp.PActionManager.TryGetRecord(dialogKey,
+                out PersistentActions.ActivationRecord record);
+            if (recordExist)
+            {
+                if (record.LastActivationVersion.CompareTo(
+                    Package.Current.Id.Version) < 0)
+                {
+                    CurrentApp.PActionManager.Activate(dialogKey);
+                    StartUpDialog.ClearPivotsToBeShownFirstLaunch();
+                    await StartUpDialog.ShowAsync();
+                    return true;
+                }
+            }
+            else
+            {
+                CurrentApp.PActionManager.Activate(dialogKey);
+                await StartUpDialog.ShowAsync();
+                return true;
+            }
+
+            return false;
         }
     }
 }

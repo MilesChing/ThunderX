@@ -25,7 +25,6 @@ namespace TX.Controls
     {
         public StartUpContentDialog()
         {
-            this.Loaded += ThisLoaded;
             this.InitializeComponent();
         }
 
@@ -46,8 +45,6 @@ namespace TX.Controls
             }
         }
 
-        private readonly Settings SettingEntries = new Settings();
-
         private static async Task<DateTime?> GetBuildTimestampAsync()
         {
             try
@@ -62,5 +59,26 @@ namespace TX.Controls
 
         private async void SetButton_Click(object sender, RoutedEventArgs e) =>
             await Launcher.LaunchUriAsync(new Uri("ms-settings:network-wifi"));
+
+        private void MainPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainPivot.SelectedIndex < MainPivot.Items.Count - 1)
+            {
+                NextStepButton.Visibility = Visibility.Visible;
+                CloseDialogButton.Visibility = Visibility.Collapsed;
+            } 
+            else
+            {
+                NextStepButton.Visibility = Visibility.Collapsed;
+                CloseDialogButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void NextStepButton_Click(object sender, RoutedEventArgs e) =>
+            ++MainPivot.SelectedIndex;
+
+        private void CloseDialogButton_Click(object sender, RoutedEventArgs e) => Hide();
+
+        private readonly Settings SettingEntries = new Settings();
     }
 }

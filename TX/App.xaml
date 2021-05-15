@@ -85,6 +85,8 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="Foreground" Value="{ThemeResource SystemAccentColor}"/>
             </Style>
+
+            <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -6,6 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
       xmlns:txcontrols="using:TX.Controls" 
+      xmlns:appmodel="using:Windows.ApplicationModel"
       mc:Ignorable="d">
     <Grid x:Name="LayoutGrid">
         <VisualStateManager.VisualStateGroups>
@@ -44,7 +45,7 @@
             AlwaysShowHeader="True"
             IsTitleBarAutoPaddingEnabled="False"
             IsSettingsVisible="False"
-            PaneTitle="{x:Bind GetAppTitleFromSystem()}"
+            PaneTitle="{x:Bind appmodel:Package.Current.DisplayName}"
             Background="{ThemeResource SystemChromeLowColor}" 
             BackRequested="MainNavigationView_BackRequested"
             ItemInvoked="MainNavigationView_ItemInvoked">

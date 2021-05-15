@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:utils="using:TX.Utils"
+    xmlns:appmodel="using:Windows.ApplicationModel"
+    Loaded="ThisLoaded"
     mc:Ignorable="d">
     <ContentDialog.Resources>
-        <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
         <SolidColorBrush x:Key="AccentBrush" Color="{ThemeResource SystemAccentColor}"/>
         <SolidColorBrush x:Key="HighlightBrush" Color="{ThemeResource SystemBaseHighColor}"/>
         <local:ObservableSpanTemplateCollection x:Key="ResourcedSpanStyleList">
@@ -17,12 +18,15 @@
             <local:SubSpanStyle Key="Accent" Foreground="{ThemeResource AccentBrush}"/>
         </local:ObservableSpanTemplateCollection>
     </ContentDialog.Resources>
-    <Grid>
+    <Grid Padding="8">
         <Grid.RowDefinitions>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Rectangle Height="600"/>
-        <Pivot x:Name="MainPivot" Title="THUNDER X"
+        <Pivot x:Name="MainPivot" 
+               Title="{x:Bind appmodel:Package.Current.DisplayName}"
+               SelectionChanged="MainPivot_SelectionChanged"
                VerticalAlignment="Stretch"
                VerticalContentAlignment="Stretch">
             <PivotItem x:Name="NewVersionPivotItem" Padding="0 16 0 0"
@@ -44,12 +48,13 @@
                                 Padding="4 0 4 2" CornerRadius="2"
                                 HorizontalAlignment="Left"
                                 Background="{ThemeResource SystemAccentColor}">
-                            <TextBlock Foreground="{ThemeResource SystemAltHighColor}">
-                                <Run Text="Released at" FontWeight="SemiBold"/>
+                            <TextBlock Foreground="{ThemeResource SystemAltHighColor}"
+                                       FontWeight="SemiBold">
+                                <Run Text="Released at"/>
                                 <Run x:Name="BuildTimeRun"/>
                             </TextBlock>
                         </Border>
-                    </StackPanel>   
+                    </StackPanel>
                 </ScrollViewer>
             </PivotItem>
             <PivotItem x:Name="NetworkPermissionsPivotItem" Padding="0 16 0 0"
@@ -87,18 +92,18 @@
                     <StackPanel Margin="0 16 0 0">
                         <StackPanel Orientation="Horizontal" Margin="0 4 0 8">
                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                      Glyph="&#xE975;" FontSize="48" 
-                                      Foreground="{ThemeResource SystemAccentColorLight1}"/>
+                                      Glyph="&#xE975;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                       Glyph="&#xE13C;" Margin="20 0 20 0"/>
                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                      Glyph="&#xE753;" FontSize="48" 
-                                      Foreground="{ThemeResource SystemAccentColorLight1}"/>
+                                      Glyph="&#xE753;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                       Glyph="&#xE13C;" Margin="20 0 20 0"/>
                             <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                      Glyph="&#xE9D9;" FontSize="48" 
-                                      Foreground="{ThemeResource SystemAccentColorLight1}"/>
+                                      Glyph="&#xE9D9;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
                         </StackPanel>
                         <TextBlock Margin="0 16 0 0"
                             Style="{ThemeResource TXPagePlainTextBlockStyle}">
@@ -112,6 +117,20 @@
                 </ScrollViewer>
             </PivotItem>
         </Pivot>
+        <Button Grid.Row="1" x:Name="NextStepButton" 
+                Style="{ThemeResource ButtonRevealStyle}" 
+                Content="下一步" Click="NextStepButton_Click"
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Height="36" Width="160" Margin="16 16 8 8"/>
+        <Button Grid.Row="1" x:Name="CloseDialogButton" 
+                Style="{ThemeResource AccentButtonStyle}" 
+                Content="进入 Thunder X" Click="CloseDialogButton_Click"
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Height="36" Width="160" Margin="16 16 8 8"/>
     </Grid>
     
 </ContentDialog>
