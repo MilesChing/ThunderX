@@ -48,8 +48,6 @@ namespace TX
 
         public App()
         {
-            AppCenter.Start("5e098f14-cfbd-4f0f-9e27-715ca88e06b3",
-                   typeof(Analytics), typeof(Crashes));
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.Resuming += OnResuming;
@@ -74,6 +72,7 @@ namespace TX
         private async Task InitializeAsync()
         {
             D("Application initializing");
+            InitializeAppCenter();
             await InitializeAppLicenceAsync();
             await InitializeBackgroundTaskAsync();
             await Core.InitializeAsync(await ReadLocalStorageAsync());
@@ -122,6 +121,20 @@ namespace TX
             BackgroundTaskManager.UnregisterTasks();
             BackgroundTaskManager.RegisterTasks();
             D("Background task reregistered");
+        }
+
+        private void InitializeAppCenter()
+        {
+            D("App Center initializing");
+            Crashes.ShouldProcessErrorReport = (ErrorReport report) => 
+                settingEntries.IsDiagnosticDataUploadingEnabled;
+            Crashes.SendingErrorReport += (sender, e) =>
+                Debug.WriteLine($"[AppCenter] Sending error report <{e.Report.Id}>");
+            Crashes.SentErrorReport += (sender, e) =>
+                Debug.WriteLine($"[AppCenter] Error report sent <{e.Report.Id}>");
+            AppCenter.Start("5e098f14-cfbd-4f0f-9e27-715ca88e06b3",
+                   typeof(Analytics), typeof(Crashes));
+            D("App Center initialized");
         }
 
         private async Task<StorageFile> GetCacheFileAsync()

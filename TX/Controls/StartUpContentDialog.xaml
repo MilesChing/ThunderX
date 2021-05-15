@@ -110,8 +110,8 @@
                                 InlineXamlUid="StartUpDialog_LogUploadingPermission_Span"
                                 Styles="{StaticResource ResourcedSpanStyleList}"/>
                         </TextBlock>
-                        <ToggleSwitch Margin="0 16 0 0" IsOn="True"
-                                      x:Uid="StartUpDialog_LogUploadingPermission_Switch"/>
+                        <ToggleSwitch Margin="0 16 0 0" x:Uid="StartUpDialog_LogUploadingPermission_Switch"
+                                      IsOn="{x:Bind SettingEntries.IsDiagnosticDataUploadingEnabled, Mode=TwoWay}"/>
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>

@@ -362,6 +362,12 @@
   <data name="SetPage_Notifications_Title.Text" xml:space="preserve">
     <value>Notifications</value>
   </data>
+  <data name="SetPage_Others_DiagnosticDataToggleSwitch.Header" xml:space="preserve">
+    <value>Upload Diagnostic Data</value>
+  </data>
+  <data name="SetPage_Others_Title.Text" xml:space="preserve">
+    <value>Others</value>
+  </data>
   <data name="SetPage_Thunderbolt_Title.Text" xml:space="preserve">
     <value>Thunderbolt Analyzer</value>
   </data>
