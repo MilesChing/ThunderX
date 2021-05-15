@@ -15,10 +15,7 @@ namespace TX.Core.Providers
 {
     public class LocalCacheManager : IPersistable
     {
-        public LocalCacheManager()
-        {
-            this.cacheFolder = cacheFolder;
-        }
+        public LocalCacheManager() { }
 
         public void Initialize(byte[] persistentData)
         {

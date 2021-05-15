@@ -1,0 +1,139 @@
+﻿<ContentDialog
+    x:Class="TX.Controls.StartUpContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TX.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:utils="using:TX.Utils"
+    xmlns:appmodel="using:Windows.ApplicationModel"
+    Loaded="ThisLoaded"
+    mc:Ignorable="d">
+    <ContentDialog.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="{ThemeResource SystemAccentColor}"/>
+        <SolidColorBrush x:Key="HighlightBrush" Color="{ThemeResource SystemBaseHighColor}"/>
+        <local:ObservableSpanTemplateCollection x:Key="ResourcedSpanStyleList">
+            <local:SubSpanStyle Key="Bold" FontWeight="Bold" Foreground="{ThemeResource HighlightBrush}"/>
+            <local:SubSpanStyle Key="Accent" Foreground="{ThemeResource AccentBrush}"/>
+        </local:ObservableSpanTemplateCollection>
+    </ContentDialog.Resources>
+    <Grid Padding="8">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Rectangle Height="600"/>
+        <Pivot x:Name="MainPivot" 
+               Title="{x:Bind appmodel:Package.Current.DisplayName}"
+               SelectionChanged="MainPivot_SelectionChanged"
+               VerticalAlignment="Stretch"
+               VerticalContentAlignment="Stretch">
+            <PivotItem x:Name="NewVersionPivotItem" Padding="0 16 0 0"
+                       VerticalContentAlignment="Stretch">
+                <PivotItem.Header>
+                    <TextBlock>
+                        <Run x:Uid="AboutPage_VersionInfo_Title"/>
+                        <Run Text="{x:Bind utils:PackageVersionExtensions.CurrentVersionString}"/>
+                    </TextBlock>
+                </PivotItem.Header>
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}">
+                            <local:ResourcedSpan
+                                InlineXamlUid="NewVersion_InfoSpan"
+                                Styles="{StaticResource ResourcedSpanStyleList}"/>
+                        </TextBlock>
+                        <Border x:Name="BuildTimestamp" Margin="0 12 0 0"
+                                Padding="4 0 4 2" CornerRadius="2"
+                                HorizontalAlignment="Left"
+                                Background="{ThemeResource SystemAccentColor}">
+                            <TextBlock Foreground="{ThemeResource SystemAltHighColor}"
+                                       FontWeight="SemiBold">
+                                <Run Text="Released at"/>
+                                <Run x:Name="BuildTimeRun"/>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem x:Name="NetworkPermissionsPivotItem" Padding="0 16 0 0"
+                       x:Uid="StartUpDialog_NetworkPermissionsPivotItem"
+                       VerticalContentAlignment="Stretch">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Margin="0 0 0 16"
+                            Style="{ThemeResource TXPagePlainTextBlockStyle}"
+                            x:Uid="StartUpDialog_NetworkPermissions_GuideText"/>
+
+                        <Border Background="{ThemeResource SystemChromeLowColor}"
+                                Padding="12 12 12 0" Margin="0 0 0 16" CornerRadius="4">
+                            <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
+                                       LineHeight="32" Foreground="{ThemeResource SystemBaseMediumHighColor}">
+                                <local:ResourcedSpan 
+                                    InlineXamlUid="StartUpDialog_NetworkPermissions_StepsSpan"
+                                    Styles="{StaticResource ResourcedSpanStyleList}"/>
+                            </TextBlock>
+                        </Border>
+
+                        <CommandBar DefaultLabelPosition="Right"
+                                    Background="Transparent" OverflowButtonVisibility="Collapsed"
+                                    HorizontalAlignment="Left" IsSticky="False">
+                            <AppBarButton x:Name="SetButton" Click="SetButton_Click" Icon="Setting"
+                                          Style="{ThemeResource AppBarButtonRevealStyle}"
+                                          x:Uid="StartUpDialog_NetworkPermissions_SetButton"/>
+                        </CommandBar>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+            <PivotItem x:Name="LogUploadingPermissionPivotItem"
+                       x:Uid="StartUpDialog_LogUploadingPermissionPivotItem">
+                <ScrollViewer>
+                    <StackPanel Margin="0 16 0 0">
+                        <StackPanel Orientation="Horizontal" Margin="0 4 0 8">
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      Glyph="&#xE975;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      Glyph="&#xE13C;" Margin="20 0 20 0"/>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      Glyph="&#xE753;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      Glyph="&#xE13C;" Margin="20 0 20 0"/>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                      Glyph="&#xE9D9;" FontSize="40" 
+                                      Foreground="{ThemeResource SystemAccentColor}"/>
+                        </StackPanel>
+                        <TextBlock Margin="0 16 0 0"
+                            Style="{ThemeResource TXPagePlainTextBlockStyle}">
+                            <local:ResourcedSpan 
+                                InlineXamlUid="StartUpDialog_LogUploadingPermission_Span"
+                                Styles="{StaticResource ResourcedSpanStyleList}"/>
+                        </TextBlock>
+                        <ToggleSwitch Margin="0 16 0 0" IsOn="True"
+                                      x:Uid="StartUpDialog_LogUploadingPermission_Switch"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
+        <Button Grid.Row="1" x:Name="NextStepButton" 
+                x:Uid="StartUpDialog_NextStepButton"
+                Style="{ThemeResource ButtonRevealStyle}" 
+                Click="NextStepButton_Click"
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Visibility="Collapsed" Height="36" 
+                Width="160" Margin="16 16 8 8"/>
+        <Button Grid.Row="1" x:Name="CloseDialogButton" 
+                x:Uid="StartUpDialog_CloseDialogButton"
+                Style="{ThemeResource AccentButtonStyle}" 
+                Click="CloseDialogButton_Click"
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Visibility="Collapsed" Height="36" 
+                Width="160" Margin="16 16 8 8"/>
+    </Grid>
+    
+</ContentDialog>
