@@ -510,6 +510,14 @@ Create a task for downloading.</source>
           <source>Upload data for diagnostics?</source>
           <target state="translated">我们能否上传诊断数据？</target>
         </trans-unit>
+        <trans-unit id="StartUpDialog_CloseDialogButton.Content" translate="yes" xml:space="preserve">
+          <source>Enter Application</source>
+          <target state="translated">进入应用</target>
+        </trans-unit>
+        <trans-unit id="StartUpDialog_NextStepButton.Content" translate="yes" xml:space="preserve">
+          <source>Next Step</source>
+          <target state="translated">下一步</target>
+        </trans-unit>
       </group>
     </body>
   </file>

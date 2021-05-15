@@ -5,7 +5,6 @@
     xmlns:local="using:TX.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:utils="using:TX.Utils"
     xmlns:appmodel="using:Windows.ApplicationModel"
     Loaded="ThisLoaded"
@@ -118,19 +117,23 @@
             </PivotItem>
         </Pivot>
         <Button Grid.Row="1" x:Name="NextStepButton" 
+                x:Uid="StartUpDialog_NextStepButton"
                 Style="{ThemeResource ButtonRevealStyle}" 
-                Content="下一步" Click="NextStepButton_Click"
+                Click="NextStepButton_Click"
                 HorizontalContentAlignment="Center" 
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Center" HorizontalAlignment="Right"
-                Height="36" Width="160" Margin="16 16 8 8"/>
+                Visibility="Collapsed" Height="36" 
+                Width="160" Margin="16 16 8 8"/>
         <Button Grid.Row="1" x:Name="CloseDialogButton" 
+                x:Uid="StartUpDialog_CloseDialogButton"
                 Style="{ThemeResource AccentButtonStyle}" 
-                Content="进入 Thunder X" Click="CloseDialogButton_Click"
+                Click="CloseDialogButton_Click"
                 HorizontalContentAlignment="Center" 
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Center" HorizontalAlignment="Right"
-                Height="36" Width="160" Margin="16 16 8 8"/>
+                Visibility="Collapsed" Height="36" 
+                Width="160" Margin="16 16 8 8"/>
     </Grid>
     
 </ContentDialog>

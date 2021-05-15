@@ -384,4 +384,10 @@
   <data name="StartUpDialog_LogUploadingPermission_Switch.Header" xml:space="preserve">
     <value>我们能否上传诊断数据？</value>
   </data>
+  <data name="StartUpDialog_CloseDialogButton.Content" xml:space="preserve">
+    <value>进入应用</value>
+  </data>
+  <data name="StartUpDialog_NextStepButton.Content" xml:space="preserve">
+    <value>下一步</value>
+  </data>
 </root>

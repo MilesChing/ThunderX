@@ -401,6 +401,9 @@
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
   </data>
+  <data name="StartUpDialog_CloseDialogButton.Content" xml:space="preserve">
+    <value>Enter Application</value>
+  </data>
   <data name="StartUpDialog_LogUploadingPermissionPivotItem.Header" xml:space="preserve">
     <value>Upload Reports</value>
   </data>
@@ -430,6 +433,9 @@
 2. Select {Accent Network &amp;amp; Internet} &amp;gt; {Accent Wi-Fi} ;
 3. Select {Accent Choose apps that can use your Wi-Fi data} ;
 4. Turn on the toggle next to {Accent Let apps use my Wi-Fi data}, then turn on the toggle next to {Accent Thunder X} ;</value>
+  </data>
+  <data name="StartUpDialog_NextStepButton.Content" xml:space="preserve">
+    <value>Next Step</value>
   </data>
   <data name="TargetType" xml:space="preserve">
     <value>Target Type</value>

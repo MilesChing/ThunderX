@@ -105,10 +105,6 @@
                 </StackPanel>
             </Grid>
 
-            <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}"
-                       Margin="0 0 0 20">
-            </TextBlock>
-
             <!--Rating and Feedback-->
             <TextBlock x:Uid="AboutPage_FeedbackInfo_Title" Margin="0 0 0 16"
                        Style="{ThemeResource TXPageSubtitleTextBlockStyle}"/>
