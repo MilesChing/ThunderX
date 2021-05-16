@@ -284,8 +284,10 @@
     <value>Need YouTube video downloading?</value>
   </data>
   <data name="NewVersion_InfoSpan" xml:space="preserve">
-    <value>🎨 UI adjustment for multiple file selection.
-🍞 Add request for network permissions.</value>
+    <value>• {Bold Activation exception handling:} Crashes during application activation (from notification or external URI) will be captured and notified to you.
+• {Bold Storage permissions pruning:} Permissions of unused storage items will be automatically released now.
+• {Bold Diagnostic data uploading:} Crashes and other errors captured are supported to be uploaded for faster solving them. If you don't want any uploading, turn this off in Settings.
+• {Bold Other core improvements and UI adjustments.}</value>
   </data>
   <data name="OpenConnections" xml:space="preserve">
     <value>Open Connections</value>

@@ -22,7 +22,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Rectangle Height="600"/>
+        <Rectangle Height="1000"/>
         <Pivot x:Name="MainPivot" 
                Title="{x:Bind appmodel:Package.Current.DisplayName}"
                SelectionChanged="MainPivot_SelectionChanged"

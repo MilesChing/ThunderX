@@ -372,6 +372,12 @@
   <data name="StartUpDialog_NetworkPermissions_SetButton.Label" xml:space="preserve">
     <value>转到 “设置”</value>
   </data>
+  <data name="NewVersion_InfoSpan" xml:space="preserve">
+    <value>• {Bold 启动异常处理：}我们已自动捕获从外部URI启动时可能发生的错误并提示用户。
+• {Bold 存储权限清理：}Thunder X 会自动清理不再需要的存储项目（文件和文件夹）访问权限，我们确保仅在需要时使用存储项目访问权限。
+• {Bold 诊断数据上传：}现已支持应用崩溃或出错时的诊断数据收集和上传，这将有助于我们更好地了解应用程序的运行情况。如不想启用这个功能可随时在设置中关闭。
+• {Bold 其他内核稳定性提升和 UI 调整。}</value>
+  </data>
   <data name="StartUpDialog_LogUploadingPermission_Span" xml:space="preserve">
     <value>Thunder X 需要通过上传调试数据提升软件的服务质量和用户体验。我们使用软件自动上传的数据更好地了解软件是否正常运行以及需要做出何种改进。我们严格控制数据上传的大小，确保将仅采集和上传供调试所需的数据，且将在进行所需的分析后定期删除云端存储的数据。{Bold Thunder X 不会上传或存储可用于与用户身份强关联的任何数据}，例如你的 Microsoft 账户信息或设备标识符等。</value>
   </data>
