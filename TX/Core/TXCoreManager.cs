@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using TX.Collections;
 using TX.Core.Downloaders;
 using TX.Core.Interfaces;
 using TX.Core.Models.Contexts;
@@ -30,6 +31,7 @@ namespace TX.Core
         {
             coreBufferProvider = new SizeLimitedBufferProvider(
                 settingEntries.MemoryLimit, 512L * 1024L);
+            taskScheduler = new DownloadTaskScheduler(downloaders);
         }
 
         public async Task InitializeAsync(byte[] checkPoint = null)
@@ -38,7 +40,6 @@ namespace TX.Core
             {
                 await LoadAnnounceUrlsAsync();
                 await InitializeDhtEngineAsync();
-                InitializeCacheFolder();
 
                 if (checkPoint != null)
                 {
@@ -51,7 +52,7 @@ namespace TX.Core
                         });
                     if (checkPointObject.Tasks != null)
                         foreach (var kvp in checkPointObject.Tasks)
-                            tasks.Add(kvp.Key, kvp.Value);
+                            tasks.Add(kvp.Value);
                     try { coreCacheManager.Initialize(checkPointObject.CacheManagerCheckPoint); }
                     catch (Exception) { }
                     if (checkPointObject.Downloaders != null)
@@ -64,7 +65,8 @@ namespace TX.Core
                             catch (Exception) { }
                 }
 
-                StartScheduler();
+                taskScheduler.Start();
+
                 D("Initialized");
             }
             catch (Exception e)
@@ -73,24 +75,48 @@ namespace TX.Core
             }
         }
 
-        public IReadOnlyDictionary<string, DownloadTask> Tasks => tasks;
+        public ISyncableEnumerable<DownloadTask> Tasks => tasks;
 
-        public IReadOnlyCollection<AbstractDownloader> Downloaders => downloaders;
+        public ISyncableEnumerable<AbstractDownloader> Downloaders => downloaders;
 
-        public INotifyCollectionChanged ObservableDownloaders => downloaders;
+        public ISyncableEnumerable<DownloadHistory> Histories => histories;
 
-        public IReadOnlyCollection<DownloadHistory> Histories => histories;
-
-        public INotifyCollectionChanged ObservableHistories => histories;
+        public ISyncableEnumerable<string> AnnounceUrls => announceUrls;
 
         public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
 
-        public IReadOnlyList<string> CustomAnnounceURLs => customAnnounceUrls;
-
         public IStorageFolder CacheFolder => coreCacheManager.CacheFolder;
 
-        public void RemoveHistory(DownloadHistory history) =>
-            histories.Remove(history);
+        public void RemoveHistory(DownloadHistory history) => histories.Remove(history);
+
+        public async Task LoadAnnounceUrlsAsync()
+        {
+            try
+            {
+                var lines = (await FileIO.ReadLinesAsync(
+                    await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8
+                )).Where(url => url.Length > 0);
+                announceUrls.Clear();
+                foreach (var announceUrl in lines)
+                    announceUrls.Add(announceUrl);
+                D($"Custom announce URLs loaded, {announceUrls.Count} in total");
+            }
+            catch (Exception e)
+            {
+                D($"Custom announce URLs loading failed, {e.Message}");
+            }
+        }
+
+        public async Task CleanCacheFolderAsync()
+        {
+            await coreCacheManager.CleanCacheFolderAsync(
+                taskKey => downloaders.Any(downloader =>
+                    downloader.Status != DownloaderStatus.Completed &&
+                    downloader.Status != DownloaderStatus.Disposed &&
+                    downloader.DownloadTask.Key.Equals(taskKey))
+            );
+        }
 
         public string CreateTask(
             AbstractTarget target,
@@ -100,52 +126,28 @@ namespace TX.Core
             DateTime? scheduledDateTime = null)
         {
             string token = RandomUtils.String(8);
-            while (tasks.ContainsKey(token))
+            while (tasks.Any(task => task.Key.Equals(token)))
                 token = RandomUtils.String(8);
 
-            tasks[token] = new DownloadTask(
+            tasks.Add(new DownloadTask(
                 token, target,
                 customFileName,
                 coreFolderManager.StoreFolder(destinationFolder),
                 DateTime.Now,
                 isBackgroundDownloadAllowed
-            )
-            {
-                ScheduledStartTime = scheduledDateTime
-            };
+            ) { ScheduledStartTime = scheduledDateTime });
 
             CreateDownloader(token);
-
             return token;
-        }
-
-        public async Task LoadAnnounceUrlsAsync()
-        {
-            try
-            {
-                customAnnounceUrls.Clear();
-                customAnnounceUrls.AddRange(
-                    (await FileIO.ReadLinesAsync(
-                        await StorageUtils.GetOrCreateAnnounceUrlsFileAsync(),
-                        Windows.Storage.Streams.UnicodeEncoding.Utf8
-                    )).Where(url => url.Length > 0)
-                );
-                D($"Custom announce URLs loaded, {customAnnounceUrls.Count} in total");
-            }
-            catch (Exception e)
-            {
-                D($"Custom announce URLs loading failed, {e.Message}");
-            }
         }
 
         private void CreateDownloader(string token, byte[] checkPoint = null)
         {
-            if (!tasks.TryGetValue(token, out DownloadTask task)) return;
-
             AbstractDownloader downloader = null;
 
             try
             {
+                var task = tasks.First(t => t.Key.Equals(token));
                 if (task.Target is HttpRangableTarget httpRangableTarget)
                     downloader = new HttpParallelDownloader(
                         task,
@@ -167,7 +169,7 @@ namespace TX.Core
                         maximumConnections: settingEntries.MaximumConnections,
                         maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
                         maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
-                        customAnnounceUrls: customAnnounceUrls);
+                        customAnnounceUrls: announceUrls);
             }
             catch (Exception e)
             {
@@ -214,7 +216,8 @@ namespace TX.Core
             return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
-                    Tasks = Tasks.ToArray(),
+                    Tasks = Tasks.Select(task => new KeyValuePair
+                        <string, DownloadTask>(task.Key, task)).ToArray(),
                     Downloaders = Downloaders.Where(downloader =>
                         downloader.Status != DownloaderStatus.Completed &&
                         downloader.Status != DownloaderStatus.Disposed)
@@ -235,18 +238,17 @@ namespace TX.Core
                 }));
         }
 
-        public void Suspend()
+        public async Task SuspendAsync()
         {
             D("Suspending core...");
             D("Cancelling scheduler...");
-            schedulerCancellationTokenSource?.Cancel();
-            schedulerCancellationTokenSource = null;
-            schedulerRunningTask?.Wait();
-            schedulerRunningTask = null;
+            await taskScheduler.StopAsync();
             D("Cleaning unused task entries...");
             CleanTasks();
             D("Cleaning local cache folder...");
-            Task.Run(async () => await CleanCacheFolderAsync()).Wait();
+            await CleanCacheFolderAsync();
+            D("Cleaning storage permission lists...");
+            CleanStoragePermissionLists();
             D("Cancelling downloaders...");
             foreach (var downloader in downloaders)
                 if (downloader.Status == DownloaderStatus.Running)
@@ -256,7 +258,7 @@ namespace TX.Core
 
         public void Resume()
         {
-            StartScheduler();
+            taskScheduler.Start();
             D("Resumed");
         }
 
@@ -265,27 +267,45 @@ namespace TX.Core
             torrentEngine.Dispose();
         }
 
-        public async Task CleanCacheFolderAsync()
-        {
-            await coreCacheManager.CleanCacheFolderAsync(
-                taskKey => Downloaders.Any(
-                    downloader =>
-                        downloader.Status != DownloaderStatus.Completed &&
-                        downloader.Status != DownloaderStatus.Disposed &&
-                        downloader.DownloadTask.Key.Equals(taskKey))
-            );
-        }
-
         private void CleanTasks()
         {
-            var toBeDeleted = tasks.Select(task => task.Key).Where(
-                key => !downloaders.Any(downloader =>
-                    downloader.DownloadTask.Key.Equals(key))).ToArray();
-            foreach (var key in toBeDeleted)
+            var toBeDeleted = tasks.Where(task => 
+                !downloaders.Any(downloader =>
+                downloader.DownloadTask.Key.Equals(task.Key)))
+                .ToArray();
+            foreach (var task in toBeDeleted)
             {
-                D($"Unused task {key} deleted");
-                tasks.Remove(key);
+                D($"Unused task {task.Key} deleted");
+                tasks.Remove(task);
             }
+        }
+
+        private void CleanStoragePermissionLists()
+        {
+            var futureList = StorageApplicationPermissions.FutureAccessList;
+            var futureListRemoved = new List<string>();
+            foreach (var entry in futureList.Entries)
+            {
+                if (downloaders.Any(downloader => downloader.
+                    DownloadTask.DestinationFolderKey.Equals(entry.Token)))
+                    continue;
+                D($"Remove FutureAccessList entry <{entry.Token}>");
+                futureListRemoved.Add(entry.Token);
+            }
+            foreach (var token in futureListRemoved)
+                futureList.Remove(token);
+
+            var recentList = StorageApplicationPermissions.MostRecentlyUsedList;
+            var recentListRemoved = new List<string>();
+            foreach (var entry in recentList.Entries)
+            {
+                if (entry.Token.Equals(settingEntries.DownloadsFolderToken))
+                    continue;
+                D($"Remove MostRecentlyUsedList entry <{entry.Token}>");
+                recentListRemoved.Add(entry.Token);
+            }
+            foreach (var token in recentListRemoved)
+                recentList.Remove(token);
         }
 
         private async Task InitializeDhtEngineAsync()
@@ -303,56 +323,6 @@ namespace TX.Core
             }
         }
 
-        private void InitializeCacheFolder()
-        {
-            coreCacheManager = new LocalCacheManager(
-                ApplicationData.Current.LocalCacheFolder);
-            D("Core cache manager initialized");
-        }
-
-        private void StartScheduler()
-        {
-            schedulerCancellationTokenSource?.Cancel();
-            schedulerCancellationTokenSource = new CancellationTokenSource();
-            schedulerRunningTask = RunSchedulerAsync(schedulerCancellationTokenSource.Token);
-        }
-
-        private async Task RunSchedulerAsync(CancellationToken token)
-        {
-            D("[Scheduler] Started");
-            while (!token.IsCancellationRequested)
-            {
-                try
-                {
-                    DateTime now = DateTime.Now;
-                    D($"[Scheduler] <{now:T}> Checking scheduled downloaders");
-                    TimeSpan nextDelayTimeSpan = SchedulerTimerInterval;
-                    foreach (var downloader in downloaders)
-                    {
-                        var scheduledTime = downloader.DownloadTask.ScheduledStartTime;
-                        if (scheduledTime != null)
-                        {
-                            if (scheduledTime.Value <= now)
-                            {
-                                D($"[Scheduler] Start {downloader.GetType().Name} with task {downloader.DownloadTask.Key}");
-                                downloader.Start();
-                                downloader.DownloadTask.ScheduledStartTime = null;
-                            }
-                            else
-                            {
-                                var timeBeforeScheduled = scheduledTime.Value - now;
-                                if (timeBeforeScheduled < nextDelayTimeSpan)
-                                    nextDelayTimeSpan = timeBeforeScheduled;
-                            }
-                        }
-                    }
-                    try { await Task.Delay(nextDelayTimeSpan, token); }
-                    catch (TaskCanceledException) { }
-                } catch (Exception) { }
-            }
-            D("[Scheduler] Cancelled");
-        }
-
         private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             D($"Failed serializing json: {args.ErrorContext.Error.Message}");
@@ -360,17 +330,15 @@ namespace TX.Core
         }
 
         private readonly Settings settingEntries = new Settings();
-        private readonly Dictionary<string, DownloadTask> tasks = new Dictionary<string, DownloadTask>();
-        private readonly ObservableCollection<AbstractDownloader> downloaders = new ObservableCollection<AbstractDownloader>();
-        private readonly ObservableCollection<DownloadHistory> histories = new ObservableCollection<DownloadHistory>();
+        private readonly InnerCollection<DownloadTask> tasks = new InnerCollection<DownloadTask>();
+        private readonly InnerCollection<AbstractDownloader> downloaders = new InnerCollection<AbstractDownloader>();
+        private readonly InnerCollection<DownloadHistory> histories = new InnerCollection<DownloadHistory>();
+        private readonly InnerCollection<string> announceUrls = new InnerCollection<string>();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
         private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
+        private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
-        private LocalCacheManager coreCacheManager = null;
-        private readonly List<string> customAnnounceUrls = new List<string>();
-        private Task schedulerRunningTask = null;
-        private CancellationTokenSource schedulerCancellationTokenSource = null;
-        private static readonly TimeSpan SchedulerTimerInterval = TimeSpan.FromMinutes(1.0);
+        private readonly DownloadTaskScheduler taskScheduler = null;
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
@@ -384,5 +352,7 @@ namespace TX.Core
 
             public byte[] CacheManagerCheckPoint;
         }
+
+        private class InnerCollection<T> : ObservableCollection<T>, ISyncableEnumerable<T> { }
     }
 }

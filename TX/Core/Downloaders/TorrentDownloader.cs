@@ -123,29 +123,30 @@ namespace TX.Core.Downloaders
         /// </summary>
         public int OpenConnections => manager?.OpenConnections ?? 0;
 
-        protected override async Task CancelAsync()
+        protected override async Task HandleCancelAsync()
         {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
-            downloadTask?.Wait();
+            if (downloadTask != null)
+                await downloadTask;
             downloadTask = null;
-            await manager?.PauseAsync();
+            if (manager != null)
+                await manager.PauseAsync();
         }
 
-        protected override Task DisposeAsync()
-            => Task.Run(async () =>
+        protected override async Task HandleDisposeAsync()
+        {
+            if (manager != null)
             {
-                if (manager != null)
-                {
-                    manager.TorrentStateChanged -= ManagerTorrentStateChanged;
-                    await manager.StopAsync();
-                    manager.Dispose();
-                    await engine.Unregister(manager);
-                    manager = null;
-                }
-            });
+                manager.TorrentStateChanged -= ManagerTorrentStateChanged;
+                await manager.StopAsync();
+                manager.Dispose();
+                await engine.Unregister(manager);
+                manager = null;
+            }
+        }
 
-        protected override async Task StartAsync()
+        protected override async Task HandleStartAsync()
         {
             await ValidateCacheFolderAsync();
 
@@ -181,7 +182,7 @@ namespace TX.Core.Downloaders
             cancellationTokenSource = new CancellationTokenSource();
             var token = cancellationTokenSource.Token;
 
-            downloadTask = Task.Run(() =>
+            downloadTask = new Task(async () =>
             {
                 Speed.IsEnabled = true;
 
@@ -192,7 +193,7 @@ namespace TX.Core.Downloaders
                     {
                         try
                         {
-                            Task.Delay(ProgressUpdateInterval).Wait();
+                            await Task.Delay(ProgressUpdateInterval);
                             long nowVal = (long)(manager.PartialProgress / 100.0 * mprog.TotalSize);
                             long delta = nowVal - mprog.DownloadedSize;
                             if (delta < 0)
@@ -210,6 +211,8 @@ namespace TX.Core.Downloaders
                     Speed.IsEnabled = false;
                 }
             });
+
+            downloadTask.RunSynchronously();
         }
 
         private void RegisterDebugMessages()
@@ -236,12 +239,13 @@ namespace TX.Core.Downloaders
             switch (e.NewState)
             {
                 case TorrentState.Error:
-                    ReportError(ma.Error.Exception, false);
+                    await ReportErrorAsync(ma.Error.Exception, false);
                     break;
                 case TorrentState.Seeding:
                     cancellationTokenSource?.Cancel();
                     cancellationTokenSource = null;
-                    downloadTask?.Wait();
+                    if (downloadTask != null)
+                        await downloadTask;
                     downloadTask = null;
                     await manager.StopAsync();
                     break;
@@ -263,7 +267,10 @@ namespace TX.Core.Downloaders
                             cacheFolder = null;
                             ReportCompleted(targetFolder);
                         }
-                        catch (Exception ex) { ReportError(ex, true); }
+                        catch (Exception ex) 
+                        { 
+                            await ReportErrorAsync(ex, true); 
+                        }
                     }
                     break;
             }
@@ -276,16 +283,16 @@ namespace TX.Core.Downloaders
                 if (cacheFolderToken == string.Empty)
                 {
                     cacheFolderToken = await cacheProvider.NewCacheFolderAsync();
-                    cacheFolder = cacheProvider.GetCacheFolderByToken(cacheFolderToken);
+                    cacheFolder = await cacheProvider.GetCacheFolderByTokenAsync(cacheFolderToken);
                     ((BaseProgress)Progress).Reset();
                 }
                 else
                 {
-                    cacheFolder = cacheProvider.GetCacheFolderByToken(cacheFolderToken);
+                    cacheFolder = await cacheProvider.GetCacheFolderByTokenAsync(cacheFolderToken);
                     if (cacheFolder == null)
                     {
                         cacheFolderToken = await cacheProvider.NewCacheFolderAsync();
-                        cacheFolder = cacheProvider.GetCacheFolderByToken(cacheFolderToken);
+                        cacheFolder = await cacheProvider.GetCacheFolderByTokenAsync(cacheFolderToken);
                         ((BaseProgress)Progress).Reset();
                     }
                 }

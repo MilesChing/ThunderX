@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TX.Collections;
 using TX.Core;
 using TX.Core.Models.Contexts;
 using TX.Core.Utils;
@@ -33,46 +35,26 @@ namespace TX
 
         private readonly ObservableCollection<DownloadHistoryViewModel> VMCollection =
             new ObservableCollection<DownloadHistoryViewModel>();
+        private readonly CollectionBind<DownloadHistory, DownloadHistoryViewModel> HistoryCollectionBind;
 
         public HistoryListPage()
         {
             this.InitializeComponent();
-            VMCollection.CollectionChanged += VMCollection_CollectionChanged;
-            VMCollection_CollectionChanged(VMCollection, null);
-        }
-
-        private void VMCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (sender is ObservableCollection<DownloadHistoryViewModel> oc)
-            {
-                if (oc.Count > 0)
-                {
-                    HistoryViewList.Visibility = Visibility.Visible;
-                    EmptyView.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    HistoryViewList.Visibility = Visibility.Collapsed;
-                    EmptyView.Visibility = Visibility.Visible;
-                }
-            }
+            HistoryCollectionBind = new CollectionBind<DownloadHistory, DownloadHistoryViewModel>(
+                Core.Histories, VMCollection,
+                (history) => new DownloadHistoryViewModel(history), 
+                (history, historyVm) => history == historyVm.OriginalHistory);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Core.ObservableHistories.CollectionChanged -= CollectionChanged;
+            HistoryCollectionBind.IsEnabled = false;
             base.OnNavigatedFrom(e);
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Core.ObservableHistories.CollectionChanged += CollectionChanged;
-            var nowHistories = VMCollection.Select(view => view.OriginalHistory);
-            var newItems = Core.Histories.Except(nowHistories).ToList();
-            var oldItems = nowHistories.Except(Core.Histories).ToList();
-            await SolveCollectionChangingAsync(Core.Histories,
-                new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Replace, newItems, oldItems));
+            HistoryCollectionBind.IsEnabled = true;
             HandleNavigationParameter(e.Parameter);
             base.OnNavigatedTo(e);
         }
@@ -89,90 +71,6 @@ namespace TX
                     HistoryViewList.SelectionMode = ListViewSelectionMode.Single;
                     HistoryViewList.SelectedItem = item;
                 }
-            }
-        }
-
-        private async void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-            => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                async () => await SolveCollectionChangingAsync(sender, e));
-
-        private async Task SolveCollectionChangingAsync(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            var oldItems = e.OldItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
-            var newItems = e.NewItems?.Cast<DownloadHistory>() ?? new List<DownloadHistory>();
-            var intersect = oldItems.Intersect(newItems);
-            oldItems = oldItems.Except(intersect);
-            newItems = newItems.Except(intersect);
-
-            foreach (DownloadHistory hist in oldItems)
-            {
-                var toBeDeleted = VMCollection.FirstOrDefault(
-                    vm => vm.TaskKey.Equals(hist.TaskKey));
-                if (toBeDeleted != null) VMCollection.Remove(toBeDeleted);
-            }
-
-            foreach (DownloadHistory hist in newItems)
-            {
-                var newVM = await NewDownloadHistoryViewModelAsync(hist);
-                if (newVM != null) VMCollection.Add(newVM);
-                else Core.RemoveHistory(hist);
-            }
-        }
-
-        private async Task<DownloadHistoryViewModel> NewDownloadHistoryViewModelAsync(DownloadHistory history)
-        {
-            try
-            {
-                IStorageItem item = null;
-
-                try
-                {
-                    item = await StorageUtils.GetStorageItemAsync(history.DestinationPath);
-                }
-                catch (Exception)
-                {
-                    item = null;
-                }
-
-                long? size = null;
-                ImageSource iconSource = null;
-                string fileName = Path.GetFileName(history.DestinationPath);
-                if (string.IsNullOrEmpty(fileName)) fileName = Path.GetDirectoryName(history.DestinationPath);
-                if (string.IsNullOrEmpty(fileName)) fileName = history.DestinationPath;
-
-                if (item is StorageFile file)
-                {
-                    size = await file.GetSizeAsync();
-                    var source = new BitmapImage();
-                    using (var thumbnail = await file.GetThumbnailAsync(
-                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
-                        await source.SetSourceAsync(thumbnail);
-                    iconSource = source;
-                } 
-                else if (item is StorageFolder folder)
-                {
-                    size = await folder.GetSizeAsync();
-                    var source = new BitmapImage();
-                    using (var thumbnail = await folder.GetThumbnailAsync(
-                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
-                        await source.SetSourceAsync(thumbnail);
-                    iconSource = source;
-                } 
-                else
-                {
-                }
-
-                return new DownloadHistoryViewModel()
-                {
-                    OriginalHistory = history,
-                    TaskKey = history.TaskKey,
-                    HistoryFileSize = size,
-                    Source = iconSource,
-                };
-            }
-            catch (Exception)
-            {
-                return null;
             }
         }
 
@@ -238,21 +136,89 @@ namespace TX
                 VisualStateManager.GoToState(this, "NoSelection", false);
         }
 
-        private void SelectAllButton_Click(object sender, RoutedEventArgs e) =>
-            HistoryViewList.SelectAll();
+        private void SelectAllButton_Click(object sender, RoutedEventArgs e) => HistoryViewList.SelectAll();
 
         private void HistoryViewList_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
             SelectionCountText.Text = HistoryViewList.SelectedItems.Count.ToString();
+
+        private void HistoryViewList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double desiredWidth = 280.0;
+            int cols = (int) Math.Floor(e.NewSize.Width / desiredWidth);
+            if (cols <= 0) cols = 1;
+            HistoryViewItemWidth.Value = Math.Floor(
+                (e.NewSize.Width - HistoryViewList.Padding.Left - 
+                HistoryViewList.Padding.Right) / cols);
+        }
     }
 
-    class DownloadHistoryViewModel
+    class DownloadHistoryViewModel : INotifyPropertyChanged
     {
-        public string TaskKey;
+        public DownloadHistoryViewModel(DownloadHistory originalHistory)
+        {
+            this.OriginalHistory = originalHistory;
+            _ = PrepareAsync();
+        }
 
-        public long? HistoryFileSize;
+        public string TaskKey { get; private set; }
 
-        public ImageSource Source;
+        public long? HistoryFileSize { get; private set; }
 
-        public DownloadHistory OriginalHistory;
+        public ImageSource Source { get; private set; }
+
+        public DownloadHistory OriginalHistory { get; private set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private async Task PrepareAsync()
+        {
+            try
+            {
+                TaskKey = OriginalHistory.TaskKey;
+
+                IStorageItem item = null;
+
+                try
+                {
+                    item = await StorageUtils.GetStorageItemAsync(
+                        OriginalHistory.DestinationPath);
+                }
+                catch (Exception) { }
+
+                if (item is StorageFile file)
+                {
+                    HistoryFileSize = await file.GetSizeAsync();
+                    var source = new BitmapImage();
+                    using (var thumbnail = await file.GetThumbnailAsync(
+                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                        await source.SetSourceAsync(thumbnail);
+                    Source = source;
+                }
+                else if (item is StorageFolder folder)
+                {
+                    HistoryFileSize = await folder.GetSizeAsync();
+                    var source = new BitmapImage();
+                    using (var thumbnail = await folder.GetThumbnailAsync(
+                        Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                        await source.SetSourceAsync(thumbnail);
+                    Source = source;
+                }
+            }
+            catch (Exception) { }
+            finally
+            {
+                var propertyChanged = PropertyChanged;
+                if (propertyChanged != null)
+                {
+                    var handlers = propertyChanged.GetInvocationList();
+                    foreach (PropertyChangedEventHandler handler in handlers)
+                    {
+                        handler(this, new PropertyChangedEventArgs(nameof(TaskKey)));
+                        handler(this, new PropertyChangedEventArgs(nameof(HistoryFileSize)));
+                        handler(this, new PropertyChangedEventArgs(nameof(Source)));
+                    }
+                }
+            }
+        }
     }
 }

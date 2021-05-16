@@ -153,10 +153,6 @@
   <data name="AboutPage_TrailMessage_Title.Text" xml:space="preserve">
     <value>Still using trial version?</value>
   </data>
-  <data name="AboutPage_VersionInfo.Text" xml:space="preserve">
-    <value>🎨 UI adjustment for multiple file selection.
-🍞 Add request for network permissions.</value>
-  </data>
   <data name="AboutPage_VersionInfo_Title.Text" xml:space="preserve">
     <value>Introducing Version</value>
   </data>
@@ -287,26 +283,14 @@
   <data name="NewTaskPage_YouTubeTeachingTip.Title" xml:space="preserve">
     <value>Need YouTube video downloading?</value>
   </data>
+  <data name="NewVersion_InfoSpan" xml:space="preserve">
+    <value>• {Bold Activation exception handling:} Crashes during application activation (from notification or external URI) will be captured and notified to you.
+• {Bold Storage permissions pruning:} Permissions of unused storage items will be automatically released now.
+• {Bold Diagnostic data uploading:} Crashes and other errors captured are supported to be uploaded for faster solving them. If you don't want any uploading, turn this off in Settings.
+• {Bold Other core improvements and UI adjustments.}</value>
+  </data>
   <data name="OpenConnections" xml:space="preserve">
     <value>Open Connections</value>
-  </data>
-  <data name="PermissionsDialog_CloseButton.Content" xml:space="preserve">
-    <value>Got it!</value>
-  </data>
-  <data name="PermissionsDialog_GuideText.Text" xml:space="preserve">
-    <value>Some Windows 10 devices that run Windows 10 version 2004 or higher and can connect to a cellular or WLAN data network include a setting that controls which apps can access the internet. These settings need to be turned on for Thunder X to access the network.</value>
-  </data>
-  <data name="PermissionsDialog_MainContentDialog.Title" xml:space="preserve">
-    <value>How to turn on network permissions for Thunder X</value>
-  </data>
-  <data name="PermissionsDialog_SetButton.Content" xml:space="preserve">
-    <value>Open Settings</value>
-  </data>
-  <data name="PermissionsDialog_StepsSpan" xml:space="preserve">
-    <value>1. Open &lt;Bold&gt;Settings&lt;/Bold&gt; on your Windows 10 device;&lt;LineBreak/&gt;
-2. Select &lt;Bold&gt;Network &amp;amp; Internet&lt;/Bold&gt; &amp;gt; &lt;Bold&gt;Wi-Fi&lt;/Bold&gt;;&lt;LineBreak/&gt;
-3. Select &lt;Bold&gt;Choose apps that can use your Wi-Fi data&lt;/Bold&gt;;&lt;LineBreak/&gt;
-4. Turn on the toggle next to &lt;Bold&gt;Let apps use my Wi-Fi data&lt;/Bold&gt;, then turn on the toggle next to &lt;Bold&gt;Thunder X&lt;/Bold&gt;;</value>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
@@ -380,6 +364,12 @@
   <data name="SetPage_Notifications_Title.Text" xml:space="preserve">
     <value>Notifications</value>
   </data>
+  <data name="SetPage_Others_DiagnosticDataToggleSwitch.Header" xml:space="preserve">
+    <value>Upload Diagnostic Data</value>
+  </data>
+  <data name="SetPage_Others_Title.Text" xml:space="preserve">
+    <value>Others</value>
+  </data>
   <data name="SetPage_Thunderbolt_Title.Text" xml:space="preserve">
     <value>Thunderbolt Analyzer</value>
   </data>
@@ -418,6 +408,42 @@
   </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
+  </data>
+  <data name="StartUpDialog_CloseDialogButton.Content" xml:space="preserve">
+    <value>Enter Application</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermissionPivotItem.Header" xml:space="preserve">
+    <value>Upload Reports</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Span" xml:space="preserve">
+    <value>Thunder X uses diagnostic data to improve our products and services. We use this data to better understand how our products are performing and where improvements need to be made. We strive to gather only the info we need and to store it only for as long as it’s needed for analysis. {Bold Any data that is personally identifiable to you WILL NOT be uploaded or stored online}, like the Microsoft account you logged in to or the identity of your device.</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.Header" xml:space="preserve">
+    <value>Upload data for diagnostics?</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.OffContent" xml:space="preserve">
+    <value>Don't</value>
+  </data>
+  <data name="StartUpDialog_LogUploadingPermission_Switch.OnContent" xml:space="preserve">
+    <value>Sure</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissionsPivotItem.Header" xml:space="preserve">
+    <value>Network Permissions</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_GuideText.Text" xml:space="preserve">
+    <value>Some Windows 10 devices that run Windows 10 version 2004 or higher and can connect to a cellular or WLAN data network include a setting that controls which apps can access the internet. These settings need to be turned on for Thunder X to access the network.</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_SetButton.Label" xml:space="preserve">
+    <value>Open Settings</value>
+  </data>
+  <data name="StartUpDialog_NetworkPermissions_StepsSpan" xml:space="preserve">
+    <value>1. Open {Accent Settings} on your Windows 10 device;
+2. Select {Accent Network &amp;amp; Internet} &amp;gt; {Accent Wi-Fi} ;
+3. Select {Accent Choose apps that can use your Wi-Fi data} ;
+4. Turn on the toggle next to {Accent Let apps use my Wi-Fi data}, then turn on the toggle next to {Accent Thunder X} ;</value>
+  </data>
+  <data name="StartUpDialog_NextStepButton.Content" xml:space="preserve">
+    <value>Next Step</value>
   </data>
   <data name="TargetType" xml:space="preserve">
     <value>Target Type</value>
@@ -470,6 +496,9 @@ Create a task for downloading.</value>
   </data>
   <data name="Toast_DownloaderError_TitlePrefix" xml:space="preserve">
     <value>Task Failed: </value>
+  </data>
+  <data name="Toast_ProtocolActivationError_Title" xml:space="preserve">
+    <value>Failed Parsing External URI</value>
   </data>
   <data name="TotalSize" xml:space="preserve">
     <value>Total Size</value>

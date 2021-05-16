@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:utils="using:TX.Utils"
     mc:Ignorable="d" NavigationCacheMode="Enabled"
     Background="{ThemeResource TaskListBackgroundColor}">
     <RelativePanel>
@@ -14,7 +14,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   SelectionMode="None" Padding="8 8 8 0"
-                  Grid.Row="1" ItemsSource="{x:Bind AllVMs}">
+                  Grid.Row="1" ItemsSource="{x:Bind DownloaderBars, Mode=OneWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -33,7 +33,8 @@
                     RelativePanel.AlignRightWithPanel="True"
                     RelativePanel.Below="UpperBorder"
                     RelativePanel.AlignBottomWithPanel="True"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Visibility="{x:Bind utils:VisFuncs.IntegerToVisibility(DownloaderBars.Count, x:True), Mode=OneWay}">
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE81B;" Margin="0 0 0 16"
                       FontSize="64" Foreground="{ThemeResource SystemAccentColor}"
                       HorizontalAlignment="Center"/>
@@ -62,32 +63,12 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
             <Rectangle Height="{StaticResource TXTitleBarHeight}" Grid.Row="0"/>
             <!--Tasks-->
             <TextBlock x:Uid="TaskListPage_Title" VerticalAlignment="Center" 
                        Style="{ThemeResource TXPageTitleTextBlockStyle}"
                        Margin="16 0 0 0" Grid.Row="1" Grid.Column="0"/>
-            <!--Ordered-->
-            <muxc:DropDownButton x:Name="SortDropDownButton" x:Uid="TaskListPage_SortDropDownButton"
-                                 Grid.Row="1" Grid.Column="1" Margin="0 8 8 8" Height="36"
-                                 CornerRadius="4" HorizontalContentAlignment="Left"
-                                 HorizontalAlignment="Stretch" Background="Transparent">
-                <muxc:DropDownButton.Flyout>
-                    <MenuFlyout Placement="Bottom">
-                        <!--Alphabetically-->
-                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortAlphabetically" 
-                                        Click="SortAlphabetically_Click"/>
-                        <!--By creation time-->
-                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortByCreationTime" 
-                                        Click="SortByCreationTime_Click"/>
-                        <!--By status-->
-                        <MenuFlyoutItem x:Uid="TaskListPage_SortDropDownButton_SortByStatus"  
-                                        Click="SortByStatus_Click"/>
-                    </MenuFlyout>
-                </muxc:DropDownButton.Flyout>
-            </muxc:DropDownButton>
         </Grid>
     </RelativePanel>
 </Page>

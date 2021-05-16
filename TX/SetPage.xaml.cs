@@ -32,7 +32,6 @@ namespace TX
     /// </summary>
     public sealed partial class SetPage : Page
     {
-        App CurrentApp => ((App)App.Current);
         private readonly Settings SettingEntries = new Settings();
         private readonly long[] MemoryLimits = new long[]
         {
@@ -43,21 +42,11 @@ namespace TX
             1024 * 1024 * 512,
         };
         private static readonly string UnknownText = Loader.Get("Unknown");
-
         private readonly TXCoreManager Core = ((App)App.Current).Core;
-
-        private readonly ObservableCollection<string> AnnounceUrlsCollection = new ObservableCollection<string>();
 
         public SetPage()
         {
             this.InitializeComponent();
-        }
-
-        private void ReloadAnnounceUrls()
-        {
-            AnnounceUrlsCollection.Clear();
-            foreach (var url in Core.CustomAnnounceURLs)
-                AnnounceUrlsCollection.Add(url);
         }
 
         private async void RefreshStorageSize()
@@ -96,7 +85,6 @@ namespace TX
             RefreshStorageSize();
             InitializeDownloadFolder();
             InitializeMemoryLimits();
-            ReloadAnnounceUrls();
 
             base.OnNavigatedTo(e);
         }
@@ -112,8 +100,8 @@ namespace TX
 
         private void MemoryUpperboundComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ComboBox cb && 
-                cb.SelectedIndex >= 0 && cb.SelectedIndex < MemoryLimits.Length)
+            if (sender is ComboBox cb && cb.SelectedIndex >= 0 && 
+                cb.SelectedIndex < MemoryLimits.Length)
             {
                 SettingEntries.MemoryLimit = MemoryLimits[cb.SelectedIndex];
             }
@@ -134,7 +122,6 @@ namespace TX
         private async void ReloadItem_Click(object sender, RoutedEventArgs e)
         {
             await Core.LoadAnnounceUrlsAsync();
-            ReloadAnnounceUrls();
         }
 
         private async void DownloadFolderEditButton_Click(object sender, RoutedEventArgs e)

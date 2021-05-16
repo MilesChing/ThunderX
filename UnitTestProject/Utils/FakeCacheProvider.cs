@@ -13,8 +13,9 @@ namespace UnitTestProject.Utils
     /// </summary>
     class FakeCacheProvider : ICacheStorageProvider
     {
-        public IStorageFile GetCacheFileByToken(string token)
+        public async Task<IStorageFile> GetCacheFileByTokenAsync(string token)
         {
+            await Task.CompletedTask;
             if (int.TryParse(token, out int index) &&
                 index >= 0 && index < cacheFiles.Count)
                 return cacheFiles[index];
@@ -37,8 +38,9 @@ namespace UnitTestProject.Utils
             return index.ToString();
         }
 
-        public IStorageFolder GetCacheFolderByToken(string token)
+        public async Task<IStorageFolder> GetCacheFolderByTokenAsync(string token)
         {
+            await Task.CompletedTask;
             if (int.TryParse(token, out int index) &&
                 index >= 0 && index < cacheFolders.Count)
                 return cacheFolders[index];

@@ -33,11 +33,10 @@ namespace TX.PersistentActions
         }
 
         /// <summary>
-        /// Activate the action and modify its record.
+        /// Record the activation of an action.
         /// </summary>
         /// <param name="key">Key of this action.</param>
-        /// <param name="action">The action.</param>
-        public void Activate(string key, Action action)
+        public void Activate(string key)
         {
             if (!records.TryGetValue(key, out ActivationRecord rec))
                 rec = new ActivationRecord() 
@@ -49,7 +48,6 @@ namespace TX.PersistentActions
             rec.ActivationCount += 1;
             rec.LastActivationTime = DateTime.Now;
             records[key] = rec;
-            action();
         }
 
         /// <summary>

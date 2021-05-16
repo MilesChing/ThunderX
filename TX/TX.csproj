@@ -139,14 +139,18 @@
     <Compile Include="Background\AbstractBackgroundTask.cs" />
     <Compile Include="Background\BackgroundTaskManager.cs" />
     <Compile Include="Background\CoreBackgroundTask.cs" />
+    <Compile Include="Collections\CollectionBind.cs" />
+    <Compile Include="Collections\ISyncableEnumerable.cs" />
     <Compile Include="Controls\DownloaderBar.xaml.cs">
       <DependentUpon>DownloaderBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\IDownloaderViewable.cs" />
-    <Compile Include="Controls\PermissionsContentDialog.xaml.cs">
-      <DependentUpon>PermissionsContentDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ResourcedSpan.cs" />
+    <Compile Include="Controls\StartUpActionManager.cs" />
+    <Compile Include="Controls\StartUpContentDialog.xaml.cs">
+      <DependentUpon>StartUpContentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Providers\DownloadTaskScheduler.cs" />
     <Compile Include="PersistentActions\ActivationRecord.cs" />
     <Compile Include="PersistentActions\PersistentActionManager.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
@@ -158,7 +162,6 @@
     <Compile Include="Core\Interfaces\ICacheStorageProvider.cs" />
     <Compile Include="Core\Interfaces\IFolderProvider.cs" />
     <Compile Include="Core\Interfaces\IPersistable.cs" />
-    <Compile Include="Core\Interfaces\IVisibleProgress.cs" />
     <Compile Include="Core\Models\Contexts\DownloadHistory.cs" />
     <Compile Include="Core\Models\Contexts\DownloadTask.cs" />
     <Compile Include="Core\Models\Progresses\BaseMeasurableProgress.cs" />
@@ -216,6 +219,7 @@
     <Compile Include="TaskListPage.xaml.cs">
       <DependentUpon>TaskListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\PackageVersionExtensions.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ToastManager.cs" />
     <Compile Include="Utils\VisFuncs.cs" />
@@ -233,6 +237,7 @@
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\IconAccept.png" />
     <Content Include="Assets\IconComplete.png" />
+    <Content Include="Assets\IconFile.png" />
     <Content Include="Assets\IconTorrent.png" />
     <Content Include="Assets\IconWarning.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
@@ -309,7 +314,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\PermissionsContentDialog.xaml">
+    <Page Include="Controls\StartUpContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

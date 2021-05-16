@@ -31,6 +31,7 @@ using TX.PersistentActions;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using TX.Controls;
 
 namespace TX
 {
@@ -41,13 +42,12 @@ namespace TX
     {
         public readonly TXCoreManager Core = new TXCoreManager();
         public readonly PersistentActionManager PActionManager = new PersistentActionManager(30);
+        public readonly StartUpActionManager StupActionManager = new StartUpActionManager();
         private readonly Settings settingEntries = new Settings();
         private readonly Task initializingTask;
 
         public App()
         {
-            AppCenter.Start("5e098f14-cfbd-4f0f-9e27-715ca88e06b3",
-                   typeof(Analytics), typeof(Crashes));
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.Resuming += OnResuming;
@@ -72,6 +72,7 @@ namespace TX
         private async Task InitializeAsync()
         {
             D("Application initializing");
+            InitializeAppCenter();
             await InitializeAppLicenceAsync();
             await InitializeBackgroundTaskAsync();
             await Core.InitializeAsync(await ReadLocalStorageAsync());
@@ -122,6 +123,20 @@ namespace TX
             D("Background task reregistered");
         }
 
+        private void InitializeAppCenter()
+        {
+            D("App Center initializing");
+            Crashes.ShouldProcessErrorReport = (ErrorReport report) => 
+                settingEntries.IsDiagnosticDataUploadingEnabled;
+            Crashes.SendingErrorReport += (sender, e) =>
+                Debug.WriteLine($"[AppCenter] Sending error report <{e.Report.Id}>");
+            Crashes.SentErrorReport += (sender, e) =>
+                Debug.WriteLine($"[AppCenter] Error report sent <{e.Report.Id}>");
+            AppCenter.Start("5e098f14-cfbd-4f0f-9e27-715ca88e06b3",
+                   typeof(Analytics), typeof(Crashes));
+            D("App Center initialized");
+        }
+
         private async Task<StorageFile> GetCacheFileAsync()
             => await ApplicationData.Current.LocalFolder.CreateFileAsync(
                 "TX_DATA.dat", CreationCollisionOption.OpenIfExists);
@@ -154,7 +169,7 @@ namespace TX
                     D($"Database writting failed: {e.Message}");
                 }
 
-                Core.Suspend();
+                await Core.SuspendAsync();
                 D($"{nameof(Core)} suspended");
 
                 PActionManager.Save();
@@ -190,12 +205,12 @@ namespace TX
             var targetFile = args.Files.FirstOrDefault();
             StorageApplicationPermissions.FutureAccessList.Add(targetFile);
             var targetFileUri = new Uri(targetFile.Path);
-            actions.Add(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
+            StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(targetFileUri));
             D($"Activated by file <{targetFile.Path}>");
-            if (!EnsurePageCreatedAndActivate(actions))
+            if (!EnsurePageCreatedAndActivate())
             {
                 D($"Exist UI content, navigate to new task page");
-                foreach (var action in actions) action();
+                StupActionManager.Do();
             }
             base.OnFileActivated(args);
         }
@@ -203,24 +218,32 @@ namespace TX
         protected override void OnActivated(IActivatedEventArgs args)
         {
             D($"Application activated by {args.Kind}");
-            List<Action> actions = new List<Action>();
             switch (args.Kind)
             {
                 case ActivationKind.ToastNotification:
                     var argument = (args as ToastNotificationActivatedEventArgs)?.Argument;
-                    actions.AddRange(ToastManager.HandleToastActivation(argument));
+                    ToastManager.HandleToastActivation(argument);
                     break;
                 case ActivationKind.Protocol:
-                    ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
-                    D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
-                    actions.Add(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    try
+                    {
+                        ProtocolActivatedEventArgs protocalArgs = args as ProtocolActivatedEventArgs;
+                        D($"Activated by URI <{protocalArgs.Uri.OriginalString}>");
+                        StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage(protocalArgs.Uri));
+                    }
+                    catch (Exception e)
+                    {
+                        D($"Handling protocol activation failed: {e.Message}");
+                        StupActionManager.Register(() => MainPage.Current.NavigateNewTaskPage());
+                        ToastManager.ProtocolActivationErrorToast(e);
+                    }
                     break;
             }
 
-            if (!EnsurePageCreatedAndActivate(actions))
+            if (!EnsurePageCreatedAndActivate())
             {
                 D($"Exist UI content, navigate to new task page");
-                foreach (var action in actions) action();
+                StupActionManager.Do();
             }
 
             base.OnActivated(args);
@@ -232,7 +255,7 @@ namespace TX
             EnsurePageCreatedAndActivate();
         }
 
-        private bool EnsurePageCreatedAndActivate(object parameter = null)
+        private bool EnsurePageCreatedAndActivate()
         {
             if (!(Window.Current.Content is Frame rootFrame))
             {
@@ -246,7 +269,7 @@ namespace TX
             if (rootFrame.Content == null)
             {
                 D("No content in root frame, navigate to MainPage");
-                rootFrame.Navigate(typeof(MainPage), parameter);
+                rootFrame.Navigate(typeof(MainPage));
             }
             Window.Current.Activate();
             return res;

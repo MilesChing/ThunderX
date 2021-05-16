@@ -126,10 +126,10 @@ namespace TX.Controls
                 Downloader.Cancel();
         }
 
-        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        private async void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
             DeleteConfirmationFlyout.Hide();
-            Task.Run(() => Downloader.Dispose());
+            await Downloader.DisposeAsync();
         }
     }
 }

@@ -73,18 +73,18 @@ namespace TX.Core.Downloaders
 
         public int TasksRemained { get; private set; }
 
-        protected override Task CancelAsync()
-            => Task.Run(() =>
-            {
-                cancellationTokenSource?.Cancel();
-                cancellationTokenSource = null;
-                downloadTask?.Wait();
-                downloadTask = null;
-            });
+        protected override async Task HandleCancelAsync()
+        {
+            cancellationTokenSource?.Cancel();
+            cancellationTokenSource = null;
+            if (downloadTask != null)
+                await downloadTask;
+            downloadTask = null;
+        }
 
-        protected override Task DisposeAsync() => CancelAsync();
+        protected override Task HandleDisposeAsync() => HandleCancelAsync();
 
-        protected override async Task StartAsync()
+        protected override async Task HandleStartAsync()
         {
             Speed.IsEnabled = true;
 
@@ -99,23 +99,23 @@ namespace TX.Core.Downloaders
             var workers = new Task[realThreadNum];
             WorkerCount = realThreadNum;
             for(int i = 0; i < workers.Length; ++i)
-                workers[i] = Worker(workQueue, cacheFile, cancellationTokenSource.Token, i);
+                workers[i] = CreateWorkerTask(workQueue, cacheFile, cancellationTokenSource.Token, i);
 
-            downloadTask = Task.Run(async () =>
+            downloadTask = new Task(async () =>
             {
                 try
                 {
-                    Task.WaitAll(workers);
+                    await Task.WhenAll(workers);
                 }
                 catch(AggregateException e)
                 {
-                    if (e.InnerExceptions != null &&
-                        e.InnerExceptions.Count > 0)
-                        ReportError(e.InnerExceptions.First(), false);
+                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0)
+                        await ReportErrorAsync(e.InnerExceptions.First(), false);
+                    return;
                 }
                 catch(Exception e)
                 {
-                    ReportError(e, false);
+                    await ReportErrorAsync(e, false);
                     return;
                 }
                 finally
@@ -142,9 +142,12 @@ namespace TX.Core.Downloaders
                 }
                 catch(Exception e)
                 {
-                    ReportError(e);
+                    await ReportErrorAsync(e);
+                    return;
                 }
             });
+
+            downloadTask.RunSynchronously();
         }
 
         /// <summary>
@@ -188,17 +191,17 @@ namespace TX.Core.Downloaders
                 if(cacheFileToken == string.Empty)
                 {
                     cacheFileToken = await cacheProvider.NewCacheFileAsync();
-                    cacheFile = cacheProvider.GetCacheFileByToken(cacheFileToken);
+                    cacheFile = await cacheProvider.GetCacheFileByTokenAsync(cacheFileToken);
                     ((CompositeProgress)Progress).Initialize(
                         (DownloadTask.Target as HttpRangableTarget).DataLength);
                 }
                 else
                 {
-                    cacheFile = cacheProvider.GetCacheFileByToken(cacheFileToken);
+                    cacheFile = await cacheProvider.GetCacheFileByTokenAsync(cacheFileToken);
                     if(cacheFile == null)
                     {
                         cacheFileToken = await cacheProvider.NewCacheFileAsync();
-                        cacheFile = cacheProvider.GetCacheFileByToken(cacheFileToken);
+                        cacheFile = await cacheProvider.GetCacheFileByTokenAsync(cacheFileToken);
                         ((CompositeProgress)Progress).Initialize(
                             (DownloadTask.Target as HttpRangableTarget).DataLength);
                     }
@@ -206,52 +209,51 @@ namespace TX.Core.Downloaders
             }
         }
 
-        private async Task Worker(
+        private Task CreateWorkerTask(
             ConcurrentQueue<Range> taskQueue,
             IStorageFile file,
             CancellationToken cancellationToken,
-            int workerId)
-        {
-            SegmentProgress progress;
-            D(workerId, "Launched");
-            while ((!cancellationToken.IsCancellationRequested)
-                && (!taskQueue.IsEmpty))
+            int workerId) => Task.Run(async () =>
             {
-                bool succ = taskQueue.TryDequeue(out Range task);
-                if (!succ) continue;
-                TasksRemained = taskQueue.Count;
-                D(workerId, $"Picked task [{task.Begin}, {task.End}], {taskQueue.Count} remained in queue");
-
-                var target = (DownloadTask.Target as HttpRangableTarget);
-
-                using (progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length))
+                SegmentProgress progress;
+                D(workerId, "Launched");
+                while ((!cancellationToken.IsCancellationRequested) && (!taskQueue.IsEmpty))
                 {
-                    using (var istream = await target.GetRangedStreamAsync(task.Begin, task.End))
+                    bool succ = taskQueue.TryDequeue(out Range task);
+                    if (!succ) continue;
+                    TasksRemained = taskQueue.Count;
+                    D(workerId, $"Picked task [{task.Begin}, {task.End}], {taskQueue.Count} remained in queue");
+
+                    var target = (DownloadTask.Target as HttpRangableTarget);
+
+                    using (progress = ((CompositeProgress)Progress).NewSegmentProgress(task.Begin, task.Length))
                     {
-                        using (var ostream = new FileStream(file.Path, FileMode.Open, FileAccess.Write, FileShare.Write))
+                        using (var istream = await target.GetRangedStreamAsync(task.Begin, task.End))
                         {
-                            ostream.Seek(task.Begin, SeekOrigin.Begin);
-                            await istream.CopyToAsync(
-                                ostream,
-                                bufferProvider,
-                                cancellationToken,
-                                size => progress.Increase(size)
-                            );
+                            using (var ostream = new FileStream(file.Path, FileMode.Open, FileAccess.Write, FileShare.Write))
+                            {
+                                ostream.Seek(task.Begin, SeekOrigin.Begin);
+                                await istream.CopyToAsync(
+                                    ostream,
+                                    bufferProvider,
+                                    cancellationToken,
+                                    size => progress.Increase(size)
+                                );
+                            }
+                        }
+
+                        if (cancellationToken.IsCancellationRequested)
+                            D(workerId, $"Cancelled");
+                        else if (progress.DownloadedSize == progress.TotalSize)
+                            D(workerId, $"Completed");
+                        else
+                        {
+                            D(workerId, $"Cancelled but uncompleted, exception throwed");
+                            throw new Exception($"Worker {workerId} task uncompleted");
                         }
                     }
-
-                    if (cancellationToken.IsCancellationRequested)
-                        D(workerId, $"Cancelled");
-                    else if (progress.DownloadedSize == progress.TotalSize)
-                        D(workerId, $"Completed");
-                    else
-                    {
-                        D(workerId, $"Cancelled but uncompleted, exception throwed");
-                        throw new Exception($"Worker {workerId} task uncompleted");
-                    }
                 }
-            }
-        }
+            });
 
         public byte[] ToPersistentByteArray()
         {

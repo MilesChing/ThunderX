@@ -54,9 +54,15 @@ namespace TX.Core.Downloaders
             {
                 if(_status_ != value)
                 {
-                    D($"Status changed {_status_} -> {value}");
+                    D($"Status changed {_status_} -> {value}, thread ID <{Thread.CurrentThread.ManagedThreadId}>");
                     _status_ = value;
-                    StatusChanged?.Invoke(this, value);
+                    var changedHandlerChain = StatusChanged;
+                    if (changedHandlerChain != null)
+                    {
+                        foreach (Action<AbstractDownloader, DownloaderStatus> handler
+                            in changedHandlerChain.GetInvocationList())
+                            try { handler(this, value); } catch (Exception) { }
+                    }
                 }
             }
         }
@@ -76,11 +82,11 @@ namespace TX.Core.Downloaders
                 if (CanStart) Status = DownloaderStatus.Pending;
                 else return;
             D($"Start() called");
-            Task.Run(async () =>
+            new Task(async () =>
             {
                 try
                 {
-                    await StartAsync();
+                    await HandleStartAsync();
                     lock (statusLockObject)
                         Status = DownloaderStatus.Running;
                 } 
@@ -91,14 +97,14 @@ namespace TX.Core.Downloaders
                     lock (statusLockObject)
                         Status = DownloaderStatus.Error;
                 }
-            });
+            }).RunSynchronously();
         }
 
         /// <summary>
         /// StartAsync must be defined by downloader to handle starting.
         /// </summary>
         /// <returns>Starting task.</returns>
-        protected abstract Task StartAsync();
+        protected abstract Task HandleStartAsync();
 
         /// <summary>
         /// Returns wether Start() is supported currently.
@@ -117,11 +123,11 @@ namespace TX.Core.Downloaders
                 if (CanCancel) Status = DownloaderStatus.Pending;
                 else return;
             D($"Cancel() called");
-            Task.Run(async () =>
+            new Task(async () =>
             {
                 try
                 {
-                    await CancelAsync();
+                    await HandleCancelAsync();
                     lock (statusLockObject)
                         Status = DownloaderStatus.Ready;
                 }
@@ -132,14 +138,14 @@ namespace TX.Core.Downloaders
                     lock (statusLockObject)
                         Status = DownloaderStatus.Error;
                 }
-            });
+            }).RunSynchronously();
         }
 
         /// <summary>
         /// CancelAsync must be defined by downloader to handle cancelation.
         /// </summary>
         /// <returns>Cancelation task.</returns>
-        protected abstract Task CancelAsync();
+        protected abstract Task HandleCancelAsync();
 
         /// <summary>
         /// Returns wether Cancel() is supported currently.
@@ -149,9 +155,9 @@ namespace TX.Core.Downloaders
             );
 
         /// <summary>
-        /// Dispose() always change status to Disposed.
+        /// DisposeAsync() always change status to Disposed.
         /// </summary>
-        public void Dispose()
+        public async Task DisposeAsync()
         {
             // temptation to dispose the downloader should always work
             D($"Dispose() called");
@@ -170,7 +176,7 @@ namespace TX.Core.Downloaders
 
                 if (needSleep)
                 {
-                    Task.Delay(100).Wait();
+                    await Task.Delay(100);
                     continue;
                 }
 
@@ -181,7 +187,7 @@ namespace TX.Core.Downloaders
                     // if the downloader is not running or pending, 
                     // call inner disposal method directly
                     D($"Disposing");
-                    try { DisposeAsync().Wait(); }
+                    try { await HandleDisposeAsync(); }
                     catch (Exception e)
                     {
                         D($"Dispose() (disposing) failed: {e.Message}");
@@ -197,8 +203,8 @@ namespace TX.Core.Downloaders
                 else if (oldStatus == DownloaderStatus.Running)
                 {
                     try 
-                    { 
-                        CancelAsync().Wait();
+                    {
+                        await HandleCancelAsync();
                         Status = DownloaderStatus.Ready;
                     }
                     catch (Exception e)
@@ -217,7 +223,7 @@ namespace TX.Core.Downloaders
         /// DisposeAsync must be defined by downloader to handle disposal.
         /// </summary>
         /// <returns>Disposal task.</returns>
-        protected abstract Task DisposeAsync();
+        protected abstract Task HandleDisposeAsync();
 
         /// <summary>
         /// ReportError should be called when downloading failed,
@@ -225,7 +231,7 @@ namespace TX.Core.Downloaders
         /// </summary>
         /// <param name="exception">Exception of downloading.</param>
         /// <param name="dontRetry">Set false to suggest downloader retry.</param>
-        protected void ReportError(Exception exception, bool dontRetry = true)
+        protected async Task ReportErrorAsync(Exception exception, bool dontRetry = true)
         {
             lock (statusLockObject)
                 if (Status != DownloaderStatus.Pending)
@@ -253,31 +259,28 @@ namespace TX.Core.Downloaders
             // TODO: wrap 1000 in DownloaderContext (retring period)
             else
             {
-                Task.Run(async () =>
+                try
                 {
-                    try
-                    {
-                        // simply cancel, wait for a period, and restart the downloader
-                        Retries += 1;
-                        D($"Retring in {1000} ms (total retries: {Retries})");
-                        lock (statusLockObject)
-                            Status = DownloaderStatus.Running;
-                        Cancel();
-                        lock (statusLockObject)
-                            Status = DownloaderStatus.Pending;
-                        await Task.Delay(1000);
-                        lock (statusLockObject)
-                            Status = DownloaderStatus.Ready;
-                        Start();
-                    }
-                    catch (Exception e)
-                    {
-                        // if exceptions occur during the retry, enter error status directly
-                        exceptions.Insert(0, e);
-                        lock (statusLockObject)
-                            Status = DownloaderStatus.Error;
-                    }
-                });
+                    // simply cancel, wait for a period, and restart the downloader
+                    Retries += 1;
+                    D($"Retring in {1000} ms (total retries: {Retries})");
+                    lock (statusLockObject)
+                        Status = DownloaderStatus.Running;
+                    Cancel();
+                    lock (statusLockObject)
+                        Status = DownloaderStatus.Pending;
+                    await Task.Delay(1000);
+                    lock (statusLockObject)
+                        Status = DownloaderStatus.Ready;
+                    Start();
+                }
+                catch (Exception e)
+                {
+                    // if exceptions occur during the retry, enter error status directly
+                    exceptions.Insert(0, e);
+                    lock (statusLockObject)
+                        Status = DownloaderStatus.Error;
+                }
             }
         }
 

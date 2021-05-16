@@ -73,14 +73,6 @@ namespace TX
             if (downloader.Progress is IMeasurableProgress progress)
                 BasicLabelCollection.Add(new TaskDetailPageLabel(TotalSizeText,
                     progress.TotalSize.SizedString()));
-            
-            if (downloader.Progress is IVisibleProgress ipv)
-            {
-                ipv.VisibleRangeListChanged += BindedVisibleRangeListChanged;
-                SetVisibleRangeListViewItemsSource(ipv);
-                VisibleRangePanel.Visibility = Visibility.Visible;
-            }
-            else VisibleRangePanel.Visibility = Visibility.Collapsed;
         }
 
         private async void DownloadTask_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -103,37 +95,8 @@ namespace TX
             }
         }
 
-        private void BindedVisibleRangeListChanged(IVisibleProgress sender)
-        {
-             VisibleRangeListView.Dispatcher.RunAsync(
-                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    () => SetVisibleRangeListViewItemsSource(sender))
-             .AsTask().Wait();
-        }
-
-        private void SetVisibleRangeListViewItemsSource(IVisibleProgress progress)
-        {
-            if (VisibleRangeListView.ItemsSource is IEnumerable<TaskDetailVisibleRangeViewModel> vms)
-            {
-                foreach (var vm in vms)
-                    vm.Dispose();
-                VisibleRangeListView.ItemsSource = null;
-            }
-
-            if (progress != null)
-            {
-                VisibleRangeListView.ItemsSource = progress.VisibleRangeList.Select(
-                    range => new TaskDetailVisibleRangeViewModel(range, Dispatcher)).ToList();
-            }
-        }
-
         public void ClearDownloaderBinding()
         {
-            VisibleRangePanel.Visibility = Visibility.Collapsed;
-            if (Downloader.Progress is IVisibleProgress ipv)
-                ipv.VisibleRangeListChanged -= BindedVisibleRangeListChanged;
-            SetVisibleRangeListViewItemsSource(null);
-
             Downloader.DownloadTask.PropertyChanged -= DownloadTask_PropertyChanged;
             Downloader.StatusChanged -= StatusChanged;
             Downloader.Speed.Updated -= SpeedUpdated;
@@ -266,10 +229,10 @@ namespace TX
                 Downloader.Cancel();
         }
 
-        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        private async void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
             DeleteConfirmationFlyout.Hide();
-            Task.Run(() => Downloader.Dispose());
+            await  Downloader.DisposeAsync();
         }
 
         private void SchedulerActionButton_Click(object sender, RoutedEventArgs e)
@@ -363,49 +326,5 @@ namespace TX
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 
         public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
-    }
-
-    class TaskDetailVisibleRangeViewModel : IVisibleRange, IDisposable
-    {
-        public TaskDetailVisibleRangeViewModel(IVisibleRange range, CoreDispatcher dispatcher)
-        {
-            ParentRange = range;
-            Dispatcher = dispatcher;
-            range.PropertyChanged += ParentRangePropertyChanged;
-        }
-
-        private async void ParentRangePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => PropertyChanged(this, e));
-        }
-
-        public float Progress => ParentRange == null ? 0.0f : ParentRange.Progress * 100.0f;
-
-        public float Total
-        {
-            get
-            {
-                if (ParentRange == null) return 0.0f;
-                float total = ParentRange.Total;
-                total = Math.Max(total, 0.01f);
-                total = Math.Min(total, 0.2f);
-                return total * 2000.0f;
-            }
-        }
-
-        public IVisibleRange ParentRange { get; private set; }
-
-        private readonly CoreDispatcher Dispatcher;
-
-        public void Dispose()
-        {
-            if (ParentRange != null)
-            {
-                ParentRange.PropertyChanged -= ParentRangePropertyChanged;
-                ParentRange = null;
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }
