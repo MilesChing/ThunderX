@@ -41,11 +41,11 @@ namespace TX.Core.Models.Sources
         private string FormatText(IStreamInfo info)
         {
             if (info is MuxedStreamInfo muxed)
-                return string.Format("V&A: {0} | {1} | {2} , Size: {3}",
-                    muxed.Container.Name, muxed.Resolution, muxed.Framerate, muxed.Size);
+                return string.Format("V&A: {0} | {1} , Size: {2}",
+                    muxed.Container.Name, muxed.VideoResolution, muxed.Size);
             else if (info is VideoOnlyStreamInfo vo)
-                return string.Format("V Only: {0} | {1} | {2} , Size: {3}",
-                    vo.Container.Name, vo.Resolution, vo.Framerate, vo.Size);
+                return string.Format("V Only: {0} | {1} , Size: {2}",
+                    vo.Container.Name, vo.VideoResolution, vo.Size);
             else if (info is AudioOnlyStreamInfo ao)
                 return string.Format("A Only: {0} | {1} , Size: {2}",
                     ao.Container.Name, ao.Bitrate, ao.Size);
