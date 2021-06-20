@@ -58,9 +58,8 @@ namespace TX.Core.Downloaders
             int maximumConnections = 60,
             int maximumDownloadSpeed = 0,
             int maximumUploadSpeed = 0,
-            int uploadSlots = 8,
-            IEnumerable<string> customAnnounceUrls = null
-        ) : base (task)
+            int uploadSlots = 8
+        ) : base(task)
         {
             Ensure.That(task.Target is TorrentTarget).IsTrue();
             Ensure.That(cacheProvider, nameof(cacheFolder)).IsNotNull();
@@ -78,43 +77,26 @@ namespace TX.Core.Downloaders
             this.maximumDownloadSpeed = maximumDownloadSpeed;
             this.maximumUploadSpeed = maximumUploadSpeed;
             this.uploadSlots = uploadSlots;
-            this.customAnnounceUrls = customAnnounceUrls;
 
             TorrentTarget realTarget = (TorrentTarget)task.Target;
-
             Progress = new BaseMeasurableProgress(
                 realTarget.Torrent.Files.Sum(
-                    file => file.Priority == Priority.DoNotDownload ? 0 : file.Length));
+                    file => realTarget.IsFileSelected(file) ? file.Length : 0));
             Speed = SharedSpeedCalculatorFactory.NewSpeedCalculator();
             Progress.ProgressChanged += (sender, arg) => Speed.CurrentValue = Progress.DownloadedSize;
 
             if (checkPoint != null) ApplyCheckPoint(checkPoint);
         }
 
-        public byte[] ToPersistentByteArray()
-        {
-            byte[] fastResumeData = null;
-
-            try
-            {
-                using (var stream = new MemoryStream())
-                {
-                    manager?.SaveFastResume()?.Encode(stream);
-                    fastResumeData = stream.ToArray();
-                }
-            }
-            catch (Exception) { }
-
-            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
+        public byte[] ToPersistentByteArray() =>
+            Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
                 new InnerCheckPoint()
                 {
                     TaskKey = DownloadTask.Key,
                     CacheFolderToken = cacheFolderToken,
                     DownloadedSize = Progress.DownloadedSize,
-                    FastResumeData = fastResumeData,
                 }
             ));
-        }
 
         public PeerManager Peers => manager?.Peers;
 
@@ -136,13 +118,20 @@ namespace TX.Core.Downloaders
 
         protected override async Task HandleDisposeAsync()
         {
-            if (manager != null)
+            try
             {
-                manager.TorrentStateChanged -= ManagerTorrentStateChanged;
-                await manager.StopAsync();
-                manager.Dispose();
-                await engine.Unregister(manager);
-                manager = null;
+                if (manager != null)
+                {
+                    manager.TorrentStateChanged -= ManagerTorrentStateChanged;
+                    if (manager.State != TorrentState.Stopped && 
+                        manager.State != TorrentState.Stopping)
+                        await manager.StopAsync();
+                    manager = null;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
             }
         }
 
@@ -152,29 +141,31 @@ namespace TX.Core.Downloaders
 
             if (manager == null)
             {
-                TorrentSettings settings = new TorrentSettings()
+                TorrentSettings settings = new TorrentSettingsBuilder()
                 {
                     MaximumConnections = maximumConnections,
                     MaximumDownloadSpeed = maximumDownloadSpeed,
                     MaximumUploadSpeed = maximumUploadSpeed,
                     UploadSlots = uploadSlots,
-                };
+                }.ToSettings();
 
                 var realTarget = (TorrentTarget) DownloadTask.Target;
-                var torrent = realTarget.Torrent;
+                manager = engine.Torrents.FirstOrDefault(
+                    m => m.Torrent.Equals(realTarget.Torrent));
+                if (manager == null)
+                {
+                    manager = await engine.AddAsync(
+                        realTarget.Torrent, 
+                        cacheFolder.Path, 
+                        settings);
+                    foreach (var file in manager.Files)
+                        await manager.SetFilePriorityAsync(file,
+                            realTarget.IsFileSelected(file) ? 
+                            Priority.Normal : Priority.DoNotDownload);
+                }
 
-                if (customAnnounceUrls != null && !torrent.AnnounceUrls.IsReadOnly)
-                    torrent.AnnounceUrls.Add(new RawTrackerTier(customAnnounceUrls));
-
-                manager = new TorrentManager(
-                    torrent,
-                    cacheFolder.Path,
-                    settings);
-
-                if (fastResume != null) manager.LoadFastResume(fastResume);
                 manager.TorrentStateChanged += ManagerTorrentStateChanged;
                 RegisterDebugMessages();
-                await engine.Register(manager);
             }
 
             await manager.StartAsync();
@@ -220,7 +211,7 @@ namespace TX.Core.Downloaders
             manager.PeerConnected += (o, e) => D($"Connection succeeded: {e.Peer.Uri}");
             
             manager.ConnectionAttemptFailed += (o, e) =>
-                D($"Connection failed: {e.Peer.ConnectionUri} - {e.Reason} - {e.Peer.AllowedEncryption}");
+                D($"Connection failed: {e.Peer.ConnectionUri} - {e.Reason}");
             
             // Every time a piece is hashed, this is fired.
             manager.PieceHashed += delegate (object o, PieceHashedEventArgs e) {
@@ -304,20 +295,9 @@ namespace TX.Core.Downloaders
             checkPoint = JsonConvert.DeserializeObject<InnerCheckPoint>(
                 Encoding.UTF8.GetString(checkPointByteArray));
             Ensure.That(checkPoint.TaskKey, nameof(checkPoint.TaskKey)).IsEqualTo(DownloadTask.Key);
-
-            if (checkPoint.FastResumeData != null)
-            {
-                try
-                {
-                    fastResume = new FastResume(
-                        BEncodedValue.Decode<BEncodedDictionary>(
-                            checkPoint.FastResumeData));
-                }
-                catch (Exception) { }
-            }
-
-            (Progress as BaseProgress).Reset();
-            (Progress as BaseProgress).Increase(checkPoint.DownloadedSize);
+            var baseProgress = (Progress as BaseProgress);
+            baseProgress.Reset();
+            baseProgress.Increase(checkPoint.DownloadedSize);
             cacheFolderToken = checkPoint.CacheFolderToken;
         }
 
@@ -325,11 +305,9 @@ namespace TX.Core.Downloaders
         {
             public string TaskKey;
             public string CacheFolderToken;
-            public byte[] FastResumeData;
             public long DownloadedSize;
         };
-
-        private FastResume fastResume = null;
+        
         private IStorageFolder cacheFolder = null;
         private string cacheFolderToken = string.Empty;
         private InnerCheckPoint checkPoint = null;
@@ -344,7 +322,6 @@ namespace TX.Core.Downloaders
         private readonly int maximumDownloadSpeed = 0;
         private readonly int maximumUploadSpeed = 0;
         private readonly int uploadSlots = 8;
-        private readonly IEnumerable<string> customAnnounceUrls = null;
 
         private readonly static TimeSpan ProgressUpdateInterval = TimeSpan.FromSeconds(0.2);
     }

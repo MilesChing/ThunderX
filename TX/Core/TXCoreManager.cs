@@ -1,4 +1,5 @@
-﻿using MonoTorrent.Dht;
+﻿using MonoTorrent.Client;
+using MonoTorrent.Dht;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -38,8 +39,15 @@ namespace TX.Core
         {
             try
             {
+                torrentCacheFolder = await ApplicationData.Current.LocalCacheFolder
+                    .CreateFolderAsync(torrentCacheFolderName, CreationCollisionOption.OpenIfExists);
+                torrentProvider = new TorrentProvider(new EngineSettingsBuilder()
+                {
+                    CacheDirectory = torrentCacheFolder.Path,
+
+                }.ToSettings());
+
                 await LoadAnnounceUrlsAsync();
-                await InitializeDhtEngineAsync();
 
                 if (checkPoint != null)
                 {
@@ -50,6 +58,12 @@ namespace TX.Core
                             TypeNameHandling = TypeNameHandling.Auto,
                             Error = HandleJsonError,
                         });
+                    try
+                    {
+                        await torrentProvider.InitializeTorrentProviderAsync(
+                          checkPointObject.TorrentEngineCheckPoint); 
+                    }
+                    catch (Exception) { }
                     if (checkPointObject.Tasks != null)
                         foreach (var kvp in checkPointObject.Tasks)
                             tasks.Add(kvp.Value);
@@ -83,7 +97,7 @@ namespace TX.Core
 
         public ISyncableEnumerable<string> AnnounceUrls => announceUrls;
 
-        public MonoTorrent.Client.ClientEngine TorrentEngine => torrentEngine;
+        public MonoTorrent.Client.ClientEngine TorrentEngine => torrentProvider.Engine;
 
         public IStorageFolder CacheFolder => coreCacheManager.CacheFolder;
 
@@ -111,10 +125,7 @@ namespace TX.Core
         public async Task CleanCacheFolderAsync()
         {
             await coreCacheManager.CleanCacheFolderAsync(
-                taskKey => downloaders.Any(downloader =>
-                    downloader.Status != DownloaderStatus.Completed &&
-                    downloader.Status != DownloaderStatus.Disposed &&
-                    downloader.DownloadTask.Key.Equals(taskKey))
+                tasks, new IStorageItem[] { torrentCacheFolder }
             );
         }
 
@@ -163,13 +174,12 @@ namespace TX.Core
                         coreBufferProvider);
                 else if (task.Target is TorrentTarget torrentTarget)
                     downloader = new TorrentDownloader(
-                        task, torrentEngine, coreFolderManager,
+                        task, torrentProvider.Engine, coreFolderManager,
                         coreCacheManager.GetCacheProviderForTask(token),
                         checkPoint: checkPoint,
                         maximumConnections: settingEntries.MaximumConnections,
                         maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
-                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
-                        customAnnounceUrls: announceUrls);
+                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed);
             }
             catch (Exception e)
             {
@@ -231,6 +241,7 @@ namespace TX.Core
                         }).ToArray(),
                     Histories = Histories.ToArray(),
                     CacheManagerCheckPoint = coreCacheManager.ToPersistentByteArray(),
+                    TorrentEngineCheckPoint = torrentProvider.ToPersistentByteArray()
                 }, new JsonSerializerSettings() 
                 { 
                     TypeNameHandling = TypeNameHandling.Auto,
@@ -241,19 +252,23 @@ namespace TX.Core
         public async Task SuspendAsync()
         {
             D("Suspending core...");
-            D("Cancelling scheduler...");
             await taskScheduler.StopAsync();
-            D("Cleaning unused task entries...");
+            D("Scheduler canceled");
             CleanTasks();
-            D("Cleaning local cache folder...");
+            D("Task entries cleaned");
+            await torrentProvider.CleanEngineTorrentsAsync(
+                tasks.Where(t => t.Target is TorrentTarget)
+                    .Select(t => ((TorrentTarget)t.Target).Torrent));
+            D("Engine torrents cleaned");
             await CleanCacheFolderAsync();
-            D("Cleaning storage permission lists...");
+            D("Local cache folder cleaned");
             CleanStoragePermissionLists();
-            D("Cancelling downloaders...");
+            D("Storage permission lists cleaned");
             foreach (var downloader in downloaders)
                 if (downloader.Status == DownloaderStatus.Running)
                     downloader.Cancel();
-            D("Suspended");
+            D("Downloaders canceled");
+            D("Core suspended");
         }
 
         public void Resume()
@@ -264,15 +279,22 @@ namespace TX.Core
 
         public void Dispose()
         {
-            torrentEngine.Dispose();
+            torrentProvider.Dispose();
         }
 
         private void CleanTasks()
         {
             var toBeDeleted = tasks.Where(task => 
-                !downloaders.Any(downloader =>
-                downloader.DownloadTask.Key.Equals(task.Key)))
-                .ToArray();
+                downloaders.All(
+                    downloader =>
+                        (!downloader.DownloadTask.Key.Equals(task.Key)) ||
+                        (
+                            downloader.Status == DownloaderStatus.Disposed ||
+                            downloader.Status == DownloaderStatus.Completed
+                        )
+                )
+            ).ToArray();
+
             foreach (var task in toBeDeleted)
             {
                 D($"Unused task {task.Key} deleted");
@@ -308,21 +330,6 @@ namespace TX.Core
                 recentList.Remove(token);
         }
 
-        private async Task InitializeDhtEngineAsync()
-        {
-            try
-            {
-                var dhtEngine = new DhtEngine(new IPEndPoint(IPAddress.Any, 0));
-                await torrentEngine.RegisterDhtAsync(dhtEngine);
-                await torrentEngine.DhtEngine.StartAsync();
-                D("DhtEngine initialized");
-            }
-            catch (Exception e)
-            {
-                D($"DhtEngine initialization failed: {e.Message}");
-            }
-        }
-
         private void HandleJsonError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
         {
             D($"Failed serializing json: {args.ErrorContext.Error.Message}");
@@ -335,10 +342,12 @@ namespace TX.Core
         private readonly InnerCollection<DownloadHistory> histories = new InnerCollection<DownloadHistory>();
         private readonly InnerCollection<string> announceUrls = new InnerCollection<string>();
         private readonly LocalFolderManager coreFolderManager = new LocalFolderManager();
-        private readonly MonoTorrent.Client.ClientEngine torrentEngine = new MonoTorrent.Client.ClientEngine();
         private readonly LocalCacheManager coreCacheManager = new LocalCacheManager();
         private readonly SizeLimitedBufferProvider coreBufferProvider = null;
         private readonly DownloadTaskScheduler taskScheduler = null;
+        private readonly string torrentCacheFolderName = "TorrentCache";
+        private StorageFolder torrentCacheFolder = null;
+        private TorrentProvider torrentProvider = null;
 
         private void D(string text) => Debug.WriteLine($"[{GetType().Name}] {text}");
 
@@ -351,6 +360,8 @@ namespace TX.Core
             public DownloadHistory[] Histories;
 
             public byte[] CacheManagerCheckPoint;
+
+            public byte[] TorrentEngineCheckPoint;
         }
 
         private class InnerCollection<T> : ObservableCollection<T>, ISyncableEnumerable<T> { }
