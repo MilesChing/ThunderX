@@ -179,7 +179,8 @@ namespace TX.Core
                         checkPoint: checkPoint,
                         maximumConnections: settingEntries.MaximumConnections,
                         maximumDownloadSpeed: settingEntries.MaximumDownloadSpeed,
-                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed);
+                        maximumUploadSpeed: settingEntries.MaximumUploadSpeed,
+                        announceUrls: announceUrls);
             }
             catch (Exception e)
             {

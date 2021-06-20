@@ -2,6 +2,7 @@
 using MonoTorrent;
 using MonoTorrent.BEncoding;
 using MonoTorrent.Client;
+using MonoTorrent.Client.Tracker;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,8 @@ namespace TX.Core.Downloaders
             int maximumConnections = 60,
             int maximumDownloadSpeed = 0,
             int maximumUploadSpeed = 0,
-            int uploadSlots = 8
+            int uploadSlots = 8,
+            IEnumerable<string> announceUrls = null
         ) : base(task)
         {
             Ensure.That(task.Target is TorrentTarget).IsTrue();
@@ -77,6 +79,7 @@ namespace TX.Core.Downloaders
             this.maximumDownloadSpeed = maximumDownloadSpeed;
             this.maximumUploadSpeed = maximumUploadSpeed;
             this.uploadSlots = uploadSlots;
+            this.announceUrls = announceUrls?.ToList();
 
             TorrentTarget realTarget = (TorrentTarget)task.Target;
             Progress = new BaseMeasurableProgress(
@@ -141,23 +144,27 @@ namespace TX.Core.Downloaders
 
             if (manager == null)
             {
-                TorrentSettings settings = new TorrentSettingsBuilder()
-                {
-                    MaximumConnections = maximumConnections,
-                    MaximumDownloadSpeed = maximumDownloadSpeed,
-                    MaximumUploadSpeed = maximumUploadSpeed,
-                    UploadSlots = uploadSlots,
-                }.ToSettings();
-
                 var realTarget = (TorrentTarget) DownloadTask.Target;
-                manager = engine.Torrents.FirstOrDefault(
-                    m => m.Torrent.Equals(realTarget.Torrent));
+                manager = engine.Torrents.FirstOrDefault(m => 
+                    m.SavePath.Equals(cacheFolder.Path) &&
+                    m.Torrent.Equals(realTarget.Torrent)
+                );
+
                 if (manager == null)
                 {
+                    TorrentSettings settings = new TorrentSettingsBuilder()
+                    {
+                        MaximumConnections = maximumConnections,
+                        MaximumDownloadSpeed = maximumDownloadSpeed,
+                        MaximumUploadSpeed = maximumUploadSpeed,
+                        UploadSlots = uploadSlots,
+                    }.ToSettings();
                     manager = await engine.AddAsync(
-                        realTarget.Torrent, 
-                        cacheFolder.Path, 
-                        settings);
+                        realTarget.Torrent, cacheFolder.Path, settings);
+                    if (announceUrls != null)
+                        foreach (var url in announceUrls.Take(10))
+                            try { await manager.TrackerManager.AddTrackerAsync(new Uri(url)); }
+                            catch (Exception) { }
                     foreach (var file in manager.Files)
                         await manager.SetFilePriorityAsync(file,
                             realTarget.IsFileSelected(file) ? 
@@ -322,6 +329,8 @@ namespace TX.Core.Downloaders
         private readonly int maximumDownloadSpeed = 0;
         private readonly int maximumUploadSpeed = 0;
         private readonly int uploadSlots = 8;
+
+        private readonly IEnumerable<string> announceUrls = null;
 
         private readonly static TimeSpan ProgressUpdateInterval = TimeSpan.FromSeconds(0.2);
     }
