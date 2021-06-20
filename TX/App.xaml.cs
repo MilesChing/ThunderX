@@ -149,6 +149,16 @@ namespace TX
             {
                 try
                 {
+                    await Core.SuspendAsync();
+                    D($"{nameof(Core)} suspended");
+                }
+                catch (Exception e)
+                {
+                    D($"Core suspending error: {e.Message}");
+                }
+
+                try
+                {
                     var cacheFile = await GetCacheFileAsync();
                     var props = await cacheFile.GetBasicPropertiesAsync();
                     D($"Database file obtained, size {((long)props.Size).SizedString()}");
@@ -168,9 +178,6 @@ namespace TX
                 {
                     D($"Database writting failed: {e.Message}");
                 }
-
-                await Core.SuspendAsync();
-                D($"{nameof(Core)} suspended");
 
                 PActionManager.Save();
                 D($"{nameof(PActionManager)} saved");
