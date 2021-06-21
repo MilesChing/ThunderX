@@ -28,34 +28,11 @@ namespace TX.Controls
             this.InitializeComponent();
         }
 
-        public void ClearPivotsToBeShownFirstLaunch()
-        {
-            MainPivot.Items.Remove(NetworkPermissionsPivotItem);
-            MainPivot.Items.Remove(LogUploadingPermissionPivotItem);
-        }
+        public bool IsNewVersionPivotShown { get; set; } = true;
 
-        private async void ThisLoaded(object sender, RoutedEventArgs e)
-        {
-            BuildTimestamp.Visibility = Visibility.Collapsed;
-            var buildDateTime = await GetBuildTimestampAsync();
-            if (buildDateTime.HasValue)
-            {
-                BuildTimeRun.Text = buildDateTime.Value.ToString("d");
-                BuildTimestamp.Visibility = Visibility.Visible;
-            }
-        }
+        public bool IsNetworkPermissionsPivotShown { get; set; } = true;
 
-        private static async Task<DateTime?> GetBuildTimestampAsync()
-        {
-            try
-            {
-                var install_folder = Package.Current.InstalledLocation;
-                var files = await install_folder.GetFilesAsync();
-                var date_manifest = (await files.First().GetBasicPropertiesAsync()).DateModified;
-                return date_manifest.DateTime;
-            }
-            catch (Exception) { return null; }
-        }
+        public bool IsLogUploadingPermissionPivotShown { get; set; } = true;
 
         private async void SetButton_Click(object sender, RoutedEventArgs e) =>
             await Launcher.LaunchUriAsync(new Uri("ms-settings:network-wifi"));
@@ -80,5 +57,15 @@ namespace TX.Controls
         private void CloseDialogButton_Click(object sender, RoutedEventArgs e) => Hide();
 
         private readonly Settings SettingEntries = new Settings();
+
+        private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            if (IsNewVersionPivotShown == false)
+                MainPivot.Items.Remove(NewVersionPivotItem);
+            if (IsNetworkPermissionsPivotShown == false)
+                MainPivot.Items.Remove(NetworkPermissionsPivotItem);
+            if (IsLogUploadingPermissionPivotShown == false)
+                MainPivot.Items.Remove(LogUploadingPermissionPivotItem);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using EnsureThat;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TX.Core.Interfaces;
+using TX.Core.Models.Contexts;
 using TX.Core.Utils;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
@@ -45,11 +47,15 @@ namespace TX.Core.Providers
             }
         }
 
-        public async Task CleanCacheFolderAsync(Func<string, bool> isTaskActive)
+        public async Task CleanCacheFolderAsync(
+            IEnumerable<DownloadTask> activeTasks,
+            IEnumerable<IStorageItem> ignoreItems)
         {
             try
             {
                 D("Cleaning cache folder");
+                Ensure.That(activeTasks).IsNotNull();
+
                 IEnumerable<IStorageItem> items = await cacheFolder.GetItemsAsync();
                 if (!cacheFolder.IsEqual(ApplicationData.Current.LocalCacheFolder))
                     items = items.Concat(await ApplicationData.Current
@@ -61,8 +67,8 @@ namespace TX.Core.Providers
                 {
                     var unused_records = cacheItems.Where(
                         kvp =>
-                            (!items.Any(item => item.Path.Equals(kvp.Value.FilePath))) ||
-                            (!isTaskActive(kvp.Value.TaskKey))
+                            activeTasks.All(task => !task.Key.Equals(kvp.Value.TaskKey)) ||
+                            items.All(item => !item.Path.Equals(kvp.Value.FilePath))
                     ).ToList();
 
                     foreach (var record in unused_records)
@@ -72,8 +78,10 @@ namespace TX.Core.Providers
                     }
 
                     unused_items = items.Where(
-                        item => !cacheItems.Any(cacheItem => 
-                            cacheItem.Value.FilePath.Equals(item.Path))).ToList();
+                        item => 
+                            ignoreItems.All(ign => !ign.Path.Equals(item.Path)) && 
+                            cacheItems.All(cacheItem => !cacheItem.Value.FilePath.Equals(item.Path))
+                    ).ToList();
                 }
 
                 foreach (var item in unused_items)

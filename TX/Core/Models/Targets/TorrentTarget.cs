@@ -21,23 +21,20 @@ namespace TX.Core.Models.Targets
             Ensure.That(selectedFiles, nameof(selectedFiles)).IsNotNull();
             Ensure.That(displayedUri, nameof(displayedUri)).IsNotNull();
 
-            DisplayedUri = displayedUri;
-            Torrent = Torrent.Load(torrentBytes);
-
             this.torrentBytes = torrentBytes;
             this.selectedFiles = selectedFiles;
-            foreach (var file in Torrent.Files)
-            {
-                if (selectedFiles.Contains(file.Path))
-                    file.Priority = Priority.Normal;
-                else file.Priority = Priority.DoNotDownload;
-            }
+            DisplayedUri = displayedUri;
+
+            Torrent = Torrent.Load(torrentBytes);
         }
 
         [JsonIgnore]
         public Torrent Torrent { get; private set; }
 
         public Uri DisplayedUri { get; private set; }
+
+        public bool IsFileSelected(ITorrentFile file) =>
+            selectedFiles.Contains(file.Path);
 
         protected override string GetSuggestedName() => Torrent.Name;
 
