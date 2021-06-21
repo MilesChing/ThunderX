@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:utils="using:TX.Utils"
     xmlns:appmodel="using:Windows.ApplicationModel"
-    Loaded="ThisLoaded"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Opened="ContentDialog_Opened">
     <ContentDialog.Resources>
         <SolidColorBrush x:Key="AccentBrush" Color="{ThemeResource SystemAccentColor}"/>
         <SolidColorBrush x:Key="HighlightBrush" Color="{ThemeResource SystemBaseHighColor}"/>
@@ -22,7 +21,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Rectangle Height="1000"/>
+        <Rectangle Height="600"/>
         <Pivot x:Name="MainPivot" 
                Title="{x:Bind appmodel:Package.Current.DisplayName}"
                SelectionChanged="MainPivot_SelectionChanged"
@@ -38,6 +37,9 @@
                 </PivotItem.Header>
                 <ScrollViewer>
                     <StackPanel>
+                        <Image Source="/Assets/HeroLogoGradient.png"
+                               Width="320" Margin="0 16 0 32"
+                               HorizontalAlignment="Left"/>
                         <TextBlock Style="{ThemeResource TXPagePlainTextBlockStyle}">
                             <local:ResourcedSpan
                                 InlineXamlUid="NewVersion_InfoSpan"
@@ -50,7 +52,7 @@
                             <TextBlock Foreground="{ThemeResource SystemAltHighColor}"
                                        FontWeight="SemiBold">
                                 <Run Text="Released at"/>
-                                <Run x:Name="BuildTimeRun"/>
+                                <Run Text="2021/6/21"/>
                             </TextBlock>
                         </Border>
                     </StackPanel>
