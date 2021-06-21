@@ -62,7 +62,7 @@ namespace TX
             LoadingView.Visibility = Visibility.Collapsed;
 
             // handle startup dialog
-            await TryShowStartUpDialogAsync();
+            // await TryShowStartUpDialogAsync();
         }
 
         private void UpdateTitleBar()
@@ -148,7 +148,8 @@ namespace TX
                     Package.Current.Id.Version) < 0)
                 {
                     CurrentApp.PActionManager.Activate(dialogKey);
-                    StartUpDialog.ClearPivotsToBeShownFirstLaunch();
+                    StartUpDialog.IsLogUploadingPermissionPivotShown = false;
+                    StartUpDialog.IsNetworkPermissionsPivotShown = false;
                     await StartUpDialog.ShowAsync();
                     return true;
                 }

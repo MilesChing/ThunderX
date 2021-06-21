@@ -16,14 +16,16 @@ namespace TX.Core.Providers
         public TorrentProvider(EngineSettings defaultSettings = null)
         {
             this.defaultSettings = defaultSettings;
+            engine = new ClientEngine(defaultSettings);
         }
 
         public async Task InitializeTorrentProviderAsync(byte[] checkpoint = null)
         {
             if (checkpoint != null)
+            {
+                engine?.Dispose();
                 engine = await ClientEngine.RestoreStateAsync(checkpoint);
-            else
-                engine = new ClientEngine(defaultSettings);
+            }
         }
 
         public byte[] ToPersistentByteArray() => Task.Run(
@@ -31,11 +33,14 @@ namespace TX.Core.Providers
 
         public async Task CleanEngineTorrentsAsync(IEnumerable<Torrent> activeTorrents)
         {
-            var inactiveTorrents = engine.Torrents.Where(
-                m => activeTorrents.All(t => !m.Torrent.Equals(t))
-            ).ToList();
-            foreach (var it in inactiveTorrents)
-                await engine.RemoveAsync(it);
+            if (engine != null)
+            {
+                var inactiveTorrents = engine.Torrents.Where(
+                    m => activeTorrents.All(t => !m.Torrent.Equals(t))
+                ).ToList();
+                foreach (var it in inactiveTorrents)
+                    await engine.RemoveAsync(it);
+            }
         }
 
         public void Dispose()
