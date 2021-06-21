@@ -489,14 +489,10 @@ Create a task for downloading.</source>
           <target state="translated">转到 “设置”</target>
         </trans-unit>
         <trans-unit id="NewVersion_InfoSpan" translate="yes" xml:space="preserve">
-          <source>• {Bold Activation exception handling:} Crashes during application activation (from notification or external URI) will be captured and notified to you.
-• {Bold Storage permissions pruning:} Permissions of unused storage items will be automatically released now.
-• {Bold Diagnostic data uploading:} Crashes and other errors captured are supported to be uploaded for faster solving them. If you don't want any uploading, turn this off in Settings.
-• {Bold Other core improvements and UI adjustments.}</source>
-          <target state="translated">• {Bold 启动异常处理：}我们已自动捕获从外部URI启动时可能发生的错误并提示用户。
-• {Bold 存储权限清理：}Thunder X 会自动清理不再需要的存储项目（文件和文件夹）访问权限，我们确保仅在需要时使用存储项目访问权限。
-• {Bold 诊断数据上传：}现已支持应用崩溃或出错时的诊断数据收集和上传，这将有助于我们更好地了解应用程序的运行情况。如不想启用这个功能可随时在设置中关闭。
-• {Bold 其他内核稳定性提升和 UI 调整。}</target>
+          <source>• {Bold Torrent downloading kernel improvement:} The fluency and experience of downloading from Torrent files or Magnet links are improved by the newly embedded Torrent downloading kernel.
+• {Bold YouTube source parsing error fixed:} Better video links extracting process for the latest interface of YouTube.</source>
+          <target state="translated">• {Bold Torrent 下载内核升级：}升级的 Torrent 下载内核将具有更强的稳定性和流畅性。
+• {Bold YouTube 源解析问题已解决：}最新的视频链接解析方法减小解析 YouTube 失败的可能。</target>
         </trans-unit>
         <trans-unit id="StartUpDialog_LogUploadingPermission_Span" translate="yes" xml:space="preserve">
           <source>Thunder X uses diagnostic data to improve our products and services. We use this data to better understand how our products are performing and where improvements need to be made. We strive to gather only the info we need and to store it only for as long as it’s needed for analysis. {Bold Any data that is personally identifiable to you WILL NOT be uploaded or stored online}, like the Microsoft account you logged in to or the identity of your device.</source>
